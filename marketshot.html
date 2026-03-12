@@ -1,0 +1,679 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PivotAlphaDesk — MarketShot</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Space+Mono:wght@400;700&family=DM+Sans:wght@300;400;500&display=swap');
+
+  :root {
+    --bg:     #080c10;
+    --bg2:    #0d1117;
+    --bg3:    #141b24;
+    --border: #1e2d3d;
+    --accent: #00d4ff;
+    --gold:   #f0b429;
+    --red:    #ff4d4d;
+    --green:  #00e676;
+    --purple: #b388ff;
+    --orange: #ff9800;
+    --teal:   #00bcd4;
+    --text:   #e2e8f0;
+    --muted:  #64748b;
+  }
+
+  * { margin:0; padding:0; box-sizing:border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* ── HEADER ─────────────────────────────────────────────── */
+  .header {
+    background: linear-gradient(135deg, #0d1117 0%, #0a1628 100%);
+    border-bottom: 1px solid var(--border);
+    padding: 16px 40px;
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .logo { display:flex; align-items:center; gap:12px; text-decoration:none; }
+  .logo-hex {
+    width:38px; height:38px;
+    background: linear-gradient(135deg, #00d4ff, #0088aa);
+    clip-path: polygon(50% 0%,100% 25%,100% 75%,50% 100%,0% 75%,0% 25%);
+    display:flex; align-items:center; justify-content:center;
+    font-family:'Syne',sans-serif; font-weight:800; font-size:15px; color:#080c10;
+  }
+  .logo-text { font-family:'Syne',sans-serif; font-size:17px; font-weight:700; }
+  .logo-text span { color:var(--accent); }
+  .header-right { display:flex; align-items:center; gap:16px; }
+  .date-badge {
+    font-family:'Space Mono',monospace; font-size:11px; color:var(--muted);
+    background:var(--bg3); border:1px solid var(--border);
+    padding:5px 12px; border-radius:20px;
+  }
+  .live-dot {
+    width:8px; height:8px; border-radius:50%; background:var(--green);
+    box-shadow:0 0 8px var(--green);
+    animation: pulse 1.5s ease-in-out infinite;
+  }
+  .live-label {
+    font-family:'Space Mono',monospace; font-size:11px;
+    color:var(--green); display:flex; align-items:center; gap:6px;
+  }
+  @keyframes pulse { 0%,100%{opacity:1;} 50%{opacity:0.3;} }
+
+  /* ── TICKER BAR (TradingView) ────────────────────────────── */
+  .ticker-bar {
+    border-bottom: 1px solid var(--border);
+  }
+
+  /* ── MAIN ────────────────────────────────────────────────── */
+  .main { max-width:1400px; margin:0 auto; padding:28px 32px; }
+
+  .section-title {
+    font-family:'Syne',sans-serif; font-size:11px; font-weight:700;
+    letter-spacing:3px; text-transform:uppercase; color:var(--muted);
+    margin-bottom:16px; padding-bottom:8px;
+    border-bottom:1px solid var(--border);
+  }
+
+  /* ── FUTURES GRID ────────────────────────────────────────── */
+  .futures-grid {
+    display:grid; grid-template-columns:repeat(3,1fr); gap:16px;
+    margin-bottom:28px;
+  }
+
+  .fut-card {
+    background: var(--bg2);
+    border:1px solid var(--border);
+    border-radius:12px;
+    overflow:hidden;
+    position:relative;
+    transition: border-color 0.3s, box-shadow 0.3s;
+  }
+  .fut-card:hover {
+    border-color: var(--accent);
+    box-shadow: 0 0 24px rgba(0,212,255,0.06);
+  }
+  .fut-card::before {
+    content:''; position:absolute; top:0; left:0; right:0; height:2px; z-index:1;
+  }
+  .fut-card.es::before { background: linear-gradient(90deg, var(--accent), transparent); }
+  .fut-card.nq::before { background: linear-gradient(90deg, var(--purple), transparent); }
+  .fut-card.cl::before { background: linear-gradient(90deg, var(--gold), transparent); }
+
+  /* TradingView widget container */
+  .tv-widget-wrap {
+    width:100%;
+    border-bottom:1px solid var(--border);
+  }
+
+  /* Niveles gamma bajo el widget */
+  .fut-levels-panel {
+    padding:16px 20px;
+  }
+  .fut-sym-row {
+    display:flex; justify-content:space-between; align-items:center;
+    margin-bottom:12px;
+  }
+  .fut-sym {
+    font-family:'Syne',sans-serif; font-size:16px; font-weight:800;
+  }
+  .fut-card.es .fut-sym { color:var(--accent); }
+  .fut-card.nq .fut-sym { color:var(--purple); }
+  .fut-card.cl .fut-sym { color:var(--gold); }
+  .fut-name { font-size:10px; color:var(--muted); font-family:'Space Mono',monospace; }
+
+  .fut-levels { display:flex; flex-direction:column; gap:7px; }
+  .fut-level-row {
+    display:flex; justify-content:space-between; align-items:center;
+    font-size:11px;
+  }
+  .lbl-name { color:var(--muted); font-family:'Space Mono',monospace; }
+  .lbl-val  { font-family:'Space Mono',monospace; font-weight:700; }
+  .lbl-val.res    { color:var(--red); }
+  .lbl-val.flip   { color:var(--purple); }
+  .lbl-val.sup    { color:var(--green); }
+  .lbl-val.alarm  { color:var(--orange); }
+
+  /* ── VOL + MINI CHARTS ROW ───────────────────────────────── */
+  .vol-grid {
+    display:grid; grid-template-columns:repeat(4,1fr); gap:16px;
+    margin-bottom:28px;
+  }
+  .vol-card {
+    background:var(--bg2); border:1px solid var(--border);
+    border-radius:10px; overflow:hidden;
+  }
+  .vol-card-title {
+    font-size:10px; color:var(--muted); font-family:'Space Mono',monospace;
+    letter-spacing:1px; text-transform:uppercase;
+    padding:12px 16px 0;
+  }
+  .vol-card-static { padding:12px 16px 16px; }
+  .vol-val {
+    font-family:'Space Mono',monospace; font-size:22px; font-weight:700;
+    margin-bottom:4px;
+  }
+  .vol-sub { font-size:11px; color:var(--muted); font-family:'Space Mono',monospace; }
+  .vol-regime {
+    display:inline-block; margin-top:8px;
+    font-size:10px; padding:3px 8px; border-radius:4px;
+    font-family:'Space Mono',monospace; font-weight:700;
+  }
+
+  /* ── BOTTOM GRID ─────────────────────────────────────────── */
+  .bottom-grid {
+    display:grid; grid-template-columns:1fr 1fr; gap:16px;
+    margin-bottom:28px;
+  }
+
+  /* Gamma levels */
+  .gamma-card {
+    background:var(--bg2); border:1px solid var(--border);
+    border-radius:10px; overflow:hidden;
+  }
+  .gamma-card-header {
+    padding:14px 20px; background:var(--bg3);
+    border-bottom:1px solid var(--border);
+    font-family:'Syne',sans-serif; font-size:13px; font-weight:700;
+    color:var(--accent);
+  }
+  .gamma-table { width:100%; border-collapse:collapse; }
+  .gamma-table td {
+    padding:8px 20px; font-size:12px; font-family:'Space Mono',monospace;
+    border-bottom:1px solid rgba(30,45,61,0.6);
+  }
+  .gamma-table tr:last-child td { border-bottom:none; }
+  .gamma-table .g-label { color:var(--muted); }
+  .gamma-table .g-val   { text-align:right; font-weight:700; }
+  .gamma-table .g-res   { color:var(--red); }
+  .gamma-table .g-flip  { color:var(--purple); }
+  .gamma-table .g-sup   { color:var(--green); }
+  .gamma-table .g-alarm { color:var(--orange); }
+  .gamma-table .g-header td {
+    background:rgba(0,212,255,0.05); color:var(--accent);
+    font-size:10px; letter-spacing:1px; padding:7px 20px;
+    border-bottom:1px solid var(--border);
+  }
+
+  /* Calendar */
+  .cal-card {
+    background:var(--bg2); border:1px solid var(--border);
+    border-radius:10px; overflow:hidden;
+  }
+  .cal-card-header {
+    padding:14px 20px; background:var(--bg3);
+    border-bottom:1px solid var(--border);
+    font-family:'Syne',sans-serif; font-size:13px; font-weight:700;
+    color:var(--gold);
+  }
+  .cal-item {
+    padding:11px 20px; border-bottom:1px solid rgba(30,45,61,0.6);
+    display:flex; align-items:flex-start; gap:14px;
+  }
+  .cal-item:last-child { border-bottom:none; }
+  .cal-dot {
+    width:8px; height:8px; border-radius:50%; margin-top:4px; flex-shrink:0;
+  }
+  .cal-dot.high   { background:var(--red);    box-shadow:0 0 6px var(--red); }
+  .cal-dot.medium { background:var(--orange); box-shadow:0 0 6px var(--orange); }
+  .cal-dot.low    { background:var(--muted); }
+  .cal-time {
+    font-family:'Space Mono',monospace; font-size:10px; color:var(--accent);
+    white-space:nowrap; margin-top:1px; min-width:80px;
+  }
+  .cal-desc { font-size:12px; color:var(--text); line-height:1.4; }
+  .cal-sub  { font-size:10px; color:var(--muted); margin-top:2px; font-family:'Space Mono',monospace; }
+
+  /* ── MINI CHART FULL WIDTH ───────────────────────────────── */
+  .chart-section { margin-bottom:28px; }
+  .chart-wrap {
+    background:var(--bg2); border:1px solid var(--border);
+    border-radius:10px; overflow:hidden;
+  }
+  .chart-wrap-header {
+    padding:12px 20px; background:var(--bg3);
+    border-bottom:1px solid var(--border);
+    font-family:'Syne',sans-serif; font-size:12px; font-weight:700;
+    color:var(--accent); display:flex; gap:24px;
+  }
+  .chart-tab {
+    color:var(--muted); cursor:pointer; padding-bottom:2px;
+    border-bottom:2px solid transparent; font-size:12px;
+    transition:color 0.2s, border-color 0.2s;
+  }
+  .chart-tab.active { color:var(--accent); border-bottom-color:var(--accent); }
+
+  /* ── FOOTER ──────────────────────────────────────────────── */
+  .footer {
+    padding:16px 32px;
+    border-top:1px solid var(--border);
+    display:flex; justify-content:space-between; align-items:center;
+  }
+  .footer-left  { font-size:11px; color:var(--muted); font-family:'Space Mono',monospace; }
+  .footer-right { font-size:11px; color:var(--muted); font-family:'Space Mono',monospace; }
+  .footer-right span { color:var(--accent); }
+
+  /* TradingView overrides para tema oscuro */
+  .tradingview-widget-container { background: var(--bg2) !important; }
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header class="header">
+  <a href="index.html" class="logo">
+    <div class="logo-hex">P</div>
+    <div class="logo-text">Pivot<span>Alpha</span>Desk</div>
+  </a>
+  <div class="header-right">
+    <div class="date-badge">12 · MAR · 2026</div>
+    <div class="live-label">
+      <div class="live-dot"></div>
+      MARKET SHOT · LIVE
+    </div>
+  </div>
+</header>
+
+<!-- TICKER BAR — TradingView ticker tape -->
+<div class="ticker-bar">
+  <div class="tradingview-widget-container">
+    <div class="tradingview-widget-container__widget"></div>
+    <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-ticker-tape.js" async>
+    {
+      "symbols": [
+        {"proName":"CME_MINI:ES1!","title":"ES"},
+        {"proName":"CME_MINI:NQ1!","title":"NQ"},
+        {"proName":"NYMEX:CL1!","title":"CL"},
+        {"proName":"CBOE:VIX","title":"VIX"},
+        {"proName":"CBOE:VVIX","title":"VVIX"},
+        {"proName":"COMEX:GC1!","title":"Gold"},
+        {"proName":"ICEUS:DX1!","title":"DXY"},
+        {"proName":"CBOT:ZN1!","title":"10Y"}
+      ],
+      "showSymbolLogo": false,
+      "isTransparent": true,
+      "displayMode": "adaptive",
+      "colorTheme": "dark",
+      "locale": "en"
+    }
+    </script>
+  </div>
+</div>
+
+<!-- MAIN -->
+<div class="main">
+
+  <!-- FUTUROS -->
+  <div class="section-title">⬛ Futuros Principales · Precios en Vivo</div>
+  <div class="futures-grid">
+
+    <!-- ES -->
+    <div class="fut-card es">
+      <div class="fut-levels-panel">
+        <div class="fut-sym-row">
+          <div>
+            <div class="fut-sym">ES</div>
+            <div class="fut-name">S&P 500 · CME · Niveles Gamma</div>
+          </div>
+        </div>
+        <div class="fut-levels">
+          <div class="fut-level-row">
+            <span class="lbl-name">Call Wall</span>
+            <span class="lbl-val res">6,900</span>
+          </div>
+          <div class="fut-level-row">
+            <span class="lbl-name">Resistencia</span>
+            <span class="lbl-val res">6,850</span>
+          </div>
+          <div class="fut-level-row">
+            <span class="lbl-name">Gamma Pin</span>
+            <span class="lbl-val res">6,800</span>
+          </div>
+          <div class="fut-level-row">
+            <span class="lbl-name">⚡ Gamma Flip</span>
+            <span class="lbl-val flip">6,775</span>
+          </div>
+          <div class="fut-level-row">
+            <span class="lbl-name">◆ EOD Close</span>
+            <span class="lbl-val" style="color:var(--gold)">6,734.75</span>
+          </div>
+          <div class="fut-level-row">
+            <span class="lbl-name">Soporte</span>
+            <span class="lbl-val sup">6,750</span>
+          </div>
+          <div class="fut-level-row">
+            <span class="lbl-name">Put Wall</span>
+            <span class="lbl-val alarm">6,700</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- NQ -->
+    <div class="fut-card nq">
+      <div class="fut-levels-panel">
+        <div class="fut-sym-row">
+          <div>
+            <div class="fut-sym">NQ</div>
+            <div class="fut-name">Nasdaq 100 · CME · Niveles Gamma</div>
+          </div>
+        </div>
+        <div class="fut-levels">
+          <div class="fut-level-row">
+            <span class="lbl-name">Resistencia</span>
+            <span class="lbl-val res">25,200</span>
+          </div>
+          <div class="fut-level-row">
+            <span class="lbl-name">Resistencia 2</span>
+            <span class="lbl-val res">25,100</span>
+          </div>
+          <div class="fut-level-row">
+            <span class="lbl-name">Gamma Pin</span>
+            <span class="lbl-val res">25,000</span>
+          </div>
+          <div class="fut-level-row">
+            <span class="lbl-name">⚡ Gamma Flip</span>
+            <span class="lbl-val flip">24,950</span>
+          </div>
+          <div class="fut-level-row">
+            <span class="lbl-name">◆ EOD Close</span>
+            <span class="lbl-val" style="color:var(--gold)">24,862.50</span>
+          </div>
+          <div class="fut-level-row">
+            <span class="lbl-name">Soporte</span>
+            <span class="lbl-val sup">24,900</span>
+          </div>
+          <div class="fut-level-row">
+            <span class="lbl-name">Soporte 2</span>
+            <span class="lbl-val alarm">24,800</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- CL -->
+    <div class="fut-card cl">
+      <div class="fut-levels-panel">
+        <div class="fut-sym-row">
+          <div>
+            <div class="fut-sym">CL</div>
+            <div class="fut-name">WTI Crude Oil · NYMEX · Niveles Gamma</div>
+          </div>
+        </div>
+        <div class="fut-levels">
+          <div class="fut-level-row">
+            <span class="lbl-name">Resistencia</span>
+            <span class="lbl-val res">97.00</span>
+          </div>
+          <div class="fut-level-row">
+            <span class="lbl-name">Call Wall</span>
+            <span class="lbl-val res">95.00</span>
+          </div>
+          <div class="fut-level-row">
+            <span class="lbl-name">Gamma Pin</span>
+            <span class="lbl-val res">93.00</span>
+          </div>
+          <div class="fut-level-row">
+            <span class="lbl-name">⚡ Gamma Flip</span>
+            <span class="lbl-val flip">91.00</span>
+          </div>
+          <div class="fut-level-row">
+            <span class="lbl-name">◆ EOD Close</span>
+            <span class="lbl-val" style="color:var(--gold)">91.82</span>
+          </div>
+          <div class="fut-level-row">
+            <span class="lbl-name">Soporte</span>
+            <span class="lbl-val sup">89.00</span>
+          </div>
+          <div class="fut-level-row">
+            <span class="lbl-name">Alarma</span>
+            <span class="lbl-val alarm">85.00</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /futures-grid -->
+
+  <!-- VOLATILIDAD -->
+  <div class="section-title">📊 Volatilidad & Contexto</div>
+  <div class="vol-grid">
+
+    <!-- VIX widget -->
+    <div class="vol-card">
+      <div class="vol-card-title">VIX · CBOE · Live</div>
+      <div class="tradingview-widget-container">
+        <div class="tradingview-widget-container__widget"></div>
+        <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-mini-symbol-overview.js" async>
+        {
+          "symbol": "CBOE:VIX",
+          "width": "100%",
+          "height": "160",
+          "locale": "en",
+          "dateRange": "1D",
+          "colorTheme": "dark",
+          "isTransparent": true,
+          "autosize": false,
+          "largeChartUrl": ""
+        }
+        </script>
+      </div>
+    </div>
+
+    <!-- VVIX widget -->
+    <div class="vol-card">
+      <div class="vol-card-title">VVIX · CBOE · Live</div>
+      <div class="tradingview-widget-container">
+        <div class="tradingview-widget-container__widget"></div>
+        <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-mini-symbol-overview.js" async>
+        {
+          "symbol": "CBOE:VVIX",
+          "width": "100%",
+          "height": "160",
+          "locale": "en",
+          "dateRange": "1D",
+          "colorTheme": "dark",
+          "isTransparent": true,
+          "autosize": false,
+          "largeChartUrl": ""
+        }
+        </script>
+      </div>
+    </div>
+
+    <!-- Sesgo estático -->
+    <div class="vol-card">
+      <div class="vol-card-title">Sesgo ES · 12-Mar</div>
+      <div class="vol-card-static">
+        <div class="vol-val" style="color:var(--red);">BAJISTA 🔴</div>
+        <div class="vol-sub">Put/Call Vol: 1.92x puts</div>
+        <div class="vol-sub" style="margin-top:4px;">OI: 73.5% puts / 26.5% calls</div>
+        <div class="vol-regime" style="background:rgba(255,77,77,0.1);color:var(--red);border:1px solid rgba(255,77,77,0.25);">Bajo Gamma Flip 6,775</div>
+      </div>
+    </div>
+
+    <!-- Próximo evento -->
+    <div class="vol-card">
+      <div class="vol-card-title">Próximo Evento Crítico</div>
+      <div class="vol-card-static">
+        <div class="vol-val" style="color:var(--gold); font-size:18px; padding-top:4px;">FOMC ⚠</div>
+        <div class="vol-sub">Miércoles 18-Mar · 2:00 PM ET</div>
+        <div class="vol-sub" style="margin-top:4px;">+ EIA Crude · mismo día</div>
+        <div class="vol-regime" style="background:rgba(240,180,41,0.1);color:var(--gold);border:1px solid rgba(240,180,41,0.25);">6 días</div>
+      </div>
+    </div>
+
+  </div><!-- /vol-grid -->
+
+  <!-- MINI CHARTS ES / NQ / CL -->
+  <div class="chart-section">
+    <div class="section-title">📈 Mini Charts · Intraday</div>
+    <div style="display:grid; grid-template-columns:repeat(3,1fr); gap:16px;">
+
+      <!-- ES mini chart -->
+      <div class="chart-wrap">
+        <div class="tradingview-widget-container">
+          <div class="tradingview-widget-container__widget"></div>
+          <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-mini-symbol-overview.js" async>
+          {
+            "symbol": "CME_MINI:ES1!",
+            "width": "100%",
+            "height": "220",
+            "locale": "en",
+            "dateRange": "1D",
+            "colorTheme": "dark",
+            "isTransparent": true,
+            "autosize": false,
+            "largeChartUrl": ""
+          }
+          </script>
+        </div>
+      </div>
+
+      <!-- NQ mini chart -->
+      <div class="chart-wrap">
+        <div class="tradingview-widget-container">
+          <div class="tradingview-widget-container__widget"></div>
+          <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-mini-symbol-overview.js" async>
+          {
+            "symbol": "CME_MINI:NQ1!",
+            "width": "100%",
+            "height": "220",
+            "locale": "en",
+            "dateRange": "1D",
+            "colorTheme": "dark",
+            "isTransparent": true,
+            "autosize": false,
+            "largeChartUrl": ""
+          }
+          </script>
+        </div>
+      </div>
+
+      <!-- CL mini chart -->
+      <div class="chart-wrap">
+        <div class="tradingview-widget-container">
+          <div class="tradingview-widget-container__widget"></div>
+          <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-mini-symbol-overview.js" async>
+          {
+            "symbol": "NYMEX:CL1!",
+            "width": "100%",
+            "height": "220",
+            "locale": "en",
+            "dateRange": "1D",
+            "colorTheme": "dark",
+            "isTransparent": true,
+            "autosize": false,
+            "largeChartUrl": ""
+          }
+          </script>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- BOTTOM: GAMMA LEVELS + CALENDAR -->
+  <div class="bottom-grid">
+
+    <!-- GAMMA LEVELS -->
+    <div class="gamma-card">
+      <div class="gamma-card-header">⚡ Niveles Gamma · 12-Mar-2026</div>
+      <table class="gamma-table">
+        <tr class="g-header"><td>ES · S&P 500</td><td></td></tr>
+        <tr><td class="g-label">Call Wall</td><td class="g-val g-res">6,900</td></tr>
+        <tr><td class="g-label">Resistencia</td><td class="g-val g-res">6,850</td></tr>
+        <tr><td class="g-label">Gamma Pin</td><td class="g-val g-res">6,800</td></tr>
+        <tr><td class="g-label">⚡ Gamma Flip</td><td class="g-val g-flip">6,775</td></tr>
+        <tr><td class="g-label">◆ EOD Close</td><td class="g-val" style="color:var(--gold)">6,734.75</td></tr>
+        <tr><td class="g-label">Soporte</td><td class="g-val g-sup">6,750</td></tr>
+        <tr><td class="g-label">Put Wall</td><td class="g-val g-alarm">6,700</td></tr>
+        <tr><td class="g-label">Alarma</td><td class="g-val g-alarm">6,640</td></tr>
+        <tr class="g-header"><td>NQ · Nasdaq</td><td></td></tr>
+        <tr><td class="g-label">Gamma Pin</td><td class="g-val g-res">25,000</td></tr>
+        <tr><td class="g-label">⚡ Gamma Flip</td><td class="g-val g-flip">24,950</td></tr>
+        <tr><td class="g-label">◆ EOD Close</td><td class="g-val" style="color:var(--gold)">24,862.50</td></tr>
+        <tr><td class="g-label">Soporte 1</td><td class="g-val g-sup">24,900</td></tr>
+        <tr><td class="g-label">Soporte 2</td><td class="g-val g-alarm">24,800</td></tr>
+        <tr class="g-header"><td>CL · Crude Oil</td><td></td></tr>
+        <tr><td class="g-label">Gamma Pin</td><td class="g-val g-res">93.00</td></tr>
+        <tr><td class="g-label">⚡ Gamma Flip</td><td class="g-val g-flip">91.00</td></tr>
+        <tr><td class="g-label">◆ EOD Close</td><td class="g-val" style="color:var(--gold)">91.82</td></tr>
+        <tr><td class="g-label">Soporte</td><td class="g-val g-sup">89.00</td></tr>
+        <tr><td class="g-label">Alarma</td><td class="g-val g-alarm">85.00</td></tr>
+      </table>
+    </div>
+
+    <!-- CALENDAR -->
+    <div class="cal-card">
+      <div class="cal-card-header">📅 Calendario de Eventos</div>
+
+      <div class="cal-item">
+        <div class="cal-dot high"></div>
+        <div>
+          <div class="cal-time">HOY · 8:30 AM</div>
+          <div class="cal-desc">Housing Starts + Building Permits</div>
+          <div class="cal-sub">Feb 2026 · Impacto moderado</div>
+        </div>
+      </div>
+      <div class="cal-item">
+        <div class="cal-dot medium"></div>
+        <div>
+          <div class="cal-time">HOY · 10:30 AM</div>
+          <div class="cal-desc">EIA Natural Gas Storage</div>
+          <div class="cal-sub">Relevante para CL / NG</div>
+        </div>
+      </div>
+      <div class="cal-item">
+        <div class="cal-dot low"></div>
+        <div>
+          <div class="cal-time">VIE 13 · DATO</div>
+          <div class="cal-desc">Unemployment 6.7% · Core PCE 0.3%</div>
+          <div class="cal-sub">Subió de 6.5% — presión Fed</div>
+        </div>
+      </div>
+      <div class="cal-item" style="background:rgba(255,77,77,0.04);">
+        <div class="cal-dot high"></div>
+        <div>
+          <div class="cal-time" style="color:var(--red);">MIÉ 18 · 2PM ⚠</div>
+          <div class="cal-desc">FOMC Decision + Conferencia Powell</div>
+          <div class="cal-sub">Evento crítico semana — máxima volatilidad</div>
+        </div>
+      </div>
+      <div class="cal-item">
+        <div class="cal-dot high"></div>
+        <div>
+          <div class="cal-time">MIÉ 18 · EIA</div>
+          <div class="cal-desc">EIA Crude Oil Stocks</div>
+          <div class="cal-sub">Coincide con FOMC — doble impacto CL</div>
+        </div>
+      </div>
+      <div class="cal-item" style="background:rgba(255,152,0,0.04);">
+        <div class="cal-dot medium"></div>
+        <div>
+          <div class="cal-time" style="color:var(--orange);">GEOPOLÍTICO</div>
+          <div class="cal-desc">Tensiones Irán · Monitoreo activo</div>
+          <div class="cal-sub">Risk premium en CL · VIX elevado</div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /bottom-grid -->
+
+</div><!-- /main -->
+
+<!-- FOOTER -->
+<footer class="footer">
+  <div class="footer-left">© 2026 PivotAlphaDesk · pivotalphadesk.com · Datos TradingView · Tiempo real</div>
+  <div class="footer-right">MarketShot <span>12-Mar-2026</span> · Uso exclusivo interno</div>
+</footer>
+
+</body>
+</html>
