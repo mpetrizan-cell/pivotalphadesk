@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Deep Desk | Insight Especial - JPM Collar & Triple Witching</title>
+    <style>
+        :root {
+            --bbg-black: #050505;
+            --bbg-dark: #121212;
+            --bbg-blue: #0055ff;
+            --bbg-gold: #ffb400;
+            --bbg-grey: #a0a0a0;
+            --bbg-text: #e0e0e0;
+            --bbg-border: #2a2a2a;
+        }
+        body { 
+            background: var(--bbg-black); 
+            color: var(--bbg-text); 
+            font-family: 'Segoe UI', Helvetica, Arial, sans-serif; 
+            margin: 0; padding: 0; line-height: 1.5;
+        }
+        .container { max-width: 1000px; margin: 0 auto; padding: 40px 20px; }
+        
+        /* Estilo Bloomberg Header */
+        header { border-bottom: 3px solid var(--bbg-blue); padding-bottom: 20px; margin-bottom: 40px; }
+        .kicker { color: var(--bbg-blue); font-weight: bold; text-transform: uppercase; letter-spacing: 2px; font-size: 0.9rem; }
+        h1 { font-size: 3rem; font-weight: 700; line-height: 1.1; margin: 10px 0; color: #fff; }
+        .sub-headline { font-size: 1.5rem; color: var(--bbg-grey); font-weight: 300; margin-bottom: 20px; }
+        .meta { display: flex; justify-content: space-between; color: var(--bbg-grey); font-size: 0.85rem; border-top: 1px solid var(--bbg-border); padding-top: 10px; }
+
+        /* Bloomberg Terminal Blocks */
+        .executive-summary { 
+            background: var(--bbg-dark); 
+            border-left: 5px solid var(--bbg-gold); 
+            padding: 30px; margin: 40px 0; 
+            font-size: 1.2rem; line-height: 1.6; font-style: italic;
+        }
+        
+        h2 { font-size: 1.8rem; border-bottom: 1px solid var(--bbg-blue); padding-bottom: 10px; margin-top: 60px; color: #fff; text-transform: uppercase; letter-spacing: 1px; }
+        h3 { font-size: 1.4rem; color: var(--bbg-gold); margin-top: 30px; }
+
+        .data-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin: 20px 0; }
+        .data-card { background: #1a1a1a; padding: 20px; border: 1px solid var(--bbg-border); border-radius: 4px; }
+        .data-card h4 { margin: 0 0 10px 0; color: var(--bbg-blue); text-transform: uppercase; font-size: 0.8rem; }
+        
+        .highlight-box { background: rgba(0, 85, 255, 0.1); border: 1px solid var(--bbg-blue); padding: 20px; margin: 20px 0; border-radius: 4px; }
+        
+        /* Listas y Tablas */
+        ul { padding-left: 20px; }
+        li { margin-bottom: 10px; }
+        .threshold { font-weight: bold; color: var(--bbg-gold); }
+
+        /* JPM Collar Section */
+        .collar-box { 
+            background: linear-gradient(135deg, #1a1a1a 0%, #050505 100%); 
+            border: 2px solid var(--bbg-gold); 
+            padding: 30px; border-radius: 8px; margin: 40px 0;
+        }
+
+        footer { text-align: center; margin-top: 100px; padding: 40px; border-top: 1px solid var(--bbg-border); color: var(--bbg-grey); font-size: 0.9rem; }
+        
+        @media (max-width: 768px) {
+            h1 { font-size: 2rem; }
+            .data-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <header>
+        <div class="kicker">Deep Desk | Insight Especial</div>
+        <h1>Triple Witching, Volatilidad en Tensión y el Reequilibrio del JPM Collar</h1>
+        <div class="sub-headline">Anatomía de un Mercado en Régimen de Fragilidad</div>
+        <div class="meta">
+            <span>PIVOTALPHADESK — STRATEGIC INTELLIGENCE UNIT</span>
+            <span>MARZO 2026</span>
+        </div>
+    </header>
+
+    <div class="executive-summary">
+        <strong>Executive Brief:</strong> El mercado entra en una ventana crítica donde convergen: Triple Witching, FOMC y el roll del JPM Collar. La ruptura del rango 6,800–7,000 dejó al S&P 500 sin anclas técnicas, amplificando la sensibilidad a la volatilidad. El VVIX intradía confirma un régimen de tensión micro que puede liberar energía direccional en cualquier momento. El nivel 6,475 —ala protectora del collar— es el punto de supervivencia del trimestre.
+    </div>
+
+    <section>
+        <h2>1. Ruptura de Rango y Estado de Fragilidad Estructural</h2>
+        <p>El S&P 500 quebró el rango <strong>6,800–7,000</strong>, que funcionó como <em>Gravity Zone</em> durante semanas. La caída hacia 6,650 dejó al mercado en un espacio sin referencias claras, donde:</p>
+        <ul>
+            <li>La liquidez se vuelve direccional.</li>
+            <li>Los movimientos se amplifican.</li>
+            <li>La microestructura pierde estabilidad.</li>
+        </ul>
+        <p>En este entorno, el vencimiento de marzo no es un evento administrativo: es un <strong>pivote estructural</strong> donde se reconfiguran los flujos, la volatilidad y la sensibilidad del libro. La combinación de tensiones geopolíticas, deterioro técnico y un régimen de volatilidad distorsionado crea un entorno donde la <strong>reflexividad</strong> domina.</p>
+    </section>
+
+    <section>
+        <h2>2. Volatilidad: La Brecha VIX–RV y la Señal del VVIX</h2>
+        <p>La volatilidad implícita (VIX) mantiene una brecha de casi <strong>15 puntos</strong> sobre la volatilidad realizada, muy por encima del promedio histórico.</p>
+        
+        <div class="data-grid">
+            <div class="data-card">
+                <h4>VIX Framework</h4>
+                <p>Define el <strong>Régimen</strong> general del mercado.</p>
+            </div>
+            <div class="data-card">
+                <h4>VVIX Framework</h4>
+                <p>Define el <strong>Gatillo</strong> intradía (Tensión reactiva actual).</p>
+            </div>
+        </div>
+
+        <h3>Escenarios de resolución</h3>
+        <div class="highlight-box">
+            <p><strong>A. Compresión de primas (VIX ↓):</strong> Si el spot estabiliza, el VIX colapsa hacia la RV. (Dealer Friction disminuye).</p>
+            <p><strong>B. Expansión de RV (spot se acelera):</strong> Si el mercado se mueve fuerte, la RV “alcanza” al VIX. (Acceleration Zones activas).</p>
+        </div>
+    </section>
+
+    <section>
+        <h2>3. Régimen de Gamma: Dealer Friction en Modo Procíclico</h2>
+        <p>El mercado opera bajo <strong>Gamma Negativa</strong>, lo que implica que la <em>Dealer Friction</em> es procíclica: compran arriba, venden abajo, amplificando el movimiento y reduciendo la profundidad del libro.</p>
+        
+        <h3>Umbrales de sensibilidad PAD</h3>
+        <ul>
+            <li><span class="threshold">VIX 27</span> → Activation Threshold.</li>
+            <li><span class="threshold">VIX 35</span> → Volatility Stress Ceiling.</li>
+        </ul>
+        <p style="font-style: italic;">“Si el VIX se acerca a 35, el mercado entra en modo Acceleration Zone, donde la volatilidad deja de ser un subproducto y pasa a ser el driver.”</p>
+    </section>
+
+    <section>
+        <h2>4. Triple Witching: Structural Reset de $1.3T</h2>
+        <p>El vencimiento libera aproximadamente <strong>$1.3T en delta notional</strong>. En el marco PAD, esto es un <em>Structural Reset</em> total:</p>
+        <div class="data-grid">
+            <div class="data-card">
+                <ul>
+                    <li>Eliminación de coberturas caducas.</li>
+                    <li>Liberación de liquidez atrapada.</li>
+                </ul>
+            </div>
+            <div class="data-card">
+                <ul>
+                    <li>Reconfiguración de nodos de volatilidad.</li>
+                    <li>Redefinición del mapa de Gamma Neutral.</li>
+                </ul>
+            </div>
+        </div>
+        <p>La neutralidad 50/50 entre calls y puts implica que no hay sesgo direccional post-OPEX; el mercado queda “a la deriva” hasta que el lunes post-OPEX defina el trimestre.</p>
+    </section>
+
+    <section class="collar-box">
+        <h2>5. El JPM Collar: El Verdadero Gravity Point</h2>
+        <p>Con el spot en 6,650, estamos peligrosamente cerca del ala protectora de la estructura más masiva del mercado.</p>
+        <div class="data-grid">
+            <div class="data-card">
+                <h4>Estructura</h4>
+                <p>Put spread: 5,470 / 6,475<br>Short call: 7,155<br>35,000 contratos</p>
+            </div>
+            <div class="data-card">
+                <h4>Niveles PAD</h4>
+                <p><strong>6,475</strong> = Structure Pivot Proxy<br><strong>7,155</strong> = Tactical Anchor Superior</p>
+            </div>
+        </div>
+        <p>Los dealers, cortos del put, deben vender más a medida que el spot cae, generando un <strong>Gravity Pull hacia 6,475</strong>. El roll del 31/03 es un evento de Structural Reset mayor. Si 6,475 falla, se activa un reset bajista donde la microestructura expulsa liquidez.</p>
+    </section>
+
+    <section>
+        <h2>6. Hoja de Ruta PAD (Próximas 2 Semanas)</h2>
+        <ol>
+            <li><strong>Post-OPEX (Lunes):</strong> Resolución del vacío de liquidez. Los primeros 90 minutos definen el sesgo.</li>
+            <li><strong>Umbrales VIX:</strong> Monitorear sensibilidad en 27 y stress extremo en 35.</li>
+            <li><strong>Roll JPM Collar (31/03):</strong> El evento estructural más importante. Si 6,475 sostiene = piso técnico. Si falla = capitulación.</li>
+        </ol>
+    </section>
+
+    <div class="executive-summary" style="border-left-color: var(--bbg-blue); background: rgba(0,85,255,0.05);">
+        <h2 style="margin-top: 0; border: none; font-size: 1.4rem; color: var(--bbg-blue);">Conclusión Ejecutiva</h2>
+        <p>El mercado opera en un régimen donde la volatilidad manda, la microestructura amplifica y los dealers no amortiguan. Los nodos de expiración definen la tendencia, el VVIX es el sensor intradía y <strong>6,475 es el punto de supervivencia del trimestre.</strong></p>
+    </div>
+
+    <footer>
+        <p>PivotAlphaDesk — Strategic Intelligence Unit | Research Library v1.0</p>
+        <p>© 2026 — All Rights Reserved</p>
+    </footer>
+</div>
+
+</body>
+</html>
