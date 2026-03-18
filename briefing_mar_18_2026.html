@@ -1,0 +1,1427 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PAD Briefing | Miércoles 18-Mar-2026</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Inter:wght@300;400;500;600;700;900&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0c0f;
+    --surface: #111318;
+    --surface2: #181c23;
+    --border: #1e2530;
+    --border2: #252d3a;
+    --text: #e8edf5;
+    --text2: #8a96a8;
+    --text3: #4a5568;
+    --accent: #00d4ff;
+    --accent2: #0099cc;
+    --green: #00e676;
+    --green2: #00b050;
+    --red: #ff4757;
+    --red2: #cc2233;
+    --yellow: #ffd600;
+    --orange: #ff6b35;
+    --purple: #b388ff;
+    --gold: #ffc107;
+    --fomc: #ff6b35;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Inter', sans-serif;
+    font-size: 14px;
+    line-height: 1.6;
+    min-height: 100vh;
+  }
+
+  /* ── TICKER TAPE ── */
+  .ticker-wrap {
+    background: #000;
+    border-bottom: 1px solid var(--accent2);
+    overflow: hidden;
+    height: 32px;
+    display: flex;
+    align-items: center;
+  }
+  .ticker-label {
+    background: var(--accent);
+    color: #000;
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    font-weight: 700;
+    padding: 0 12px;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    white-space: nowrap;
+    flex-shrink: 0;
+    letter-spacing: 1px;
+  }
+  .ticker-track {
+    display: flex;
+    animation: ticker 55s linear infinite;
+    white-space: nowrap;
+  }
+  .ticker-item {
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    padding: 0 28px;
+    color: var(--text2);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-shrink: 0;
+  }
+  .ticker-item .sym { color: var(--text); font-weight: 700; }
+  .ticker-item .up { color: var(--green); }
+  .ticker-item .dn { color: var(--red); }
+  .ticker-item .sep { color: var(--border2); }
+  @keyframes ticker { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
+
+  /* ── HEADER ── */
+  .header {
+    background: linear-gradient(135deg, #0d1117 0%, #111822 100%);
+    border-bottom: 1px solid var(--border2);
+    padding: 24px 40px;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+  }
+  .header-left {}
+  .pad-logo {
+    font-family: 'Space Mono', monospace;
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--accent);
+    letter-spacing: 3px;
+    margin-bottom: 4px;
+  }
+  .pad-sub {
+    font-size: 11px;
+    color: var(--text3);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+  }
+  .header-right {
+    text-align: right;
+  }
+  .briefing-date {
+    font-family: 'Space Mono', monospace;
+    font-size: 13px;
+    color: var(--text2);
+    margin-bottom: 6px;
+  }
+  .regime-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(255, 107, 53, 0.15);
+    border: 1px solid var(--orange);
+    color: var(--orange);
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    font-weight: 700;
+    padding: 6px 14px;
+    border-radius: 4px;
+    letter-spacing: 2px;
+    animation: pulse-orange 2s infinite;
+  }
+  @keyframes pulse-orange {
+    0%,100% { box-shadow: 0 0 0 0 rgba(255,107,53,0.3); }
+    50% { box-shadow: 0 0 0 6px rgba(255,107,53,0); }
+  }
+  .regime-dot { width: 8px; height: 8px; background: var(--orange); border-radius: 50%; }
+
+  /* ── FOMC BANNER ── */
+  .fomc-banner {
+    background: linear-gradient(90deg, rgba(255,107,53,0.12) 0%, rgba(255,107,53,0.05) 100%);
+    border: 1px solid rgba(255,107,53,0.4);
+    border-left: 4px solid var(--orange);
+    padding: 14px 40px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+  .fomc-icon { font-size: 20px; }
+  .fomc-text { flex: 1; }
+  .fomc-text strong { color: var(--orange); font-size: 13px; }
+  .fomc-text span { color: var(--text2); font-size: 12px; }
+  .fomc-badge {
+    background: var(--orange);
+    color: #000;
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    font-weight: 700;
+    padding: 4px 10px;
+    border-radius: 3px;
+    letter-spacing: 1px;
+  }
+
+  /* ── TRIPLE WITCHING BANNER ── */
+  .tw-banner {
+    background: linear-gradient(90deg, rgba(179,136,255,0.1) 0%, rgba(179,136,255,0.03) 100%);
+    border: 1px solid rgba(179,136,255,0.35);
+    border-left: 4px solid var(--purple);
+    padding: 14px 40px;
+    display: flex;
+    align-items: flex-start;
+    gap: 16px;
+  }
+  .tw-icon { font-size: 20px; margin-top: 2px; }
+  .tw-content { flex: 1; }
+  .tw-title { color: var(--purple); font-weight: 700; font-size: 13px; margin-bottom: 6px; }
+  .tw-body { color: var(--text2); font-size: 12px; line-height: 1.7; }
+  .tw-body strong { color: var(--text); }
+  .tw-badge {
+    background: rgba(179,136,255,0.2);
+    border: 1px solid var(--purple);
+    color: var(--purple);
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    font-weight: 700;
+    padding: 4px 10px;
+    border-radius: 3px;
+    letter-spacing: 1px;
+    white-space: nowrap;
+    align-self: flex-start;
+  }
+
+  /* ── MAIN LAYOUT ── */
+  .main { padding: 28px 40px; max-width: 1600px; margin: 0 auto; }
+
+  /* ── SECTION TITLE ── */
+  .section-title {
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--text3);
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    margin-bottom: 16px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .section-title::before {
+    content: '';
+    width: 3px;
+    height: 14px;
+    background: var(--accent);
+    border-radius: 2px;
+  }
+
+  /* ── ASSET CARDS GRID ── */
+  .assets-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin-bottom: 32px; }
+
+  .asset-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    overflow: hidden;
+    transition: border-color 0.2s;
+  }
+  .asset-card:hover { border-color: var(--border2); }
+
+  .asset-header {
+    padding: 16px 20px 12px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+  }
+  .asset-ticker {
+    font-family: 'Space Mono', monospace;
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--text);
+    margin-bottom: 2px;
+  }
+  .asset-name { font-size: 11px; color: var(--text3); letter-spacing: 1px; }
+  .asset-price-block { text-align: right; }
+  .asset-price {
+    font-family: 'Space Mono', monospace;
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--text);
+    margin-bottom: 2px;
+  }
+  .asset-chg {
+    font-family: 'Space Mono', monospace;
+    font-size: 12px;
+    font-weight: 700;
+    padding: 2px 8px;
+    border-radius: 3px;
+  }
+  .chg-up { color: var(--green); background: rgba(0,230,118,0.1); }
+  .chg-dn { color: var(--red); background: rgba(255,71,87,0.1); }
+
+  .asset-meta {
+    padding: 10px 20px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    gap: 20px;
+  }
+  .meta-item { display: flex; flex-direction: column; gap: 2px; }
+  .meta-label { font-size: 9px; color: var(--text3); letter-spacing: 1px; text-transform: uppercase; }
+  .meta-value { font-family: 'Space Mono', monospace; font-size: 12px; color: var(--text2); }
+
+  /* ── LEVELS TABLE ── */
+  .levels-table { padding: 16px 20px; }
+  .level-row {
+    display: flex;
+    align-items: center;
+    padding: 6px 0;
+    border-bottom: 1px solid rgba(30,37,48,0.5);
+    gap: 10px;
+  }
+  .level-row:last-child { border-bottom: none; }
+  .level-badge {
+    font-size: 9px;
+    font-weight: 700;
+    padding: 2px 7px;
+    border-radius: 3px;
+    letter-spacing: 0.5px;
+    white-space: nowrap;
+    min-width: 140px;
+    text-align: center;
+    font-family: 'Space Mono', monospace;
+  }
+  .lb-ceiling { background: rgba(255,71,87,0.15); color: var(--red); border: 1px solid rgba(255,71,87,0.3); }
+  .lb-resist  { background: rgba(255,107,53,0.12); color: var(--orange); border: 1px solid rgba(255,107,53,0.25); }
+  .lb-pin     { background: rgba(255,214,0,0.12); color: var(--yellow); border: 1px solid rgba(255,214,0,0.3); }
+  .lb-proxy   { background: rgba(0,212,255,0.08); color: var(--accent); border: 1px solid rgba(0,212,255,0.2); }
+  .lb-flip    { background: rgba(179,136,255,0.12); color: var(--purple); border: 1px solid rgba(179,136,255,0.3); }
+  .lb-floor   { background: rgba(0,230,118,0.1); color: var(--green); border: 1px solid rgba(0,230,118,0.25); }
+  .lb-accel   { background: rgba(255,71,87,0.08); color: #ff8a80; border: 1px solid rgba(255,71,87,0.2); }
+  .lb-emerg   { background: rgba(100,100,100,0.15); color: var(--text3); border: 1px solid var(--border); }
+  .lb-break   { background: rgba(255,71,87,0.05); color: #ef5350; border: 1px solid rgba(255,71,87,0.15); }
+
+  .level-price {
+    font-family: 'Space Mono', monospace;
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--text);
+    min-width: 70px;
+  }
+  .level-note { font-size: 11px; color: var(--text2); flex: 1; }
+
+  /* ── SESGO BADGE ── */
+  .sesgo-row {
+    padding: 10px 20px;
+    border-top: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .sesgo-label { font-size: 10px; color: var(--text3); text-transform: uppercase; letter-spacing: 1px; }
+  .sesgo-badge {
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    font-weight: 700;
+    padding: 4px 12px;
+    border-radius: 4px;
+    letter-spacing: 2px;
+  }
+  .sesgo-neutral { background: rgba(0,212,255,0.12); color: var(--accent); border: 1px solid rgba(0,212,255,0.3); }
+  .sesgo-bearish { background: rgba(255,71,87,0.12); color: var(--red); border: 1px solid rgba(255,71,87,0.3); }
+  .sesgo-bullish { background: rgba(0,230,118,0.12); color: var(--green); border: 1px solid rgba(0,230,118,0.3); }
+
+  /* ── SCENARIOS ── */
+  .scenarios-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-bottom: 32px; }
+  .scenario-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 20px;
+  }
+  .scenario-header { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; }
+  .scenario-num {
+    width: 28px; height: 28px;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Space Mono', monospace;
+    font-size: 13px;
+    font-weight: 700;
+  }
+  .sn-bull { background: rgba(0,230,118,0.15); color: var(--green); border: 1px solid rgba(0,230,118,0.3); }
+  .sn-bear { background: rgba(255,71,87,0.15); color: var(--red); border: 1px solid rgba(255,71,87,0.3); }
+  .sn-base { background: rgba(255,214,0,0.12); color: var(--yellow); border: 1px solid rgba(255,214,0,0.25); }
+  .scenario-title { font-size: 13px; font-weight: 700; color: var(--text); }
+  .scenario-label { font-size: 10px; color: var(--text3); text-transform: uppercase; letter-spacing: 1px; }
+  .scenario-body { font-size: 12px; color: var(--text2); line-height: 1.7; margin-bottom: 12px; }
+  .scenario-body strong { color: var(--text); }
+  .scenario-targets { display: flex; flex-direction: column; gap: 4px; }
+  .scenario-target {
+    display: flex; justify-content: space-between; align-items: center;
+    font-size: 11px; padding: 4px 8px;
+    background: var(--surface2); border-radius: 3px;
+    border: 1px solid var(--border);
+  }
+  .st-label { color: var(--text3); font-family: 'Space Mono', monospace; font-size: 10px; }
+  .st-val { font-family: 'Space Mono', monospace; font-weight: 700; }
+  .st-up { color: var(--green); }
+  .st-dn { color: var(--red); }
+  .st-neu { color: var(--yellow); }
+
+  /* ── MACRO / CALENDAR ── */
+  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 32px; }
+  .box {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    overflow: hidden;
+  }
+  .box-header {
+    padding: 12px 20px;
+    border-bottom: 1px solid var(--border);
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    font-weight: 700;
+    color: var(--text3);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .box-body { padding: 16px 20px; }
+
+  /* ── CALENDAR TABLE ── */
+  .cal-table { width: 100%; border-collapse: collapse; }
+  .cal-table th {
+    font-size: 9px; color: var(--text3); text-align: left;
+    padding: 0 8px 8px; letter-spacing: 1px; text-transform: uppercase;
+  }
+  .cal-table td { padding: 7px 8px; border-bottom: 1px solid var(--border); font-size: 12px; }
+  .cal-table tr:last-child td { border-bottom: none; }
+  .cal-time { font-family: 'Space Mono', monospace; color: var(--text2); font-size: 11px; white-space: nowrap; }
+  .cal-event { color: var(--text); }
+  .cal-imp-h { color: var(--red); font-weight: 700; font-size: 10px; }
+  .cal-imp-m { color: var(--yellow); font-weight: 700; font-size: 10px; }
+  .cal-imp-l { color: var(--text3); font-size: 10px; }
+  .cal-val { font-family: 'Space Mono', monospace; font-size: 11px; text-align: right; }
+  .v-ok { color: var(--green); }
+  .v-warn { color: var(--orange); }
+  .v-na { color: var(--text3); }
+  .cal-fomc-row td { background: rgba(255,107,53,0.06); }
+  .cal-fomc-row .cal-event { color: var(--orange); font-weight: 700; }
+
+  /* ── VOL TABLE ── */
+  .vol-table { width: 100%; border-collapse: collapse; }
+  .vol-table th { font-size: 9px; color: var(--text3); padding: 0 8px 8px; text-align: center; letter-spacing: 1px; text-transform: uppercase; }
+  .vol-table td { padding: 7px 8px; border-bottom: 1px solid var(--border); font-size: 12px; text-align: center; font-family: 'Space Mono', monospace; }
+  .vol-table tr:last-child td { border-bottom: none; }
+  .vol-table .sym-col { text-align: left; color: var(--accent); font-weight: 700; }
+  .vol-dn { color: var(--green); }
+  .vol-up { color: var(--red); }
+
+  /* ── TRIPLE WITCHING EXPLAINER ── */
+  .tw-explainer {
+    background: var(--surface);
+    border: 1px solid rgba(179,136,255,0.25);
+    border-radius: 8px;
+    overflow: hidden;
+    margin-bottom: 32px;
+  }
+  .tw-exp-header {
+    background: rgba(179,136,255,0.08);
+    padding: 14px 20px;
+    border-bottom: 1px solid rgba(179,136,255,0.2);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .tw-exp-header span { font-family: 'Space Mono', monospace; font-size: 11px; font-weight: 700; color: var(--purple); letter-spacing: 2px; text-transform: uppercase; }
+  .tw-exp-body { padding: 20px; }
+  .tw-def { font-size: 13px; color: var(--text); line-height: 1.75; margin-bottom: 16px; }
+  .tw-def strong { color: var(--purple); }
+  .tw-mechanics { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin-bottom: 16px; }
+  .tw-mech-card {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 14px;
+  }
+  .tw-mech-title { font-size: 11px; font-weight: 700; color: var(--purple); margin-bottom: 6px; font-family: 'Space Mono', monospace; }
+  .tw-mech-body { font-size: 11px; color: var(--text2); line-height: 1.65; }
+  .tw-conseq { margin-top: 16px; }
+  .tw-conseq-title { font-size: 11px; font-weight: 700; color: var(--text); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 10px; font-family: 'Space Mono', monospace; }
+  .tw-conseq-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
+  .tw-c-item {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 12px 14px;
+    font-size: 11px;
+    color: var(--text2);
+    line-height: 1.65;
+  }
+  .tw-c-item strong { color: var(--text); display: block; margin-bottom: 3px; }
+  .tw-pad-note {
+    margin-top: 14px;
+    background: rgba(179,136,255,0.07);
+    border: 1px solid rgba(179,136,255,0.2);
+    border-radius: 6px;
+    padding: 12px 16px;
+    font-size: 12px;
+    color: var(--text2);
+    line-height: 1.7;
+  }
+  .tw-pad-note strong { color: var(--purple); }
+
+  /* ── MACRO BOX ── */
+  .macro-box { margin-bottom: 32px; }
+  .macro-content { padding: 20px; font-size: 13px; color: var(--text2); line-height: 1.8; }
+  .macro-content p { margin-bottom: 12px; }
+  .macro-content p:last-child { margin-bottom: 0; }
+  .macro-content strong { color: var(--text); }
+  .macro-content .highlight { color: var(--accent); font-weight: 600; }
+  .macro-content .warn { color: var(--orange); font-weight: 600; }
+  .macro-content .bull { color: var(--green); font-weight: 600; }
+  .macro-content .bear { color: var(--red); font-weight: 600; }
+
+  /* ── CL CONTEXT ── */
+  .cl-note {
+    background: rgba(255,214,0,0.05);
+    border: 1px solid rgba(255,214,0,0.15);
+    border-radius: 4px;
+    padding: 10px 14px;
+    margin: 10px 20px;
+    font-size: 11px;
+    color: var(--text2);
+    line-height: 1.65;
+  }
+  .cl-note strong { color: var(--yellow); }
+
+  /* ── VOL / FLOW SUMMARY ── */
+  .flow-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin-bottom: 32px; }
+  .flow-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 16px;
+  }
+  .flow-title {
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    color: var(--text3);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-bottom: 10px;
+  }
+  .flow-ratio {
+    font-family: 'Space Mono', monospace;
+    font-size: 24px;
+    font-weight: 700;
+    margin-bottom: 4px;
+  }
+  .flow-detail { font-size: 11px; color: var(--text2); }
+  .flow-bar { height: 4px; background: var(--border2); border-radius: 2px; margin: 10px 0; overflow: hidden; }
+  .flow-fill { height: 100%; border-radius: 2px; }
+
+  /* ── OPINION PAD ── */
+  .opinion-box {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    overflow: hidden;
+    margin-bottom: 32px;
+  }
+  .opinion-header {
+    padding: 12px 20px;
+    background: linear-gradient(90deg, rgba(0,212,255,0.08), transparent);
+    border-bottom: 1px solid var(--border);
+  }
+  .opinion-label { font-family: 'Space Mono', monospace; font-size: 10px; color: var(--accent); letter-spacing: 3px; text-transform: uppercase; }
+  .opinion-body { padding: 20px; font-size: 13px; color: var(--text2); line-height: 1.8; }
+  .opinion-body p { margin-bottom: 12px; }
+  .opinion-body p:last-child { margin-bottom: 0; }
+  .opinion-body strong { color: var(--text); }
+  .opinion-body .bull { color: var(--green); }
+  .opinion-body .bear { color: var(--red); }
+  .opinion-body .warn { color: var(--orange); }
+  .opinion-body .pad { color: var(--accent); }
+
+  /* ── FOOTER ── */
+  .footer {
+    background: var(--surface);
+    border-top: 1px solid var(--border);
+    padding: 16px 40px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 10px;
+    color: var(--text3);
+    font-family: 'Space Mono', monospace;
+    letter-spacing: 1px;
+  }
+  .footer a { color: var(--accent2); text-decoration: none; }
+
+  /* ── DIVIDER ── */
+  .divider { height: 1px; background: var(--border); margin: 0 0 28px; }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 1200px) {
+    .assets-grid, .scenarios-grid, .flow-grid { grid-template-columns: 1fr 1fr; }
+    .tw-mechanics { grid-template-columns: 1fr 1fr; }
+  }
+  @media (max-width: 768px) {
+    .main { padding: 20px; }
+    .header { padding: 16px 20px; flex-direction: column; gap: 12px; }
+    .assets-grid, .scenarios-grid, .flow-grid, .two-col, .tw-mechanics { grid-template-columns: 1fr; }
+    .tw-conseq-grid { grid-template-columns: 1fr; }
+  }
+
+  /* ── INLINE TAG ── */
+  .tag { display: inline-block; font-size: 9px; font-weight: 700; padding: 1px 6px; border-radius: 2px; font-family: 'Space Mono', monospace; letter-spacing: 0.5px; vertical-align: middle; }
+  .tag-new { background: rgba(0,230,118,0.15); color: var(--green); border: 1px solid rgba(0,230,118,0.3); }
+  .tag-warn { background: rgba(255,107,53,0.15); color: var(--orange); border: 1px solid rgba(255,107,53,0.3); }
+
+  .ppi-row td { background: rgba(255,214,0,0.04); }
+  .ppi-row .cal-event { color: var(--yellow); }
+</style>
+</head>
+<body>
+
+<!-- TICKER TAPE -->
+<div class="ticker-wrap">
+  <div class="ticker-label">▶ PAD LIVE</div>
+  <div style="overflow:hidden;flex:1;display:flex;">
+    <div class="ticker-track">
+      <span class="ticker-item"><span class="sym">ESM6</span> <span class="up">6,773.25</span> <span class="up">▲ +17.75</span><span class="sep">|</span></span>
+      <span class="ticker-item"><span class="sym">NQM6</span> <span class="up">25,015.50</span> <span class="up">▲ +124.25</span><span class="sep">|</span></span>
+      <span class="ticker-item"><span class="sym">CLK6</span> <span class="dn">95.53</span> <span class="dn">▼ −1.28 (settle)</span><span class="sep">|</span></span>
+      <span class="ticker-item"><span class="sym">ES GAMMA FLIP</span> <span>6,700</span><span class="sep">|</span></span>
+      <span class="ticker-item"><span class="sym">NQ GAMMA FLIP</span> <span>24,500</span><span class="sep">|</span></span>
+      <span class="ticker-item"><span class="sym">CL GAMMA FLIP</span> <span>$95</span><span class="sep">|</span></span>
+      <span class="ticker-item"><span class="sym">ES PIN HOY</span> <span class="up">6,800</span><span class="sep">|</span></span>
+      <span class="ticker-item"><span class="sym">NQ PIN HOY</span> <span class="up">25,000</span><span class="sep">|</span></span>
+      <span class="ticker-item"><span class="sym">CL PIN HOY</span> <span>$95</span><span class="sep">|</span></span>
+      <span class="ticker-item"><span class="sym">FOMC</span> <span class="warn">2:00 PM ET — HOLD 3.75%</span><span class="sep">|</span></span>
+      <span class="ticker-item"><span class="sym">TRIPLE WITCHING</span> <span class="up">VIERNES 20-MAR</span><span class="sep">|</span></span>
+      <span class="ticker-item"><span class="sym">RÉGIMEN</span> <span style="color:var(--orange)">AMPLIFIED</span><span class="sep">|</span></span>
+      <!-- duplicado para loop continuo -->
+      <span class="ticker-item"><span class="sym">ESM6</span> <span class="up">6,773.25</span> <span class="up">▲ +17.75</span><span class="sep">|</span></span>
+      <span class="ticker-item"><span class="sym">NQM6</span> <span class="up">25,015.50</span> <span class="up">▲ +124.25</span><span class="sep">|</span></span>
+      <span class="ticker-item"><span class="sym">CLK6</span> <span class="dn">95.53</span> <span class="dn">▼ −1.28 (settle)</span><span class="sep">|</span></span>
+      <span class="ticker-item"><span class="sym">ES GAMMA FLIP</span> <span>6,700</span><span class="sep">|</span></span>
+      <span class="ticker-item"><span class="sym">NQ GAMMA FLIP</span> <span>24,500</span><span class="sep">|</span></span>
+      <span class="ticker-item"><span class="sym">CL GAMMA FLIP</span> <span>$95</span><span class="sep">|</span></span>
+      <span class="ticker-item"><span class="sym">ES PIN HOY</span> <span class="up">6,800</span><span class="sep">|</span></span>
+      <span class="ticker-item"><span class="sym">NQ PIN HOY</span> <span class="up">25,000</span><span class="sep">|</span></span>
+      <span class="ticker-item"><span class="sym">CL PIN HOY</span> <span>$95</span><span class="sep">|</span></span>
+      <span class="ticker-item"><span class="sym">FOMC</span> <span class="warn">2:00 PM ET — HOLD 3.75%</span><span class="sep">|</span></span>
+      <span class="ticker-item"><span class="sym">TRIPLE WITCHING</span> <span class="up">VIERNES 20-MAR</span><span class="sep">|</span></span>
+      <span class="ticker-item"><span class="sym">RÉGIMEN</span> <span style="color:var(--orange)">AMPLIFIED</span><span class="sep">|</span></span>
+    </div>
+  </div>
+</div>
+
+<!-- HEADER -->
+<div class="header">
+  <div class="header-left">
+    <div class="pad-logo">PIVOTALPHADESK</div>
+    <div class="pad-sub">Gamma Market Structure Framework · Daily Briefing</div>
+  </div>
+  <div class="header-right">
+    <div class="briefing-date">MIÉRCOLES · 18 MARZO 2026 · 06:45 AM ET</div>
+    <div style="display:flex;gap:8px;justify-content:flex-end;flex-wrap:wrap;margin-top:6px;">
+      <div class="regime-badge">
+        <div class="regime-dot"></div>
+        AMPLIFIED
+      </div>
+      <div style="background:rgba(179,136,255,0.12);border:1px solid var(--purple);color:var(--purple);font-family:'Space Mono',monospace;font-size:10px;font-weight:700;padding:6px 12px;border-radius:4px;letter-spacing:1px;display:inline-flex;align-items:center;">
+        ⚡ TRIPLE WITCHING −2D
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- FOMC BANNER -->
+<div class="fomc-banner">
+  <div class="fomc-icon">🏦</div>
+  <div class="fomc-text">
+    <strong>FOMC HOY — DECISIÓN 2:00 PM ET | Conferencia Powell 2:30 PM</strong><br>
+    <span>Fed Funds Rate HOLD esperado en 3.75%. El mercado descuenta sin cambio. Atención al dot plot actualizado, lenguaje sobre inflación (Core PPI Feb +0.5% vs +0.3% consenso) y señales de ritmo de cortes en 2026. La conferencia de Powell será el driver principal del cierre del día.</span>
+  </div>
+  <div class="fomc-badge">HIGH IMPACT</div>
+</div>
+
+<!-- TRIPLE WITCHING BANNER -->
+<div class="tw-banner">
+  <div class="tw-icon">⚗️</div>
+  <div class="tw-content">
+    <div class="tw-title">TRIPLE WITCHING — VIERNES 20 MARZO 2026 (2 días)</div>
+    <div class="tw-body">
+      Vencimiento simultáneo de <strong>opciones sobre índices, futuros sobre índices y opciones sobre acciones individuales</strong>. El efecto Gravitational Pin y el Charm máximo se activan a partir de hoy. Ver sección completa abajo.
+    </div>
+  </div>
+  <div class="tw-badge">VER ANÁLISIS ↓</div>
+</div>
+
+<!-- MAIN -->
+<div class="main">
+
+  <!-- SECCIÓN: NIVELES PAD -->
+  <div class="section-title">Estructura Gamma — Niveles Operativos PAD</div>
+  <div class="assets-grid">
+
+    <!-- ES -->
+    <div class="asset-card">
+      <div class="asset-header">
+        <div>
+          <div class="asset-ticker">ESM6</div>
+          <div class="asset-name">S&P 500 FUTURO · JUN 2026</div>
+        </div>
+        <div class="asset-price-block">
+          <div class="asset-price">6,773.25</div>
+          <div class="asset-chg chg-up">▲ +17.75</div>
+        </div>
+      </div>
+      <div class="asset-meta">
+        <div class="meta-item">
+          <div class="meta-label">Vol Settle</div>
+          <div class="meta-value">21.78</div>
+        </div>
+        <div class="meta-item">
+          <div class="meta-label">Vol Chg</div>
+          <div class="meta-value" style="color:var(--green)">−0.21</div>
+        </div>
+        <div class="meta-item">
+          <div class="meta-label">P/C Ratio</div>
+          <div class="meta-value" style="color:var(--red)">2.88:1</div>
+        </div>
+        <div class="meta-item">
+          <div class="meta-label">Flip</div>
+          <div class="meta-value" style="color:var(--purple)">6,700</div>
+        </div>
+      </div>
+      <div class="levels-table">
+        <div class="level-row">
+          <div class="level-badge lb-ceiling">GAMMA CEILING</div>
+          <div class="level-price">6,900</div>
+          <div class="level-note">Call Wall máximo — OI masivo ESH6</div>
+        </div>
+        <div class="level-row">
+          <div class="level-badge lb-resist">SECONDARY RESIST.</div>
+          <div class="level-price">6,825</div>
+          <div class="level-note">OI bilateral denso 3,388C/3,106P</div>
+        </div>
+        <div class="level-row">
+          <div class="level-badge lb-pin">TACTICAL ANCHOR</div>
+          <div class="level-price" style="color:var(--yellow)">6,800</div>
+          <div class="level-note">Mega Pin gravitacional — nodo bilateral máximo</div>
+        </div>
+        <div class="level-row">
+          <div class="level-badge lb-proxy">STRUCTURE PROXY</div>
+          <div class="level-price">6,775</div>
+          <div class="level-note">530C/1,883P — soporte gamma activo</div>
+        </div>
+        <div class="level-row">
+          <div class="level-badge lb-flip">GAMMA FLIP</div>
+          <div class="level-price" style="color:var(--purple)">6,700</div>
+          <div class="level-note">Transición dealers — régimen cambia bajo este nivel</div>
+        </div>
+        <div class="level-row">
+          <div class="level-badge lb-floor">GAMMA FLOOR</div>
+          <div class="level-price">6,600</div>
+          <div class="level-note">Put Wall 2,940P — soporte estructural</div>
+        </div>
+        <div class="level-row">
+          <div class="level-badge lb-accel">ACCELERATION ZONE</div>
+          <div class="level-price">6,550</div>
+          <div class="level-note">Put cluster — dealers amplifican bajo este nivel</div>
+        </div>
+        <div class="level-row">
+          <div class="level-badge lb-emerg">EMERGENCY ANCHOR</div>
+          <div class="level-price">6,500</div>
+          <div class="level-note">4,447C / 22,795P — Put Wall estructural máximo</div>
+        </div>
+        <div class="level-row">
+          <div class="level-badge lb-break">STRUCTURE BREAK</div>
+          <div class="level-price">6,475</div>
+          <div class="level-note">Pérdida de estructura — vacío de OI</div>
+        </div>
+      </div>
+      <div class="sesgo-row">
+        <div class="sesgo-label">Sesgo del día</div>
+        <div class="sesgo-badge sesgo-neutral">NEUTRAL → BAJISTA</div>
+      </div>
+    </div>
+
+    <!-- NQ -->
+    <div class="asset-card">
+      <div class="asset-header">
+        <div>
+          <div class="asset-ticker">NQM6</div>
+          <div class="asset-name">NASDAQ 100 FUTURO · JUN 2026</div>
+        </div>
+        <div class="asset-price-block">
+          <div class="asset-price">25,015.5</div>
+          <div class="asset-chg chg-up">▲ +124.25</div>
+        </div>
+      </div>
+      <div class="asset-meta">
+        <div class="meta-item">
+          <div class="meta-label">Vol Settle</div>
+          <div class="meta-value">22.48</div>
+        </div>
+        <div class="meta-item">
+          <div class="meta-label">Vol Chg</div>
+          <div class="meta-value" style="color:var(--green)">−0.12</div>
+        </div>
+        <div class="meta-item">
+          <div class="meta-label">P/C Ratio</div>
+          <div class="meta-value" style="color:var(--green)">0.81:1</div>
+        </div>
+        <div class="meta-item">
+          <div class="meta-label">Flip</div>
+          <div class="meta-value" style="color:var(--purple)">24,500</div>
+        </div>
+      </div>
+      <div class="levels-table">
+        <div class="level-row">
+          <div class="level-badge lb-ceiling">GAMMA CEILING</div>
+          <div class="level-price">25,200</div>
+          <div class="level-note">Call Wall NQH6 — OI 458C/233P</div>
+        </div>
+        <div class="level-row">
+          <div class="level-badge lb-resist">SECONDARY RESIST.</div>
+          <div class="level-price">25,100</div>
+          <div class="level-note">530C/511P bilateral — zona de fricción</div>
+        </div>
+        <div class="level-row">
+          <div class="level-badge lb-pin">TACTICAL ANCHOR</div>
+          <div class="level-price" style="color:var(--yellow)">25,000</div>
+          <div class="level-note">Pin bilateral máximo — 1,530C/1,369P NQH6</div>
+        </div>
+        <div class="level-row">
+          <div class="level-badge lb-proxy">STRUCTURE PROXY</div>
+          <div class="level-price">24,900</div>
+          <div class="level-note">513C/315P — soporte táctico</div>
+        </div>
+        <div class="level-row">
+          <div class="level-badge lb-flip">GAMMA FLIP</div>
+          <div class="level-price" style="color:var(--purple)">24,500</div>
+          <div class="level-note">Transición OI 2,071C/2,395P — zona crítica</div>
+        </div>
+        <div class="level-row">
+          <div class="level-badge lb-floor">GAMMA FLOOR</div>
+          <div class="level-price">24,400</div>
+          <div class="level-note">Put Wall base NQH6 — 442P dominante</div>
+        </div>
+        <div class="level-row">
+          <div class="level-badge lb-accel">ACCELERATION ZONE</div>
+          <div class="level-price">24,300</div>
+          <div class="level-note">Aceleración bajo 24,400 — vacío de soporte</div>
+        </div>
+        <div class="level-row">
+          <div class="level-badge lb-emerg">EMERGENCY ANCHOR</div>
+          <div class="level-price">24,000</div>
+          <div class="level-note">Nivel psicológico — escaso OI estructural</div>
+        </div>
+        <div class="level-row">
+          <div class="level-badge lb-break">STRUCTURE BREAK</div>
+          <div class="level-price">23,800</div>
+          <div class="level-note">Pérdida total de estructura gamma</div>
+        </div>
+      </div>
+      <div class="sesgo-row">
+        <div class="sesgo-label">Sesgo del día</div>
+        <div class="sesgo-badge sesgo-bullish">NEUTRAL → ALCISTA</div>
+      </div>
+    </div>
+
+    <!-- CL -->
+    <div class="asset-card">
+      <div class="asset-header">
+        <div>
+          <div class="asset-ticker">CLK6</div>
+          <div class="asset-name">WTI CRUDE OIL · ABR 2026</div>
+        </div>
+        <div class="asset-price-block">
+          <div class="asset-price">$95.53</div>
+          <div class="asset-chg chg-dn">▼ −1.28</div>
+        </div>
+      </div>
+      <div class="asset-meta">
+        <div class="meta-item">
+          <div class="meta-label">Vol EOD</div>
+          <div class="meta-value" style="color:var(--red)">127.45</div>
+        </div>
+        <div class="meta-item">
+          <div class="meta-label">Vol Chg</div>
+          <div class="meta-value" style="color:var(--red)">+34.76</div>
+        </div>
+        <div class="meta-item">
+          <div class="meta-label">P/C Ratio</div>
+          <div class="meta-value" style="color:var(--green)">0.52:1</div>
+        </div>
+        <div class="meta-item">
+          <div class="meta-label">Flip</div>
+          <div class="meta-value" style="color:var(--purple)">$95</div>
+        </div>
+      </div>
+      <div class="cl-note">
+        <strong>⚠️ VOL SPIKE:</strong> Vol Chg +34.76 — explosión de volatilidad implícita en opciones cercanas. EOD Volume call-heavy (4,680C vs 2,426P). Estructura de vol compleja en FOMC day. Tratar niveles con margen adicional.
+      </div>
+      <div class="levels-table">
+        <div class="level-row">
+          <div class="level-badge lb-ceiling">GAMMA CEILING</div>
+          <div class="level-price">$100</div>
+          <div class="level-note">Call Wall estructural — nivel psicológico / LOK6 OI</div>
+        </div>
+        <div class="level-row">
+          <div class="level-badge lb-resist">SECONDARY RESIST.</div>
+          <div class="level-price">$98</div>
+          <div class="level-note">1,908C LOK6 — resistencia gamma activa</div>
+        </div>
+        <div class="level-row">
+          <div class="level-badge lb-pin">TACTICAL ANCHOR</div>
+          <div class="level-price" style="color:var(--yellow)">$95–$95.5</div>
+          <div class="level-note">Pin ATM — zona de máxima gamma bilateral CLK6</div>
+        </div>
+        <div class="level-row">
+          <div class="level-badge lb-proxy">STRUCTURE PROXY</div>
+          <div class="level-price">$93.5</div>
+          <div class="level-note">379C/488P — soporte táctico activo</div>
+        </div>
+        <div class="level-row">
+          <div class="level-badge lb-flip">GAMMA FLIP</div>
+          <div class="level-price" style="color:var(--purple)">$95</div>
+          <div class="level-note">Zona de transición dealers — precio ATM</div>
+        </div>
+        <div class="level-row">
+          <div class="level-badge lb-floor">GAMMA FLOOR</div>
+          <div class="level-price">$92.5</div>
+          <div class="level-note">1,926C/118P — soporte gamma con OI denso</div>
+        </div>
+        <div class="level-row">
+          <div class="level-badge lb-accel">ACCELERATION ZONE</div>
+          <div class="level-price">$92</div>
+          <div class="level-note">3,444C/540P LOK6 — zona de aceleración bajista</div>
+        </div>
+        <div class="level-row">
+          <div class="level-badge lb-emerg">EMERGENCY ANCHOR</div>
+          <div class="level-price">$90.7</div>
+          <div class="level-note">Precio futuro CLM6 — nivel de roll estructural</div>
+        </div>
+        <div class="level-row">
+          <div class="level-badge lb-break">STRUCTURE BREAK</div>
+          <div class="level-price">$88</div>
+          <div class="level-note">LON6 futuro — pérdida de estructura a largo</div>
+        </div>
+      </div>
+      <div class="sesgo-row">
+        <div class="sesgo-label">Sesgo del día</div>
+        <div class="sesgo-badge sesgo-bearish">BAJISTA — Vol Spike</div>
+      </div>
+    </div>
+
+  </div><!-- /assets-grid -->
+
+  <!-- SECCIÓN: FLUJO OPCIONES -->
+  <div class="section-title">Flujo de Opciones — Resumen EOD</div>
+  <div class="flow-grid">
+    <div class="flow-card">
+      <div class="flow-title">ESM6 · Put/Call Ratio EOD</div>
+      <div class="flow-ratio" style="color:var(--red)">2.88 : 1</div>
+      <div class="flow-detail">Put 98,765 | Call 34,247</div>
+      <div class="flow-bar"><div class="flow-fill" style="width:74%;background:var(--red);"></div></div>
+      <div style="font-size:11px;color:var(--text2);margin-top:6px;">Presión put-heavy institucional. Dealers con delta put largo — amplifican movimientos bajistas bajo 6,700.</div>
+    </div>
+    <div class="flow-card">
+      <div class="flow-title">NQM6 · Put/Call Ratio EOD</div>
+      <div class="flow-ratio" style="color:var(--green)">0.81 : 1</div>
+      <div class="flow-detail">Put 3,341 | Call 4,125</div>
+      <div class="flow-bar"><div class="flow-fill" style="width:55%;background:var(--green);"></div></div>
+      <div style="font-size:11px;color:var(--text2);margin-top:6px;">Flujo call-heavy en NQ. Liderazgo alcista en opciones cortas. <strong style="color:var(--green)">Divergencia activa vs ES</strong> — señal de fuerza relativa NQ.</div>
+    </div>
+    <div class="flow-card">
+      <div class="flow-title">CLK6 · Put/Call + Vol</div>
+      <div class="flow-ratio" style="color:var(--yellow)">127.5 Vol</div>
+      <div class="flow-detail">Put 2,426 | Call 4,680 | VolChg +34.76</div>
+      <div class="flow-bar"><div class="flow-fill" style="width:65%;background:var(--yellow);"></div></div>
+      <div style="font-size:11px;color:var(--text2);margin-top:6px;"><strong style="color:var(--red)">Vol spike severo</strong> en opciones de 0 DTE. Estructura de vol en backwardation extrema. Probabilidad de movimiento brusco post-FOMC elevada.</div>
+    </div>
+  </div>
+
+  <!-- SECCIÓN: TRIPLE WITCHING EXPLAINER -->
+  <div class="section-title">Triple Witching — Análisis Completo PAD</div>
+  <div class="tw-explainer">
+    <div class="tw-exp-header">
+      <span>⚗️</span>
+      <span>Triple Witching · Viernes 20 Marzo 2026 · ¿Qué es y qué significa?</span>
+    </div>
+    <div class="tw-exp-body">
+      <div class="tw-def">
+        El <strong>Triple Witching</strong> es el vencimiento simultáneo, en el tercer viernes de cada trimestre (marzo, junio, septiembre y diciembre), de tres tipos de derivados:
+        (1) <strong>Opciones sobre índices de acciones</strong> (SPX, NDX),
+        (2) <strong>Futuros sobre índices de acciones</strong> (ES, NQ),
+        (3) <strong>Opciones sobre acciones individuales</strong>.
+        En algunos contextos se añade un cuarto componente — futuros sobre ETFs — creando lo que se denomina <strong>Quadruple Witching</strong>, aunque el término Triple Witching sigue siendo el más usado en la industria.
+      </div>
+
+      <div class="tw-mechanics">
+        <div class="tw-mech-card">
+          <div class="tw-mech-title">⚙️ MECÁNICA</div>
+          <div class="tw-mech-body">Al vencer simultáneamente, los market makers y dealers que tienen posiciones de opciones deben <strong>cerrar o rodar</strong> su cobertura delta masivamente en un período corto. Esto genera picos de volumen extraordinarios — el Triple Witching es consistentemente uno de los días de mayor volumen del año en los mercados de acciones y futuros.</div>
+        </div>
+        <div class="tw-mech-card">
+          <div class="tw-mech-title">🧲 GRAVITATIONAL PIN</div>
+          <div class="tw-mech-body">A medida que se acerca el vencimiento, el precio tiende a ser <strong>atraído hacia el strike de mayor Open Interest</strong> — el Gamma Pin. Los dealers que tienen opciones escritas en ese strike actúan como un "imán" de precio al rebalancear su delta. En ES, el Pin gravitacional hoy apunta a <strong>6,800</strong>. En NQ a <strong>25,000</strong>.</div>
+        </div>
+        <div class="tw-mech-card">
+          <div class="tw-mech-title">⏰ EFECTO CHARM</div>
+          <div class="tw-mech-body">Charm (dDelta/dTime) es el griego que mide cómo cambia el delta de las opciones con el paso del tiempo. Al acercarse el vencimiento, las opciones OTM pierden delta rápidamente — los dealers deben <strong>vender exposición que ya no necesitan cubrir</strong>, creando flujos mecánicos de mercado predecibles.</div>
+        </div>
+      </div>
+
+      <div class="tw-conseq">
+        <div class="tw-conseq-title">📋 Consecuencias para el Trading Esta Semana</div>
+        <div class="tw-conseq-grid">
+          <div class="tw-c-item">
+            <strong>🔴 Volatilidad y Spreads Amplios</strong>
+            Los días previos al Triple Witching — especialmente miércoles y jueves — pueden mostrar movimientos bruscos e intradiarios amplios. El volumen de rebalanceo comienza a <strong>fluir desde el martes</strong>. Hoy, con FOMC encima, la combinación es de máxima atención.
+          </div>
+          <div class="tw-c-item">
+            <strong>📌 El Pin Es Más Fuerte Cuanto Más Cerca</strong>
+            Hoy (miércoles) el efecto Pin comienza a ser dominante. Cualquier movimiento alejado de 6,800 en ES o 25,000 en NQ encontrará resistencia gamma. Si el FOMC genera un spike y luego se revierte, el Pin puede <strong>capturar el precio de vuelta al nivel</strong> durante el resto del día.
+          </div>
+          <div class="tw-c-item">
+            <strong>⚡ Volumen Explosivo el Viernes</strong>
+            El viernes 20-Mar el volumen puede ser 2x–4x el promedio diario en las últimas 2 horas de sesión (2:00–4:00 PM ET). Las escaladas de precio son bruscas y pueden revertir rápidamente. <strong>No mantener posiciones especulativas abiertas</strong> hacia el cierre sin stops firmes.
+          </div>
+          <div class="tw-c-item">
+            <strong>🎯 Regla PAD — Régimen AMPLIFIED</strong>
+            Con precio en régimen AMPLIFIED, el Triple Witching amplifica aún más los movimientos direccionales. <strong>Sizing −25% a −30%</strong> vs días normales. No promediar en contra. Si el CVD diverge en la dirección opuesta al nivel gamma, salir inmediatamente. Stops amplios obligatorios.
+          </div>
+          <div class="tw-c-item">
+            <strong>🔄 Roll de Contratos</strong>
+            El viernes vence ESH6. El roll a ESM6 ya está en marcha (completado semana 17-Mar). El OI de ESM6 domina el análisis. No operar ESH6 — liquidez migrada a M6 completamente.
+          </div>
+          <div class="tw-c-item">
+            <strong>📅 Post-Witching Reset</strong>
+            El lunes 23-Mar, el mapa de gamma se resetea completamente. Los niveles derivados del OI de vencimiento desaparecen. Será necesario re-calibrar la estructura con los PDFs post-vencimiento. El primer día de la semana siguiente suele mostrar mayor volatilidad de apertura.
+          </div>
+        </div>
+      </div>
+
+      <div class="tw-pad-note">
+        <strong>💡 Nota operativa PAD:</strong> Hoy coinciden FOMC + pre-Triple Witching + Régimen AMPLIFIED. Esta combinación ocurre pocas veces al año. La regla es: el <strong>Pin gravitacional (6,800 ES / 25,000 NQ)</strong> funciona como ancla hasta que el FOMC rompa la estructura. Si Powell es hawkish y el mercado perfora 6,700 en ES, el Gamma Flip convierte el movimiento en <strong>aceleración bajista</strong> — los dealers dejan de amortiguar y empiezan a amplificar. Si Powell es dovish o neutral, el precio rebota hacia el Pin con fuerza. La confirmación de CVD en ambos sentidos es <strong>obligatoria antes de cualquier entrada</strong>.
+      </div>
+    </div>
+  </div>
+
+  <!-- SECCIÓN: ESCENARIOS -->
+  <div class="section-title">Escenarios del Día — 18 Marzo 2026</div>
+  <div class="scenarios-grid">
+
+    <div class="scenario-card">
+      <div class="scenario-header">
+        <div class="scenario-num sn-base">B</div>
+        <div>
+          <div class="scenario-title">ESCENARIO BASE — Pin Gravitacional</div>
+          <div class="scenario-label">Prob. Estimada: 45%</div>
+        </div>
+      </div>
+      <div class="scenario-body">
+        El mercado consolida entre <strong>6,750–6,825</strong> en espera del FOMC. Fed holds a 3.75% como esperado. Powell neutral-dovish — confirma pausa pero no acelera cortes. El precio regresa al Pin <strong>6,800</strong> hacia el cierre. NQ lidera sobre 25,000.
+      </div>
+      <div class="scenario-targets">
+        <div class="scenario-target"><span class="st-label">ES RANGE</span><span class="st-val st-neu">6,750 – 6,825</span></div>
+        <div class="scenario-target"><span class="st-label">ES CLOSE</span><span class="st-val st-up">6,800 (Pin)</span></div>
+        <div class="scenario-target"><span class="st-label">NQ TARGET</span><span class="st-val st-up">25,000 – 25,100</span></div>
+        <div class="scenario-target"><span class="st-label">CL TARGET</span><span class="st-val st-neu">$94 – $96</span></div>
+      </div>
+    </div>
+
+    <div class="scenario-card">
+      <div class="scenario-header">
+        <div class="scenario-num sn-bull">▲</div>
+        <div>
+          <div class="scenario-title">ESCENARIO ALCISTA — Powell Dovish</div>
+          <div class="scenario-label">Prob. Estimada: 25%</div>
+        </div>
+      </div>
+      <div class="scenario-body">
+        Powell señala cortes más tempranos o descarta subidas. Mercado rompe el <strong>Gamma Ceiling 6,825</strong> con CVD positivo confirmado. Objetivo: <strong>6,850–6,875</strong>. NQ supera 25,200. CL sube sobre $97 con dólar débil. Atención: triple witching puede atrapar este movimiento cerca del cierre.
+      </div>
+      <div class="scenario-targets">
+        <div class="scenario-target"><span class="st-label">ES TARGET 1</span><span class="st-val st-up">6,850</span></div>
+        <div class="scenario-target"><span class="st-label">ES TARGET 2</span><span class="st-val st-up">6,875</span></div>
+        <div class="scenario-target"><span class="st-label">NQ TARGET</span><span class="st-val st-up">25,200 – 25,400</span></div>
+        <div class="scenario-target"><span class="st-label">CL</span><span class="st-val st-up">$97 – $98</span></div>
+      </div>
+    </div>
+
+    <div class="scenario-card">
+      <div class="scenario-header">
+        <div class="scenario-num sn-bear">▼</div>
+        <div>
+          <div class="scenario-title">ESCENARIO BAJISTA — Powell Hawkish / Shock</div>
+          <div class="scenario-label">Prob. Estimada: 30%</div>
+        </div>
+      </div>
+      <div class="scenario-body">
+        Fed sorprende con tono hawkish: señala preocupación por Core PPI (+0.5%) o descarta cortes en 2026. Precio perfora <strong>Gamma Flip 6,700</strong> — régimen AMPLIFIED activa aceleración bajista. Objetivo: <strong>6,650–6,600</strong>. CL colapsa bajo $92 (Gamma Floor). Sizing mínimo obligatorio.
+      </div>
+      <div class="scenario-targets">
+        <div class="scenario-target"><span class="st-label">ES BREAKDOWN</span><span class="st-val st-dn">bajo 6,700</span></div>
+        <div class="scenario-target"><span class="st-label">ES TARGET</span><span class="st-val st-dn">6,650 – 6,600</span></div>
+        <div class="scenario-target"><span class="st-label">NQ TARGET</span><span class="st-val st-dn">24,500 (Flip)</span></div>
+        <div class="scenario-target"><span class="st-label">CL</span><span class="st-val st-dn">$92 – $90.7</span></div>
+      </div>
+    </div>
+
+  </div><!-- /scenarios -->
+
+  <!-- SECCIÓN: CALENDARIO + VOLATILIDAD -->
+  <div class="two-col">
+
+    <!-- CALENDARIO -->
+    <div class="box">
+      <div class="box-header">📅 Calendario Económico — 18 Marzo 2026</div>
+      <div class="box-body" style="padding:0;">
+        <table class="cal-table">
+          <thead>
+            <tr>
+              <th>Hora ET</th>
+              <th>Evento</th>
+              <th>Imp.</th>
+              <th>Prev.</th>
+              <th>Cons.</th>
+              <th>Real</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="cal-time">7:00 AM</td>
+              <td class="cal-event">MBA Mortgage Rate</td>
+              <td><span class="cal-imp-l">LOW</span></td>
+              <td class="cal-val">6.19%</td>
+              <td class="cal-val v-na">—</td>
+              <td class="cal-val v-na">Pend.</td>
+            </tr>
+            <tr class="ppi-row">
+              <td class="cal-time">8:30 AM</td>
+              <td class="cal-event">PPI MoM Feb ⚠️</td>
+              <td><span class="cal-imp-m">MED</span></td>
+              <td class="cal-val">+0.5%</td>
+              <td class="cal-val">+0.3%</td>
+              <td class="cal-val v-ok">0.3% ✓</td>
+            </tr>
+            <tr class="ppi-row">
+              <td class="cal-time">8:30 AM</td>
+              <td class="cal-event">Core PPI MoM Feb ⚠️</td>
+              <td><span class="cal-imp-m">MED</span></td>
+              <td class="cal-val">+0.8%</td>
+              <td class="cal-val">+0.3%</td>
+              <td class="cal-val v-warn">0.5% ⚠️</td>
+            </tr>
+            <tr>
+              <td class="cal-time">10:00 AM</td>
+              <td class="cal-event">Factory Orders MoM Jan</td>
+              <td><span class="cal-imp-m">MED</span></td>
+              <td class="cal-val">−0.7%</td>
+              <td class="cal-val">+0.1%</td>
+              <td class="cal-val v-ok">+0.5% ✓</td>
+            </tr>
+            <tr>
+              <td class="cal-time">10:30 AM</td>
+              <td class="cal-event">EIA Crude Oil Stocks</td>
+              <td><span class="cal-imp-m">MED</span></td>
+              <td class="cal-val">+3.82M</td>
+              <td class="cal-val">+0.4M</td>
+              <td class="cal-val v-na">Pend.</td>
+            </tr>
+            <tr>
+              <td class="cal-time">10:30 AM</td>
+              <td class="cal-event">EIA Gasoline Stocks</td>
+              <td><span class="cal-imp-l">LOW</span></td>
+              <td class="cal-val">−3.65M</td>
+              <td class="cal-val">−1.6M</td>
+              <td class="cal-val v-na">Pend.</td>
+            </tr>
+            <tr class="cal-fomc-row">
+              <td class="cal-time">2:00 PM</td>
+              <td class="cal-event">🏦 FOMC Economic Projections</td>
+              <td><span class="cal-imp-h">HIGH</span></td>
+              <td class="cal-val">—</td>
+              <td class="cal-val">—</td>
+              <td class="cal-val v-na">Pend.</td>
+            </tr>
+            <tr class="cal-fomc-row">
+              <td class="cal-time">2:00 PM</td>
+              <td class="cal-event">🏦 Fed Interest Rate Decision</td>
+              <td><span class="cal-imp-h">HIGH</span></td>
+              <td class="cal-val">3.75%</td>
+              <td class="cal-val">3.75%</td>
+              <td class="cal-val v-na">Pend.</td>
+            </tr>
+            <tr class="cal-fomc-row">
+              <td class="cal-time">2:30 PM</td>
+              <td class="cal-event">🏦 Fed Press Conference</td>
+              <td><span class="cal-imp-h">HIGH</span></td>
+              <td class="cal-val">—</td>
+              <td class="cal-val">—</td>
+              <td class="cal-val v-na">Pend.</td>
+            </tr>
+            <tr>
+              <td class="cal-time">4:00 PM</td>
+              <td class="cal-event">Net Long-term TIC Flows Jan</td>
+              <td><span class="cal-imp-l">LOW</span></td>
+              <td class="cal-val">$28B</td>
+              <td class="cal-val">—</td>
+              <td class="cal-val v-na">Pend.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- VOLATILIDAD -->
+    <div class="box">
+      <div class="box-header">📊 Volatilidad Implícita — Resumen</div>
+      <div class="box-body" style="padding:0;">
+        <table class="vol-table">
+          <thead>
+            <tr>
+              <th style="text-align:left;">Activo</th>
+              <th>Vol Settle</th>
+              <th>Vol Chg</th>
+              <th>Lectura PAD</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="sym-col">ESM6</td>
+              <td>21.78</td>
+              <td class="vol-dn">−0.21</td>
+              <td style="font-size:11px;text-align:left;color:var(--text2);">Compresión leve — dealers estables</td>
+            </tr>
+            <tr>
+              <td class="sym-col">NQM6</td>
+              <td>22.48</td>
+              <td class="vol-dn">−0.12</td>
+              <td style="font-size:11px;text-align:left;color:var(--text2);">Compresión leve — flujo call activo</td>
+            </tr>
+            <tr>
+              <td class="sym-col">CLK6</td>
+              <td>127.45</td>
+              <td class="vol-up">+34.76</td>
+              <td style="font-size:11px;text-align:left;color:var(--red);">⚠️ Vol spike severo — máxima cautela</td>
+            </tr>
+            <tr>
+              <td class="sym-col">Q3CH6</td>
+              <td>22.60</td>
+              <td class="vol-dn">−1.06</td>
+              <td style="font-size:11px;text-align:left;color:var(--text2);">0DTE NQ — compresión normal</td>
+            </tr>
+            <tr>
+              <td class="sym-col">WL3H6</td>
+              <td>91.72</td>
+              <td class="vol-up">−30.44</td>
+              <td style="font-size:11px;text-align:left;color:var(--orange);">0DTE CL — normalización post-spike</td>
+            </tr>
+          </tbody>
+        </table>
+        <div style="padding:16px 20px;">
+          <div style="font-size:11px;color:var(--text2);margin-bottom:8px;"><strong style="color:var(--text);">Nota sobre Vencimientos Opciones:</strong></div>
+          <div style="font-size:11px;color:var(--text2);line-height:1.65;">
+            Hoy expiran <strong style="color:var(--yellow);">WL3H6</strong> (Crude Oil Wed Option Week 3) y <strong style="color:var(--yellow);">JN3H6</strong> (Natural Gas Wed Financial Option Week 3). Ambos con impacto en energía durante la sesión matutina.
+          </div>
+          <div style="margin-top:10px;padding:10px;background:var(--surface2);border-radius:4px;border:1px solid var(--border);">
+            <div style="font-size:10px;color:var(--text3);margin-bottom:6px;font-family:'Space Mono',monospace;letter-spacing:1px;">DIVERGENCIA ES vs NQ</div>
+            <div style="font-size:12px;color:var(--text2);">ES put-heavy (2.88:1) vs NQ call-heavy (0.81:1). <strong style="color:var(--accent);">Señal de fuerza relativa NQ.</strong> Confirmar con CVD durante sesión. Si CVD NQ diverge positivo vs ES en rally, NQ es el líder — operar NQ largo sobre ES.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /two-col -->
+
+  <!-- SECCIÓN: MACRO + CL CONTEXT -->
+  <div class="section-title">Contexto Macro y Noticias Clave</div>
+  <div class="macro-box box">
+    <div class="box-header">🌐 Macro — Análisis Integrado PAD</div>
+    <div class="macro-content">
+      <p>
+        <strong class="highlight">PPI Feb ya publicado:</strong> PPI MoM +0.3% (en línea con consenso, por debajo del 0.5% previo) — lectura favorablemente deflacionaria. Sin embargo, <strong class="warn">Core PPI +0.5% superó el consenso de +0.3%</strong>, lo que añade matiz hawkish a la narrativa. El mercado parece haber absorbido bien el dato dado el rebote de NQ (+124 pts), aunque complica el lenguaje de Powell esta tarde. El Fed no puede ignorar un Core PPI que sigue siendo "sticky" por encima del target.
+      </p>
+      <p>
+        <strong class="highlight">Factory Orders Jan:</strong> +0.5% vs −0.7% previo — sorpresa positiva en actividad manufacturera. Dato constructivo para la narrativa de "soft landing". Refuerza el escenario de pausa sin urgencia de cortar tasas.
+      </p>
+      <p>
+        <strong class="highlight">FOMC — El driver del día:</strong> El consenso es <strong>HOLD a 3.75%</strong> sin sorpresas en la decisión. El foco absoluto estará en: (1) el <strong>dot plot actualizado</strong> — ¿cuántos cortes anticipan los miembros para 2026?, (2) el <strong>lenguaje sobre inflación</strong> — si incorporan la persistencia del Core PPI, (3) las <strong>revisiones al GDP y desempleo</strong>, y (4) la conferencia de Powell a las 2:30 PM donde cualquier frase sobre "higher for longer" puede mover el mercado 50+ pts en ES en minutos.
+      </p>
+      <p>
+        <strong>WTI Crude Oil (CLK6):</strong> Sesión previa con <strong class="warn">Vol spike severo (+34.76)</strong> en opciones cercanas. Precio settle en $95.53 pero con presión bajista intradiaria (−1.28). La estructura de la curva muestra backwardation — CLM6 en $90.71, CLN6 en $87.03. El mercado de petróleo está en territorio de prima de riesgo geopolítico elevado con WTI sostenido sobre $94. <strong>EIA Crude Stocks hoy a las 10:30 AM</strong> podría dar dirección intradiaria. La prima WTI Houston vs WTI Trade Month (HTT) en $0.98–$1.38 y WTI Midland (WTT) en $1.58–$2.28 indican spreads de calidad elevados — estructura de mercado físico constructiva para CL.
+      </p>
+      <p>
+        <strong class="highlight">Contexto FOMC + Triple Witching:</strong> La combinación histórica de FOMC en la semana de Triple Witching es conocida por producir movimientos de alta amplitud seguidos de reversión hacia el Pin. En los últimos 10 años, esta combinación ha producido rangos diarios de <strong>1.5%–2.5%</strong> en SPX con reversión intradiaria alta. La opción más peligrosa: seguir el movimiento inicial post-FOMC sin confirmar con CVD y estructura gamma.
+      </p>
+    </div>
+  </div>
+
+  <!-- SECCIÓN: OPINIÓN PAD -->
+  <div class="section-title">Opinión PAD — Sesión 18 Marzo 2026</div>
+  <div class="opinion-box">
+    <div class="opinion-header">
+      <div class="opinion-label">⚡ PAD Market View · Gamma Market Structure Framework</div>
+    </div>
+    <div class="opinion-body">
+      <p>
+        El mercado llega al día más importante de la semana con una estructura gamma que <strong>ancla el precio a 6,800 en ES y 25,000 en NQ</strong> como Pins gravitacionales de máxima atracción. La lectura de OI bilateral masivo en ambos niveles confirma que los dealers tienen exposición gamma significativa que los obliga a actuar como estabilizadores de precio mientras el mercado no rompa estructura.
+      </p>
+      <p>
+        La <strong class="warn">divergencia ES vs NQ es la señal más importante del día</strong>: ES put-heavy 2.88:1 mientras NQ es call-heavy 0.81:1. Históricamente, cuando NQ lidera al alza con flujo call y ES mantiene estructura put-heavy, el rally tiene tracción real. La confirmación llegará cuando el CVD de NQ se separe positivamente del CVD de ES durante la sesión — esa es la entrada válida, no antes.
+      </p>
+      <p>
+        En <strong>CL</strong>, el Vol spike de +34.76 en opciones de 0 DTE es una señal de <span class="warn">cobertura de cola activa</span> — alguien pagó prima elevada para protección en opciones que vencen hoy. Esto indica que participantes institucionales anticipan un movimiento brusco. La EIA a las 10:30 AM y el FOMC a las 2:00 PM son los catalizadores. <strong>No operar CL sin stops amplios y sizing reducido.</strong>
+      </p>
+      <p>
+        Regla de oro PAD para hoy: <strong class="pad">Pre-FOMC (antes de 1:45 PM ET)</strong> → rangos comprimidos, no cazar breakouts, esperar niveles clave. <strong class="pad">Post-FOMC (2:00–2:30 PM)</strong> → esperar primer movimiento y reacción, no entrar en el spike inicial. <strong class="pad">Post-Powell (2:30–3:30 PM)</strong> → la dirección real del día se establece aquí. Si CVD confirma, entrar en la segunda ola. <strong class="warn">Cierre: reducir exposición antes de las 4 PM.</strong>
+      </p>
+    </div>
+  </div>
+
+</div><!-- /main -->
+
+<!-- SECCIÓN: FOMC FLASH UPDATE -->
+  <div class="main" style="padding-top:0;">
+    <div class="section-title" style="margin-top:0;">
+      <span style="color:var(--orange);">🏦 FOMC Flash Update — 2:03 PM ET</span>
+    </div>
+
+    <!-- RESULTADO BANNER -->
+    <div style="background:linear-gradient(90deg,rgba(255,107,53,0.10),rgba(255,107,53,0.03));border:1px solid rgba(255,107,53,0.45);border-left:4px solid var(--orange);border-radius:8px;padding:20px 28px;margin-bottom:24px;display:flex;align-items:center;gap:20px;">
+      <div style="font-size:36px;font-weight:900;font-family:'Space Mono',monospace;color:var(--orange);white-space:nowrap;">HOLD</div>
+      <div>
+        <div style="font-family:'Space Mono',monospace;font-size:13px;font-weight:700;color:var(--text);margin-bottom:4px;">Fed Funds Rate — 3.50%–3.75% · Segundo hold consecutivo</div>
+        <div style="font-size:12px;color:var(--text2);line-height:1.65;">En línea con el consenso. Decisión unánime. El comunicado oficial lleva el título: <strong style="color:var(--orange);">"Fed Leaves Rates Steady — 3/18/2026"</strong></div>
+      </div>
+      <div style="margin-left:auto;text-align:right;flex-shrink:0;">
+        <div style="font-family:'Space Mono',monospace;font-size:10px;color:var(--text3);margin-bottom:4px;">PUBLICADO</div>
+        <div style="font-family:'Space Mono',monospace;font-size:12px;color:var(--orange);">2:00 PM ET</div>
+        <div style="font-family:'Space Mono',monospace;font-size:10px;color:var(--text3);margin-top:4px;">POWELL</div>
+        <div style="font-family:'Space Mono',monospace;font-size:12px;color:var(--yellow);">2:30 PM ET ⏳</div>
+      </div>
+    </div>
+
+    <!-- DOS COLUMNAS: COMUNICADO + DOT PLOT -->
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-bottom:24px;">
+
+      <!-- COMUNICADO -->
+      <div style="background:var(--surface);border:1px solid var(--border);border-radius:8px;overflow:hidden;">
+        <div style="padding:12px 20px;border-bottom:1px solid var(--border);font-family:'Space Mono',monospace;font-size:10px;font-weight:700;color:var(--text3);letter-spacing:2px;">📄 COMUNICADO — PUNTOS CLAVE</div>
+        <div style="padding:16px 20px;display:flex;flex-direction:column;gap:10px;">
+
+          <!-- item hawkish -->
+          <div style="display:flex;gap:12px;align-items:flex-start;padding:10px 12px;background:rgba(255,71,87,0.06);border:1px solid rgba(255,71,87,0.15);border-radius:6px;">
+            <div style="font-size:11px;font-weight:700;color:var(--red);font-family:'Space Mono',monospace;white-space:nowrap;margin-top:1px;">HAWKISH</div>
+            <div style="font-size:12px;color:var(--text2);line-height:1.6;">"Persistent inflation" — la inflación no está resuelta. Se menciona explícitamente el riesgo de shock de petróleo por Medio Oriente.</div>
+          </div>
+
+          <div style="display:flex;gap:12px;align-items:flex-start;padding:10px 12px;background:rgba(255,71,87,0.06);border:1px solid rgba(255,71,87,0.15);border-radius:6px;">
+            <div style="font-size:11px;font-weight:700;color:var(--red);font-family:'Space Mono',monospace;white-space:nowrap;margin-top:1px;">HAWKISH</div>
+            <div style="font-size:12px;color:var(--text2);line-height:1.6;">"Timing remains unclear" — sin compromiso sobre cuándo llega el próximo corte. El Fed evita guiar al mercado.</div>
+          </div>
+
+          <div style="display:flex;gap:12px;align-items:flex-start;padding:10px 12px;background:rgba(255,214,0,0.06);border:1px solid rgba(255,214,0,0.15);border-radius:6px;">
+            <div style="font-size:11px;font-weight:700;color:var(--yellow);font-family:'Space Mono',monospace;white-space:nowrap;margin-top:1px;">NEUTRAL</div>
+            <div style="font-size:12px;color:var(--text2);line-height:1.6;">"Economy expanding at solid pace" — actividad económica sólida. Mercado laboral estable, desempleo sin cambios significativos.</div>
+          </div>
+
+          <div style="display:flex;gap:12px;align-items:flex-start;padding:10px 12px;background:rgba(255,71,87,0.06);border:1px solid rgba(255,71,87,0.15);border-radius:6px;">
+            <div style="font-size:11px;font-weight:700;color:var(--red);font-family:'Space Mono',monospace;white-space:nowrap;margin-top:1px;">HAWKISH</div>
+            <div style="font-size:12px;color:var(--text2);line-height:1.6;">"Implications of Middle East developments remain uncertain" — prima de riesgo geopolítico incorporada al lenguaje oficial.</div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- DOT PLOT + NIVELES -->
+      <div style="display:flex;flex-direction:column;gap:16px;">
+
+        <!-- Dot Plot -->
+        <div style="background:var(--surface);border:1px solid var(--border);border-radius:8px;overflow:hidden;">
+          <div style="padding:12px 20px;border-bottom:1px solid var(--border);font-family:'Space Mono',monospace;font-size:10px;font-weight:700;color:var(--text3);letter-spacing:2px;">📍 DOT PLOT — PROYECCIONES</div>
+          <div style="padding:16px 20px;display:flex;flex-direction:column;gap:8px;">
+
+            <div style="display:flex;justify-content:space-between;align-items:center;padding:8px 12px;background:var(--surface2);border-radius:4px;border:1px solid var(--border);">
+              <span style="font-family:'Space Mono',monospace;font-size:10px;color:var(--text3);">CORTES 2026</span>
+              <span style="font-family:'Space Mono',monospace;font-size:13px;font-weight:700;color:var(--red);">1 corte ⚠️</span>
+            </div>
+            <div style="display:flex;justify-content:space-between;align-items:center;padding:8px 12px;background:var(--surface2);border-radius:4px;border:1px solid var(--border);">
+              <span style="font-family:'Space Mono',monospace;font-size:10px;color:var(--text3);">MERCADO ESPERABA</span>
+              <span style="font-family:'Space Mono',monospace;font-size:13px;font-weight:700;color:var(--yellow);">2 cortes</span>
+            </div>
+            <div style="display:flex;justify-content:space-between;align-items:center;padding:8px 12px;background:var(--surface2);border-radius:4px;border:1px solid var(--border);">
+              <span style="font-family:'Space Mono',monospace;font-size:10px;color:var(--text3);">CORTES 2027</span>
+              <span style="font-family:'Space Mono',monospace;font-size:13px;font-weight:700;color:var(--text2);">1 corte adicional</span>
+            </div>
+            <div style="display:flex;justify-content:space-between;align-items:center;padding:8px 12px;background:rgba(255,71,87,0.08);border-radius:4px;border:1px solid rgba(255,71,87,0.2);">
+              <span style="font-family:'Space Mono',monospace;font-size:10px;color:var(--text3);">SESGO DOT PLOT</span>
+              <span style="font-family:'Space Mono',monospace;font-size:13px;font-weight:700;color:var(--red);">HAWKISH vs mkt</span>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- Niveles post-FOMC -->
+        <div style="background:var(--surface);border:1px solid var(--border);border-radius:8px;overflow:hidden;">
+          <div style="padding:12px 20px;border-bottom:1px solid var(--border);font-family:'Space Mono',monospace;font-size:10px;font-weight:700;color:var(--text3);letter-spacing:2px;">⚡ NIVELES PAD — VIGENTES</div>
+          <div style="padding:16px 20px;display:flex;flex-direction:column;gap:6px;">
+
+            <div style="display:flex;justify-content:space-between;padding:6px 10px;background:rgba(255,214,0,0.08);border-radius:3px;">
+              <span style="font-family:'Space Mono',monospace;font-size:10px;color:var(--text2);">📌 PIN / TACTICAL ANCHOR</span>
+              <span style="font-family:'Space Mono',monospace;font-size:12px;font-weight:700;color:var(--yellow);">ES 6,800 · NQ 25,000</span>
+            </div>
+            <div style="display:flex;justify-content:space-between;padding:6px 10px;background:rgba(179,136,255,0.08);border-radius:3px;">
+              <span style="font-family:'Space Mono',monospace;font-size:10px;color:var(--text2);">⚡ GAMMA FLIP</span>
+              <span style="font-family:'Space Mono',monospace;font-size:12px;font-weight:700;color:var(--purple);">ES 6,700 · NQ 24,500</span>
+            </div>
+            <div style="display:flex;justify-content:space-between;padding:6px 10px;background:rgba(0,230,118,0.06);border-radius:3px;">
+              <span style="font-family:'Space Mono',monospace;font-size:10px;color:var(--text2);">🛡 PUT WALL</span>
+              <span style="font-family:'Space Mono',monospace;font-size:12px;font-weight:700;color:var(--green);">ES 6,600 · NQ 24,400</span>
+            </div>
+            <div style="margin-top:6px;padding:10px 12px;background:rgba(255,107,53,0.08);border:1px solid rgba(255,107,53,0.2);border-radius:4px;font-size:11px;color:var(--text2);line-height:1.6;">
+              <strong style="color:var(--orange);">Regla PAD post-comunicado:</strong> Esperar Powell 2:30 PM. No entrar en el spike inicial. CVD confirma dirección — segunda ola es la entrada válida.
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- LECTURA PAD -->
+    <div style="background:var(--surface);border:1px solid rgba(0,212,255,0.2);border-radius:8px;overflow:hidden;margin-bottom:32px;">
+      <div style="padding:12px 20px;background:linear-gradient(90deg,rgba(0,212,255,0.08),transparent);border-bottom:1px solid var(--border);">
+        <div style="font-family:'Space Mono',monospace;font-size:10px;color:var(--accent);letter-spacing:3px;text-transform:uppercase;">⚡ Lectura PAD · Post-Comunicado · 2:03 PM ET</div>
+      </div>
+      <div style="padding:20px;font-size:13px;color:var(--text2);line-height:1.8;">
+        <p style="margin-bottom:12px;">El resultado es <strong style="color:var(--text);">hawkish en el margen</strong>. El hold era esperado — la sorpresa negativa está en el dot plot: <strong style="color:var(--red);">1 solo corte en 2026</strong> vs los 2 que el mercado descontaba. El lenguaje sobre inflación persistente y la mención explícita al riesgo de shock petrolero por Medio Oriente eliminan cualquier narrativa dovish.</p>
+        <p style="margin-bottom:12px;">Con <strong style="color:var(--text);">ESM6 en 6,720–6,740</strong> y el Gamma Flip en <strong style="color:var(--purple);">6,700</strong> a solo 30–40 puntos, el mercado llega al comunicado en zona de máxima fragilidad gamma. Si Powell confirma el tono hawkish a las 2:30 PM, la perforación del Gamma Flip activaría el régimen AMPLIFIED en su expresión más fuerte — dealers vendiendo junto con el mercado, no contra él.</p>
+        <p><strong style="color:var(--orange);">Próximo catalizador:</strong> Conferencia Powell 2:30 PM ET. Las palabras clave a monitorear: "higher for longer", "further progress needed", cualquier referencia a subidas. CVD negativo sostenido bajo 6,700 en ES = setup bajista válido hacia <strong style="color:var(--red);">6,650–6,600</strong>. Sizing mínimo obligatorio — régimen AMPLIFIED activo.</p>
+      </div>
+    </div>
+
+  </div>
+
+<!-- FOOTER -->
+<div class="footer">
+  <div>PivotAlphaDesk · <a href="https://pivotalphadesk.com">pivotalphadesk.com</a> · Gamma Market Structure Framework</div>
+  <div>Briefing 18-Mar-2026 · Contratos: ESM6 | NQM6 | CLK6 · Régimen: AMPLIFIED</div>
+  <div>Datos: CME Group QuikStrike · Uso interno · No constituye asesoría financiera</div>
+</div>
+
+</body>
+</html>
