@@ -1,4 +1,4 @@
-name: PAD Pick Tracker — Daily Update
+name: PAD Pick Tracker Daily Update
 
 on:
   schedule:
@@ -28,8 +28,8 @@ jobs:
 
       - name: Commit picks_data.json
         run: |
-          git config user.name  "PAD Tracker Bot"
+          git config user.name "PAD Tracker Bot"
           git config user.email "bot@pivotalphadesk.com"
           git add picks_data.json
-          git diff --staged --quiet || git commit -m "chore: update picks data $(date -u '+%Y-%m-%d %H:%M UTC')"
+          git diff --staged --quiet || git commit -m "update picks data"
           git push
