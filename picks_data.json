@@ -1,0 +1,107 @@
+{
+  "updated_at": "2026-03-19T15:11:19.926675-04:00",
+  "updated_at_display": "19-Mar-2026 15:11 ET",
+  "picks": [
+    {
+      "week": 12,
+      "year": 2026,
+      "ticker": "XLE",
+      "name": "Energy Select Sector SPDR",
+      "type": "ETF Sectorial",
+      "horizon": "Posicional 2-4 semanas",
+      "pub_date": "2026-03-14",
+      "ref_price": 57.83,
+      "entry_zone": "$54.0\u2013$56.0",
+      "target1": 63.0,
+      "target2": 70.0,
+      "stop": 51.0,
+      "rr": "1:2.5",
+      "benchmark": "SPY",
+      "filename": "pad_pick_semana12_2026.html",
+      "status": "open",
+      "current_price": 59.35,
+      "current_date": "2026-03-19",
+      "current_ret_pct": 2.63,
+      "bench_ret_pct": NaN,
+      "vs_benchmark_pct": NaN,
+      "days_active": 4,
+      "closed_date": null,
+      "closed_price": null,
+      "levels": {
+        "entry": {
+          "hit": false,
+          "above": true,
+          "label": "$54.0\u2013$56.0"
+        },
+        "target1": {
+          "hit": false,
+          "pct_away": 6.15,
+          "label": "$63.0"
+        },
+        "target2": {
+          "hit": false,
+          "pct_away": 17.94,
+          "label": "$70.0"
+        },
+        "stop": {
+          "hit": false,
+          "margin": 8.35,
+          "label": "$51.0"
+        },
+        "gamma_flip": {
+          "above": true,
+          "regime": "DAMPENED",
+          "label": "$54.5"
+        },
+        "put_wall": {
+          "above": true,
+          "label": "$55.0"
+        }
+      },
+      "chart_ticker": [
+        {
+          "date": "2026-03-16",
+          "close": 57.9,
+          "ret_pct": 0.12
+        },
+        {
+          "date": "2026-03-17",
+          "close": 58.51,
+          "ret_pct": 1.18
+        },
+        {
+          "date": "2026-03-18",
+          "close": 58.43,
+          "ret_pct": 1.04
+        },
+        {
+          "date": "2026-03-19",
+          "close": 59.35,
+          "ret_pct": 2.63
+        }
+      ],
+      "chart_benchmark": [
+        {
+          "date": "2026-03-16",
+          "close": 669.03,
+          "ret_pct": 0.0
+        },
+        {
+          "date": "2026-03-17",
+          "close": 670.79,
+          "ret_pct": 0.26
+        },
+        {
+          "date": "2026-03-18",
+          "close": 661.43,
+          "ret_pct": -1.14
+        },
+        {
+          "date": "2026-03-19",
+          "close": NaN,
+          "ret_pct": NaN
+        }
+      ]
+    }
+  ]
+}
