@@ -1,0 +1,940 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PAD Library — Triple Witching 20-Mar-2026 | El Día que Todo Funcionó</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Space+Mono:wght@400;700&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:      #080c10;
+  --bg2:     #0d1319;
+  --bg3:     #111820;
+  --border:  #1e2d3d;
+  --accent:  #00d4ff;
+  --gold:    #f0b429;
+  --green:   #00e676;
+  --red:     #ff4444;
+  --orange:  #ff6b35;
+  --purple:  #8a2be2;
+  --blue:    #4169e1;
+  --text:    #e8f4f8;
+  --text2:   #8ba4b8;
+  --text3:   #4a6070;
+  --white:   #ffffff;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 16px;
+  line-height: 1.7;
+  overflow-x: hidden;
+}
+
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+  pointer-events: none;
+  z-index: 0;
+  opacity: 0.4;
+}
+
+/* NAV */
+nav {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 48px;
+  background: rgba(8,12,16,0.92);
+  backdrop-filter: blur(16px);
+  border-bottom: 1px solid var(--border);
+}
+
+.nav-logo {
+  font-family: 'Syne', sans-serif;
+  font-weight: 700;
+  font-size: 15px;
+  color: var(--white);
+  text-decoration: none;
+}
+.nav-logo span { color: var(--accent); }
+
+.nav-links {
+  display: flex;
+  gap: 24px;
+  list-style: none;
+}
+.nav-links a {
+  font-family: 'Space Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text2);
+  text-decoration: none;
+  transition: color 0.2s;
+}
+.nav-links a:hover { color: var(--accent); }
+
+/* HERO ARTICLE */
+.article-hero {
+  position: relative;
+  z-index: 1;
+  padding: 120px 48px 64px;
+  max-width: 900px;
+  margin: 0 auto;
+  border-bottom: 1px solid var(--border);
+}
+
+.article-kicker {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-family: 'Space Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 20px;
+}
+
+.kicker-dot {
+  width: 6px; height: 6px;
+  background: var(--red);
+  border-radius: 50%;
+  animation: blink 1.5s ease-in-out infinite;
+}
+
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.2; }
+}
+
+.article-title {
+  font-family: 'Syne', sans-serif;
+  font-weight: 800;
+  font-size: clamp(32px, 5vw, 56px);
+  line-height: 1.05;
+  letter-spacing: -0.03em;
+  color: var(--white);
+  margin-bottom: 16px;
+}
+
+.article-title .highlight { color: var(--gold); }
+.article-title .red { color: var(--red); }
+
+.article-deck {
+  font-size: 20px;
+  color: var(--text2);
+  line-height: 1.6;
+  margin-bottom: 32px;
+  max-width: 680px;
+}
+
+.article-meta {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  flex-wrap: wrap;
+}
+
+.meta-item {
+  font-family: 'Space Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  color: var(--text3);
+  text-transform: uppercase;
+}
+
+.meta-item span { color: var(--text2); }
+
+.meta-divider {
+  width: 1px;
+  height: 12px;
+  background: var(--border);
+}
+
+/* SCORE BANNER */
+.score-banner {
+  position: relative;
+  z-index: 1;
+  background: linear-gradient(135deg, rgba(0,212,255,0.05), rgba(240,180,41,0.05));
+  border-top: 1px solid rgba(0,212,255,0.2);
+  border-bottom: 1px solid rgba(0,212,255,0.2);
+  padding: 32px 48px;
+}
+
+.score-inner {
+  max-width: 900px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 24px;
+}
+
+.score-item { text-align: center; }
+
+.score-num {
+  font-family: 'Syne', sans-serif;
+  font-weight: 800;
+  font-size: 40px;
+  line-height: 1;
+  margin-bottom: 4px;
+}
+
+.score-label {
+  font-family: 'Space Mono', monospace;
+  font-size: 9px;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--text3);
+}
+
+/* ARTICLE BODY */
+.article-body {
+  position: relative;
+  z-index: 1;
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 64px 48px;
+}
+
+/* TYPOGRAPHY */
+.article-body h2 {
+  font-family: 'Syne', sans-serif;
+  font-weight: 800;
+  font-size: 28px;
+  color: var(--white);
+  letter-spacing: -0.02em;
+  margin: 56px 0 20px;
+  padding-top: 56px;
+  border-top: 1px solid var(--border);
+}
+
+.article-body h2:first-child { margin-top: 0; padding-top: 0; border-top: none; }
+
+.article-body h3 {
+  font-family: 'Syne', sans-serif;
+  font-weight: 700;
+  font-size: 18px;
+  color: var(--accent);
+  letter-spacing: 0.02em;
+  margin: 32px 0 12px;
+}
+
+.article-body p {
+  color: var(--text2);
+  margin-bottom: 20px;
+  font-size: 16px;
+  line-height: 1.8;
+}
+
+.article-body strong { color: var(--white); font-weight: 600; }
+.article-body em { color: var(--gold); font-style: normal; font-weight: 600; }
+
+/* TIMELINE */
+.timeline {
+  margin: 32px 0;
+  position: relative;
+  padding-left: 24px;
+  border-left: 2px solid var(--border);
+}
+
+.timeline-item {
+  margin-bottom: 28px;
+  position: relative;
+}
+
+.timeline-item::before {
+  content: '';
+  position: absolute;
+  left: -29px;
+  top: 6px;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  border: 2px solid var(--bg);
+}
+
+.tl-absorption::before { background: var(--green); }
+.tl-warning::before { background: var(--gold); }
+.tl-signal::before { background: var(--accent); }
+.tl-break::before { background: var(--red); }
+.tl-trade::before { background: var(--purple); }
+.tl-macro::before { background: var(--orange); }
+
+.tl-time {
+  font-family: 'Space Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  color: var(--text3);
+  text-transform: uppercase;
+  margin-bottom: 4px;
+}
+
+.tl-title {
+  font-family: 'Syne', sans-serif;
+  font-weight: 700;
+  font-size: 15px;
+  color: var(--white);
+  margin-bottom: 6px;
+}
+
+.tl-body {
+  font-size: 14px;
+  color: var(--text2);
+  line-height: 1.6;
+}
+
+.tl-cvd {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: 'Space Mono', monospace;
+  font-size: 11px;
+  padding: 3px 10px;
+  border-radius: 2px;
+  margin-top: 6px;
+}
+
+.cvd-pos { background: rgba(0,230,118,0.1); color: var(--green); border: 1px solid rgba(0,230,118,0.2); }
+.cvd-neg { background: rgba(255,68,68,0.1); color: var(--red); border: 1px solid rgba(255,68,68,0.2); }
+.cvd-flat { background: rgba(240,180,41,0.1); color: var(--gold); border: 1px solid rgba(240,180,41,0.2); }
+
+/* CODE BLOCKS */
+.code-block {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-left: 3px solid var(--accent);
+  padding: 20px 24px;
+  font-family: 'Space Mono', monospace;
+  font-size: 12px;
+  line-height: 1.8;
+  color: var(--text2);
+  margin: 24px 0;
+  overflow-x: auto;
+}
+
+.code-block .c-green { color: var(--green); }
+.code-block .c-red { color: var(--red); }
+.code-block .c-gold { color: var(--gold); }
+.code-block .c-blue { color: var(--accent); }
+.code-block .c-orange { color: var(--orange); }
+.code-block .c-comment { color: var(--text3); }
+
+/* ALERT BOXES */
+.alert-box {
+  padding: 20px 24px;
+  margin: 24px 0;
+  border-left: 3px solid;
+}
+
+.alert-red { background: rgba(255,68,68,0.06); border-color: var(--red); }
+.alert-green { background: rgba(0,230,118,0.06); border-color: var(--green); }
+.alert-gold { background: rgba(240,180,41,0.06); border-color: var(--gold); }
+.alert-blue { background: rgba(0,212,255,0.06); border-color: var(--accent); }
+
+.alert-title {
+  font-family: 'Syne', sans-serif;
+  font-weight: 700;
+  font-size: 12px;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  margin-bottom: 8px;
+}
+
+.alert-red .alert-title { color: var(--red); }
+.alert-green .alert-title { color: var(--green); }
+.alert-gold .alert-title { color: var(--gold); }
+.alert-blue .alert-title { color: var(--accent); }
+
+.alert-box p { font-size: 14px; color: var(--text2); margin: 0; line-height: 1.7; }
+
+/* LEVELS TABLE */
+.levels-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 24px 0;
+  font-family: 'Space Mono', monospace;
+  font-size: 12px;
+}
+
+.levels-table th {
+  text-align: left;
+  padding: 10px 16px;
+  font-size: 9px;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--text3);
+  border-bottom: 1px solid var(--border);
+}
+
+.levels-table td {
+  padding: 12px 16px;
+  border-bottom: 1px solid rgba(30,45,61,0.5);
+  color: var(--text2);
+}
+
+.levels-table tr:hover td { background: var(--bg2); }
+
+.lvl-dot {
+  display: inline-block;
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  margin-right: 8px;
+}
+
+.check { color: var(--green); font-weight: 700; }
+.cross { color: var(--red); }
+
+/* RULE CARDS */
+.rules-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin: 24px 0;
+}
+
+.rule-card {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  padding: 20px;
+}
+
+.rule-card .rule-num {
+  font-family: 'Space Mono', monospace;
+  font-size: 9px;
+  letter-spacing: 0.2em;
+  color: var(--accent);
+  text-transform: uppercase;
+  margin-bottom: 8px;
+}
+
+.rule-card .rule-title {
+  font-family: 'Syne', sans-serif;
+  font-weight: 700;
+  font-size: 14px;
+  color: var(--white);
+  margin-bottom: 8px;
+}
+
+.rule-card .rule-body {
+  font-size: 13px;
+  color: var(--text2);
+  line-height: 1.6;
+}
+
+/* PULLQUOTE */
+.pullquote {
+  margin: 40px 0;
+  padding: 32px 40px;
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-left: 4px solid var(--gold);
+  position: relative;
+}
+
+.pullquote::before {
+  content: '"';
+  position: absolute;
+  top: -20px;
+  left: 32px;
+  font-family: 'Syne', sans-serif;
+  font-size: 80px;
+  color: var(--gold);
+  opacity: 0.3;
+  line-height: 1;
+}
+
+.pullquote p {
+  font-family: 'Syne', sans-serif;
+  font-size: 22px;
+  font-weight: 600;
+  color: var(--white);
+  line-height: 1.4;
+  margin: 0;
+}
+
+.pullquote cite {
+  display: block;
+  margin-top: 12px;
+  font-family: 'Space Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  color: var(--text3);
+  text-transform: uppercase;
+}
+
+/* SCORE TABLE */
+.score-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 24px 0;
+}
+
+.score-table th {
+  background: var(--bg3);
+  padding: 12px 16px;
+  font-family: 'Space Mono', monospace;
+  font-size: 9px;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--text3);
+  text-align: left;
+  border-bottom: 1px solid var(--border);
+}
+
+.score-table td {
+  padding: 14px 16px;
+  border-bottom: 1px solid rgba(30,45,61,0.5);
+  font-family: 'Space Mono', monospace;
+  font-size: 12px;
+}
+
+.score-table tr:hover td { background: var(--bg2); }
+
+/* FOOTER */
+footer {
+  position: relative;
+  z-index: 1;
+  border-top: 1px solid var(--border);
+  padding: 48px;
+  margin-top: 80px;
+}
+
+.footer-inner {
+  max-width: 900px;
+  margin: 0 auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.footer-left {
+  font-family: 'Space Mono', monospace;
+  font-size: 11px;
+  color: var(--text3);
+}
+
+.footer-left strong { color: var(--text2); font-family: 'Syne', sans-serif; }
+
+.footer-nav {
+  display: flex;
+  gap: 20px;
+}
+
+.footer-nav a {
+  font-family: 'Space Mono', monospace;
+  font-size: 10px;
+  color: var(--text3);
+  text-decoration: none;
+  letter-spacing: 0.08em;
+  transition: color 0.2s;
+}
+
+.footer-nav a:hover { color: var(--accent); }
+
+@media (max-width: 768px) {
+  nav { padding: 16px 24px; }
+  .article-hero { padding: 100px 24px 48px; }
+  .score-inner { grid-template-columns: repeat(2, 1fr); }
+  .article-body { padding: 48px 24px; }
+  .rules-grid { grid-template-columns: 1fr; }
+  .score-banner { padding: 24px; }
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="index.html" class="nav-logo">Pivot<span>Alpha</span>Desk</a>
+  <ul class="nav-links">
+    <li><a href="index.html">← Inicio</a></li>
+    <li><a href="briefing_mar_20_2026.html">Briefing 20-Mar</a></li>
+    <li><a href="pad-library-zonas-algo.html">Library</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<div class="article-hero">
+  <div class="article-kicker">
+    <div class="kicker-dot"></div>
+    PAD Research Library · Caso de Estudio
+  </div>
+  <h1 class="article-title">
+    Triple Witching<br>
+    <span class="highlight">20-Mar-2026</span><br>
+    <span style="font-size:0.65em;color:var(--text2)">El Día que Todo Funcionó</span>
+  </h1>
+  <p class="article-deck">
+    Cómo la estructura gamma anticipó un movimiento de 116 puntos en ES, un spike geopolítico en CL, y una divergencia histórica en NQ — todo antes de la apertura. Un caso de estudio completo con CVD en tiempo real.
+  </p>
+  <div class="article-meta">
+    <span class="meta-item">Fecha <span>20 Marzo 2026</span></span>
+    <div class="meta-divider"></div>
+    <span class="meta-item">Activos <span>ESM6 · NQM6 · CLK6</span></span>
+    <div class="meta-divider"></div>
+    <span class="meta-item">Evento <span>Triple Witching + Hormuz Risk</span></span>
+    <div class="meta-divider"></div>
+    <span class="meta-item">Régimen <span>DAMPENED → AMPLIFIED</span></span>
+  </div>
+</div>
+
+<!-- SCORE BANNER -->
+<div class="score-banner">
+  <div class="score-inner">
+    <div class="score-item">
+      <div class="score-num" style="color:var(--green)">7/7</div>
+      <div class="score-label">Niveles PAD funcionaron</div>
+    </div>
+    <div class="score-item">
+      <div class="score-num" style="color:var(--red)">116</div>
+      <div class="score-label">Puntos ES bajó en el día</div>
+    </div>
+    <div class="score-item">
+      <div class="score-num" style="color:var(--gold)">427</div>
+      <div class="score-label">Puntos NQ bajó en el día</div>
+    </div>
+    <div class="score-item">
+      <div class="score-num" style="color:var(--orange)">113</div>
+      <div class="score-label">IV CL — spike +7.25 pts</div>
+    </div>
+  </div>
+</div>
+
+<!-- BODY -->
+<div class="article-body">
+
+  <h2>El Contexto — Lo que los Datos Decían a las 07:44 AM</h2>
+
+  <p>Antes de que Bloomberg reportara un solo headline sobre Irán, antes de que el VIX tocara 25.83, antes de que el ES rompiera el Gamma Flip — los datos de CME Group ya estaban hablando.</p>
+
+  <p>A las 7:44 AM ET, con el mercado cerrado y los PDFs de QuikStrike en mano, la estructura gamma mostraba tres señales simultáneas que en retrospectiva eran inequívocas:</p>
+
+  <div class="code-block">
+<span class="c-red">⚠ SEÑAL 1:</span> IV CL LO3H6 = <span class="c-gold">113.00 (+7.25 overnight)</span>
+<span class="c-comment">→ Un spike de 7.25 puntos en IV de crudo no es ruido.</span>
+<span class="c-comment">→ El mercado está pricing un evento de riesgo implícito.</span>
+
+<span class="c-red">⚠ SEÑAL 2:</span> P/C ratio ES = <span class="c-red">2.77</span> (73.4% puts)
+<span class="c-comment">→ Posicionamiento defensivo institucional masivo.</span>
+
+<span class="c-red">⚠ SEÑAL 3:</span> IV NQ <span class="c-red">subió +0.11</span> mientras IV ES <span class="c-green">bajó -0.07</span>
+<span class="c-comment">→ Presión asimétrica sobre tech. NQ más vulnerable que ES.</span>
+  </div>
+
+  <p>El briefing del día documentó estas tres señales y las tradujo en probabilidades: <strong>Escenario B (bajista) 35%</strong>, con la nota explícita de que el IV spike de CL sugería "geopolítica probable". A las 13:06 ET, Bloomberg confirmaría lo que los futuros ya sabían desde la madrugada.</p>
+
+  <div class="alert-box alert-gold">
+    <div class="alert-title">Regla PAD Documentada Este Día</div>
+    <p>Cuando IV de CL spike +5 puntos o más en overnight — buscar headline geopolítico de Medio Oriente antes de operar. El crudo pricéa el riesgo <strong>antes</strong> que las noticias lleguen.</p>
+  </div>
+
+  <h2>Los 9 Niveles PAD — Score Final</h2>
+
+  <p>Antes de la apertura, los nueve niveles PAD para ESM6 y NQM6 fueron calculados desde los datos de OI Matrix, Delta Matrix y Gamma Matrix de CME. Este fue el resultado al cierre:</p>
+
+  <table class="levels-table">
+    <thead>
+      <tr>
+        <th>Nivel PAD</th>
+        <th>ES Strike</th>
+        <th>NQ Strike</th>
+        <th>Resultado</th>
+        <th>Nota</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="lvl-dot" style="background:#ff2d2d"></span>Extreme Gamma Ceiling</td>
+        <td style="color:#ff6666">6,700</td>
+        <td style="color:#ff6666">24,750</td>
+        <td><span class="check">✅</span></td>
+        <td style="color:var(--text3)">No alcanzado — resistencia correcta</td>
+      </tr>
+      <tr>
+        <td><span class="lvl-dot" style="background:#ff6b35"></span>Secondary Resistance</td>
+        <td style="color:#ff6b35">6,650</td>
+        <td style="color:#ff6b35">24,700</td>
+        <td><span class="check">✅</span></td>
+        <td style="color:var(--text3)">High pre-apertura cerca de 6,675</td>
+      </tr>
+      <tr>
+        <td><span class="lvl-dot" style="background:#ffd700"></span><strong>Tactical Anchor / Pin ◉</strong></td>
+        <td style="color:#ffd700"><strong>6,625</strong></td>
+        <td style="color:#ffd700"><strong>24,500</strong></td>
+        <td><span class="check">✅</span></td>
+        <td style="color:var(--text3)">Imán toda la mañana — absorción AM</td>
+      </tr>
+      <tr>
+        <td><span class="lvl-dot" style="background:#a8d8a8"></span>Structure Pivot Proxy</td>
+        <td style="color:#a8d8a8">6,610</td>
+        <td style="color:#a8d8a8">24,400</td>
+        <td><span class="check">✅</span></td>
+        <td style="color:var(--text3)">Testeado y sostenido en AM</td>
+      </tr>
+      <tr>
+        <td><span class="lvl-dot" style="background:#00bfff"></span><strong>Gamma Flip ⚡</strong></td>
+        <td style="color:#00bfff"><strong>6,600</strong></td>
+        <td style="color:#00bfff"><strong>24,300</strong></td>
+        <td><span class="check">✅</span></td>
+        <td style="color:var(--text3)">Roto PM → Amplified activado</td>
+      </tr>
+      <tr>
+        <td><span class="lvl-dot" style="background:#4169e1"></span>Gamma Floor</td>
+        <td style="color:#6688ff">6,550</td>
+        <td style="color:#6688ff">24,200</td>
+        <td><span class="check">✅</span></td>
+        <td style="color:var(--text3)">ES low 6,559 — NQ rompió a 24,100</td>
+      </tr>
+      <tr>
+        <td><span class="lvl-dot" style="background:#8a2be2"></span>Acceleration Zone</td>
+        <td style="color:#b070f0">6,525</td>
+        <td style="color:#b070f0">24,100</td>
+        <td><span class="check">✅</span></td>
+        <td style="color:var(--text3)">NQ alcanzó zona al cierre</td>
+      </tr>
+      <tr>
+        <td><span class="lvl-dot" style="background:#dc143c"></span>Emergency Anchor</td>
+        <td style="color:#dc143c">6,500</td>
+        <td style="color:#dc143c">24,000</td>
+        <td><span class="check">✅</span></td>
+        <td style="color:var(--text3)">No alcanzado — sostuvo como floor</td>
+      </tr>
+      <tr>
+        <td><span class="lvl-dot" style="background:#8b0000"></span>Structure Break</td>
+        <td style="color:#cc4444">6,450</td>
+        <td style="color:#cc4444">23,950</td>
+        <td><span class="check">✅</span></td>
+        <td style="color:var(--text3)">No activado — estructura intacta</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h2>La Timeline — Minuto a Minuto con CVD</h2>
+
+  <p>Esta fue la primera sesión operada con la <strong>configuración CVD estándar PAD</strong> en Bookmap — mínimo 10 contratos en ES, 3 en NQ, reset en apertura RTH, split buyers/sellers activado. Lo que vimos fue la metodología funcionando en tiempo real.</p>
+
+  <div class="timeline">
+
+    <div class="timeline-item tl-warning">
+      <div class="tl-time">07:44 ET — Pre-Apertura</div>
+      <div class="tl-title">Briefing publicado — 3 alertas activas</div>
+      <div class="tl-body">IV CL +7.25, P/C ES 2.77, divergencia IV NQ/ES. Escenario B asignado 35% probabilidad. "Evento macro implícito en crudo — geopolítica probable."</div>
+    </div>
+
+    <div class="timeline-item tl-warning">
+      <div class="tl-time">09:18 ET — Pre-Apertura</div>
+      <div class="tl-title">Config CVD aplicada — ruido de Globex ignorado</div>
+      <div class="tl-body">Cambio de mínimo 1→10 contratos ES, 1→3 NQ. Lo acumulado en Globex era ruido de rolls de H6 a M6 y rebalanceo pre-expiración. CVD reseteado para 09:30.</div>
+      <div><span class="tl-cvd cvd-flat">CVD = GLOBEX RUIDO — IGNORAR</span></div>
+    </div>
+
+    <div class="timeline-item tl-signal">
+      <div class="tl-time">09:30 ET — Apertura RTH</div>
+      <div class="tl-title">Apertura — CVD compradores leve dominancia</div>
+      <div class="tl-body">Buyers 8,766 vs Sellers 8,535. Delta +231. Ambos CVD ES y NQ subiendo. Sin divergencia pre-apertura. Precio ES en 6,633 — sobre el Gamma Flip 6,600.</div>
+      <div><span class="tl-cvd cvd-pos">ES CVD +231 · NQ CVD POSITIVO</span></div>
+    </div>
+
+    <div class="timeline-item tl-absorption">
+      <div class="tl-time">09:32–09:35 ET</div>
+      <div class="tl-title">Absorción Silenciosa en el Anchor 6,625</div>
+      <div class="tl-body">CVD vendedores dominando pero precio NO cede en 6,625. Los dealers están comprando todo lo que llega. Precio testea 6,607 y vuelve. Diagnóstico: absorción silenciosa activa. Sin setup — esperar.</div>
+      <div><span class="tl-cvd cvd-neg">CVD VENDEDORES · PRECIO ESTÁTICO = ABSORCIÓN</span></div>
+    </div>
+
+    <div class="timeline-item tl-signal">
+      <div class="tl-time">09:41 ET — SEÑAL CLAVE</div>
+      <div class="tl-title">CVD cruza — Absorción confirmada</div>
+      <div class="tl-body">ES Buyers 1,139 vs Sellers 1,110. Delta +29. NQ Buyers 790 vs Sellers 616. Delta +174. Los compradores tomaron el control simultáneamente. NQ lidera con +174. Setup long válido activado en 6,625.</div>
+      <div><span class="tl-cvd cvd-pos">ES CVD +29 · NQ CVD +174 · ABSORCIÓN CONFIRMADA ✅</span></div>
+    </div>
+
+    <div class="timeline-item tl-trade">
+      <div class="tl-time">09:41–09:48 ET</div>
+      <div class="tl-title">Precio sube a 6,643 — Setup ejecutado</div>
+      <div class="tl-body">Precio subió 18 puntos desde el Anchor. Target 1 casi alcanzado en 6,650. CVD luego muestra ES +1,402 pero NQ solo +64 — primera señal de divergencia. El trade de 6,625 fue la entrada válida de la mañana.</div>
+      <div><span class="tl-cvd cvd-pos">ES +1,402 · NQ +64 — DIVERGENCIA NUEVA ⚠️</span></div>
+    </div>
+
+    <div class="timeline-item tl-break">
+      <div class="tl-time">10:27 ET — RÉGIMEN AMPLIFIED</div>
+      <div class="tl-title">Gamma Flip roto — Ambos activos</div>
+      <div class="tl-body">ES rompe 6,600 con CVD vendedores tomando control. NQ rompe 24,300 simultáneamente. Régimen cambia a AMPLIFIED. Sizing -25% inmediato. No promediar. Próximos soportes: ES 6,550, NQ 24,200.</div>
+      <div><span class="tl-cvd cvd-neg">ES CVD -439 · NQ CVD -246 · AMPLIFIED ACTIVO 🔴</span></div>
+    </div>
+
+    <div class="timeline-item tl-trade">
+      <div class="tl-time">10:xx ET — Trade CL</div>
+      <div class="tl-title">CL spike a 97 — Short en Extreme Gamma Ceiling</div>
+      <div class="tl-body">CL subió en spike hasta 97.00 — exactamente el nivel del Extreme Gamma Ceiling del Pine Script. Stop-and-run algorítmico activando stops de shorts. Short ejecutado en el Ceiling con buen resultado. Precio revierte inmediatamente.</div>
+      <div><span class="tl-cvd cvd-neg">CL CEILING 97.00 — SHORT VÁLIDO ✅</span></div>
+    </div>
+
+    <div class="timeline-item tl-macro">
+      <div class="tl-time">13:06 ET — Bloomberg</div>
+      <div class="tl-title">Headline confirma lo que el crudo ya sabía</div>
+      <div class="tl-body">"Iran Keeps Striking Gulf as Israel Pledges to Spare Energy Sites" / "Iran Said to Stick to Hardline Position on Strait of Hormuz". El IV spike de CL de la mañana estaba pricing exactamente esto. VIX: 25.83 +7.36%.</div>
+      <div><span class="tl-cvd cvd-neg">HORMUZ RISK CONFIRMADO · IV CL 113 JUSTIFICADO</span></div>
+    </div>
+
+    <div class="timeline-item tl-break">
+      <div class="tl-time">14:37 ET — Cierre</div>
+      <div class="tl-title">ES toca Gamma Floor 6,550 — NQ bajo 24,200</div>
+      <div class="tl-body">ES Low del día: 6,559. NQ Low del día: 24,100. CVD ES 21,656 vs 21,773 — casi equilibrado al cierre. Mercado buscando base. Los 7 niveles PAD funcionaron durante toda la sesión.</div>
+      <div><span class="tl-cvd cvd-flat">CVD EQUILIBRADO · MERCADO BUSCANDO BASE</span></div>
+    </div>
+
+  </div>
+
+  <h2>La Lección del CVD — Primera Sesión con Config PAD</h2>
+
+  <p>Esta fue la primera sesión operada con la configuración CVD estándar PAD correctamente aplicada. Durante cuatro meses, la lectura del CVD en Bookmap había sido confusa — el filtro de mínimo 1 contrato incluía cada trade de HFT y algoritmo de arbitraje, generando ruido que oscurecía la agresión institucional real.</p>
+
+  <p>El cambio fue simple pero transformador: <strong>mínimo 10 contratos en ES, 3 en NQ</strong>. Eso eliminó el ruido algorítmico y dejó visible solo la agresión intencional.</p>
+
+  <div class="pullquote">
+    <p>El CVD no es un número. Es una historia. Esta mañana la historia fue: vendedores atacaron el Anchor. Los dealers absorbieron todo. Cuando los vendedores se agotaron — el precio voló.</p>
+    <cite>Sesión en vivo · 20-Mar-2026 · 09:41 ET</cite>
+  </div>
+
+  <p>Las cuatro lecturas PAD del CVD se manifestaron todas en esta sesión:</p>
+
+  <div class="rules-grid">
+    <div class="rule-card">
+      <div class="rule-num">Lectura 1</div>
+      <div class="rule-title" style="color:var(--green)">ABSORCIÓN ✅</div>
+      <div class="rule-body">09:32–09:41 ET. CVD vendedores dominando pero precio estático en 6,625. Los dealers compraban todo lo que llegaba. Señal: setup long se acercaba.</div>
+    </div>
+    <div class="rule-card">
+      <div class="rule-num">Lectura 2</div>
+      <div class="rule-title" style="color:var(--accent)">CONFIRMACIÓN ✅</div>
+      <div class="rule-body">09:41 ET. CVD cruzó de vendedores a compradores simultáneamente en ES y NQ. NQ lideró con +174 vs ES +29. Entrada válida larga activada.</div>
+    </div>
+    <div class="rule-card">
+      <div class="rule-num">Lectura 3</div>
+      <div class="rule-title" style="color:var(--gold)">ZONA DE RUIDO ⚠️</div>
+      <div class="rule-body">Cuando precio está exactamente sobre el Gamma Flip — el CVD se vuelve ilegible. En ese momento el precio manda, no el CVD. Regla nueva documentada.</div>
+    </div>
+    <div class="rule-card">
+      <div class="rule-num">Lectura 4</div>
+      <div class="rule-title" style="color:var(--red)">RECHAZO 🔴</div>
+      <div class="rule-body">10:27 ET. CVD ES -439, NQ -246. Ambos negativos simultáneamente. Gamma Flip roto. Régimen AMPLIFIED activado. Sizing -25% inmediato.</div>
+    </div>
+  </div>
+
+  <h2>Reglas Nuevas Documentadas Este Día</h2>
+
+  <p>Cada sesión en vivo genera conocimiento operativo que no existe en ningún libro. Estas son las reglas que este día agregó al sistema PAD:</p>
+
+  <div class="alert-box alert-blue">
+    <div class="alert-title">Regla 1 — IV CL como indicador adelantado geopolítico</div>
+    <p>Cuando IV de CL spike +5 puntos o más en overnight, buscar headline geopolítico de Medio Oriente antes de operar. El crudo pricéa el riesgo antes que las noticias lleguen. Un spike de IV en CL AM es una señal de alerta macro para todos los activos.</p>
+  </div>
+
+  <div class="alert-box alert-gold">
+    <div class="alert-title">Regla 2 — En el Gamma Flip exacto, el precio manda</div>
+    <p>Cuando el precio está literalmente sobre el Gamma Flip, el CVD se vuelve ilegible — hay dos fuerzas iguales chocando y los algoritmos generan máximo ruido. En esa zona no leer el CVD. Esperar que el precio se aleje 8-10 puntos en cualquier dirección antes de interpretar el CVD.</p>
+  </div>
+
+  <div class="alert-box alert-red">
+    <div class="alert-title">Regla 3 — Triple Witching puede generar dos olas vendedoras</div>
+    <p>La primera ola se absorbe — los dealers hacen su trabajo. La segunda ola, generada por el flujo de expiración de fin de sesión, puede superar la absorción institucional. Por esto el briefing de Triple Witching siempre dice: stops amplios, sin promediar, sizing normal hasta que el Flip se rompa con confirmación.</p>
+  </div>
+
+  <div class="alert-box alert-green">
+    <div class="alert-title">Regla 4 — Divergencia CVD ES/NQ predice el líder</div>
+    <p>Cuando CVD NQ es más positivo que ES, NQ liderará la recuperación. Cuando CVD NQ es más negativo que ES, NQ liderará la caída. Esta divergencia se confirmó múltiples veces durante la sesión — NQ siempre fue más extremo en ambas direcciones.</p>
+  </div>
+
+  <h2>El Resultado — P&L y Aprendizaje</h2>
+
+  <table class="score-table">
+    <thead>
+      <tr>
+        <th>Activo</th>
+        <th>Trade</th>
+        <th>Resultado P&L</th>
+        <th>Resultado Metodología</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td style="color:var(--accent)">ESM6</td>
+        <td style="color:var(--text2)">Long 6,620 — stop ejecutado</td>
+        <td style="color:var(--red)">Pérdida controlada</td>
+        <td><span class="check">✅ Correcto</span> — stop antes del Flip</td>
+      </tr>
+      <tr>
+        <td style="color:var(--gold)">CLK6</td>
+        <td style="color:var(--text2)">Shorts desde 97.00 Ceiling</td>
+        <td style="color:var(--green)">Buen resultado</td>
+        <td><span class="check">✅ Perfecto</span> — Ceiling exacto</td>
+      </tr>
+      <tr>
+        <td style="color:#a78bfa">NQM6</td>
+        <td style="color:var(--text2)">Sin trades</td>
+        <td style="color:var(--text3)">—</td>
+        <td><span class="check">✅ Correcto</span> — NQ más volátil hoy</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="pullquote">
+    <p>Una pérdida controlada en ES + ganancias en CL + CVD entendido para siempre. El P&L del día fue positivo. El aprendizaje fue invaluable.</p>
+    <cite>PivotAlphaDesk · 20-Mar-2026</cite>
+  </div>
+
+  <h2>Conexión con GAIA</h2>
+
+  <p>Lo que hoy se hizo manualmente — leer el CVD, identificar la absorción, detectar el cruce, alertar el régimen change — es exactamente el algoritmo que GAIA Fase 2 va a codificar.</p>
+
+  <div class="code-block">
+<span class="c-comment">// GAIA Fase 2 — Lo que hubiera alertado automáticamente hoy:</span>
+
+<span class="c-gold">09:32 ET</span> → <span class="c-blue">Alert: ABSORPTION_DETECTED</span> — CVD plano en Gamma Flip
+<span class="c-gold">09:41 ET</span> → <span class="c-green">Alert: CVD_CROSS_BULLISH</span> — compradores tomaron control
+<span class="c-gold">09:41 ET</span> → <span class="c-green">Alert: LONG_SETUP_VALID</span> @ 6,625 — absorción confirmada
+<span class="c-gold">10:27 ET</span> → <span class="c-red">Alert: REGIME_CHANGE_AMPLIFIED</span> — Flip roto ambos activos
+<span class="c-gold">10:27 ET</span> → <span class="c-red">Alert: SIZING_REDUCE_25PCT</span> — protocolo AMPLIFIED activo
+<span class="c-gold">AM</span>     → <span class="c-orange">Alert: IV_CL_SPIKE_GEOPOLITICAL</span> — IV +7.25 → Hormuz risk
+
+<span class="c-comment">// Tiempo manual hoy: ~11 minutos por señal</span>
+<span class="c-comment">// Tiempo GAIA: &lt; 1 segundo por señal</span>
+  </div>
+
+  <p>La sesión del 20 de marzo de 2026 no es solo un caso de estudio — es el test de aceptación de GAIA. Todo lo que el sistema detectó manualmente hoy, GAIA lo va a automatizar. El Mapa Gamma Vivo.</p>
+
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-inner">
+    <div class="footer-left">
+      <strong>PivotAlphaDesk</strong> — PAD Research Library<br>
+      Caso de Estudio · Triple Witching 20-Mar-2026
+    </div>
+    <nav class="footer-nav">
+      <a href="index.html">← Inicio</a>
+      <a href="briefing_mar_20_2026.html">Briefing del Día</a>
+      <a href="pad-library-zonas-algo.html">Zonas Algo</a>
+      <a href="pad_pick_semana12_2026.html">PAD Pick</a>
+    </nav>
+  </div>
+</footer>
+
+</body>
+</html>
