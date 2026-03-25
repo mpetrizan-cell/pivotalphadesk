@@ -1,0 +1,652 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pre-Open Briefing | 25 Mar 2026</title>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@300;400;500;600&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0c0f;
+    --bg2: #0f1215;
+    --bg3: #141820;
+    --border: #1e2530;
+    --border2: #263040;
+    --text: #c8d4e0;
+    --text2: #7a8fa0;
+    --text3: #4a5a6a;
+    --accent: #00d4ff;
+    --accent2: #0099cc;
+    --green: #00e676;
+    --green2: #00a854;
+    --red: #ff4444;
+    --red2: #cc2200;
+    --orange: #ff9800;
+    --yellow: #ffd740;
+    --purple: #b388ff;
+    --mono: 'IBM Plex Mono', monospace;
+    --sans: 'IBM Plex Sans', sans-serif;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { background: var(--bg); color: var(--text); font-family: var(--mono); font-size: 12px; line-height: 1.5; }
+  
+  /* HEADER */
+  .header {
+    background: var(--bg2);
+    border-bottom: 1px solid var(--border2);
+    padding: 12px 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: sticky; top: 0; z-index: 100;
+  }
+  .header-left { display: flex; align-items: center; gap: 16px; }
+  .logo { font-size: 11px; color: var(--accent); letter-spacing: 0.2em; font-weight: 600; }
+  .date-badge { background: var(--bg3); border: 1px solid var(--border2); padding: 4px 10px; border-radius: 2px; font-size: 10px; color: var(--text2); }
+  .status { font-size: 10px; color: var(--green); display: flex; align-items: center; gap: 6px; }
+  .status::before { content:''; width:6px; height:6px; background: var(--green); border-radius:50%; display:inline-block; animation: pulse 2s infinite; }
+  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.3} }
+
+  /* LAYOUT */
+  .container { max-width: 1600px; margin: 0 auto; padding: 16px 20px; }
+  .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; margin-bottom: 12px; }
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px; }
+  .grid-4 { display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 12px; margin-bottom: 12px; }
+  .full { margin-bottom: 12px; }
+
+  /* CARDS */
+  .card {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 2px;
+    overflow: hidden;
+  }
+  .card-header {
+    background: var(--bg3);
+    border-bottom: 1px solid var(--border);
+    padding: 7px 12px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .card-title { font-size: 10px; font-weight: 600; letter-spacing: 0.12em; color: var(--accent); text-transform: uppercase; }
+  .card-sub { font-size: 9px; color: var(--text3); }
+  .card-body { padding: 12px; }
+
+  /* METRICS */
+  .metric-row { display: flex; justify-content: space-between; align-items: center; padding: 4px 0; border-bottom: 1px solid var(--border); }
+  .metric-row:last-child { border-bottom: none; }
+  .metric-label { color: var(--text2); font-size: 10px; }
+  .metric-val { font-size: 11px; font-weight: 500; }
+  .up { color: var(--green); }
+  .down { color: var(--red); }
+  .neutral { color: var(--text); }
+  .accent { color: var(--accent); }
+  .orange { color: var(--orange); }
+  .purple { color: var(--purple); }
+  .yellow { color: var(--yellow); }
+
+  /* HERO METRICS */
+  .hero-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1px; background: var(--border); }
+  .hero-item { background: var(--bg2); padding: 14px 16px; }
+  .hero-label { font-size: 9px; color: var(--text3); letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 6px; }
+  .hero-val { font-size: 22px; font-weight: 600; letter-spacing: -0.02em; }
+  .hero-chg { font-size: 10px; margin-top: 4px; }
+
+  /* LEVELS TABLE */
+  .levels-table { width: 100%; border-collapse: collapse; }
+  .levels-table th { font-size: 9px; color: var(--text3); text-align: right; padding: 4px 8px; border-bottom: 1px solid var(--border2); letter-spacing: 0.08em; }
+  .levels-table th:first-child { text-align: left; }
+  .levels-table td { font-size: 10px; padding: 5px 8px; border-bottom: 1px solid var(--border); text-align: right; }
+  .levels-table td:first-child { text-align: left; }
+  .levels-table tr:last-child td { border-bottom: none; }
+  .levels-table tr:hover td { background: rgba(0,212,255,0.03); }
+  .strike-label { font-weight: 600; color: var(--text); }
+  .atm-row td { background: rgba(0,212,255,0.06) !important; }
+  .atm-row .strike-label { color: var(--accent); }
+  .wall-call { color: var(--green); }
+  .wall-put { color: var(--red); }
+  .wall-both { color: var(--yellow); }
+
+  /* GEX BAR */
+  .gex-bar-wrap { display: flex; align-items: center; gap: 6px; }
+  .gex-bar { height: 6px; border-radius: 1px; min-width: 2px; }
+  .gex-pos { background: var(--green2); }
+  .gex-neg { background: var(--red2); }
+
+  /* TABS */
+  .tabs { display: flex; gap: 0; border-bottom: 1px solid var(--border2); }
+  .tab { padding: 7px 14px; font-size: 10px; cursor: pointer; color: var(--text2); border-bottom: 2px solid transparent; transition: all 0.15s; letter-spacing: 0.05em; }
+  .tab:hover { color: var(--text); }
+  .tab.active { color: var(--accent); border-bottom-color: var(--accent); }
+  .tab-content { display: none; }
+  .tab-content.active { display: block; }
+
+  /* EXPIRY SECTION */
+  .expiry-row { 
+    display: grid; 
+    grid-template-columns: 80px 60px 1fr 1fr 80px 80px; 
+    gap: 8px; 
+    align-items: center;
+    padding: 5px 8px; 
+    border-bottom: 1px solid var(--border); 
+    font-size: 10px;
+  }
+  .expiry-row:hover { background: rgba(255,255,255,0.02); }
+  .expiry-row.header { font-size: 9px; color: var(--text3); border-bottom-color: var(--border2); }
+  
+  /* PC RATIO BAR */
+  .pc-bar { height: 4px; background: var(--border2); border-radius: 2px; overflow: hidden; flex: 1; }
+  .pc-fill { height: 100%; background: linear-gradient(90deg, var(--green2), var(--red2)); }
+
+  /* SECTION DIVIDER */
+  .section-label { font-size: 9px; color: var(--text3); letter-spacing: 0.15em; text-transform: uppercase; padding: 12px 0 6px; }
+
+  /* ALERTS */
+  .alert { padding: 8px 12px; border-left: 3px solid; margin-bottom: 8px; font-size: 10px; line-height: 1.6; }
+  .alert-warning { border-color: var(--orange); background: rgba(255,152,0,0.06); color: var(--orange); }
+  .alert-info { border-color: var(--accent); background: rgba(0,212,255,0.05); color: var(--text); }
+  .alert-danger { border-color: var(--red); background: rgba(255,68,68,0.06); color: var(--red); }
+  .alert-success { border-color: var(--green); background: rgba(0,230,118,0.05); color: var(--green); }
+  .alert strong { font-weight: 600; }
+
+  /* SPREAD PIE */
+  .spread-list { display: flex; flex-direction: column; gap: 4px; }
+  .spread-row { display: flex; align-items: center; gap: 8px; }
+  .spread-name { width: 110px; color: var(--text2); font-size: 10px; }
+  .spread-bar-wrap { flex: 1; height: 5px; background: var(--border2); border-radius: 2px; overflow: hidden; }
+  .spread-bar-fill { height: 100%; border-radius: 2px; }
+  .spread-pct { width: 45px; text-align: right; font-size: 10px; }
+
+  /* SKEW CHART */
+  .skew-grid { display: grid; grid-template-columns: 1fr; gap: 2px; }
+  .skew-row { display: flex; align-items: center; gap: 6px; font-size: 9px; }
+  .skew-strike { width: 40px; color: var(--text2); text-align: right; }
+  .skew-c { width: 40px; text-align: right; color: var(--green); }
+  .skew-p { width: 40px; text-align: left; color: var(--red); }
+  .skew-bar-center { position: relative; flex: 1; height: 14px; display: flex; align-items: center; }
+
+  /* SUMMARY BADGE */
+  .badge { display: inline-block; padding: 2px 6px; border-radius: 2px; font-size: 9px; font-weight: 600; letter-spacing: 0.08em; }
+  .badge-bearish { background: rgba(255,68,68,0.15); color: var(--red); border: 1px solid rgba(255,68,68,0.3); }
+  .badge-neutral { background: rgba(255,215,64,0.12); color: var(--yellow); border: 1px solid rgba(255,215,64,0.3); }
+  .badge-bullish { background: rgba(0,230,118,0.12); color: var(--green); border: 1px solid rgba(0,230,118,0.3); }
+
+  /* CME DTE BREAKDOWN */
+  .dte-row { display: grid; grid-template-columns: 70px 1fr 60px; gap: 8px; align-items: center; padding: 4px 0; border-bottom: 1px solid var(--border); font-size: 10px; }
+  .dte-row:last-child { border-bottom: none; }
+
+  /* FOOTER */
+  .footer { border-top: 1px solid var(--border); padding: 10px 20px; display: flex; justify-content: space-between; font-size: 9px; color: var(--text3); margin-top: 20px; }
+
+  /* PRINT */
+  @media print { 
+    body { background: #fff; color: #000; }
+    .card { border: 1px solid #ccc; }
+    .header { position: static; }
+  }
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div class="header">
+  <div class="header-left">
+    <div class="logo">▣ PRE-OPEN BRIEFING</div>
+    <div class="date-badge">MIÉ 25 MAR 2026 · 07:30 ET</div>
+    <div class="date-badge">ES EXPIRY DAY</div>
+  </div>
+  <div style="display:flex;gap:12px;align-items:center;">
+    <span class="status">LIVE DATA</span>
+    <span style="font-size:9px;color:var(--text3);">Sources: CME QuikStrike · TradeStation $SPXW</span>
+  </div>
+</div>
+
+<div class="container">
+
+<!-- HERO METRICS -->
+<div class="card full" style="margin-bottom:12px;">
+  <div class="hero-grid">
+    <div class="hero-item">
+      <div class="hero-label">ES Futures (ESM6)</div>
+      <div class="hero-val down">6,606.00</div>
+      <div class="hero-chg down">▼ -28.75 pts · Prior: 6,634.75</div>
+    </div>
+    <div class="hero-item">
+      <div class="hero-label">ES Intraday Spot</div>
+      <div class="hero-val accent">6,660.5</div>
+      <div class="hero-chg up">▲ +54.5 pts desde settle</div>
+    </div>
+    <div class="hero-item">
+      <div class="hero-label">IV (Vol Settle)</div>
+      <div class="hero-val neutral">27.71%</div>
+      <div class="hero-chg down">▼ -0.08 vs prior · Vol Chg</div>
+    </div>
+    <div class="hero-item">
+      <div class="hero-label">SPX P/C OI Ratio</div>
+      <div class="hero-val down">2.77x</div>
+      <div class="hero-chg" style="color:var(--orange);">⚠ Put dominance sostenida · 0-5d: 3.59x</div>
+    </div>
+  </div>
+</div>
+
+<!-- ALERTS -->
+<div class="full">
+  <div class="alert alert-warning">
+    <strong>⚠ EXPIRY DAY — 0 DTE SPX/ES:</strong> E4CH6 vence hoy 25 Mar. Gamma máxima en 6600C (OI 2,483) y 6580P (OI 4,219). Zona caliente 6575–6605. Movimiento ±58.87 pts (1σ intraday).
+  </div>
+  <div class="alert alert-danger">
+    <strong>🔴 PUT WALL MASIVO — DTE 6 (31 Mar EOM):</strong> 6500P OI=14,037 · 6600P OI=12,835 · 6550P OI=12,438. P/C ratio 7.66x — hedging institucional de fin de mes extremo. Soporte gravitacional en 6500.
+  </div>
+  <div class="alert alert-info">
+    <strong>ℹ GEX TERRITORY:</strong> GEX negativo en todos los expiries 0-6 DTE en rango 6500–6580. Mercado en zona de <em>negative gamma</em> — dealers amplifican movimientos. Resistencia dinámica en 6625 (único call wall persistente 0-7 DTE).
+  </div>
+</div>
+
+<!-- ROW 1: Key Levels + ES Straddles + CME OI Overview -->
+<div class="grid-3">
+
+  <!-- KEY LEVELS SPX (0-7 DTE Combined) -->
+  <div class="card">
+    <div class="card-header">
+      <span class="card-title">KEY LEVELS — SPX $SPXW (0-7 DTE)</span>
+      <span class="card-sub">OI Acumulado</span>
+    </div>
+    <div class="card-body" style="padding:0;">
+      <table class="levels-table">
+        <thead>
+          <tr>
+            <th>Strike</th>
+            <th>Call OI</th>
+            <th>Put OI</th>
+            <th>Total</th>
+            <th>Tipo</th>
+            <th>GEX</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td class="strike-label wall-call">6,625</td><td class="up">6,777</td><td class="down">4,581</td><td>11,358</td><td><span class="badge badge-bullish">RESISTANCE</span></td><td><div class="gex-bar-wrap"><div class="gex-bar gex-pos" style="width:40px;"></div><span class="up">+196</span></div></td></tr>
+          <tr class="atm-row"><td class="strike-label">6,600</td><td class="up">10,302</td><td class="down">22,305</td><td>32,607</td><td><span class="badge badge-neutral">ATM PIVOT</span></td><td><div class="gex-bar-wrap"><div class="gex-bar gex-neg" style="width:50px;"></div><span class="down">−2.1k</span></div></td></tr>
+          <tr><td class="strike-label wall-put">6,585</td><td>1,747</td><td class="down">5,201</td><td>6,948</td><td><span class="badge badge-bearish">SUPPORT</span></td><td><div class="gex-bar-wrap"><div class="gex-bar gex-neg" style="width:30px;"></div><span class="down">−924</span></div></td></tr>
+          <tr><td class="strike-label wall-put">6,580</td><td>1,962</td><td class="down">7,104</td><td>9,066</td><td><span class="badge badge-bearish">SUPPORT</span></td><td><div class="gex-bar-wrap"><div class="gex-bar gex-neg" style="width:38px;"></div><span class="down">−3.5k</span></div></td></tr>
+          <tr><td class="strike-label wall-put">6,575</td><td>3,847</td><td class="down">11,019</td><td>14,866</td><td><span class="badge badge-bearish">MAJOR S</span></td><td><div class="gex-bar-wrap"><div class="gex-bar gex-neg" style="width:55px;"></div><span class="down">−2.6k</span></div></td></tr>
+          <tr><td class="strike-label wall-put">6,550</td><td>3,555</td><td class="down">23,038</td><td>26,593</td><td><span class="badge badge-bearish">MAJOR S</span></td><td><div class="gex-bar-wrap"><div class="gex-bar gex-neg" style="width:62px;"></div><span class="down">−2.5k</span></div></td></tr>
+          <tr><td class="strike-label wall-put">6,530</td><td>671</td><td class="down">6,095</td><td>6,766</td><td><span class="badge badge-bearish">SUPPORT</span></td><td><div class="gex-bar-wrap"><div class="gex-bar gex-neg" style="width:28px;"></div><span class="down">−277</span></div></td></tr>
+          <tr><td class="strike-label wall-put">6,515</td><td>773</td><td class="down">11,866</td><td>12,639</td><td><span class="badge badge-bearish">MAJOR S</span></td><td><div class="gex-bar-wrap"><div class="gex-bar gex-neg" style="width:46px;"></div><span class="down">−2.0k</span></div></td></tr>
+          <tr><td class="strike-label wall-put">6,500</td><td>2,766</td><td class="down">27,662</td><td>30,428</td><td><span class="badge badge-bearish">PUT WALL</span></td><td><div class="gex-bar-wrap"><div class="gex-bar gex-neg" style="width:70px;"></div><span class="down">−5.2k</span></div></td></tr>
+          <tr><td class="strike-label wall-put">6,490</td><td>211</td><td class="down">9,155</td><td>9,366</td><td><span class="badge badge-bearish">SUPPORT</span></td><td><div class="gex-bar-wrap"><div class="gex-bar gex-neg" style="width:35px;"></div><span class="down">−2.7k</span></div></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- ES STRADDLES + RANGES -->
+  <div class="card">
+    <div class="card-header">
+      <span class="card-title">ES STRADDLES & RANGES (CME)</span>
+      <span class="card-sub">QuikStrike · Settle 3/24</span>
+    </div>
+    <div class="card-body" style="padding:0;">
+      <table class="levels-table">
+        <thead>
+          <tr><th>Expiry</th><th>DTE</th><th>Straddle</th><th>Vol%</th><th>C OI</th><th>P OI</th></tr>
+        </thead>
+        <tbody>
+          <tr class="atm-row"><td><span class="accent">E4CH6</span></td><td class="accent">0</td><td class="yellow">68.5</td><td>27.79</td><td class="up">115</td><td class="down">241</td></tr>
+          <tr><td>E4DH6</td><td>1</td><td>101.5</td><td>27.43</td><td class="up">20</td><td class="down">120</td></tr>
+          <tr><td>EW4H6</td><td>2</td><td>129.0</td><td>27.95</td><td class="up">129</td><td class="down">286</td></tr>
+          <tr><td>E5AH6</td><td>5</td><td>170.0</td><td style="color:var(--orange);">25.60</td><td class="up">17</td><td class="down">27</td></tr>
+          <tr><td>EWH6</td><td>6</td><td>188.5</td><td>26.21</td><td class="up">55</td><td class="down">66</td></tr>
+          <tr><td>E1CJ6</td><td>7</td><td>202.0</td><td>26.23</td><td class="up">6</td><td class="down">6</td></tr>
+          <tr><td>EW3J6</td><td>23</td><td>305.5</td><td>22.74</td><td class="up">94</td><td class="down">33</td></tr>
+          <tr><td>EWJ6</td><td>36</td><td>367.5</td><td>22.04</td><td class="up">124</td><td class="down">2,725</td></tr>
+          <tr><td>ESM6</td><td>86</td><td>526.5</td><td>20.82</td><td class="up">3,292</td><td class="down">7,751</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="card-body" style="padding:8px 12px; border-top:1px solid var(--border);">
+      <div class="metric-row"><span class="metric-label">0 DTE Range (1σ)</span><span class="metric-val yellow">±58.87 pts</span></div>
+      <div class="metric-row"><span class="metric-label">2 DTE Range (EW4H6)</span><span class="metric-val">±116.96 / ±178.71</span></div>
+      <div class="metric-row"><span class="metric-label">IV Term Structure</span><span class="metric-val" style="color:var(--orange);">INVERTED (0d>2d)</span></div>
+      <div class="metric-row"><span class="metric-label">Vol Chg (intraday)</span><span class="metric-val down">−0.08 (27.71)</span></div>
+    </div>
+  </div>
+
+  <!-- CME MARKET OVERVIEW -->
+  <div class="card">
+    <div class="card-header">
+      <span class="card-title">CME EQUITIES OVERVIEW</span>
+      <span class="card-sub">Trade Date 03/24/2026</span>
+    </div>
+    <div class="card-body">
+      <div class="section-label">VOLUMEN F&O</div>
+      <div class="metric-row"><span class="metric-label">Futures Vol</span><span class="metric-val">7,712,744</span></div>
+      <div class="metric-row"><span class="metric-label">Options Vol</span><span class="metric-val">1,548,320</span></div>
+      <div class="metric-row"><span class="metric-label">S&P Options Call/Put</span><span class="metric-val"><span class="up">32.9%</span> / <span class="down">67.1%</span></span></div>
+
+      <div class="section-label">OPEN INTEREST</div>
+      <div class="metric-row"><span class="metric-label">Futures OI</span><span class="metric-val">4,871,151</span></div>
+      <div class="metric-row"><span class="metric-label">Options OI Total</span><span class="metric-val">5,745,142</span></div>
+      <div class="metric-row"><span class="metric-label">All S&P500 OI P/C</span><span class="metric-val down">2.77x</span></div>
+
+      <div class="section-label">ES OPTIONS OI POR DTE</div>
+      <div class="dte-row">
+        <span class="down">0–5 días</span>
+        <div class="pc-bar"><div class="pc-fill" style="width:78.2%;"></div></div>
+        <span class="down">78.2% PUT</span>
+      </div>
+      <div class="dte-row">
+        <span style="color:var(--orange);">6–28 días</span>
+        <div class="pc-bar"><div class="pc-fill" style="width:70.3%;"></div></div>
+        <span style="color:var(--orange);">70.3% PUT</span>
+      </div>
+      <div class="dte-row">
+        <span class="neutral">29–96 días</span>
+        <div class="pc-bar"><div class="pc-fill" style="width:75.9%;"></div></div>
+        <span class="down">75.9% PUT</span>
+      </div>
+      <div class="dte-row">
+        <span class="neutral">97+ días</span>
+        <div class="pc-bar"><div class="pc-fill" style="width:67.5%;"></div></div>
+        <span style="color:var(--orange);">67.5% PUT</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ROW 2: SPX 0 DTE OI + DTE Breakdown + Spreads -->
+<div class="grid-3">
+
+  <!-- SPX 0 DTE DETAIL -->
+  <div class="card">
+    <div class="card-header">
+      <span class="card-title">SPX 0 DTE — 25 MAR 2026</span>
+      <span class="card-sub">$SPXW · CBOE · E4CH6 expira HOY</span>
+    </div>
+    <div class="card-body" style="padding:0;">
+      <table class="levels-table">
+        <thead>
+          <tr><th>Strike</th><th>C Bid/Ask</th><th>C OI</th><th>C IV%</th><th>P OI</th><th>P IV%</th><th>P Bid/Ask</th></tr>
+        </thead>
+        <tbody>
+          <tr><td class="strike-label up">6625</td><td class="up">28.5/29.0</td><td class="up">789</td><td>79.0</td><td>233</td><td>8.8</td><td>3.0/3.4</td></tr>
+          <tr><td class="strike-label up">6615</td><td class="up">21.9/22.4</td><td class="up">476</td><td>76.4</td><td>476</td><td>10.8</td><td>4.1/4.5</td></tr>
+          <tr><td class="strike-label up">6610</td><td class="up">19.4/19.9</td><td class="up">373</td><td>75.0</td><td>392</td><td>11.5</td><td>4.6/5.1</td></tr>
+          <tr class="atm-row"><td class="strike-label accent">6600</td><td class="up">15.0/15.4</td><td class="up">2,483</td><td>66.2</td><td>1,782</td><td class="down">~NE</td><td>6.5/7.0</td></tr>
+          <tr><td class="strike-label">6595</td><td>13.1/13.5</td><td>392</td><td>67.4</td><td>373</td><td>13.7</td><td>7.3/7.8</td></tr>
+          <tr><td class="strike-label down">6590</td><td>11.3/11.7</td><td>454</td><td>65.5</td><td>240</td><td>14.0</td><td>8.2/8.7</td></tr>
+          <tr><td class="strike-label down">6585</td><td>9.6/10.0</td><td>428</td><td>65.3</td><td>480</td><td>14.6</td><td>9.3/9.8</td></tr>
+          <tr><td class="strike-label down">6580</td><td>8.0/8.4</td><td>889</td><td>70.0</td><td class="down">4,219</td><td>18.2</td><td>10.5/11.0</td></tr>
+          <tr><td class="strike-label down">6575</td><td>6.6/7.0</td><td class="up">2,134</td><td>70.9</td><td class="down">3,593</td><td>20.4</td><td>12.1/12.6</td></tr>
+          <tr><td class="strike-label down">6550</td><td>3.1/3.4</td><td>1,400</td><td>43.4</td><td class="down">4,709</td><td>23.1</td><td>18.5/19.0</td></tr>
+          <tr><td class="strike-label down">6500</td><td>0.3/0.5</td><td>308</td><td>89.8</td><td class="down">4,786</td><td>33.9</td><td>38.5/39.2</td></tr>
+          <tr><td class="strike-label down">6485</td><td>0.1/0.2</td><td>19</td><td>94.5</td><td class="down">4,816</td><td>35.3</td><td>45.5/46.5</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="card-body" style="padding:8px 12px;border-top:1px solid var(--border);">
+      <div class="metric-row"><span class="metric-label">Total Call OI</span><span class="metric-val up">20,277</span></div>
+      <div class="metric-row"><span class="metric-label">Total Put OI</span><span class="metric-val down">45,689</span></div>
+      <div class="metric-row"><span class="metric-label">P/C Ratio 0 DTE</span><span class="metric-val down">2.25x ⚠</span></div>
+      <div class="metric-row"><span class="metric-label">Max Pain Estimado</span><span class="metric-val yellow">~6,575–6,600</span></div>
+    </div>
+  </div>
+
+  <!-- DTE BREAKDOWN 0-7 -->
+  <div class="card">
+    <div class="card-header">
+      <span class="card-title">SPX P/C RATIO POR EXPIRY</span>
+      <span class="card-sub">0–7 DTE · $SPXW TradeStation</span>
+    </div>
+    <div class="card-body" style="padding:0;">
+      <div style="padding:8px 12px;">
+        <div class="expiry-row header">
+          <span>Fecha</span><span>DTE</span><span>Call OI</span><span>Put OI</span><span>P/C</span><span>Sesgo</span>
+        </div>
+        <div class="expiry-row">
+          <span class="yellow"><strong>25 Mar</strong></span>
+          <span class="yellow">0</span>
+          <span class="up">20,277</span>
+          <span class="down">45,689</span>
+          <span class="down"><strong>2.25x</strong></span>
+          <span><span class="badge badge-bearish">PUTS</span></span>
+        </div>
+        <div class="expiry-row">
+          <span>26 Mar</span><span>1</span>
+          <span class="up">6,331</span><span class="down">12,636</span>
+          <span class="down">2.00x</span>
+          <span><span class="badge badge-bearish">PUTS</span></span>
+        </div>
+        <div class="expiry-row">
+          <span>27 Mar</span><span>2</span>
+          <span class="up">16,489</span><span class="down">35,340</span>
+          <span class="down">2.14x</span>
+          <span><span class="badge badge-bearish">PUTS</span></span>
+        </div>
+        <div class="expiry-row">
+          <span>30 Mar</span><span>5</span>
+          <span class="up">5,448</span><span class="down">17,112</span>
+          <span class="down">3.14x</span>
+          <span><span class="badge badge-bearish">PUTS ⚠</span></span>
+        </div>
+        <div class="expiry-row">
+          <span class="orange">31 Mar</span><span class="orange">6</span>
+          <span class="up">9,769</span><span class="down">74,825</span>
+          <span class="down"><strong>7.66x</strong></span>
+          <span><span class="badge badge-bearish">EOM 🔴</span></span>
+        </div>
+        <div class="expiry-row">
+          <span>01 Apr</span><span>7</span>
+          <span class="up">2,244</span><span class="down">5,406</span>
+          <span class="down">2.41x</span>
+          <span><span class="badge badge-bearish">PUTS</span></span>
+        </div>
+      </div>
+      <div style="padding:8px 12px;border-top:1px solid var(--border);">
+        <div class="alert alert-warning" style="margin:0;">
+          <strong>31 Mar (EOM) EXTREMO:</strong> P/C 7.66x con 74,825 puts vs 9,769 calls. Concentración masiva en 6500P (14,037), 6600P (12,835), 6550P (12,438). Soporte magnético de fin de mes.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SPREAD ACTIVITY -->
+  <div class="card">
+    <div class="card-header">
+      <span class="card-title">SPREAD ACTIVITY — ES OPTIONS</span>
+      <span class="card-sub">Globex 03/24/2026 · CME</span>
+    </div>
+    <div class="card-body">
+      <div class="metric-row"><span class="metric-label">Total ES Options Vol</span><span class="metric-val">1,051,801</span></div>
+      <div class="metric-row"><span class="metric-label">Outrights</span><span class="metric-val">643,654 (61.2%)</span></div>
+      <div class="metric-row"><span class="metric-label">Spreads</span><span class="metric-val accent">408,147 (38.8%)</span></div>
+      <div class="metric-row"><span class="metric-label">Calls / Puts / Mixed</span><span class="metric-val"><span class="up">30.2%</span> / <span class="down">57.6%</span> / 12.2%</span></div>
+
+      <div class="section-label">VOLUMEN POR TIPO SPREAD</div>
+      <div class="spread-list">
+        <div class="spread-row">
+          <span class="spread-name">Vertical</span>
+          <div class="spread-bar-wrap"><div class="spread-bar-fill" style="width:100%;background:var(--accent2);"></div></div>
+          <span class="spread-pct accent">189,608 (46.5%)</span>
+        </div>
+        <div class="spread-row">
+          <span class="spread-name">Generic</span>
+          <div class="spread-bar-wrap"><div class="spread-bar-fill" style="width:42.8%;background:var(--purple);"></div></div>
+          <span class="spread-pct purple">81,123 (19.9%)</span>
+        </div>
+        <div class="spread-row">
+          <span class="spread-name">Ratio 1x2</span>
+          <div class="spread-bar-wrap"><div class="spread-bar-fill" style="width:20.3%;background:var(--orange);"></div></div>
+          <span class="spread-pct orange">38,423 (9.4%)</span>
+        </div>
+        <div class="spread-row">
+          <span class="spread-name">Butterfly</span>
+          <div class="spread-bar-wrap"><div class="spread-bar-fill" style="width:16.3%;background:var(--yellow);"></div></div>
+          <span class="spread-pct yellow">30,928 (7.6%)</span>
+        </div>
+        <div class="spread-row">
+          <span class="spread-name">Ratio 1x3</span>
+          <div class="spread-bar-wrap"><div class="spread-bar-fill" style="width:5.8%;background:var(--red);"></div></div>
+          <span class="spread-pct down">11,006 (2.7%)</span>
+        </div>
+        <div class="spread-row">
+          <span class="spread-name">Iron Condor</span>
+          <div class="spread-bar-wrap"><div class="spread-bar-fill" style="width:6.6%;background:var(--green2);"></div></div>
+          <span class="spread-pct up">12,616 (3.1%)</span>
+        </div>
+        <div class="spread-row">
+          <span class="spread-name">Straddle</span>
+          <div class="spread-bar-wrap"><div class="spread-bar-fill" style="width:2.7%;background:var(--text2);"></div></div>
+          <span class="spread-pct">5,132 (1.3%)</span>
+        </div>
+        <div class="spread-row">
+          <span class="spread-name">Strangle</span>
+          <div class="spread-bar-wrap"><div class="spread-bar-fill" style="width:2.3%;background:var(--text3);"></div></div>
+          <span class="spread-pct">4,452 (1.1%)</span>
+        </div>
+      </div>
+
+      <div class="section-label">SPREAD % HISTÓRICO (CME Latest Day)</div>
+      <div class="metric-row"><span class="metric-label">Vertical</span><span class="metric-val accent">38.86% (dom.)</span></div>
+      <div class="metric-row"><span class="metric-label">Ratio Spreads</span><span class="metric-val orange">11.04% (alto)</span></div>
+      <div class="metric-row"><span class="metric-label">Delta-Hedged</span><span class="metric-val">8.56%</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- ROW 3: ES OI GAMMA WALLS + INTRADAY VOL + RESUMEN NARRATIVO -->
+<div class="grid-3">
+
+  <!-- ES CME GAMMA WALLS (de OI x Gamma Matrix) -->
+  <div class="card">
+    <div class="card-header">
+      <span class="card-title">ES — OI × GAMMA MATRIX (CME)</span>
+      <span class="card-sub">Cambio 3/24 vs 3/23 · QuikStrike</span>
+    </div>
+    <div class="card-body">
+      <div class="section-label">CONCENTRACIONES DESTACADAS (0-7 DTE)</div>
+
+      <table class="levels-table">
+        <thead><tr><th>Strike</th><th>Expiry</th><th>Calls</th><th>Puts</th><th>Nota</th></tr></thead>
+        <tbody>
+          <tr><td class="strike-label up">6800</td><td>EWH6</td><td class="up">6</td><td>4</td><td class="up">C > P</td></tr>
+          <tr><td class="strike-label up">6750</td><td>EW4H6</td><td class="up">10</td><td>3</td><td class="up">CALL WALL</td></tr>
+          <tr><td class="strike-label up">6725</td><td>E4CH6</td><td class="up">5</td><td>0</td><td class="up">0 DTE CALL</td></tr>
+          <tr><td class="strike-label up">6700</td><td>EW4H6</td><td class="up">6</td><td>7</td><td class="neutral">Mixto</td></tr>
+          <tr><td class="strike-label up">6675</td><td>E4CH6</td><td class="up">6</td><td>3</td><td class="up">C dom.</td></tr>
+          <tr class="atm-row"><td class="strike-label accent">6650</td><td>EW4H6</td><td class="up">5</td><td class="down">14</td><td class="down">PUT DOM</td></tr>
+          <tr class="atm-row"><td class="strike-label accent">6600</td><td>E4CH6/EW4H6</td><td>3/6</td><td class="down">7/7</td><td class="down">PUT DOM</td></tr>
+          <tr><td class="strike-label down">6575</td><td>EWH6</td><td>1</td><td class="down">5</td><td class="down">PUT WALL</td></tr>
+          <tr><td class="strike-label down">6550</td><td>EW4H6</td><td class="up">1</td><td class="down">12</td><td class="down">MAJOR PUT</td></tr>
+          <tr><td class="strike-label down">6525</td><td>EWH6</td><td>0</td><td class="down">12</td><td class="down">PUT ONLY</td></tr>
+          <tr><td class="strike-label down">6500</td><td>EW4H6</td><td class="up">1</td><td class="down">14</td><td class="down">MAJOR PUT</td></tr>
+          <tr><td class="strike-label down">6450</td><td>EW4H6</td><td>0</td><td class="down">11</td><td class="down">PUT FLOOR</td></tr>
+          <tr><td class="strike-label down">6400</td><td>EW4H6</td><td>0</td><td class="down">15</td><td class="down">PUT FLOOR</td></tr>
+        </tbody>
+      </table>
+
+      <div class="section-label">CAMBIOS OI (3/24 vs 3/23)</div>
+      <div class="metric-row"><span class="metric-label">E4CH6 0 DTE Calls</span><span class="metric-val up">+77 (settle)</span></div>
+      <div class="metric-row"><span class="metric-label">E4CH6 0 DTE Puts</span><span class="metric-val down">+216 (settle)</span></div>
+      <div class="metric-row"><span class="metric-label">EW4H6 Puts</span><span class="metric-val down">+26 neto</span></div>
+      <div class="metric-row"><span class="metric-label">EWJ6 (30d) Puts</span><span class="metric-val down">2,725 (−10)</span></div>
+    </div>
+  </div>
+
+  <!-- INTRADAY VOL E4CH6 -->
+  <div class="card">
+    <div class="card-header">
+      <span class="card-title">ES INTRADAY VOL — E4CH6</span>
+      <span class="card-sub">0.37 DTE · Spot 6660.5 · Vol 27.71</span>
+    </div>
+    <div class="card-body">
+      <div class="section-label">VOLUMEN INTRADAY (CME QuikStrike)</div>
+      <div class="metric-row"><span class="metric-label">Call Volume</span><span class="metric-val up">33,821</span></div>
+      <div class="metric-row"><span class="metric-label">Put Volume</span><span class="metric-val down">27,470</span></div>
+      <div class="metric-row"><span class="metric-label">C/P Vol Ratio</span><span class="metric-val up">1.23x (CALLS lideran)</span></div>
+      <div class="metric-row"><span class="metric-label">Future Change</span><span class="metric-val up">+54.5 pts</span></div>
+      <div class="metric-row"><span class="metric-label">Vol Change</span><span class="metric-val down">−0.08 (vol comprimida)</span></div>
+
+      <div class="section-label">RANGOS OPCIONES (1σ, 2σ, 3σ)</div>
+      <div class="metric-row"><span class="metric-label">15Δ Put level</span><span class="metric-val down">6,485.5 (−174.5)</span></div>
+      <div class="metric-row"><span class="metric-label">25Δ Put level</span><span class="metric-val down">6,543.5 (−117.0)</span></div>
+      <div class="metric-row"><span class="metric-label">35Δ Put level</span><span class="metric-val down">6,601.6 (−58.9)</span></div>
+      <div class="metric-row"><span class="metric-label">ATM</span><span class="metric-val accent">6,660.5</span></div>
+      <div class="metric-row"><span class="metric-label">35Δ Call level</span><span class="metric-val up">6,719.4 (+58.9)</span></div>
+      <div class="metric-row"><span class="metric-label">25Δ Call level</span><span class="metric-val up">6,779.5 (+119.0)</span></div>
+      <div class="metric-row"><span class="metric-label">15Δ Call level</span><span class="metric-val up">6,839.2 (+178.7)</span></div>
+
+      <div class="section-label">SESGO INTRADAY (observado)</div>
+      <div class="alert alert-info" style="margin:0;">
+        Calls lideran volumen (33.8k vs 27.5k puts) con spot subiendo +54.5pts desde settle. Sin embargo, OI histórico abrumadoramente PUT-heavy. La actividad de calls es táctica/especulativa vs cobertura estructural de puts. Vol comprimida (−0.08) sugiere dealers cortos gamma en zona 6600–6660.
+      </div>
+    </div>
+  </div>
+
+  <!-- RESUMEN NARRATIVO -->
+  <div class="card">
+    <div class="card-header">
+      <span class="card-title">RESUMEN NARRATIVO</span>
+      <span class="card-sub">Síntesis Pre-Open · 07:30 ET</span>
+    </div>
+    <div class="card-body">
+      <div class="section-label">CONTEXTO MACRO OPCIONES</div>
+      <div class="alert alert-info" style="margin-bottom:8px;">
+        <strong>Estructura general:</strong> Mercado en zona de <em>negative gamma</em>. Todos los expiries 0-7 DTE muestran dominancia put con ratios entre 2.0x y 7.66x. La volatilidad implícita en 0 DTE (27.79%) está ligeramente inverted vs 2 DTE, señal de incertidumbre para el cierre del día.
+      </div>
+
+      <div class="section-label">NIVELES CRÍTICOS HOY</div>
+      <div class="metric-row"><span class="metric-label">Resistencia clave</span><span class="metric-val up">6,625 (call wall 0-7 DTE)</span></div>
+      <div class="metric-row"><span class="metric-label">Pivot / Max Pain</span><span class="metric-val yellow">6,575–6,600</span></div>
+      <div class="metric-row"><span class="metric-label">Soporte 1</span><span class="metric-val down">6,580 (GEX −3,530)</span></div>
+      <div class="metric-row"><span class="metric-label">Soporte 2</span><span class="metric-val down">6,550 (23k puts)</span></div>
+      <div class="metric-row"><span class="metric-label">PUT WALL absoluto</span><span class="metric-val down">6,500 (30k OI acum.)</span></div>
+      <div class="metric-row"><span class="metric-label">Floor institucional</span><span class="metric-val down">6,400–6,450 (EW4H6)</span></div>
+
+      <div class="section-label">SESGO POSICIONAMIENTO</div>
+      <div class="metric-row"><span class="metric-label">Institucional (estructural)</span><span class="metric-val down">BEARISH / HEDGE</span></div>
+      <div class="metric-row"><span class="metric-label">Táctico intraday</span><span class="metric-val up">Calls activos (+54.5)</span></div>
+      <div class="metric-row"><span class="metric-label">EOM (31 Mar)</span><span class="metric-val down">EXTREMO BEARISH (7.66x)</span></div>
+      <div class="metric-row"><span class="metric-label">Spreads institucionales</span><span class="metric-val orange">Ratio 1x2 elevado (9.4%)</span></div>
+
+      <div class="section-label">ESCENARIOS</div>
+      <div class="alert alert-success" style="margin-bottom:6px;">
+        <strong>BULL:</strong> Spot mantiene 6600+ y cierra 0 DTE sobre 6600 → call pinning en 6600–6625. Target 6625.
+      </div>
+      <div class="alert alert-danger" style="margin-bottom:6px;">
+        <strong>BEAR:</strong> Ruptura de 6580 con volumen → negative gamma acelera hacia 6550, luego 6500 put wall.
+      </div>
+      <div class="alert alert-warning" style="margin-bottom:0;">
+        <strong>BASE:</strong> Pinning entre 6575–6605 durante expiración. Volatilidad comprimida hasta FOMC/evento. Riesgo real: EOM 31 Mar con 74,825 puts.
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<div class="footer">
+  <span>PRE-OPEN BRIEFING v1.0 · 25 MAR 2026 07:30 ET</span>
+  <span>Fuentes: CME QuikStrike (ES PDFs) · TradeStation $SPXW.X (XLS) · CME Equities Market Overview</span>
+  <span>For informational purposes only. Not investment advice.</span>
+</div>
+
+</div><!-- /container -->
+
+<script>
+// Tab functionality
+document.querySelectorAll('.tab').forEach(tab => {
+  tab.addEventListener('click', () => {
+    const parent = tab.closest('.card');
+    parent.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+    parent.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+    tab.classList.add('active');
+    const target = tab.dataset.target;
+    if (target) document.getElementById(target)?.classList.add('active');
+  });
+});
+
+// Timestamp
+console.log('Pre-Open Briefing loaded:', new Date().toLocaleTimeString());
+</script>
+</body>
+</html>
