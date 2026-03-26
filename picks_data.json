@@ -1,6 +1,6 @@
 {
-  "updated_at": "2026-03-25T18:03:46.181094-04:00",
-  "updated_at_display": "25-Mar-2026 18:03 ET",
+  "updated_at": "2026-03-26T17:54:49.311883-04:00",
+  "updated_at_display": "26-Mar-2026 17:54 ET",
   "picks": [
     {
       "week": 12,
@@ -19,12 +19,12 @@
       "benchmark": "SPY",
       "filename": "pad_pick_semana12_2026.html",
       "status": "open",
-      "current_price": 60.57,
-      "current_date": "2026-03-25",
-      "current_ret_pct": 4.74,
-      "bench_ret_pct": -1.56,
-      "vs_benchmark_pct": 6.3,
-      "days_active": 8,
+      "current_price": 61.52,
+      "current_date": "2026-03-26",
+      "current_ret_pct": 6.38,
+      "bench_ret_pct": -3.32,
+      "vs_benchmark_pct": 9.7,
+      "days_active": 9,
       "closed_date": null,
       "closed_price": null,
       "levels": {
@@ -35,17 +35,17 @@
         },
         "target1": {
           "hit": false,
-          "pct_away": 4.01,
+          "pct_away": 2.41,
           "label": "$63.0"
         },
         "target2": {
           "hit": false,
-          "pct_away": 15.57,
+          "pct_away": 13.78,
           "label": "$70.0"
         },
         "stop": {
           "hit": false,
-          "margin": 9.57,
+          "margin": 10.52,
           "label": "$51.0"
         },
         "gamma_flip": {
@@ -61,28 +61,28 @@
       "chart_ticker": [
         {
           "date": "2026-03-16",
-          "close": 57.52,
-          "ret_pct": -0.54
+          "close": 57.9,
+          "ret_pct": 0.12
         },
         {
           "date": "2026-03-17",
-          "close": 58.13,
-          "ret_pct": 0.52
+          "close": 58.51,
+          "ret_pct": 1.18
         },
         {
           "date": "2026-03-18",
-          "close": 58.05,
-          "ret_pct": 0.38
+          "close": 58.43,
+          "ret_pct": 1.04
         },
         {
           "date": "2026-03-19",
-          "close": 58.97,
-          "ret_pct": 1.97
+          "close": 59.36,
+          "ret_pct": 2.65
         },
         {
           "date": "2026-03-20",
-          "close": 58.93,
-          "ret_pct": 1.9
+          "close": 59.31,
+          "ret_pct": 2.56
         },
         {
           "date": "2026-03-23",
@@ -98,6 +98,11 @@
           "date": "2026-03-25",
           "close": 60.57,
           "ret_pct": 4.74
+        },
+        {
+          "date": "2026-03-26",
+          "close": 61.52,
+          "ret_pct": 6.38
         }
       ],
       "chart_benchmark": [
@@ -140,6 +145,11 @@
           "date": "2026-03-25",
           "close": 656.82,
           "ret_pct": -1.56
+        },
+        {
+          "date": "2026-03-26",
+          "close": 645.09,
+          "ret_pct": -3.32
         }
       ]
     }
