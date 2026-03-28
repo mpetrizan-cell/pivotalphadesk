@@ -1,0 +1,606 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="google-site-verification" content="rO1JRC7HFLGKWoK_5kzdd7OmHACRFl5xcf1RmNoGPLY" />
+<meta name="description" content="Gamma structure institucional para ES, NQ, CL y SPX. Briefings diarios pre-market con niveles PAD, Put Walls, Gamma Flip y régimen AMPLIFIED/DAMPENED. Para traders independientes.">
+<meta name="keywords" content="gamma levels, SPX, ES futures, NQ futures, options flow, put wall, gamma flip, options trading, market structure">
+<meta property="og:title" content="Pivot Alpha Desk — Daily Gamma Market Intelligence">
+<meta property="og:description" content="Institutional-grade gamma levels for ES, NQ, CL and SPX. Know where dealers are positioned before the market opens.">
+<meta property="og:url" content="https://www.pivotalphadesk.com">
+<meta property="og:type" content="website">
+<title>Pivot Alpha Desk &mdash; 30 Mar 2026 &middot; AMPLIFIED &middot; EOM 31-Mar &middot; Liberation Day 2-Apr</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Space+Mono:wght@400;700&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:#080c10; --bg2:#0d1319; --bg3:#111820; --border:#1e2d3d;
+  --accent:#00d4ff; --accent2:#0088aa; --gold:#f0b429; --gold2:#c8941f;
+  --green:#00e676; --red:#ff4444; --text:#e8f4f8; --text2:#8ba4b8;
+  --text3:#4a6070; --white:#ffffff;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;font-size:16px;line-height:1.6;overflow-x:hidden;}
+body::before{content:'';position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");pointer-events:none;z-index:0;opacity:0.4;}
+body::after{content:'';position:fixed;inset:0;background-image:linear-gradient(rgba(0,212,255,0.03) 1px,transparent 1px),linear-gradient(90deg,rgba(0,212,255,0.03) 1px,transparent 1px);background-size:48px 48px;pointer-events:none;z-index:0;}
+nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:center;justify-content:space-between;padding:16px 48px;background:rgba(8,12,16,0.85);backdrop-filter:blur(16px);border-bottom:1px solid var(--border);}
+.nav-logo{display:flex;align-items:center;gap:12px;}
+.logo-mark{width:36px;height:36px;background:linear-gradient(135deg,var(--accent),var(--gold));clip-path:polygon(50% 0%,100% 25%,100% 75%,50% 100%,0% 75%,0% 25%);display:flex;align-items:center;justify-content:center;font-family:'Syne',sans-serif;font-weight:800;font-size:14px;color:var(--bg);animation:pulse-logo 3s ease-in-out infinite;}
+@keyframes pulse-logo{0%,100%{box-shadow:0 0 0 0 rgba(0,212,255,0.3);}50%{box-shadow:0 0 0 8px rgba(0,212,255,0);}}
+.logo-text{font-family:'Syne',sans-serif;font-weight:700;font-size:17px;letter-spacing:.02em;color:var(--white);}
+.logo-text span{color:var(--accent);}
+.nav-links{display:flex;align-items:center;gap:24px;list-style:none;}
+.nav-links a{font-family:'Space Mono',monospace;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--text2);text-decoration:none;transition:color .2s;}
+.nav-links a:hover{color:var(--accent);}
+.nav-cta{background:transparent;border:1px solid var(--accent);color:var(--accent)!important;padding:7px 16px;border-radius:2px;transition:all .2s!important;}
+.nav-cta:hover{background:var(--accent)!important;color:var(--bg)!important;}
+.hero{position:relative;z-index:1;min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:120px 48px 80px;overflow:hidden;}
+.hero-glow{position:absolute;top:20%;left:50%;transform:translateX(-50%);width:800px;height:400px;background:radial-gradient(ellipse,rgba(239,68,68,0.07) 0%,transparent 70%);pointer-events:none;}
+.hero-glow-gold{position:absolute;top:40%;left:30%;width:400px;height:300px;background:radial-gradient(ellipse,rgba(240,180,41,0.04) 0%,transparent 70%);pointer-events:none;}
+.hero-badge{display:inline-flex;align-items:center;gap:8px;background:rgba(239,68,68,0.08);border:1px solid rgba(239,68,68,0.25);border-radius:100px;padding:6px 16px;font-family:'Space Mono',monospace;font-size:10px;letter-spacing:.15em;text-transform:uppercase;color:#ff6666;margin-bottom:32px;animation:fade-in .8s ease both;}
+.badge-dot{width:6px;height:6px;background:var(--red);border-radius:50%;animation:blink 1.2s ease-in-out infinite;}
+@keyframes blink{0%,100%{opacity:1;}50%{opacity:.2;}}
+.hero h1{font-family:'Syne',sans-serif;font-weight:800;font-size:clamp(48px,7vw,88px);line-height:1.0;letter-spacing:-.03em;color:var(--white);margin-bottom:8px;animation:fade-up .9s ease both .1s;}
+.hero h1 .accent{color:var(--accent);}
+.hero h1 .gold{color:var(--gold);}
+.hero-sub{font-family:'Syne',sans-serif;font-weight:600;font-size:clamp(18px,2.5vw,26px);color:var(--text2);letter-spacing:.08em;text-transform:uppercase;margin-bottom:24px;animation:fade-up .9s ease both .2s;}
+.hero-desc{font-size:18px;color:var(--text2);max-width:560px;margin:0 auto 48px;line-height:1.7;animation:fade-up .9s ease both .3s;}
+.hero-actions{display:flex;gap:12px;align-items:center;justify-content:center;flex-wrap:wrap;animation:fade-up .9s ease both .4s;}
+.btn-primary{background:var(--accent);color:var(--bg);border:none;padding:13px 28px;font-family:'Space Mono',monospace;font-size:11px;letter-spacing:.1em;text-transform:uppercase;font-weight:700;cursor:pointer;border-radius:2px;text-decoration:none;transition:all .2s;display:inline-block;}
+.btn-primary:hover{background:var(--white);transform:translateY(-2px);box-shadow:0 8px 32px rgba(0,212,255,0.3);}
+.btn-secondary{background:transparent;color:var(--text2);border:1px solid var(--border);padding:13px 28px;font-family:'Space Mono',monospace;font-size:11px;letter-spacing:.1em;text-transform:uppercase;cursor:pointer;border-radius:2px;text-decoration:none;transition:all .2s;display:inline-block;}
+.btn-secondary:hover{border-color:var(--accent);color:var(--accent);}
+.ticker-wrap{position:relative;z-index:1;background:rgba(239,68,68,0.08);border-top:1px solid rgba(239,68,68,0.2);border-bottom:1px solid rgba(239,68,68,0.2);overflow:hidden;padding:12px 0;}
+.ticker{display:flex;gap:64px;animation:ticker-scroll 38s linear infinite;width:max-content;}
+.ticker-item{display:flex;align-items:center;gap:10px;font-family:'Space Mono',monospace;font-size:12px;white-space:nowrap;color:var(--text2);}
+.ticker-item .sym{color:var(--white);font-weight:700;}
+.ticker-item .up{color:var(--green);}
+.ticker-item .dn{color:var(--red);}
+.ticker-item .neu{color:var(--gold);}
+.ticker-item .or{color:#f5820a;}
+.ticker-item .alert{color:var(--red);font-weight:700;animation:blink 1.2s ease-in-out infinite;}
+@keyframes ticker-scroll{0%{transform:translateX(0);}100%{transform:translateX(-50%);}}
+section{position:relative;z-index:1;}
+.container{max-width:1200px;margin:0 auto;padding:0 48px;}
+.section-label{font-family:'Space Mono',monospace;font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:var(--accent);margin-bottom:12px;}
+.section-title{font-family:'Syne',sans-serif;font-weight:800;font-size:clamp(32px,4vw,52px);line-height:1.1;letter-spacing:-.02em;color:var(--white);margin-bottom:20px;}
+.section-desc{font-size:17px;color:var(--text2);max-width:520px;line-height:1.7;}
+.how{padding:120px 0;background:var(--bg2);border-top:1px solid var(--border);border-bottom:1px solid var(--border);}
+.how-grid{display:grid;grid-template-columns:1fr 1fr;gap:80px;align-items:center;margin-top:64px;}
+.how-steps{display:flex;flex-direction:column;gap:32px;}
+.how-step{display:flex;gap:20px;align-items:flex-start;padding:24px;background:var(--bg3);border:1px solid var(--border);border-radius:4px;transition:border-color .3s;cursor:default;}
+.how-step:hover{border-color:var(--accent2);}
+.step-num{font-family:'Space Mono',monospace;font-size:11px;font-weight:700;color:var(--accent);background:rgba(0,212,255,0.08);border:1px solid rgba(0,212,255,0.2);width:32px;height:32px;border-radius:2px;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:2px;}
+.step-content h4{font-family:'Syne',sans-serif;font-weight:700;font-size:16px;color:var(--white);margin-bottom:6px;}
+.step-content p{font-size:14px;color:var(--text2);line-height:1.6;}
+.mock-briefing{background:var(--bg);border:1px solid var(--border);border-radius:6px;overflow:hidden;font-family:'Space Mono',monospace;font-size:11px;box-shadow:0 24px 80px rgba(0,0,0,0.6),0 0 0 1px rgba(239,68,68,0.08);}
+.mock-header{background:var(--bg3);border-bottom:1px solid var(--border);padding:12px 16px;display:flex;align-items:center;gap:8px;}
+.mock-dots{display:flex;gap:5px;}
+.mock-dot{width:10px;height:10px;border-radius:50%;}
+.mock-dot.r{background:#ff5f57;}
+.mock-dot.y{background:#ffbd2e;}
+.mock-dot.g{background:#28c940;}
+.mock-title{color:var(--text3);font-size:10px;letter-spacing:.1em;margin-left:8px;}
+.mock-tabs{display:flex;border-bottom:1px solid var(--border);background:var(--bg2);}
+.mock-tab{padding:8px 14px;font-size:10px;letter-spacing:.08em;color:var(--text3);border-right:1px solid var(--border);cursor:pointer;}
+.mock-tab.active{color:var(--red);background:var(--bg);border-bottom:2px solid var(--red);margin-bottom:-1px;}
+.mock-body{padding:16px;}
+.mock-row{display:flex;justify-content:space-between;align-items:center;padding:6px 0;border-bottom:1px solid rgba(255,255,255,0.03);}
+.mock-row:last-child{border-bottom:none;}
+.mock-label{color:var(--text3);font-size:10px;}
+.mock-val{color:var(--white);font-size:11px;font-weight:700;}
+.mock-val.up{color:var(--green);}
+.mock-val.dn{color:var(--red);}
+.mock-val.gold{color:var(--gold);}
+.mock-val.blue{color:var(--accent);}
+.mock-divider{height:1px;background:var(--border);margin:10px 0;}
+.mock-level{display:flex;align-items:center;gap:8px;padding:4px 8px;border-radius:2px;margin-bottom:4px;}
+.mock-level-bar{width:3px;height:14px;border-radius:1px;}
+.mock-level-label{color:var(--text2);font-size:10px;flex:1;}
+.mock-level-price{color:var(--white);font-size:11px;font-weight:700;}
+.deep-desk{background:#0d1219;padding:80px 20px;border-top:1px solid var(--border);border-bottom:1px solid var(--border);margin:40px 0;}
+.deep-desk-inner{max-width:1100px;margin:0 auto;}
+.deep-desk-header{text-align:center;margin-bottom:50px;}
+.deep-desk-header h2{color:var(--gold);margin:0;font-size:2.5rem;letter-spacing:2px;font-family:'Syne',sans-serif;font-weight:800;}
+.deep-desk-header p{color:#64748b;margin-top:10px;font-size:1.1rem;}
+.deep-desk-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:30px;}
+.deep-card{background:var(--bg);border:1px solid var(--border);border-radius:15px;padding:30px;display:flex;flex-direction:column;justify-content:space-between;transition:.3s;position:relative;}
+.deep-card:hover{transform:translateY(-4px);border-color:var(--accent2);}
+.deep-card.featured{border:1px solid var(--accent);box-shadow:0 10px 30px rgba(0,212,255,0.1);}
+.deep-card.special{border:1px solid var(--gold);box-shadow:0 10px 30px rgba(240,180,41,0.08);}
+.deep-card.breaking{border:1px solid #ff4444;box-shadow:0 10px 30px rgba(255,68,68,0.15);}
+.deep-card.breaking-live{border:2px solid #ff4444;box-shadow:0 10px 40px rgba(255,68,68,0.25);background:rgba(239,68,68,0.03);}
+.deep-card.archive{border:1px solid var(--border);opacity:.8;}
+.deep-badge{position:absolute;top:-12px;right:20px;padding:2px 12px;border-radius:20px;font-size:.75rem;font-weight:bold;}
+.deep-badge.new{background:var(--accent);color:var(--bg);}
+.deep-badge.special{background:var(--gold);color:var(--bg);}
+.deep-badge.breaking{background:#ff4444;color:#fff;animation:pulse-red 1.5s ease-in-out infinite;}
+.deep-badge.live{background:#ff4444;color:#fff;animation:pulse-red 1s ease-in-out infinite;}
+.deep-badge.archive{background:var(--border);color:var(--text2);}
+@keyframes pulse-red{0%,100%{box-shadow:0 0 0 0 rgba(255,68,68,0.4);}50%{box-shadow:0 0 0 6px rgba(255,68,68,0);}}
+.deep-kicker{font-size:.8rem;font-weight:bold;text-transform:uppercase;}
+.deep-kicker.featured{color:var(--accent);}
+.deep-kicker.special{color:var(--gold);}
+.deep-kicker.archive{color:#64748b;}
+.deep-kicker.breaking{color:#ff4444;}
+.deep-card h3{color:#e2e8f0;margin:15px 0 10px;font-size:1.4rem;line-height:1.25;font-family:'Syne',sans-serif;}
+.deep-card p{color:#94a3b8;font-size:1rem;line-height:1.6;}
+.deep-btn{display:inline-block;margin-top:25px;text-decoration:none;font-weight:bold;padding:12px;border-radius:8px;text-align:center;transition:.3s;}
+.deep-btn.gold{color:var(--gold);border:1px solid var(--gold);}
+.deep-btn.gold:hover{background:var(--gold);color:var(--bg);}
+.deep-btn.cyan{color:var(--accent);border:1px solid var(--accent);}
+.deep-btn.cyan:hover{background:var(--accent);color:var(--bg);}
+.deep-btn.red{color:#ff4444;border:1px solid #ff4444;}
+.deep-btn.red:hover{background:#ff4444;color:#fff;}
+.deep-btn.muted{color:#64748b;border:1px solid var(--border);}
+.deep-btn.muted:hover{border-color:#64748b;color:#94a3b8;}
+.deep-btn.orange{color:#f5820a;border:1px solid #f5820a;}
+.deep-btn.orange:hover{background:#f5820a;color:var(--bg);}
+.deep-btn.blue{color:#1a8cff;border:1px solid #1a8cff;}
+.deep-btn.blue:hover{background:#1a8cff;color:#fff;}
+.features{padding:120px 0;}
+.features-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:24px;margin-top:64px;}
+.feature-card{background:var(--bg2);border:1px solid var(--border);border-radius:4px;padding:32px;transition:all .3s;position:relative;overflow:hidden;}
+.feature-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,var(--accent),transparent);opacity:0;transition:opacity .3s;}
+.feature-card:hover{border-color:var(--accent2);transform:translateY(-4px);box-shadow:0 16px 48px rgba(0,0,0,0.4);}
+.feature-card:hover::before{opacity:1;}
+.feature-icon{width:44px;height:44px;background:rgba(0,212,255,0.08);border:1px solid rgba(0,212,255,0.15);border-radius:4px;display:flex;align-items:center;justify-content:center;margin-bottom:20px;font-size:20px;}
+.feature-card h3{font-family:'Syne',sans-serif;font-weight:700;font-size:17px;color:var(--white);margin-bottom:10px;}
+.feature-card p{font-size:14px;color:var(--text2);line-height:1.65;}
+.instruments{padding:80px 0;background:var(--bg2);border-top:1px solid var(--border);border-bottom:1px solid var(--border);}
+.instr-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:24px;margin-top:48px;}
+.instr-card{background:var(--bg);border:1px solid var(--border);border-radius:4px;padding:28px;text-align:center;transition:all .3s;}
+.instr-card:hover{border-color:var(--accent2);transform:translateY(-3px);}
+.instr-ticker{font-family:'Space Mono',monospace;font-size:28px;font-weight:700;margin-bottom:4px;}
+.instr-ticker.es{color:var(--accent);}
+.instr-ticker.nq{color:#a78bfa;}
+.instr-ticker.cl{color:var(--gold);}
+.instr-name{font-size:13px;color:var(--text2);margin-bottom:16px;}
+.instr-tag{display:inline-block;background:rgba(0,212,255,0.06);border:1px solid rgba(0,212,255,0.15);border-radius:100px;padding:4px 12px;font-family:'Space Mono',monospace;font-size:9px;letter-spacing:.1em;text-transform:uppercase;color:var(--text2);}
+.pricing{padding:120px 0;}
+.pricing-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:24px;margin-top:64px;}
+.price-card{background:var(--bg2);border:1px solid var(--border);border-radius:4px;padding:40px 32px;position:relative;transition:all .3s;}
+.price-card.featured{border-color:var(--accent);background:var(--bg3);}
+.price-card.featured::before{content:'MOST POPULAR';position:absolute;top:-12px;left:50%;transform:translateX(-50%);background:var(--accent);color:var(--bg);font-family:'Space Mono',monospace;font-size:9px;font-weight:700;letter-spacing:.15em;padding:4px 14px;border-radius:100px;}
+.price-tier{font-family:'Space Mono',monospace;font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:var(--accent);margin-bottom:16px;}
+.price-amount{font-family:'Syne',sans-serif;font-weight:800;font-size:48px;color:var(--white);line-height:1;margin-bottom:4px;}
+.price-amount span{font-size:18px;color:var(--text2);font-weight:400;}
+.price-period{font-size:13px;color:var(--text3);margin-bottom:28px;font-family:'Space Mono',monospace;}
+.price-divider{height:1px;background:var(--border);margin-bottom:24px;}
+.price-features{list-style:none;margin-bottom:32px;}
+.price-features li{display:flex;align-items:flex-start;gap:10px;font-size:14px;color:var(--text2);margin-bottom:10px;line-height:1.5;}
+.price-features li::before{content:'&#8594;';color:var(--accent);font-family:'Space Mono',monospace;font-size:12px;flex-shrink:0;margin-top:1px;}
+.price-btn{display:block;text-align:center;padding:12px;font-family:'Space Mono',monospace;font-size:11px;letter-spacing:.1em;text-transform:uppercase;text-decoration:none;border-radius:2px;transition:all .2s;}
+.price-btn.outline{border:1px solid var(--border);color:var(--text2);}
+.price-btn.outline:hover{border-color:var(--accent);color:var(--accent);}
+.price-btn.solid{background:var(--accent);color:var(--bg);font-weight:700;}
+.price-btn.solid:hover{background:var(--white);transform:translateY(-1px);}
+.cta-section{padding:120px 0;background:var(--bg2);border-top:1px solid var(--border);text-align:center;}
+.cta-inner{position:relative;max-width:640px;margin:0 auto;}
+.cta-inner::before{content:'';position:absolute;top:-60px;left:50%;transform:translateX(-50%);width:600px;height:300px;background:radial-gradient(ellipse,rgba(240,180,41,0.05) 0%,transparent 70%);pointer-events:none;}
+.cta-section .section-title{margin-bottom:16px;}
+.cta-section .section-desc{margin:0 auto 40px;}
+footer{position:relative;z-index:1;background:var(--bg);border-top:1px solid var(--border);padding:48px;}
+.footer-inner{max-width:1200px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px;}
+.footer-left{font-family:'Space Mono',monospace;font-size:11px;color:var(--text3);}
+.footer-left strong{color:var(--text2);font-family:'Syne',sans-serif;}
+.footer-right{font-family:'Space Mono',monospace;font-size:10px;color:var(--text3);letter-spacing:.08em;}
+.footer-disclaimer{max-width:1200px;margin:24px auto 0;padding-top:24px;border-top:1px solid var(--border);font-size:11px;color:var(--text3);line-height:1.6;font-family:'Space Mono',monospace;}
+@keyframes fade-in{from{opacity:0;}to{opacity:1;}}
+@keyframes fade-up{from{opacity:0;transform:translateY(24px);}to{opacity:1;transform:translateY(0);}}
+.reveal{opacity:0;transform:translateY(32px);transition:opacity .7s ease,transform .7s ease;}
+.reveal.visible{opacity:1;transform:translateY(0);}
+.pad-pick{padding:100px 0;background:var(--bg);border-top:1px solid var(--border);border-bottom:1px solid var(--border);}
+.pad-pick-inner{max-width:1100px;margin:0 auto;padding:0 48px;}
+.pad-pick-header{display:flex;align-items:flex-end;justify-content:space-between;margin-bottom:48px;flex-wrap:wrap;gap:20px;}
+.pad-pick-eyebrow{font-family:'Space Mono',monospace;font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:#f59e0b;margin-bottom:10px;}
+.pad-pick-title{font-family:'Syne',sans-serif;font-weight:800;font-size:clamp(28px,3.5vw,44px);line-height:1.1;letter-spacing:-.02em;color:var(--white);margin-bottom:10px;}
+.pad-pick-desc{font-size:15px;color:var(--text2);max-width:480px;line-height:1.65;}
+.pad-pick-all-link{font-family:'Space Mono',monospace;font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:#f59e0b;text-decoration:none;border:1px solid rgba(245,158,11,0.3);padding:10px 20px;border-radius:2px;transition:all .2s;white-space:nowrap;}
+.pad-pick-all-link:hover{background:rgba(245,158,11,0.08);border-color:#f59e0b;}
+.pad-pick-featured{display:grid;grid-template-columns:1fr 340px;gap:0;background:var(--bg2);border:1px solid rgba(245,158,11,0.25);border-radius:6px;overflow:hidden;margin-bottom:24px;transition:border-color .3s,transform .3s;}
+.pad-pick-featured:hover{border-color:#f59e0b;transform:translateY(-3px);box-shadow:0 16px 48px rgba(0,0,0,0.4);}
+.ppf-left{padding:36px 40px;border-right:1px solid var(--border);}
+.ppf-meta{display:flex;align-items:center;gap:10px;margin-bottom:20px;flex-wrap:wrap;}
+.ppf-badge{font-family:'Space Mono',monospace;font-size:9px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;padding:3px 10px;border-radius:2px;}
+.ppf-badge.latest{background:#f59e0b;color:#06080b;}
+.ppf-badge.type{background:rgba(245,158,11,0.1);color:#f59e0b;border:1px solid rgba(245,158,11,0.3);}
+.ppf-badge.horiz{background:rgba(0,212,255,0.08);color:var(--accent);border:1px solid rgba(0,212,255,0.2);}
+.ppf-ticker{font-family:'Syne',sans-serif;font-weight:800;font-size:64px;line-height:.9;color:#f59e0b;letter-spacing:.02em;margin-bottom:8px;}
+.ppf-name{font-size:13px;color:var(--text2);margin-bottom:20px;font-style:italic;}
+.ppf-headline{font-family:'Syne',sans-serif;font-weight:700;font-size:18px;color:var(--white);line-height:1.35;margin-bottom:14px;}
+.ppf-thesis{font-size:13px;color:var(--text2);line-height:1.7;margin-bottom:24px;}
+.ppf-link{display:inline-flex;align-items:center;gap:8px;font-family:'Space Mono',monospace;font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:#f59e0b;text-decoration:none;border:1px solid rgba(245,158,11,0.4);padding:10px 20px;border-radius:2px;transition:all .2s;}
+.ppf-link:hover{background:#f59e0b;color:#06080b;}
+.ppf-right{padding:36px 28px;display:flex;flex-direction:column;justify-content:space-between;}
+.ppf-setup-title{font-family:'Space Mono',monospace;font-size:9px;color:var(--text3);text-transform:uppercase;letter-spacing:.12em;margin-bottom:16px;}
+.ppf-levels{display:flex;flex-direction:column;gap:1px;}
+.ppf-level{display:flex;justify-content:space-between;align-items:center;padding:8px 12px;background:var(--bg3);}
+.ppf-level:first-child{border-radius:3px 3px 0 0;}
+.ppf-level:last-child{border-radius:0 0 3px 3px;}
+.ppl-lbl{font-family:'Space Mono',monospace;font-size:9px;color:var(--text2);}
+.ppl-val{font-family:'Space Mono',monospace;font-size:12px;font-weight:700;}
+.ppl-val.buy{color:#00e676;}
+.ppl-val.stop{color:#ff4444;}
+.ppl-val.t1{color:#f59e0b;}
+.ppl-val.t2{color:#f0b429;}
+.ppl-val.rr{color:var(--accent);}
+.ppf-verdict{margin-top:20px;padding:14px;background:rgba(245,158,11,0.06);border:1px solid rgba(245,158,11,0.15);border-radius:3px;}
+.ppf-verdict-top{display:flex;align-items:center;gap:10px;margin-bottom:6px;}
+.ppf-verdict-rating{font-family:'Syne',sans-serif;font-weight:800;font-size:28px;color:#f59e0b;line-height:1;}
+.ppf-verdict-meta{font-family:'Space Mono',monospace;font-size:9px;color:var(--text2);text-transform:uppercase;letter-spacing:.08em;}
+.ppf-verdict p{font-size:11px;color:var(--text2);line-height:1.6;}
+.ppf-week{margin-top:16px;font-family:'Space Mono',monospace;font-size:9px;color:var(--text3);text-align:right;letter-spacing:.06em;}
+.pad-pick-soon{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
+.pps-card{background:var(--bg2);border:1px solid var(--border);border-radius:6px;padding:28px;display:flex;align-items:center;gap:20px;opacity:.55;}
+.pps-num{font-family:'Syne',sans-serif;font-weight:800;font-size:40px;color:var(--text3);line-height:1;flex-shrink:0;}
+.pps-label{font-family:'Space Mono',monospace;font-size:9px;color:var(--text3);text-transform:uppercase;letter-spacing:.1em;margin-bottom:5px;}
+.pps-title{font-family:'Syne',sans-serif;font-weight:700;font-size:15px;color:var(--text2);margin-bottom:4px;}
+.pps-desc{font-size:12px;color:var(--text3);line-height:1.5;}
+@media(max-width:900px){.pad-pick-featured{grid-template-columns:1fr;}.ppf-right{border-top:1px solid var(--border);}.pad-pick-soon{grid-template-columns:1fr;}.pad-pick-inner{padding:0 24px;}}
+.live-chart{padding:80px 0;background:var(--bg);border-top:1px solid var(--border);}
+.live-chart-inner{max-width:1100px;margin:0 auto;padding:0 48px;}
+.live-chart-header{display:flex;align-items:flex-end;justify-content:space-between;margin-bottom:32px;flex-wrap:wrap;gap:16px;}
+.live-chart-eyebrow{font-family:'Space Mono',monospace;font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:var(--red);margin-bottom:8px;}
+.live-chart-title{font-family:'Syne',sans-serif;font-weight:800;font-size:clamp(24px,3vw,38px);line-height:1.1;letter-spacing:-.02em;color:var(--white);}
+.live-chart-desc{font-size:14px;color:var(--text2);margin-top:8px;max-width:480px;line-height:1.6;}
+.live-chart-link{font-family:'Space Mono',monospace;font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--red);text-decoration:none;border:1px solid rgba(239,68,68,0.3);padding:10px 20px;border-radius:2px;transition:all .2s;white-space:nowrap;}
+.live-chart-link:hover{background:rgba(239,68,68,0.08);border-color:var(--red);}
+.chart-iframe-wrap{border:1px solid var(--border);border-radius:4px;overflow:hidden;position:relative;}
+.chart-iframe-wrap::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--red),#e040fb,var(--accent));z-index:1;}
+.chart-iframe-wrap iframe{display:block;width:100%;border:none;}
+@media(max-width:900px){.live-chart-inner{padding:0 24px;}}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-logo">
+    <div class="logo-mark">&#945;</div>
+    <div class="logo-text">Pivot<span>Alpha</span>Desk</div>
+  </div>
+  <ul class="nav-links">
+    <li><a href="#how">How It Works</a></li>
+    <li><a href="#live-chart">SPX Live</a></li>
+    <li><a href="#pad-pick">PAD Pick</a></li>
+    <li><a href="#features">Features</a></li>
+    <li><a href="#pricing">Pricing</a></li>
+    <li><a href="pad-library-zonas-algo.html">Library</a></li>
+    <li><a href="contact.html">Contact</a></li>
+    <li><a href="GAIA_briefing_30mar2026.html" class="nav-cta" style="background:linear-gradient(135deg,#ef4444,#b91c1c);color:#fff;border:none;margin-right:4px;animation:pulse-logo 1.5s ease-in-out infinite;">&#128203; Briefing 30 Mar &#9888;</a></li>
+    <li><a href="briefing_mar27_2026.html" class="nav-cta" style="background:rgba(100,100,100,0.15);color:#8ba4b8;border:1px solid rgba(100,100,100,0.3);margin-right:4px">&#128203; 27 Mar</a></li>
+    <li><a href="collar_especial_26mar2026.html" class="nav-cta" style="background:rgba(239,68,68,0.1);color:#ff6666;border:1px solid rgba(239,68,68,0.3);margin-right:8px">&#9888;&#65039; JPM Collar</a></li>
+    <li><a href="#pricing" class="nav-cta">Get Access</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-glow"></div>
+  <div class="hero-glow-gold"></div>
+  <div class="hero-badge">
+    <div class="badge-dot"></div>
+    &#9888; AMPLIFIED &mdash; EOM JPM COLLAR 31-MAR &middot; PUT WALLS SOBRE EL SPOT &middot; LIBERATION DAY 2-ABR
+  </div>
+  <h1><span class="accent">Pivot</span><span class="gold">Alpha</span><br>Desk</h1>
+  <div class="hero-sub">Daily Market Intelligence</div>
+  <p class="hero-desc">Institutional-grade gamma levels for independent traders. Know where dealers are positioned before the market opens.</p>
+  <div class="hero-actions">
+    <a href="GAIA_briefing_30mar2026.html" class="btn-primary" style="background:linear-gradient(135deg,#ef4444,#b91c1c);box-shadow:0 0 30px rgba(239,68,68,0.4)">&#9888; Briefing 30 Mar &mdash; AMPLIFIED</a>
+    <a href="collar_especial_26mar2026.html" class="btn-primary" style="background:rgba(239,68,68,0.1);border:1px solid rgba(239,68,68,0.4);color:#ff8888;box-shadow:none">&#128274; JPM Collar 31-Mar</a>
+    <a href="#pricing" class="btn-primary">Get Daily Briefing</a>
+    <a href="#how" class="btn-secondary">See How It Works</a>
+  </div>
+</section>
+
+<!-- TICKER -->
+<div class="ticker-wrap">
+  <div class="ticker">
+    <div class="ticker-item"><span class="sym alert">&#9888; AMPLIFIED</span> <span class="dn">GEX NEGATIVO GLOBAL &mdash; DEALERS AMPLIFICAN</span> <span class="text3">|</span> <span class="alert">EOM 31-MAR &middot; LIBERATION DAY 2-ABR</span></div>
+    <div class="ticker-item"><span class="sym">ESM6</span> <span class="dn">6,412.25 &#9660; &minus;112.75</span> <span class="text3">|</span> <span>Put Wall EOM</span> <span class="dn">6,525/6,500 &#9888; SOBRE FUTURO</span> <span class="text3">|</span> <span>Put Wall Mayor</span> <span class="dn">6,300</span> <span class="text3">|</span> <span>Vol</span> <span class="dn">23.34 &minus;3.16</span></div>
+    <div class="ticker-item"><span class="sym">NQM6</span> <span class="dn">23,328.5 &#9660; &minus;465.75</span> <span class="text3">|</span> <span>Call Wall</span> <span class="neu">23,700</span> <span class="text3">|</span> <span>Put Wall Mayor</span> <span class="dn">23,000 P_OI=500</span> <span class="text3">|</span> <span>Vol EOM</span> <span class="dn">24.21 &minus;3.64</span></div>
+    <div class="ticker-item"><span class="sym">CLK6</span> <span class="up">99.64 &#9650; +5.16</span> <span class="text3">|</span> <span class="neu">&#9670; GAMMA FLIP EN 100.00</span> <span class="text3">|</span> <span>Put Wall Mayor</span> <span class="dn">$95</span> <span class="text3">|</span> <span>Vol</span> <span class="dn">97.85 &#9888; EXTREMA</span></div>
+    <div class="ticker-item"><span class="sym">SPX CASH</span> <span class="dn">~6,300</span> <span class="text3">|</span> <span>GEX</span> <span class="dn">&minus;68.7M AMPLIFIED</span> <span class="text3">|</span> <span>P/C</span> <span class="dn">26.75 &#9888;</span> <span class="text3">|</span> <span>Put Walls SOBRE spot</span> <span class="dn">6,455/6,420/6,410</span></div>
+    <div class="ticker-item"><span class="sym">JPM COLLAR</span> <span class="dn">VENCE 31-MAR &#9888;</span> <span class="text3">|</span> <span>LIBERATION DAY</span> <span class="dn">2-ABR ARANCELES TRUMP</span> <span class="text3">|</span> <span>1&#963; ES Lib Day</span> <span class="neu">&#177;231 → 6,181–6,643</span></div>
+    <!-- duplicate for seamless loop -->
+    <div class="ticker-item"><span class="sym alert">&#9888; AMPLIFIED</span> <span class="dn">GEX NEGATIVO GLOBAL &mdash; DEALERS AMPLIFICAN</span> <span class="text3">|</span> <span class="alert">EOM 31-MAR &middot; LIBERATION DAY 2-ABR</span></div>
+    <div class="ticker-item"><span class="sym">ESM6</span> <span class="dn">6,412.25 &#9660; &minus;112.75</span> <span class="text3">|</span> <span>Put Wall EOM</span> <span class="dn">6,525/6,500 &#9888; SOBRE FUTURO</span> <span class="text3">|</span> <span>Put Wall Mayor</span> <span class="dn">6,300</span> <span class="text3">|</span> <span>Vol</span> <span class="dn">23.34 &minus;3.16</span></div>
+    <div class="ticker-item"><span class="sym">NQM6</span> <span class="dn">23,328.5 &#9660; &minus;465.75</span> <span class="text3">|</span> <span>Call Wall</span> <span class="neu">23,700</span> <span class="text3">|</span> <span>Put Wall Mayor</span> <span class="dn">23,000 P_OI=500</span> <span class="text3">|</span> <span>Vol EOM</span> <span class="dn">24.21 &minus;3.64</span></div>
+    <div class="ticker-item"><span class="sym">CLK6</span> <span class="up">99.64 &#9650; +5.16</span> <span class="text3">|</span> <span class="neu">&#9670; GAMMA FLIP EN 100.00</span> <span class="text3">|</span> <span>Put Wall Mayor</span> <span class="dn">$95</span> <span class="text3">|</span> <span>Vol</span> <span class="dn">97.85 &#9888; EXTREMA</span></div>
+    <div class="ticker-item"><span class="sym">SPX CASH</span> <span class="dn">~6,300</span> <span class="text3">|</span> <span>GEX</span> <span class="dn">&minus;68.7M AMPLIFIED</span> <span class="text3">|</span> <span>P/C</span> <span class="dn">26.75 &#9888;</span> <span class="text3">|</span> <span>Put Walls SOBRE spot</span> <span class="dn">6,455/6,420/6,410</span></div>
+    <div class="ticker-item"><span class="sym">JPM COLLAR</span> <span class="dn">VENCE 31-MAR &#9888;</span> <span class="text3">|</span> <span>LIBERATION DAY</span> <span class="dn">2-ABR ARANCELES TRUMP</span> <span class="text3">|</span> <span>1&#963; ES Lib Day</span> <span class="neu">&#177;231 → 6,181–6,643</span></div>
+  </div>
+</div>
+
+<!-- HOW IT WORKS -->
+<section class="how" id="how">
+  <div class="container">
+    <div class="section-label">The Process</div>
+    <div class="section-title">Built on real CME data.<br>Every morning.</div>
+    <div class="how-grid">
+      <div class="how-steps">
+        <div class="how-step reveal"><div class="step-num">01</div><div class="step-content"><h4>CME QuikStrike EOD Data</h4><p>We extract Open Interest, Gamma and Delta by strike from official CME Group data every evening after the close.</p></div></div>
+        <div class="how-step reveal"><div class="step-num">02</div><div class="step-content"><h4>Gamma Level Calculation</h4><p>We identify where dealers are positioned &mdash; Gamma Pin, Flip Zone, Call/Put Walls and key support/resistance levels.</p></div></div>
+        <div class="how-step reveal"><div class="step-num">03</div><div class="step-content"><h4>Daily Briefing Published</h4><p>Before 9:00 AM ET, your briefing is live &mdash; ES, NQ and CL levels with scenarios, macro context and volatility regime.</p></div></div>
+        <div class="how-step reveal"><div class="step-num">04</div><div class="step-content"><h4>Trade Your Session</h4><p>Use the gamma levels directly in your chart. Know the key price zones before the first candle opens.</p></div></div>
+      </div>
+      <!-- MOCK BRIEFING updated 30 Mar 2026 -->
+      <div class="mock-briefing reveal">
+        <div class="mock-header">
+          <div class="mock-dots"><div class="mock-dot r"></div><div class="mock-dot y"></div><div class="mock-dot g"></div></div>
+          <span class="mock-title">PIVOT ALPHA DESK &mdash; 30 MAR 2026 &middot; &#9888; AMPLIFIED &middot; EOM-1</span>
+        </div>
+        <div class="mock-tabs">
+          <div class="mock-tab active">ES /S&amp;P 500</div>
+          <div class="mock-tab">NQ /NASDAQ</div>
+          <div class="mock-tab">CL /CRUDE</div>
+          <div class="mock-tab">SPX</div>
+        </div>
+        <div class="mock-body">
+          <div class="mock-row"><span class="mock-label">FUTURE</span><span class="mock-val dn">ESM6 &middot; &#9888; AMPLIFIED &middot; GEX NEG</span></div>
+          <div class="mock-row"><span class="mock-label">PRECIO</span><span class="mock-val dn">6,412.25 &middot; &minus;112.75 vs prior</span></div>
+          <div class="mock-row"><span class="mock-label">VOL / CHG</span><span class="mock-val dn">23.34 &minus;3.16 &middot; P/C: 2.58</span></div>
+          <div class="mock-row"><span class="mock-label">RANGO &plusmn;1&sigma;</span><span class="mock-val gold">6,277 &ndash; 6,548 (&plusmn;135 pts)</span></div>
+          <div class="mock-divider"></div>
+          <div class="mock-level" style="background:rgba(204,0,0,0.08)"><div class="mock-level-bar" style="background:#cc0000"></div><span class="mock-level-label">Call Wall</span><span class="mock-level-price" style="color:#ff6666">6,600</span></div>
+          <div class="mock-level" style="background:rgba(155,93,229,0.12)"><div class="mock-level-bar" style="background:#9b5de5"></div><span class="mock-level-label">&#9888; Put Wall EOM 1 &mdash; JPM 31-Mar</span><span class="mock-level-price" style="color:#c084fc">6,525 P=7,660</span></div>
+          <div class="mock-level" style="background:rgba(155,93,229,0.08)"><div class="mock-level-bar" style="background:#7c3aed"></div><span class="mock-level-label">Put Wall EOM 2 &mdash; 31-Mar</span><span class="mock-level-price" style="color:#c084fc">6,500 P=6,775</span></div>
+          <div class="mock-level" style="background:rgba(58,100,200,0.12)"><div class="mock-level-bar" style="background:#3a64c8"></div><span class="mock-level-label">&#9888; Put Wall Mayor 0DTE</span><span class="mock-level-price" style="color:#8888ff">6,300 P=3,512</span></div>
+          <div class="mock-level" style="background:rgba(46,196,182,0.08)"><div class="mock-level-bar" style="background:#2ec4b6"></div><span class="mock-level-label">Emergency Anchor</span><span class="mock-level-price" style="color:#2ec4b6">6,277</span></div>
+          <div class="mock-divider"></div>
+          <div class="mock-row"><span class="mock-label">&#9888; EOM 31-MAR</span><span class="mock-val dn">JPM COLLAR VENCE MA&#209;ANA</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PAD PICK -->
+<section class="pad-pick" id="pad-pick">
+  <div class="pad-pick-inner">
+    <div class="pad-pick-header">
+      <div class="pad-pick-header-left">
+        <div class="pad-pick-eyebrow">&#11041; Weekly Analysis</div>
+        <div class="pad-pick-title">PAD Pick</div>
+        <p class="pad-pick-desc">One instrument. Every weekend. Full technical, fundamental and gamma analysis &mdash; with a clear entry, target and stop. No noise, no hedging.</p>
+      </div>
+      <a href="pad_pick_semana12_2026.html" class="pad-pick-all-link">View All Picks &#8594;</a>
+    </div>
+    <a href="pad_pick_semana12_2026.html" style="text-decoration:none;display:block;" class="reveal">
+      <div class="pad-pick-featured">
+        <div class="ppf-left">
+          <div class="ppf-meta">
+            <span class="ppf-badge latest">&#11041; LATEST</span>
+            <span class="ppf-badge type">ETF Sectorial</span>
+            <span class="ppf-badge horiz">Posicional 2&ndash;4 sem.</span>
+          </div>
+          <div class="ppf-ticker">XLE</div>
+          <div class="ppf-name">Energy Select Sector SPDR &middot; NYSE</div>
+          <div class="ppf-headline">El ETF que el mercado no est&#225; priceando bien.<br>La divergencia entre CL y XLE es la tesis.</div>
+          <p class="ppf-thesis">WTI subi&#243; +40% desde el inicio de la crisis con Ir&#225;n. XLE subi&#243; solo +15% &mdash; menos de la mitad. Esta brecha no es normal. Las empresas del XLE generan free cash flow masivo a $96 WTI, y el catalizador pr&#243;ximo es el FOMC del mi&#233;rcoles. Si el dot plot es hawkish, el flujo rota hacia energy.</p>
+          <span class="ppf-link">Read Full Analysis &#8594;</span>
+        </div>
+        <div class="ppf-right">
+          <div>
+            <div class="ppf-setup-title">Setup de Entrada</div>
+            <div class="ppf-levels">
+              <div class="ppf-level"><span class="ppl-lbl">Entrada</span><span class="ppl-val buy">$54 &ndash; $56</span></div>
+              <div class="ppf-level"><span class="ppl-lbl">Stop Loss</span><span class="ppl-val stop">$51.00</span></div>
+              <div class="ppf-level"><span class="ppl-lbl">Target 1</span><span class="ppl-val t1">$63.00 +13%</span></div>
+              <div class="ppf-level"><span class="ppl-lbl">Target 2</span><span class="ppl-val t2">$70.00 +25%</span></div>
+              <div class="ppf-level"><span class="ppl-lbl">R / R</span><span class="ppl-val rr">1 : 2.5</span></div>
+            </div>
+          </div>
+          <div class="ppf-verdict">
+            <div class="ppf-verdict-top">
+              <div class="ppf-verdict-rating">BUY</div>
+              <div class="ppf-verdict-meta">Posicional<br>2&ndash;4 semanas</div>
+            </div>
+            <p>XLE cotiza con descuento vs WTI. FCF masivo en XOM/CVX. Rotaci&#243;n post-FOMC como catalizador. Stop claro en $51.</p>
+          </div>
+          <div class="ppf-week">Week 12 &middot; March 15&ndash;21, 2026</div>
+        </div>
+      </div>
+    </a>
+    <div class="pad-pick-soon">
+      <div class="pps-card reveal"><div class="pps-num">13</div><div class="pps-body"><div class="pps-label">Coming &middot; Week 13 &middot; Mar 22&ndash;28</div><div class="pps-title">PMI Miss + Gamma Structure</div><div class="pps-desc">PMIs Mar flash bajo consenso en Mfg y Servicios &mdash; buscando el instrumento que mejor captura la rotaci&#243;n defensiva.</div></div></div>
+      <div class="pps-card reveal"><div class="pps-num">14</div><div class="pps-body"><div class="pps-label">Coming &middot; Week 14 &middot; Mar 29&ndash;Apr 4</div><div class="pps-title">Liberation Day Rebalancing</div><div class="pps-desc">EOM 31-Mar + Liberation Day 2-Abr aranceles Trump. Quarter-end flows. GEX negativo global. Buscando el instrumento que mejor captura el r&#233;gimen AMPLIFIED.</div></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- DEEP DESK -->
+<section class="deep-desk">
+  <div class="deep-desk-inner">
+    <div class="deep-desk-header">
+      <h2>THE DEEP DESK</h2>
+      <p>Intelligence Unit &amp; Structural Market Analysis</p>
+    </div>
+    <div class="deep-desk-grid">
+
+      <!-- CARD 1: BRIEFING 30 MAR — LIVE -->
+      <div class="deep-card breaking-live reveal">
+        <div class="deep-badge live">&#128203; HOY &mdash; LIVE</div>
+        <div>
+          <span class="deep-kicker breaking">Pre-Open Briefing &mdash; 30 Mar 2026</span>
+          <h3>EOM JPM Collar Ma&ntilde;ana &middot; Put Walls SOBRE el Spot &middot; Liberation Day 2-Abr</h3>
+          <p>ESM6 6,412 bajo Put Walls EOM (6,525/6,500). R&#233;gimen AMPLIFIED global. SPX GEX &minus;68.7M, P/C 26.75. CL en Gamma Flip 99.50&ndash;100.00 con Vol 97.85. Semana cr&#237;tica: EOM 31-Mar + Liberation Day aranceles Trump 2-Abr.</p>
+        </div>
+        <a href="GAIA_briefing_30mar2026.html" class="deep-btn red">VER BRIEFING 30 MAR &rarr;</a>
+      </div>
+
+      <!-- CARD 2: JPM COLLAR ESPECIAL -->
+      <div class="deep-card breaking reveal">
+        <div class="deep-badge breaking">&#9888; ESPECIAL &mdash; 31 MAR</div>
+        <div>
+          <span class="deep-kicker breaking">An&#225;lisis Especial &mdash; JPM Collar</span>
+          <h3>El Collar de JPMorgan Vence el 31 de Marzo &mdash; Lo Que el Mercado No Te Dice</h3>
+          <p>35,000 contratos de put spread (5,470/6,475) + call corta en 7,155. Put Walls en 6,525/6,500 sobre el precio actual. Rebalanceo de dealers ma&#241;ana puede generar los movimientos m&#225;s bruscos de la semana.</p>
+        </div>
+        <a href="collar_especial_26mar2026.html" class="deep-btn red">LEER AN&#193;LISIS JPM COLLAR &rarr;</a>
+      </div>
+
+      <!-- CARD 3: BRIEFING 27 MAR — ARCHIVE -->
+      <div class="deep-card archive reveal">
+        <div class="deep-badge archive">ARCHIVO</div>
+        <div>
+          <span class="deep-kicker archive">Pre-Open Briefing &mdash; 27 Mar 2026</span>
+          <h3>Put Wall JPM 6,500 en Juego &middot; EW4H6 Vence &middot; Liberation Day 6 DTE</h3>
+          <p>El briefing que anticip&#243; el selloff. ESM6 en 6,499 testeando el Put Wall JPM. R&#233;gimen AMPLIFIED. Vol spike +2.65. NQ &minus;573 pts en settle. El mercado cay&#243; exactamente como proyectaba la estructura gamma.</p>
+        </div>
+        <a href="briefing_mar27_2026.html" class="deep-btn muted">VER ARCHIVO 27 MAR &rarr;</a>
+      </div>
+
+      <!-- CARD 4: LIBRARY TRIPLE WITCHING -->
+      <div class="deep-card featured reveal">
+        <div class="deep-badge new">NUEVO</div>
+        <div>
+          <span class="deep-kicker featured">PAD Research Library</span>
+          <h3>Triple Witching 20-Mar-2026 &mdash; El D&#237;a que Todo Funcion&#243;</h3>
+          <p>7/7 niveles PAD, absorci&#243;n silenciosa en 6,625, CVD en tiempo real, Hormuz risk anticipado, y 116 puntos de movimiento en ES.</p>
+        </div>
+        <a href="pad-library-triple-witching-mar20-2026.html" class="deep-btn cyan">LEER CASO DE ESTUDIO &rarr;</a>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- LIVE SPX CHART -->
+<section class="live-chart" id="live-chart">
+  <div class="live-chart-inner">
+    <div class="live-chart-header">
+      <div>
+        <div class="live-chart-eyebrow">&#9679; LIVE &mdash; delay ~15 min</div>
+        <div class="live-chart-title">SPX Gamma Structure<br>En Tiempo Real</div>
+        <div class="live-chart-desc">Niveles PAD institucionales sobre el precio real del S&amp;P 500. Put Walls, Emergency Anchor y rango 1&sigma; actualizados cada lunes pre-market.</div>
+      </div>
+      <a href="spx_pad_chart.html" target="_blank" class="live-chart-link">Ver pantalla completa &#8599;</a>
+    </div>
+    <div class="chart-iframe-wrap reveal">
+      <iframe src="spx_pad_chart.html" height="560" scrolling="no" title="SPX PAD Gamma Structure Chart"></iframe>
+    </div>
+  </div>
+</section>
+
+<!-- FEATURES -->
+<section class="features" id="features">
+  <div class="container">
+    <div class="section-label">What You Get</div>
+    <div class="section-title">Every level. Every morning.</div>
+    <div class="features-grid">
+      <div class="feature-card reveal"><div class="feature-icon">&#127919;</div><h3>Gamma Pin &amp; Flip Zone</h3><p>The two most important levels of the day &mdash; where price gravitates and where the market regime changes from stable to volatile.</p></div>
+      <div class="feature-card reveal"><div class="feature-icon">&#128202;</div><h3>Full Level Map</h3><p>Call Walls, Put Walls, Key Support, Alarm Zones and Emergency Floors &mdash; the complete picture of dealer positioning.</p></div>
+      <div class="feature-card reveal"><div class="feature-icon">&#9889;</div><h3>3 Daily Scenarios</h3><p>Bullish, Lateral and Bearish playbooks with targets and invalidation levels. Know what to do before price moves.</p></div>
+      <div class="feature-card reveal"><div class="feature-icon">&#127758;</div><h3>Macro Context</h3><p>Economic calendar, geopolitical events and their impact on the levels. Never trade a gamma level without knowing the macro backdrop.</p></div>
+      <div class="feature-card reveal"><div class="feature-icon">&#128200;</div><h3>Volatility Regime</h3><p>VVIX/VIX ratio tells you position sizing and stop-loss width. STRESS ALTO means -50% sizing minimum &mdash; we tell you every day.</p></div>
+      <div class="feature-card reveal"><div class="feature-icon">&#128276;</div><h3>Level Alerts</h3><p>Get notified when price approaches key gamma levels. React in real-time with context &mdash; not just a price notification.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- INSTRUMENTS -->
+<section class="instruments">
+  <div class="container">
+    <div class="section-label">Coverage</div>
+    <div class="section-title">Three instruments.<br>Complete picture.</div>
+    <div class="instr-grid">
+      <div class="instr-card reveal"><div class="instr-ticker es">ES</div><div class="instr-name">E-mini S&amp;P 500 Futures</div><div class="instr-tag">CME &middot; Equities</div></div>
+      <div class="instr-card reveal"><div class="instr-ticker nq">NQ</div><div class="instr-name">E-mini Nasdaq 100 Futures</div><div class="instr-tag">CME &middot; Technology</div></div>
+      <div class="instr-card reveal"><div class="instr-ticker cl">CL</div><div class="instr-name">WTI Crude Oil Futures</div><div class="instr-tag">NYMEX &middot; Energy</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- PRICING -->
+<section class="pricing" id="pricing">
+  <div class="container">
+    <div class="section-label">Access</div>
+    <div class="section-title">Simple, transparent pricing.</div>
+    <div class="pricing-grid">
+      <div class="price-card reveal">
+        <div class="price-tier">Free</div>
+        <div class="price-amount">$0</div>
+        <div class="price-period">/ forever</div>
+        <div class="price-divider"></div>
+        <ul class="price-features"><li>Weekly ES briefing sample</li><li>Gamma education content</li><li>Community access</li></ul>
+        <a href="#" class="price-btn outline">Start Free</a>
+      </div>
+      <div class="price-card featured reveal">
+        <div class="price-tier">Pro</div>
+        <div class="price-amount">$49<span>/mo</span></div>
+        <div class="price-period">/ billed monthly</div>
+        <div class="price-divider"></div>
+        <ul class="price-features"><li>Daily briefing &mdash; ES, NQ &amp; CL</li><li>Full gamma level map</li><li>3 daily scenarios with targets</li><li>Macro + volatility context</li><li>Level alerts</li></ul>
+        <a href="#" class="price-btn solid">Get Pro Access</a>
+      </div>
+      <div class="price-card reveal">
+        <div class="price-tier">Annual</div>
+        <div class="price-amount">$39<span>/mo</span></div>
+        <div class="price-period">/ billed annually &mdash; save 20%</div>
+        <div class="price-divider"></div>
+        <ul class="price-features"><li>Everything in Pro</li><li>Priority support</li><li>Monthly deep-dive report</li><li>Early access to new features</li></ul>
+        <a href="#" class="price-btn outline">Get Annual</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="cta-section">
+  <div class="container">
+    <div class="cta-inner">
+      <div class="section-label">Ready?</div>
+      <div class="section-title">Trade with the dealers.<br>Not against them.</div>
+      <p class="section-desc">Join traders who start every session knowing exactly where the institutional money is positioned.</p>
+      <div class="hero-actions">
+        <a href="GAIA_briefing_30mar2026.html" class="btn-primary" style="background:linear-gradient(135deg,#ef4444,#b91c1c)">&#9888; Briefing 30 Mar</a>
+        <a href="#pricing" class="btn-primary">Get Daily Briefing</a>
+        <a href="#how" class="btn-secondary">Learn More</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-inner">
+    <div class="footer-left"><strong>Pivot Alpha Desk</strong><br>Daily market intelligence for independent traders.</div>
+    <div style="display:flex;gap:20px;align-items:center;flex-wrap:wrap;">
+      <a href="GAIA_briefing_30mar2026.html" style="font-family:'Space Mono',monospace;font-size:10px;color:#ff4444;text-decoration:none;letter-spacing:.08em;animation:blink 1.5s ease-in-out infinite;">&#9888; Briefing 30 Mar &mdash; HOY</a>
+      <a href="briefing_mar27_2026.html" style="font-family:'Space Mono',monospace;font-size:10px;color:#8ba4b8;text-decoration:none;letter-spacing:.08em;">&#128203; 27 Mar</a>
+      <a href="collar_especial_26mar2026.html" style="font-family:'Space Mono',monospace;font-size:10px;color:#ef4444;text-decoration:none;letter-spacing:.08em;">&#9888; JPM Collar 31-Mar</a>
+      <a href="PAD_Research_25mar2026.html" style="font-family:'Space Mono',monospace;font-size:10px;color:#f5820a;text-decoration:none;letter-spacing:.08em;">&#128202; Research 25 Mar</a>
+      <a href="briefing_25mar2026.html" style="font-family:'Space Mono',monospace;font-size:10px;color:#1a8cff;text-decoration:none;letter-spacing:.08em;">&#128203; Briefing 25 Mar</a>
+      <a href="PAD_Briefing_2026-03-24.html" style="font-family:'Space Mono',monospace;font-size:10px;color:var(--text2);text-decoration:none;letter-spacing:.08em;">&#128202; 24 Mar</a>
+      <a href="pad-library-triple-witching-mar20-2026.html" style="font-family:'Space Mono',monospace;font-size:10px;color:var(--accent);text-decoration:none;letter-spacing:.08em;">&#128218; Library &mdash; TW 20-Mar</a>
+      <a href="pad-library-zonas-algo.html" style="font-family:'Space Mono',monospace;font-size:10px;color:var(--text2);text-decoration:none;letter-spacing:.08em;">&#128218; Zonas Algo</a>
+      <a href="pad_pick_semana12_2026.html" style="font-family:'Space Mono',monospace;font-size:10px;color:#f59e0b;text-decoration:none;letter-spacing:.08em;">&#11041; PAD Pick</a>
+      <a href="contact.html" style="font-family:'Space Mono',monospace;font-size:10px;color:var(--text2);text-decoration:none;letter-spacing:.08em;">Contact</a>
+    </div>
+    <div class="footer-right">pivotalphadesk.com &middot; 2026</div>
+  </div>
+  <div class="footer-disclaimer">&#9888; DISCLAIMER: Pivot Alpha Desk provides market analysis for educational purposes only. This is not financial advice. Trading futures involves substantial risk of loss. Past performance is not indicative of future results. Always trade with risk management and consult a licensed financial advisor.</div>
+</footer>
+
+<script>
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach((entry, i) => {
+    if (entry.isIntersecting) {
+      setTimeout(() => entry.target.classList.add('visible'), i * 80);
+      observer.unobserve(entry.target);
+    }
+  });
+}, { threshold: 0.1 });
+document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+document.querySelectorAll('.mock-tab').forEach(tab => {
+  tab.addEventListener('click', () => {
+    document.querySelectorAll('.mock-tab').forEach(t => t.classList.remove('active'));
+    tab.classList.add('active');
+  });
+});
+</script>
+</body>
+</html>
