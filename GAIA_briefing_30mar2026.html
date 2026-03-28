@@ -1,0 +1,1179 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GAIA Briefing — Lunes 30-Mar-2026 | PivotAlphaDesk</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Barlow+Condensed:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg:        #080b0f;
+    --bg2:       #0d1117;
+    --bg3:       #111820;
+    --border:    #1e2a35;
+    --border2:   #243040;
+    --text:      #c8d6e0;
+    --text-dim:  #5a7080;
+    --text-bright: #eef4f8;
+    --red:       #e84040;
+    --red-dim:   #8b1f1f;
+    --red-glow:  rgba(232,64,64,0.15);
+    --orange:    #f0853a;
+    --yellow:    #f5c842;
+    --green:     #3ecf6a;
+    --blue:      #3a8ef0;
+    --blue-dim:  #1a3a5c;
+    --purple:    #9b5de5;
+    --purple-dim:#2d1a4a;
+    --teal:      #2ec4b6;
+    --fuchsia:   #e040fb;
+    --lime:      #a8e63a;
+    --gold:      #f0c040;
+    --amplified: #e84040;
+    --dampened:  #3ecf6a;
+  }
+
+  * { margin:0; padding:0; box-sizing:border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 15px;
+    line-height: 1.5;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* Scanline texture */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background: repeating-linear-gradient(
+      0deg,
+      transparent,
+      transparent 2px,
+      rgba(0,0,0,0.08) 2px,
+      rgba(0,0,0,0.08) 4px
+    );
+    pointer-events: none;
+    z-index: 1000;
+  }
+
+  /* ── HEADER ── */
+  .header {
+    background: linear-gradient(135deg, #0a0f14 0%, #0d1520 50%, #080b10 100%);
+    border-bottom: 1px solid var(--border2);
+    padding: 28px 40px 24px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .header::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, var(--red), var(--orange), var(--red), transparent);
+  }
+
+  .header::after {
+    content: 'AMPLIFIED';
+    position: absolute;
+    right: 40px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    color: var(--red);
+    letter-spacing: 4px;
+    border: 1px solid var(--red-dim);
+    padding: 4px 12px;
+    animation: pulse-border 2s ease-in-out infinite;
+  }
+
+  @keyframes pulse-border {
+    0%, 100% { border-color: var(--red-dim); color: var(--red); }
+    50% { border-color: var(--red); color: #ff6060; box-shadow: 0 0 12px var(--red-glow); }
+  }
+
+  .header-top {
+    display: flex;
+    align-items: baseline;
+    gap: 16px;
+    margin-bottom: 8px;
+  }
+
+  .logo {
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    color: var(--text-dim);
+    letter-spacing: 3px;
+    text-transform: uppercase;
+  }
+
+  .logo span {
+    color: var(--gold);
+    font-weight: 700;
+  }
+
+  h1 {
+    font-size: 36px;
+    font-weight: 800;
+    letter-spacing: -0.5px;
+    color: var(--text-bright);
+    line-height: 1;
+  }
+
+  h1 em {
+    font-style: normal;
+    color: var(--red);
+  }
+
+  .header-sub {
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    color: var(--text-dim);
+    letter-spacing: 2px;
+    margin-top: 6px;
+  }
+
+  /* ── ALERTA GLOBAL ── */
+  .alerta-global {
+    background: linear-gradient(90deg, rgba(232,64,64,0.12), rgba(232,64,64,0.05), transparent);
+    border-left: 3px solid var(--red);
+    margin: 0 40px;
+    padding: 14px 20px;
+    margin-top: 20px;
+    margin-bottom: 0;
+    display: flex;
+    gap: 16px;
+    align-items: flex-start;
+  }
+
+  .alerta-icon {
+    font-size: 18px;
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+
+  .alerta-text {
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    line-height: 1.7;
+    color: var(--text);
+  }
+
+  .alerta-text strong {
+    color: var(--red);
+    font-size: 12px;
+  }
+
+  /* ── CONTEXT BAR ── */
+  .context-bar {
+    display: flex;
+    gap: 0;
+    border-bottom: 1px solid var(--border);
+    background: var(--bg2);
+    overflow-x: auto;
+  }
+
+  .ctx-item {
+    padding: 10px 24px;
+    border-right: 1px solid var(--border);
+    flex-shrink: 0;
+    text-align: center;
+  }
+
+  .ctx-label {
+    font-family: 'Space Mono', monospace;
+    font-size: 9px;
+    color: var(--text-dim);
+    letter-spacing: 2px;
+    margin-bottom: 3px;
+  }
+
+  .ctx-value {
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+  }
+
+  .ctx-value.red    { color: var(--red); }
+  .ctx-value.orange { color: var(--orange); }
+  .ctx-value.yellow { color: var(--yellow); }
+  .ctx-value.purple { color: var(--purple); }
+  .ctx-value.teal   { color: var(--teal); }
+
+  /* ── MAIN GRID ── */
+  .main {
+    padding: 24px 40px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+  }
+
+  .full-width { grid-column: 1 / -1; }
+
+  /* ── SECTION TITLES ── */
+  .section-title {
+    font-family: 'Space Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 3px;
+    color: var(--text-dim);
+    text-transform: uppercase;
+    margin-bottom: 12px;
+    padding-bottom: 6px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .section-title::before {
+    content: '';
+    width: 16px;
+    height: 1px;
+    background: currentColor;
+  }
+
+  /* ── INSTRUMENT CARD ── */
+  .instr-card {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .instr-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+  }
+
+  .instr-card.es::before { background: var(--red); }
+  .instr-card.nq::before { background: var(--orange); }
+  .instr-card.cl::before { background: var(--lime); }
+  .instr-card.spx::before { background: linear-gradient(90deg, var(--red), var(--fuchsia)); }
+
+  .card-header {
+    padding: 14px 18px 10px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+  }
+
+  .card-ticker {
+    font-size: 28px;
+    font-weight: 800;
+    letter-spacing: -1px;
+    line-height: 1;
+  }
+
+  .es .card-ticker   { color: var(--red); }
+  .nq .card-ticker   { color: var(--orange); }
+  .cl .card-ticker   { color: var(--lime); }
+  .spx .card-ticker  { color: var(--fuchsia); }
+
+  .card-meta {
+    text-align: right;
+  }
+
+  .card-future {
+    font-family: 'Space Mono', monospace;
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--text-bright);
+  }
+
+  .card-chg {
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    color: var(--red);
+    margin-top: 2px;
+  }
+
+  .card-regime {
+    font-family: 'Space Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 2px;
+    padding: 2px 8px;
+    margin-top: 4px;
+    display: inline-block;
+  }
+
+  .regime-amplified {
+    background: rgba(232,64,64,0.15);
+    color: var(--red);
+    border: 1px solid var(--red-dim);
+  }
+
+  .regime-neutral {
+    background: rgba(240,133,58,0.15);
+    color: var(--orange);
+    border: 1px solid rgba(240,133,58,0.3);
+  }
+
+  /* ── LEVELS TABLE ── */
+  .levels {
+    padding: 12px 18px;
+  }
+
+  .level-row {
+    display: grid;
+    grid-template-columns: 18px 1fr auto auto;
+    gap: 6px 10px;
+    align-items: center;
+    padding: 5px 0;
+    border-bottom: 1px solid rgba(30,42,53,0.5);
+  }
+
+  .level-row:last-child { border-bottom: none; }
+
+  .level-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+
+  .level-name {
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.3px;
+    color: var(--text);
+  }
+
+  .level-name small {
+    font-size: 10px;
+    font-weight: 400;
+    color: var(--text-dim);
+    margin-left: 4px;
+  }
+
+  .level-price {
+    font-family: 'Space Mono', monospace;
+    font-size: 13px;
+    font-weight: 700;
+    text-align: right;
+    white-space: nowrap;
+  }
+
+  .level-oi {
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    color: var(--text-dim);
+    text-align: right;
+    white-space: nowrap;
+  }
+
+  /* dot colors */
+  .dot-red    { background: var(--red); }
+  .dot-orange { background: var(--orange); }
+  .dot-yellow { background: var(--yellow); }
+  .dot-purple { background: var(--purple); }
+  .dot-blue   { background: var(--blue); }
+  .dot-teal   { background: var(--teal); }
+  .dot-fuchsia{ background: var(--fuchsia); }
+  .dot-lime   { background: var(--lime); }
+  .dot-gray   { background: var(--text-dim); }
+
+  /* price colors */
+  .price-red    { color: var(--red); }
+  .price-orange { color: var(--orange); }
+  .price-yellow { color: var(--yellow); }
+  .price-purple { color: var(--purple); }
+  .price-blue   { color: var(--blue); }
+  .price-teal   { color: var(--teal); }
+  .price-fuchsia{ color: var(--fuchsia); }
+  .price-lime   { color: var(--lime); }
+  .price-gray   { color: var(--text-dim); }
+
+  /* ── CARD FOOTER ── */
+  .card-footer {
+    background: rgba(0,0,0,0.2);
+    border-top: 1px solid var(--border);
+    padding: 10px 18px;
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 8px;
+  }
+
+  .foot-item { text-align: center; }
+
+  .foot-label {
+    font-family: 'Space Mono', monospace;
+    font-size: 8px;
+    color: var(--text-dim);
+    letter-spacing: 1.5px;
+    margin-bottom: 2px;
+  }
+
+  .foot-value {
+    font-family: 'Space Mono', monospace;
+    font-size: 12px;
+    font-weight: 700;
+  }
+
+  /* ── ALERTA CARD ── */
+  .alert-card {
+    background: rgba(232,64,64,0.07);
+    border: 1px solid var(--red-dim);
+    padding: 10px 14px;
+    margin: 0 18px 14px;
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    line-height: 1.6;
+    color: var(--text);
+  }
+
+  .alert-card strong { color: var(--red); }
+
+  /* ── SIGMA TABLE ── */
+  .sigma-row {
+    display: flex;
+    gap: 0;
+    border: 1px solid var(--border);
+    overflow: hidden;
+    margin: 0 18px 14px;
+  }
+
+  .sigma-cell {
+    flex: 1;
+    padding: 8px 10px;
+    border-right: 1px solid var(--border);
+    text-align: center;
+  }
+
+  .sigma-cell:last-child { border-right: none; }
+
+  .sigma-label {
+    font-family: 'Space Mono', monospace;
+    font-size: 8px;
+    color: var(--text-dim);
+    letter-spacing: 1px;
+    margin-bottom: 3px;
+  }
+
+  .sigma-value {
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    font-weight: 700;
+  }
+
+  /* ── CONTEXT WEEK PANEL ── */
+  .week-panel {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    padding: 20px 24px;
+  }
+
+  .week-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+    margin-top: 14px;
+  }
+
+  .week-event {
+    border-left: 2px solid var(--border2);
+    padding-left: 12px;
+  }
+
+  .week-event.critical { border-left-color: var(--red); }
+  .week-event.important { border-left-color: var(--orange); }
+  .week-event.watch { border-left-color: var(--yellow); }
+
+  .week-date {
+    font-family: 'Space Mono', monospace;
+    font-size: 9px;
+    color: var(--text-dim);
+    letter-spacing: 1.5px;
+    margin-bottom: 4px;
+  }
+
+  .week-name {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--text-bright);
+    margin-bottom: 4px;
+  }
+
+  .week-desc {
+    font-size: 12px;
+    color: var(--text-dim);
+    line-height: 1.4;
+  }
+
+  /* ── REGLAS PAD ── */
+  .reglas-panel {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    padding: 20px 24px;
+  }
+
+  .regla-item {
+    display: flex;
+    gap: 12px;
+    padding: 10px 0;
+    border-bottom: 1px solid var(--border);
+    align-items: flex-start;
+  }
+
+  .regla-item:last-child { border-bottom: none; }
+
+  .regla-num {
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    color: var(--text-dim);
+    flex-shrink: 0;
+    padding-top: 2px;
+    width: 20px;
+  }
+
+  .regla-text {
+    font-size: 13px;
+    line-height: 1.5;
+    color: var(--text);
+  }
+
+  .regla-text strong { color: var(--text-bright); }
+  .regla-text em { color: var(--red); font-style: normal; font-weight: 700; }
+
+  /* ── ADVERTENCIA SEMANA ── */
+  .advertencia {
+    grid-column: 1 / -1;
+    background: linear-gradient(90deg, rgba(232,64,64,0.08), rgba(155,93,229,0.08));
+    border: 1px solid rgba(232,64,64,0.3);
+    padding: 18px 24px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .advertencia::before {
+    content: '⚠ SEMANA DE ALTO RIESGO';
+    position: absolute;
+    right: 24px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-family: 'Space Mono', monospace;
+    font-size: 9px;
+    color: var(--red-dim);
+    letter-spacing: 3px;
+  }
+
+  .advertencia-title {
+    font-size: 16px;
+    font-weight: 800;
+    color: var(--red);
+    margin-bottom: 8px;
+    letter-spacing: 0.5px;
+  }
+
+  .advertencia-text {
+    font-size: 13px;
+    line-height: 1.6;
+    color: var(--text);
+    max-width: 80%;
+  }
+
+  /* ── FOOTER ── */
+  .footer {
+    border-top: 1px solid var(--border);
+    padding: 16px 40px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: var(--bg2);
+  }
+
+  .footer-left {
+    font-family: 'Space Mono', monospace;
+    font-size: 9px;
+    color: var(--text-dim);
+    letter-spacing: 2px;
+  }
+
+  .footer-right {
+    font-family: 'Space Mono', monospace;
+    font-size: 9px;
+    color: var(--text-dim);
+  }
+
+  .footer-right span { color: var(--gold); }
+
+  /* ── ANIMATIONS ── */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(16px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  .instr-card, .week-panel, .reglas-panel, .advertencia {
+    animation: fadeUp 0.5s ease both;
+  }
+
+  .instr-card:nth-child(1) { animation-delay: 0.05s; }
+  .instr-card:nth-child(2) { animation-delay: 0.10s; }
+  .instr-card:nth-child(3) { animation-delay: 0.15s; }
+  .instr-card:nth-child(4) { animation-delay: 0.20s; }
+
+  /* SPX special alert styling */
+  .spx-alerta {
+    margin: 0 18px 10px;
+    background: rgba(232,64,64,0.10);
+    border: 1px solid rgba(232,64,64,0.4);
+    padding: 8px 12px;
+    font-family: 'Space Mono', monospace;
+    font-size: 9px;
+    line-height: 1.7;
+    color: var(--red);
+    letter-spacing: 0.5px;
+  }
+
+  /* Separator line in levels */
+  .level-sep {
+    grid-column: 1 / -1;
+    height: 1px;
+    background: var(--border2);
+    margin: 3px 0;
+  }
+
+  .tag {
+    font-family: 'Space Mono', monospace;
+    font-size: 8px;
+    padding: 1px 5px;
+    border-radius: 2px;
+    vertical-align: middle;
+    margin-left: 4px;
+  }
+
+  .tag-red    { background: rgba(232,64,64,0.2);  color: var(--red); }
+  .tag-purple { background: rgba(155,93,229,0.2); color: var(--purple); }
+  .tag-orange { background: rgba(240,133,58,0.2); color: var(--orange); }
+</style>
+</head>
+<body>
+
+<!-- ══ HEADER ══ -->
+<div class="header">
+  <div class="header-top">
+    <div class="logo"><span>PIVOT</span>ALPHA<span>DESK</span> &nbsp;/&nbsp; GAIA</div>
+  </div>
+  <h1>BRIEFING <em>LUNES</em> 30-MAR-2026</h1>
+  <div class="header-sub">GAMMA MARKET STRUCTURE FRAMEWORK &nbsp;|&nbsp; PAD LAB &nbsp;|&nbsp; AJUSTAR PRE-MARKET 09:00 ET</div>
+</div>
+
+<!-- ══ ALERTA GLOBAL ══ -->
+<div class="alerta-global">
+  <div class="alerta-icon">⚠</div>
+  <div class="alerta-text">
+    <strong>RÉGIMEN GLOBAL: AMPLIFIED — GEX COMPLETAMENTE NEGATIVO EN ES / NQ / SPX</strong><br>
+    Dealers en posición de amplificar movimientos en ambas direcciones. Sin amortiguación gamma.<br>
+    EOM JPM Collar vence <strong>31-Mar</strong> (mañana) · Liberation Day aranceles Trump: <strong>2-Apr</strong> · Put Walls masivos SOBRE el spot en ES y SPX.
+  </div>
+</div>
+
+<!-- ══ CONTEXT BAR ══ -->
+<div class="context-bar">
+  <div class="ctx-item">
+    <div class="ctx-label">FECHA</div>
+    <div class="ctx-value yellow">30-Mar-2026</div>
+  </div>
+  <div class="ctx-item">
+    <div class="ctx-label">SESIÓN</div>
+    <div class="ctx-value">Lunes / EOM-1</div>
+  </div>
+  <div class="ctx-item">
+    <div class="ctx-label">ES Future</div>
+    <div class="ctx-value red">6,412.25</div>
+  </div>
+  <div class="ctx-item">
+    <div class="ctx-label">NQ Future</div>
+    <div class="ctx-value orange">23,328.5</div>
+  </div>
+  <div class="ctx-item">
+    <div class="ctx-label">CL Future</div>
+    <div class="ctx-value teal">99.64</div>
+  </div>
+  <div class="ctx-item">
+    <div class="ctx-label">SPX Spot</div>
+    <div class="ctx-value purple">~6,300</div>
+  </div>
+  <div class="ctx-item">
+    <div class="ctx-label">VIX</div>
+    <div class="ctx-value red">~23.34</div>
+  </div>
+  <div class="ctx-item">
+    <div class="ctx-label">Régimen</div>
+    <div class="ctx-value red">AMPLIFIED</div>
+  </div>
+</div>
+
+<!-- ══ MAIN GRID ══ -->
+<div class="main">
+
+  <!-- ══ ADVERTENCIA SEMANA ══ -->
+  <div class="advertencia full-width">
+    <div class="advertencia-title">SEMANA CRÍTICA — TRIPLE EVENTO</div>
+    <div class="advertencia-text">
+      EOM 31-Mar (JPM Collar vence mañana) · Liberation Day 2-Apr (aranceles Trump) · GEX negativo en todos los índices.
+      Los Put Walls masivos de 6,525/6,500 en ES y 6,410/6,455 en SPX están <strong>SOBRE el precio actual</strong> — el mercado ya los perforó.
+      Esto es territorio de amplificación extrema. Sizing reducido. No promediar en contra.
+    </div>
+  </div>
+
+  <!-- ══ ES CARD ══ -->
+  <div class="instr-card es">
+    <div class="card-header">
+      <div>
+        <div class="card-ticker">ES</div>
+        <div style="font-size:11px; color:var(--text-dim); margin-top:4px;">E-MINI S&P 500 · ESM6</div>
+        <div class="card-regime regime-amplified">⚠ AMPLIFIED</div>
+      </div>
+      <div class="card-meta">
+        <div class="card-future">6,412.25</div>
+        <div class="card-chg">−112.75 desde prior</div>
+        <div style="font-family:'Space Mono',monospace; font-size:10px; color:var(--text-dim); margin-top:4px;">Vol: 23.34 (−3.16)</div>
+      </div>
+    </div>
+
+    <div class="levels">
+      <div class="level-row">
+        <div class="level-dot dot-red"></div>
+        <div class="level-name">Call Wall <small>0DTE</small></div>
+        <div class="level-price price-red">6,600</div>
+        <div class="level-oi">C_OI=1,956</div>
+      </div>
+      <div class="level-row">
+        <div class="level-dot dot-yellow"></div>
+        <div class="level-name">Gamma Flip <small>zona</small></div>
+        <div class="level-price price-yellow">6,500–6,525</div>
+        <div class="level-oi">EOM masivo</div>
+      </div>
+      <div class="level-row">
+        <div class="level-dot dot-purple"></div>
+        <div class="level-name">Put Wall EOM 1 <span class="tag tag-purple">JPM</span></div>
+        <div class="level-price price-purple">6,525</div>
+        <div class="level-oi">P_OI=7,660</div>
+      </div>
+      <div class="level-row">
+        <div class="level-dot dot-purple"></div>
+        <div class="level-name">Put Wall EOM 2 <span class="tag tag-purple">31-Mar</span></div>
+        <div class="level-price price-purple">6,500</div>
+        <div class="level-oi">P_OI=6,775</div>
+      </div>
+      <div class="level-sep"></div>
+      <div class="level-row">
+        <div class="level-dot dot-blue"></div>
+        <div class="level-name">Put Wall 0DTE</div>
+        <div class="level-price price-blue">6,400</div>
+        <div class="level-oi">P_OI=2,153</div>
+      </div>
+      <div class="level-row">
+        <div class="level-dot dot-blue"></div>
+        <div class="level-name">Put Wall Mayor <span class="tag tag-red">⚠</span></div>
+        <div class="level-price price-blue">6,300</div>
+        <div class="level-oi">P_OI=3,512</div>
+      </div>
+      <div class="level-row">
+        <div class="level-dot dot-teal"></div>
+        <div class="level-name">Emergency Anchor</div>
+        <div class="level-price price-teal">6,277</div>
+        <div class="level-oi">1σ Low</div>
+      </div>
+    </div>
+
+    <div class="sigma-row">
+      <div class="sigma-cell">
+        <div class="sigma-label">1σ LUNES</div>
+        <div class="sigma-value" style="color:var(--text)">6,277–6,548</div>
+      </div>
+      <div class="sigma-cell">
+        <div class="sigma-label">1σ EOM</div>
+        <div class="sigma-value" style="color:var(--purple)">6,235–6,590</div>
+      </div>
+      <div class="sigma-cell">
+        <div class="sigma-label">1σ LIB DAY</div>
+        <div class="sigma-value" style="color:var(--red)">6,181–6,643</div>
+      </div>
+    </div>
+
+    <div class="card-footer">
+      <div class="foot-item">
+        <div class="foot-label">P/C VOL</div>
+        <div class="foot-value" style="color:var(--red)">2.58</div>
+      </div>
+      <div class="foot-item">
+        <div class="foot-label">GEX</div>
+        <div class="foot-value" style="color:var(--red)">NEG</div>
+      </div>
+      <div class="foot-item">
+        <div class="foot-label">SIZING</div>
+        <div class="foot-value" style="color:var(--orange)">−25/−30%</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ NQ CARD ══ -->
+  <div class="instr-card nq">
+    <div class="card-header">
+      <div>
+        <div class="card-ticker">NQ</div>
+        <div style="font-size:11px; color:var(--text-dim); margin-top:4px;">NASDAQ 100 · NQM6</div>
+        <div class="card-regime regime-amplified">⚠ AMPLIFIED</div>
+      </div>
+      <div class="card-meta">
+        <div class="card-future">23,328.5</div>
+        <div class="card-chg">−465.75 desde prior</div>
+        <div style="font-family:'Space Mono',monospace; font-size:10px; color:var(--text-dim); margin-top:4px;">Vol: 24.06 (−0.15)</div>
+      </div>
+    </div>
+
+    <div class="levels">
+      <div class="level-row">
+        <div class="level-dot dot-red"></div>
+        <div class="level-name">Call Wall Mayor <small>Q1DJ6</small></div>
+        <div class="level-price price-red">23,700</div>
+        <div class="level-oi">C=460</div>
+      </div>
+      <div class="level-row">
+        <div class="level-dot dot-red"></div>
+        <div class="level-name">Call Wall 0DTE</div>
+        <div class="level-price price-red">23,600</div>
+        <div class="level-oi">C_OI=187</div>
+      </div>
+      <div class="level-row">
+        <div class="level-dot dot-yellow"></div>
+        <div class="level-name">Gamma Flip</div>
+        <div class="level-price price-yellow">23,300–23,350</div>
+        <div class="level-oi">transición</div>
+      </div>
+      <div class="level-row">
+        <div class="level-dot dot-purple"></div>
+        <div class="level-name">Put Wall EOM <span class="tag tag-purple">31-Mar</span></div>
+        <div class="level-price price-purple">23,500</div>
+        <div class="level-oi">Q1DJ6 P=285</div>
+      </div>
+      <div class="level-sep"></div>
+      <div class="level-row">
+        <div class="level-dot dot-blue"></div>
+        <div class="level-name">Put Wall 0DTE</div>
+        <div class="level-price price-blue">23,250</div>
+        <div class="level-oi">P_OI=443</div>
+      </div>
+      <div class="level-row">
+        <div class="level-dot dot-blue"></div>
+        <div class="level-name">Put Wall Mayor <span class="tag tag-red">⚠</span></div>
+        <div class="level-price price-blue">23,000</div>
+        <div class="level-oi">P_OI=500</div>
+      </div>
+      <div class="level-row">
+        <div class="level-dot dot-teal"></div>
+        <div class="level-name">Emergency Anchor</div>
+        <div class="level-price price-teal">22,888</div>
+        <div class="level-oi">1σ Low</div>
+      </div>
+    </div>
+
+    <div class="sigma-row">
+      <div class="sigma-cell">
+        <div class="sigma-label">1σ LUNES</div>
+        <div class="sigma-value" style="color:var(--text)">22,888–23,769</div>
+      </div>
+      <div class="sigma-cell">
+        <div class="sigma-label">1σ EOM</div>
+        <div class="sigma-value" style="color:var(--purple)">22,795–23,863</div>
+      </div>
+      <div class="sigma-cell">
+        <div class="sigma-label">1σ LIB DAY</div>
+        <div class="sigma-value" style="color:var(--red)">22,627–24,030</div>
+      </div>
+    </div>
+
+    <div class="card-footer">
+      <div class="foot-item">
+        <div class="foot-label">VOL EOM</div>
+        <div class="foot-value" style="color:var(--red)">24.21 −3.64</div>
+      </div>
+      <div class="foot-item">
+        <div class="foot-label">GEX</div>
+        <div class="foot-value" style="color:var(--red)">NEG</div>
+      </div>
+      <div class="foot-item">
+        <div class="foot-label">SIZING</div>
+        <div class="foot-value" style="color:var(--orange)">−25/−30%</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ CL CARD ══ -->
+  <div class="instr-card cl">
+    <div class="card-header">
+      <div>
+        <div class="card-ticker">CL</div>
+        <div style="font-size:11px; color:var(--text-dim); margin-top:4px;">WTI CRUDE OIL · CLK6</div>
+        <div class="card-regime regime-neutral">◈ NEUTRAL / TRANSICIÓN</div>
+      </div>
+      <div class="card-meta">
+        <div class="card-future" style="color:var(--lime)">99.64</div>
+        <div class="card-chg" style="color:var(--lime)">+5.16 desde prior</div>
+        <div style="font-family:'Space Mono',monospace; font-size:10px; color:var(--red); margin-top:4px;">Vol: 97.85 ⚠ EXTREMA</div>
+      </div>
+    </div>
+
+    <div class="alert-card">
+      <strong>NIVEL CRÍTICO:</strong> Future 99.64 está en el Gamma Flip 99.50–100.00.<br>
+      Cierre lunes arriba o abajo de <strong>100.00</strong> define el sesgo de la semana.<br>
+      Calls dominan 2.6x. Vol 97.85 → Liberation Day pricing activo.
+    </div>
+
+    <div class="levels">
+      <div class="level-row">
+        <div class="level-dot dot-red"></div>
+        <div class="level-name">Call Wall 2</div>
+        <div class="level-price price-red">105.00</div>
+        <div class="level-oi">C=13,215</div>
+      </div>
+      <div class="level-row">
+        <div class="level-dot dot-red"></div>
+        <div class="level-name">Call Wall / GF <span class="tag tag-red">⚠ CRÍTICO</span></div>
+        <div class="level-price price-red">100.00</div>
+        <div class="level-oi">C=17,241</div>
+      </div>
+      <div class="level-row">
+        <div class="level-dot dot-yellow"></div>
+        <div class="level-name">Gamma Flip <small>futuro aquí</small></div>
+        <div class="level-price price-yellow">99.50–100.00</div>
+        <div class="level-oi">máx. inestab.</div>
+      </div>
+      <div class="level-sep"></div>
+      <div class="level-row">
+        <div class="level-dot dot-blue"></div>
+        <div class="level-name">Put Wall 2</div>
+        <div class="level-price price-blue">97.00</div>
+        <div class="level-oi">P=410</div>
+      </div>
+      <div class="level-row">
+        <div class="level-dot dot-blue"></div>
+        <div class="level-name">Put Wall Mayor <span class="tag tag-red">⚠</span></div>
+        <div class="level-price price-blue">95.00</div>
+        <div class="level-oi">P=2,950/4,960</div>
+      </div>
+      <div class="level-row">
+        <div class="level-dot dot-teal"></div>
+        <div class="level-name">Emergency Anchor</div>
+        <div class="level-price price-teal">92.11</div>
+        <div class="level-oi">1σ Low</div>
+      </div>
+      <div class="level-row">
+        <div class="level-dot dot-gray"></div>
+        <div class="level-name">CLM6 Settle <small>EOM ref</small></div>
+        <div class="level-price price-gray">94.19</div>
+        <div class="level-oi">contango</div>
+      </div>
+    </div>
+
+    <div class="sigma-row">
+      <div class="sigma-cell">
+        <div class="sigma-label">1σ 0DTE</div>
+        <div class="sigma-value" style="color:var(--text)">92.11–107.17</div>
+      </div>
+      <div class="sigma-cell">
+        <div class="sigma-label">CURVA</div>
+        <div class="sigma-value" style="color:var(--red)">99→94→89 ↓</div>
+      </div>
+      <div class="sigma-cell">
+        <div class="sigma-label">VOL</div>
+        <div class="sigma-value" style="color:var(--red)">97.85 ⚠</div>
+      </div>
+    </div>
+
+    <div class="card-footer">
+      <div class="foot-item">
+        <div class="foot-label">P/C</div>
+        <div class="foot-value" style="color:var(--lime)">Calls 2.6x</div>
+      </div>
+      <div class="foot-item">
+        <div class="foot-label">GEX</div>
+        <div class="foot-value" style="color:var(--yellow)">NEUTRO</div>
+      </div>
+      <div class="foot-item">
+        <div class="foot-label">SIZING</div>
+        <div class="foot-value" style="color:var(--orange)">NORMAL</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ SPX CARD ══ -->
+  <div class="instr-card spx">
+    <div class="card-header">
+      <div>
+        <div class="card-ticker">SPX</div>
+        <div style="font-size:11px; color:var(--text-dim); margin-top:4px;">S&P 500 INDEX · CASH</div>
+        <div class="card-regime regime-amplified">⚠ AMPLIFIED — SIN GAMMA FLIP</div>
+      </div>
+      <div class="card-meta">
+        <div class="card-future" style="color:var(--fuchsia)">~6,300</div>
+        <div class="card-chg">cierre viernes</div>
+        <div style="font-family:'Space Mono',monospace; font-size:10px; color:var(--red); margin-top:4px;">GEX: −68.7M | P/C: 26.75</div>
+      </div>
+    </div>
+
+    <div class="spx-alerta">
+      ⚠ GEX NEGATIVO EN TODO EL RANGO — NO EXISTE GAMMA FLIP<br>
+      ⚠ PUT WALLS MASIVOS SOBRE EL SPOT: 6,420 / 6,410 / 6,455<br>
+      ⚠ P/C RATIO 26.75 — PUTS DOMINAN EXTREMO
+    </div>
+
+    <div class="levels">
+      <div class="level-row">
+        <div class="level-dot dot-red"></div>
+        <div class="level-name">Lib Day PW MAX <span class="tag tag-red">2-Apr</span></div>
+        <div class="level-price price-red">6,455</div>
+        <div class="level-oi">P_OI=995 MAX</div>
+      </div>
+      <div class="level-row">
+        <div class="level-dot dot-red"></div>
+        <div class="level-name">Lib Day PW 2 <span class="tag tag-red">2-Apr</span></div>
+        <div class="level-price price-red">6,420</div>
+        <div class="level-oi">P_OI=906</div>
+      </div>
+      <div class="level-row">
+        <div class="level-dot dot-purple"></div>
+        <div class="level-name">EOM JPM Collar <span class="tag tag-purple">31-Mar</span></div>
+        <div class="level-price price-purple">6,410</div>
+        <div class="level-oi">P_OI=977</div>
+      </div>
+      <div class="level-row">
+        <div class="level-dot dot-fuchsia"></div>
+        <div class="level-name">EOM PW Nuevo <span class="tag tag-purple">MAX GEX</span></div>
+        <div class="level-price price-fuchsia">6,320</div>
+        <div class="level-oi">P_OI=956</div>
+      </div>
+      <div class="level-row">
+        <div class="level-dot dot-purple"></div>
+        <div class="level-name">EOM PW 3</div>
+        <div class="level-price price-purple">6,290</div>
+        <div class="level-oi">P_OI=857</div>
+      </div>
+      <div class="level-sep"></div>
+      <div class="level-row">
+        <div class="level-dot dot-blue"></div>
+        <div class="level-name">Soporte 0DTE</div>
+        <div class="level-price price-blue">6,280</div>
+        <div class="level-oi">P_OI=735</div>
+      </div>
+      <div class="level-row">
+        <div class="level-dot dot-teal"></div>
+        <div class="level-name">Emergency Anchor</div>
+        <div class="level-price price-teal">6,270</div>
+        <div class="level-oi">si rompe → accel.</div>
+      </div>
+    </div>
+
+    <div class="sigma-row">
+      <div class="sigma-cell">
+        <div class="sigma-label">1σ 0DTE</div>
+        <div class="sigma-value" style="color:var(--text)">6,176–6,424</div>
+      </div>
+      <div class="sigma-cell">
+        <div class="sigma-label">C_OI / P_OI</div>
+        <div class="sigma-value" style="color:var(--red)">2,320 / 62,054</div>
+      </div>
+      <div class="sigma-cell">
+        <div class="sigma-label">NET GEX</div>
+        <div class="sigma-value" style="color:var(--red)">−68.7M</div>
+      </div>
+    </div>
+
+    <div class="card-footer">
+      <div class="foot-item">
+        <div class="foot-label">P/C RATIO</div>
+        <div class="foot-value" style="color:var(--red)">26.75 ⚠</div>
+      </div>
+      <div class="foot-item">
+        <div class="foot-label">GAMMA FLIP</div>
+        <div class="foot-value" style="color:var(--red)">NO EXISTE</div>
+      </div>
+      <div class="foot-item">
+        <div class="foot-label">SIZING</div>
+        <div class="foot-value" style="color:var(--red)">−30/−40%</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ CONTEXTO SEMANA ══ -->
+  <div class="week-panel">
+    <div class="section-title">Contexto Semana</div>
+    <div class="week-grid">
+      <div class="week-event critical">
+        <div class="week-date">HOY · LUN 30-MAR</div>
+        <div class="week-name">0DTE Lunes</div>
+        <div class="week-desc">Primer día post-selloff. ES en 6,412 bajo Put Walls EOM. Rango 1σ: 6,277–6,548. Amplificación activa.</div>
+      </div>
+      <div class="week-event critical">
+        <div class="week-date">MAR 31-MAR · EOM</div>
+        <div class="week-name">JPM Collar vence</div>
+        <div class="week-desc">End of Month. JPM Collar expira. Put Walls 6,525/6,500 en ES. Máxima presión gamma. Posible pin o aceleración.</div>
+      </div>
+      <div class="week-event critical">
+        <div class="week-date">JUE 2-ABR · LIBERATION DAY</div>
+        <div class="week-name">Aranceles Trump</div>
+        <div class="week-desc">Anuncio de aranceles recíprocos. Put Wall SPX 6,455 (MAX OI semana). 1σ ES: ±231. Vol CL en 97.85 pricing este evento.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ REGLAS PAD ══ -->
+  <div class="reglas-panel">
+    <div class="section-title">Reglas PAD para esta Sesión</div>
+
+    <div class="regla-item">
+      <div class="regla-num">01</div>
+      <div class="regla-text">
+        <strong>Régimen AMPLIFIED activo.</strong> Dealers amplifican movimientos en ambas direcciones. <em>No operar en contra de la tendencia intraday sin confirmación.</em>
+      </div>
+    </div>
+    <div class="regla-item">
+      <div class="regla-num">02</div>
+      <div class="regla-text">
+        <strong>Sizing reducido obligatorio:</strong> ES/NQ −25% a −30% del size normal. SPX −30% a −40%. CL normal (régimen neutro).
+      </div>
+    </div>
+    <div class="regla-item">
+      <div class="regla-num">03</div>
+      <div class="regla-text">
+        <strong>No promediar en contra.</strong> En AMPLIFIED el precio puede acelerar brutalmente al romper un Put Wall. <em>Si rompe 6,300 ES → siguiente stop 6,277.</em>
+      </div>
+    </div>
+    <div class="regla-item">
+      <div class="regla-num">04</div>
+      <div class="regla-text">
+        <strong>CL niveles críticos:</strong> 100.00 es Call Wall + Gamma Flip simultáneamente. Cierre sobre 100 = sesgo alcista semana. Bajo 100 = put wall 95 en target.
+      </div>
+    </div>
+    <div class="regla-item">
+      <div class="regla-num">05</div>
+      <div class="regla-text">
+        <strong>Ajustar pre-market lunes 09:00 ET</strong> con datos finales de futures. Los niveles PAD son de viernes EOD — verificar desplazamiento overnight.
+      </div>
+    </div>
+  </div>
+
+</div><!-- end main -->
+
+<!-- ══ FOOTER ══ -->
+<div class="footer">
+  <div class="footer-left">
+    PIVOTALPHADESK.COM &nbsp;/&nbsp; GAIA GAMMA MARKET STRUCTURE &nbsp;/&nbsp; USO INTERNO — NO DISTRIBUIR
+  </div>
+  <div class="footer-right">
+    Generado: Sáb 28-Mar-2026 &nbsp;|&nbsp; Fuentes: <span>CME QuikStrike EOD · TradeStation XLS 02:56 PM ET</span> &nbsp;|&nbsp; Ajustar lunes pre-mkt
+  </div>
+</div>
+
+</body>
+</html>
