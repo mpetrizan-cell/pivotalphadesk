@@ -1,0 +1,938 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Briefing PAD | Viernes 27 Mar 2026 | PivotAlphaDesk</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Space+Mono:wght@400;700&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg:      #0a0c10;
+    --bg2:     #0f1118;
+    --bg3:     #141720;
+    --border:  #1e2230;
+    --orange:  #f59e0b;
+    --orange2: #d97706;
+    --red:     #ef4444;
+    --green:   #22c55e;
+    --blue:    #3b82f6;
+    --purple:  #a855f7;
+    --teal:    #14b8a6;
+    --text:    #e2e8f0;
+    --text2:   #94a3b8;
+    --text3:   #475569;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { background:var(--bg); color:var(--text); font-family:'DM Sans',sans-serif; font-size:15px; line-height:1.7; }
+
+  /* TICKER */
+  .ticker-wrap { background:var(--red); overflow:hidden; padding:5px 0; position:sticky; top:0; z-index:100; }
+  .ticker-inner { display:flex; white-space:nowrap; animation:ticker 50s linear infinite; }
+  .ticker-inner span { font-family:'Space Mono',monospace; font-size:10px; color:#fff; font-weight:700; padding:0 24px; letter-spacing:.05em; }
+  @keyframes ticker { 0%{transform:translateX(0)} 100%{transform:translateX(-50%)} }
+
+  /* NAV */
+  nav { background:var(--bg2); border-bottom:1px solid var(--border); padding:12px 40px; display:flex; align-items:center; justify-content:space-between; }
+  .nav-brand { font-family:'Syne',sans-serif; font-size:17px; font-weight:800; color:var(--orange); text-decoration:none; }
+  .nav-right { display:flex; gap:16px; align-items:center; }
+  .nav-date { font-family:'Space Mono',monospace; font-size:10px; color:var(--text3); letter-spacing:.06em; }
+  .nav-badge { font-family:'Space Mono',monospace; font-size:10px; background:var(--red); color:#fff; padding:3px 10px; border-radius:2px; letter-spacing:.06em; animation:pulse 2s ease infinite; }
+  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.55} }
+
+  /* HERO */
+  .hero { padding:44px 40px 36px; max-width:960px; margin:0 auto; border-bottom:1px solid var(--border); }
+  .hero-eyebrow { font-family:'Space Mono',monospace; font-size:10px; color:var(--red); letter-spacing:.14em; text-transform:uppercase; margin-bottom:16px; }
+  .hero-title { font-family:'Syne',sans-serif; font-size:clamp(24px,3.5vw,38px); font-weight:800; color:#fff; line-height:1.2; margin-bottom:10px; }
+  .hero-title em { color:var(--orange); font-style:normal; }
+  .hero-title em.red { color:var(--red); }
+  .hero-sub { font-family:'Space Mono',monospace; font-size:10px; color:var(--text3); letter-spacing:.06em; text-transform:uppercase; margin-bottom:24px; }
+  .hero-stats { display:flex; gap:24px; flex-wrap:wrap; }
+  .hstat { display:flex; flex-direction:column; gap:3px; }
+  .hstat-label { font-family:'Space Mono',monospace; font-size:9px; color:var(--text3); letter-spacing:.08em; text-transform:uppercase; }
+  .hstat-val { font-family:'Syne',sans-serif; font-size:18px; font-weight:700; color:#fff; }
+  .hstat-val.down { color:var(--red); }
+  .hstat-val.up { color:var(--green); }
+  .hstat-chg { font-family:'Space Mono',monospace; font-size:10px; color:var(--text3); }
+
+  /* MACRO BAR */
+  .macro-bar { background:var(--bg3); border-bottom:1px solid var(--border); padding:12px 40px; max-width:960px; margin:0 auto; }
+  .macro-bar-inner { display:flex; gap:20px; flex-wrap:wrap; align-items:center; }
+  .macro-item { display:flex; gap:10px; align-items:center; }
+  .macro-label { font-family:'Space Mono',monospace; font-size:9px; color:var(--text3); letter-spacing:.08em; text-transform:uppercase; }
+  .macro-val { font-family:'Space Mono',monospace; font-size:11px; font-weight:700; }
+  .macro-val.ok { color:var(--green); }
+  .macro-val.warn { color:var(--orange); }
+  .macro-val.alert { color:var(--red); }
+  .macro-sep { color:var(--border); font-size:16px; }
+
+  /* ALERTS */
+  .collar-alert { background:rgba(239,68,68,.07); border:1px solid rgba(239,68,68,.25); border-left:4px solid var(--red); padding:14px 20px; margin:0 0 14px; border-radius:4px; }
+  .collar-alert-title { font-family:'Syne',sans-serif; font-size:12px; font-weight:700; color:var(--red); letter-spacing:.06em; text-transform:uppercase; margin-bottom:5px; }
+  .collar-alert p { font-size:13px; color:var(--text2); margin:0; line-height:1.6; }
+  .orange-alert { background:rgba(245,158,11,.07); border:1px solid rgba(245,158,11,.25); border-left:4px solid var(--orange); padding:14px 20px; margin:0 0 14px; border-radius:4px; }
+  .orange-alert-title { font-family:'Syne',sans-serif; font-size:12px; font-weight:700; color:var(--orange); letter-spacing:.06em; text-transform:uppercase; margin-bottom:5px; }
+  .orange-alert p { font-size:13px; color:var(--text2); margin:0; line-height:1.6; }
+
+  /* MAIN GRID */
+  .main { max-width:960px; margin:0 auto; padding:36px 40px; display:grid; grid-template-columns:1fr 1fr; gap:20px; }
+
+  /* CARDS */
+  .card { background:var(--bg2); border:1px solid var(--border); border-radius:6px; overflow:hidden; }
+  .card.full { grid-column:1/-1; }
+  .card-header { padding:14px 18px 10px; border-bottom:1px solid var(--border); display:flex; align-items:center; justify-content:space-between; }
+  .card-title { font-family:'Syne',sans-serif; font-size:12px; font-weight:700; letter-spacing:.06em; text-transform:uppercase; }
+  .card-title.es  { color:var(--orange); }
+  .card-title.nq  { color:var(--purple); }
+  .card-title.cl  { color:var(--teal); }
+  .card-title.spx { color:var(--blue); }
+  .card-title.macro { color:var(--text2); }
+  .card-title.tech { color:var(--green); }
+  .card-title.news { color:var(--red); }
+  .card-price { font-family:'Syne',sans-serif; font-size:20px; font-weight:800; color:#fff; }
+  .card-chg { font-family:'Space Mono',monospace; font-size:10px; }
+  .card-chg.down { color:var(--red); }
+  .card-chg.up   { color:var(--green); }
+  .card-body { padding:16px 18px; }
+
+  /* TPO TABLE */
+  .tpo-table { width:100%; border-collapse:collapse; margin-bottom:14px; }
+  .tpo-table td { padding:5px 8px; font-size:12px; border-bottom:1px solid var(--border); }
+  .tpo-table td:first-child { font-family:'Space Mono',monospace; font-size:10px; color:var(--text3); letter-spacing:.06em; width:100px; }
+  .tpo-table td:last-child { font-family:'Syne',sans-serif; font-size:13px; font-weight:600; color:#fff; text-align:right; }
+  .tpo-table td.note { font-family:'Space Mono',monospace; font-size:9px; color:var(--orange); text-align:right; }
+  .tpo-table tr:last-child td { border-bottom:none; }
+  .tpo-section-label { font-family:'Space Mono',monospace; font-size:9px; color:var(--text3); letter-spacing:.08em; text-transform:uppercase; margin:10px 0 4px; }
+
+  /* REGIME BADGE */
+  .regime-badge { display:inline-flex; align-items:center; gap:6px; font-family:'Space Mono',monospace; font-size:10px; padding:4px 10px; border-radius:3px; font-weight:700; letter-spacing:.06em; margin-bottom:12px; }
+  .regime-badge.amplified { background:rgba(239,68,68,.15); color:var(--red); border:1px solid rgba(239,68,68,.3); }
+  .regime-badge.dampened  { background:rgba(34,197,94,.12);  color:var(--green); border:1px solid rgba(34,197,94,.25); }
+  .regime-badge.neutral   { background:rgba(245,158,11,.12); color:var(--orange); border:1px solid rgba(245,158,11,.25); }
+  .regime-badge.bullish   { background:rgba(34,197,94,.12);  color:var(--green); border:1px solid rgba(34,197,94,.25); }
+
+  /* NIVELES MINI */
+  .niveles-mini { display:flex; flex-direction:column; gap:0; }
+  .nv-row { display:flex; justify-content:space-between; align-items:center; padding:6px 0; border-bottom:1px solid var(--border); }
+  .nv-row:last-child { border-bottom:none; }
+  .nv-name { font-family:'Space Mono',monospace; font-size:10px; color:var(--text3); letter-spacing:.04em; }
+  .nv-price { font-family:'Syne',sans-serif; font-size:14px; font-weight:700; color:#fff; }
+  .nv-row.flip  .nv-name  { color:var(--orange); }
+  .nv-row.flip  .nv-price { color:var(--orange); }
+  .nv-row.jpm   .nv-name  { color:var(--red); }
+  .nv-row.jpm   .nv-price { color:var(--red); }
+  .nv-row.hot   .nv-name  { color:var(--red); }
+  .nv-row.hot   .nv-price { color:var(--red); animation:pulse 2s ease infinite; }
+  .nv-row.green .nv-name  { color:var(--green); }
+  .nv-row.green .nv-price { color:var(--green); }
+  .nv-divider { font-family:'Space Mono',monospace; font-size:9px; color:var(--text3); padding:5px 0 3px; letter-spacing:.06em; text-transform:uppercase; border-bottom:1px solid var(--border); }
+
+  /* RANGO BAR */
+  .rango-bar { background:var(--bg3); border-radius:3px; padding:10px 12px; margin:12px 0; display:flex; justify-content:space-between; align-items:center; }
+  .rango-bar span { font-family:'Space Mono',monospace; font-size:10px; color:var(--text3); }
+  .rango-bar strong { color:var(--text2); }
+
+  /* SESGO */
+  .sesgo { display:flex; align-items:center; gap:8px; margin-top:12px; padding-top:12px; border-top:1px solid var(--border); flex-wrap:wrap; gap:6px; }
+  .sesgo-label { font-family:'Space Mono',monospace; font-size:10px; color:var(--text3); letter-spacing:.06em; }
+  .sesgo-val { font-family:'Syne',sans-serif; font-size:13px; font-weight:700; }
+  .sesgo-val.bull { color:var(--green); }
+  .sesgo-val.bear { color:var(--red); }
+  .sesgo-val.neutral { color:var(--orange); }
+
+  /* TECHNICAL MINI ROWS */
+  .tech-row { display:flex; justify-content:space-between; align-items:center; padding:6px 0; border-bottom:1px solid var(--border); }
+  .tech-row:last-child { border-bottom:none; }
+  .tech-label { font-family:'Space Mono',monospace; font-size:10px; color:var(--text3); }
+  .tech-val { font-family:'Syne',sans-serif; font-size:13px; font-weight:600; }
+  .tech-val.bear { color:var(--red); }
+  .tech-val.bull { color:var(--green); }
+  .tech-val.neutral { color:var(--orange); }
+  .tech-val.white { color:#fff; }
+  .tech-signal { font-family:'Space Mono',monospace; font-size:9px; padding:2px 6px; border-radius:2px; }
+  .tech-signal.bear { background:rgba(239,68,68,.15); color:var(--red); }
+  .tech-signal.bull { background:rgba(34,197,94,.12); color:var(--green); }
+  .tech-signal.neutral { background:rgba(245,158,11,.12); color:var(--orange); }
+
+  /* PRIME ZONE */
+  .prime-zone { background:linear-gradient(135deg,rgba(239,68,68,.08),rgba(245,158,11,.05)); border:1px solid rgba(239,68,68,.2); border-radius:5px; padding:14px 16px; margin:14px 0; }
+  .prime-zone-title { font-family:'Syne',sans-serif; font-size:11px; font-weight:700; color:var(--orange); letter-spacing:.06em; text-transform:uppercase; margin-bottom:8px; display:flex; align-items:center; gap:8px; }
+  .prime-zone-title::before { content:'🎯'; }
+  .prime-zone p { font-size:12px; color:var(--text2); line-height:1.6; margin:0; }
+  .prime-zone strong { color:var(--text); }
+
+  /* NEWS FLASH */
+  .news-flash { display:flex; flex-direction:column; gap:8px; }
+  .nf-item { display:flex; gap:10px; align-items:flex-start; padding:8px 0; border-bottom:1px solid var(--border); }
+  .nf-item:last-child { border-bottom:none; }
+  .nf-tag { font-family:'Space Mono',monospace; font-size:9px; padding:2px 6px; border-radius:2px; white-space:nowrap; flex-shrink:0; margin-top:2px; }
+  .nf-tag.risk  { background:rgba(239,68,68,.2); color:var(--red); }
+  .nf-tag.watch { background:rgba(245,158,11,.2); color:var(--orange); }
+  .nf-tag.geo   { background:rgba(168,85,247,.2); color:var(--purple); }
+  .nf-tag.macro { background:rgba(59,130,246,.2); color:var(--blue); }
+  .nf-tag.fx    { background:rgba(20,184,166,.2); color:var(--teal); }
+  .nf-text { font-size:13px; color:var(--text2); line-height:1.5; }
+  .nf-text strong { color:var(--text); }
+
+  /* MACRO CARD */
+  .macro-row { display:flex; justify-content:space-between; align-items:center; padding:8px 0; border-bottom:1px solid var(--border); }
+  .macro-row:last-child { border-bottom:none; }
+  .mr-left { display:flex; flex-direction:column; gap:2px; }
+  .mr-event { font-size:13px; color:var(--text); font-weight:500; }
+  .mr-time { font-family:'Space Mono',monospace; font-size:10px; color:var(--text3); }
+  .mr-data { font-family:'Space Mono',monospace; font-size:11px; text-align:right; }
+  .mr-data .actual { font-size:14px; font-weight:700; }
+  .mr-data .actual.ok   { color:var(--green); }
+  .mr-data .actual.warn { color:var(--orange); }
+  .mr-data .actual.alert{ color:var(--red); }
+  .mr-data .consensus { color:var(--text3); font-size:10px; }
+
+  /* EXPIRY */
+  .expiry-row { display:flex; gap:10px; align-items:center; padding:8px 0; border-bottom:1px solid var(--border); }
+  .expiry-row:last-child { border-bottom:none; }
+  .exp-sym { font-family:'Space Mono',monospace; font-size:11px; color:var(--orange); font-weight:700; min-width:60px; }
+  .exp-desc { font-size:12px; color:var(--text2); flex:1; }
+  .exp-badge { font-family:'Space Mono',monospace; font-size:9px; padding:2px 7px; border-radius:2px; }
+  .exp-badge.hoy  { background:rgba(239,68,68,.2); color:var(--red); }
+  .exp-badge.prox { background:rgba(245,158,11,.15); color:var(--orange); }
+  .exp-badge.soon { background:rgba(168,85,247,.15); color:var(--purple); }
+
+  /* INSTITUTIONAL EVENTS */
+  .inst-table { width:100%; border-collapse:collapse; }
+  .inst-table th { font-family:'Space Mono',monospace; font-size:9px; color:var(--text3); letter-spacing:.06em; text-transform:uppercase; padding:6px 8px; text-align:left; border-bottom:1px solid var(--border); }
+  .inst-table td { padding:7px 8px; font-size:12px; border-bottom:1px solid var(--border); color:var(--text2); }
+  .inst-table td:first-child { font-family:'Space Mono',monospace; font-size:10px; color:var(--orange); width:80px; }
+  .inst-table td.high { color:var(--red); font-weight:600; }
+  .inst-table td.med  { color:var(--orange); }
+  .inst-table tr:last-child td { border-bottom:none; }
+
+  /* BIAS */
+  .bias-box { background:var(--bg3); border:1px solid var(--border); border-left:4px solid var(--orange); border-radius:4px; padding:18px 20px; margin-top:16px; }
+  .bias-title { font-family:'Syne',sans-serif; font-size:13px; font-weight:700; color:var(--orange); letter-spacing:.06em; text-transform:uppercase; margin-bottom:10px; }
+  .bias-text { font-size:13px; color:var(--text2); line-height:1.65; }
+  .bias-text strong { color:var(--text); }
+  .bias-text .rule { background:rgba(245,158,11,.08); border-left:3px solid var(--orange); padding:8px 12px; margin:10px 0; border-radius:0 4px 4px 0; font-size:12px; color:var(--orange); }
+
+  /* CREDIBILITY */
+  .cred-bar { background:var(--bg3); border-top:1px solid var(--border); padding:12px 40px; max-width:960px; margin:0 auto; }
+  .cred-bar p { font-family:'Space Mono',monospace; font-size:9px; color:var(--text3); letter-spacing:.03em; line-height:1.6; }
+  .cred-bar strong { color:var(--text2); }
+
+  /* FOOTER */
+  footer { background:var(--bg2); border-top:1px solid var(--border); padding:24px 40px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px; }
+  footer .brand { font-family:'Syne',sans-serif; font-size:14px; font-weight:800; color:var(--orange); }
+  footer p { font-family:'Space Mono',monospace; font-size:10px; color:var(--text3); margin:0; }
+
+  /* SECTION LABEL */
+  .section-label { font-family:'Space Mono',monospace; font-size:10px; color:var(--orange); letter-spacing:.14em; text-transform:uppercase; margin-bottom:12px; display:flex; align-items:center; gap:10px; }
+  .section-label::after { content:''; flex:1; height:1px; background:var(--border); }
+
+  @media(max-width:640px) {
+    nav,.hero,.macro-bar,.main,.cred-bar,footer { padding-left:16px; padding-right:16px; }
+    .main { grid-template-columns:1fr; }
+    .card.full { grid-column:1; }
+    .hero-stats { gap:14px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- TICKER TAPE -->
+<div class="ticker-wrap">
+  <div class="ticker-inner">
+    <span>⚠ AMPLIFIED</span><span>|</span>
+    <span>ESM6 ~6,499 ▼ −122 vs settle</span><span>|</span>
+    <span>NQM6 ~23,645 ▼ −573 vs settle</span><span>|</span>
+    <span>CLK6 ~96.56 ▲ +2.08 ETH</span><span>|</span>
+    <span>SPX CASH ~6,477 ▼ EMA 200: 6,592</span><span>|</span>
+    <span>⚠ EW4H6 VENCE HOY · GAMMA MÁXIMA</span><span>|</span>
+    <span>⚠ JPM COLLAR VENCE 31-MAR · 35,000 CONTRATOS · PUT WALL: 6,500</span><span>|</span>
+    <span>⚠ LIBERATION DAY 2-ABR · RIESGO ARANCELES TRUMP</span><span>|</span>
+    <span>ES: PUT WALL JPM 6,500 SIENDO TESTEADO AHORA</span><span>|</span>
+    <span>CL RALLY ETH → IRÁN/HORMUZ + TARIFFS · VOL SPIKE +10.70</span><span>|</span>
+    <span>FX: EUR PUTS MASIVOS 30-MAR $1.67B · CHF PUTS MAYO $320M</span><span>|</span>
+    <span>PCE DATOS 8:30 ET HOY · IMPORTANTE PARA FED</span><span>|</span>
+    <span>⚠ AMPLIFIED</span><span>|</span>
+    <span>ESM6 ~6,499 ▼ −122 vs settle</span><span>|</span>
+    <span>NQM6 ~23,645 ▼ −573 vs settle</span><span>|</span>
+    <span>CLK6 ~96.56 ▲ +2.08 ETH</span><span>|</span>
+    <span>SPX CASH ~6,477 ▼ EMA 200: 6,592</span><span>|</span>
+    <span>⚠ EW4H6 VENCE HOY · GAMMA MÁXIMA</span><span>|</span>
+    <span>⚠ JPM COLLAR VENCE 31-MAR · 35,000 CONTRATOS · PUT WALL: 6,500</span><span>|</span>
+    <span>⚠ LIBERATION DAY 2-ABR · RIESGO ARANCELES TRUMP</span><span>|</span>
+    <span>ES: PUT WALL JPM 6,500 SIENDO TESTEADO AHORA</span><span>|</span>
+    <span>CL RALLY ETH → IRÁN/HORMUZ + TARIFFS · VOL SPIKE +10.70</span><span>|</span>
+    <span>FX: EUR PUTS MASIVOS 30-MAR $1.67B · CHF PUTS MAYO $320M</span><span>|</span>
+    <span>PCE DATOS 8:30 ET HOY · IMPORTANTE PARA FED</span><span>|</span>
+  </div>
+</div>
+
+<!-- NAV -->
+<nav>
+  <a class="nav-brand" href="/">▣ PivotAlphaDesk</a>
+  <div class="nav-right">
+    <span class="nav-date">VIE 27 MAR 2026 · 08:00 ET</span>
+    <span class="nav-badge">⚠ AMPLIFIED · VENCE EW4H6</span>
+  </div>
+</nav>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-eyebrow">Pre-Open Briefing · Viernes 27 Marzo 2026 · GAIA Framework</div>
+  <h1 class="hero-title"><em class="red">Put Wall JPM en Juego</em> —<br>EW4H6 Vence Hoy · <em>5 Días del Collar</em></h1>
+  <p class="hero-sub">Friday Pre-Open · EW4H6 Expiry Day · JPM Collar Week · Liberation Day 2-Apr · AMPLIFIED Regime</p>
+  <div class="hero-stats">
+    <div class="hstat">
+      <span class="hstat-label">ESM6 Pre-Mkt</span>
+      <span class="hstat-val down">~6,499</span>
+      <span class="hstat-chg">▼ −122 vs settle 6,621</span>
+    </div>
+    <div class="hstat">
+      <span class="hstat-label">NQM6 Pre-Mkt</span>
+      <span class="hstat-val down">~23,645</span>
+      <span class="hstat-chg">▼ −573 vs settle 24,368</span>
+    </div>
+    <div class="hstat">
+      <span class="hstat-label">CLK6 Pre-Mkt</span>
+      <span class="hstat-val up">~96.56</span>
+      <span class="hstat-chg">▲ +2.08 ETH vs settle 94.48</span>
+    </div>
+    <div class="hstat">
+      <span class="hstat-label">SPX Cash</span>
+      <span class="hstat-val down">~6,477</span>
+      <span class="hstat-chg">▼ EMA 200: 6,592 · −115 pts bajo</span>
+    </div>
+  </div>
+</div>
+
+<!-- MACRO BAR -->
+<div class="macro-bar">
+  <div class="macro-bar-inner">
+    <div class="macro-item">
+      <span class="macro-label">PCE 8:30 ET</span>
+      <span class="macro-val warn">PENDIENTE</span>
+    </div>
+    <span class="macro-sep">·</span>
+    <div class="macro-item">
+      <span class="macro-label">Cons Core PCE</span>
+      <span class="macro-val">+0.3% MoM</span>
+    </div>
+    <span class="macro-sep">·</span>
+    <div class="macro-item">
+      <span class="macro-label">EW4H6</span>
+      <span class="macro-val alert">VENCE HOY 0DTE</span>
+    </div>
+    <span class="macro-sep">·</span>
+    <div class="macro-item">
+      <span class="macro-label">JPM Collar</span>
+      <span class="macro-val warn">5 DTE · 31-Mar ⚠</span>
+    </div>
+    <span class="macro-sep">·</span>
+    <div class="macro-item">
+      <span class="macro-label">Liberation Day</span>
+      <span class="macro-val alert">6 DTE · 2-Abr</span>
+    </div>
+  </div>
+</div>
+
+<!-- MAIN GRID -->
+<div class="main">
+
+  <!-- ALERTS ROW (full width) -->
+  <div class="card full">
+    <div class="card-body">
+      <div class="collar-alert">
+        <div class="collar-alert-title">🔴 CRÍTICO AHORA — ES testeando Put Wall JPM 6,500</div>
+        <p>ESM6 en ~6,499 pre-market está tocando la línea del collar JPMorgan. El <strong>Put Wall 6,500 acumula OI masivo en EWH6 (31-Mar): 6,658P en 0DTE + 7,333P en el EOM.</strong> Si este nivel cede con volumen, los dealers dejan de defender y el siguiente soporte estructural es <strong>6,457 (1σ low) → 6,400 → 6,375</strong>. En régimen AMPLIFIED los movimientos se amplifican, no se amortiguan. Tamaño −25% a −30% hoy.</p>
+      </div>
+      <div class="orange-alert">
+        <div class="orange-alert-title">⚠ Liberation Day 2-Abr — Riesgo Macro de Alto Impacto</div>
+        <p>Faltan 6 días para la implementación de los aranceles recíprocos de Trump. El mercado no está plenamente priceando el escenario de escalada. <strong>CL sube por Irán/Hormuz + tariffs sobre energía.</strong> EUR puts masivos para 30-Mar ($1.67B) y 3-Apr ($424M) apuntan a cobertura defensiva institucional. El collar JPM vence 31-Mar — el rebalanceo post-collar puede magnificar el movimiento si Liberation Day sorprende al alza en severity.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ES CARD -->
+  <div class="card">
+    <div class="card-header">
+      <span class="card-title es">ES — S&P 500 E-Mini</span>
+      <div style="text-align:right">
+        <div class="card-price">~6,499</div>
+        <div class="card-chg down">▼ −122 vs settle · EW4H6 vence HOY</div>
+      </div>
+    </div>
+    <div class="card-body">
+      <div class="regime-badge amplified">⚠ RÉGIMEN: AMPLIFIED — GEX NEGATIVO</div>
+
+      <!-- TPO -->
+      <div class="tpo-section-label">TPO RTH — 26-Mar (último día completo)</div>
+      <table class="tpo-table">
+        <tr><td>VAH</td><td>6,622.50</td></tr>
+        <tr><td>POC</td><td>6,587.00</td></tr>
+        <tr><td>VAL</td><td>6,551.25</td></tr>
+        <tr><td>HL Range</td><td>105.00 pts</td></tr>
+        <tr><td>IB High</td><td>6,622.50</td></tr>
+        <tr><td>IB Low</td><td>6,577.50</td></tr>
+      </table>
+
+      <!-- TECHNICAL -->
+      <div class="tpo-section-label">Análisis Técnico</div>
+      <div class="tech-row">
+        <span class="tech-label">EMA 200</span>
+        <span class="tech-val bear">6,580</span>
+        <span class="tech-signal bear">BAJO ▼</span>
+      </div>
+      <div class="tech-row">
+        <span class="tech-label">VWAP Session</span>
+        <span class="tech-val bear">6,533</span>
+        <span class="tech-signal bear">PRECIO BAJO</span>
+      </div>
+      <div class="tech-row">
+        <span class="tech-label">VWAP Upper Band</span>
+        <span class="tech-val white">6,554</span>
+        <span class="tech-signal neutral">RESISTENCIA</span>
+      </div>
+      <div class="tech-row">
+        <span class="tech-label">VWAP Lower Band</span>
+        <span class="tech-val bear">6,499</span>
+        <span class="tech-signal bear">EN BANDA</span>
+      </div>
+      <div class="tech-row">
+        <span class="tech-label">VAL 26-Mar</span>
+        <span class="tech-val bear">6,551</span>
+        <span class="tech-signal bear">AHORA RESISTENCIA</span>
+      </div>
+      <div class="tech-row">
+        <span class="tech-label">Tendencia</span>
+        <span class="tech-val bear">10 sesiones</span>
+        <span class="tech-signal bear">BAJISTA</span>
+      </div>
+
+      <!-- PAD LEVELS -->
+      <div class="tpo-section-label" style="margin-top:12px">Niveles PAD</div>
+      <div class="niveles-mini">
+        <div class="nv-row"><span class="nv-name">Call Wall</span><span class="nv-price">6,600</span></div>
+        <div class="nv-row"><span class="nv-name">EMA 200</span><span class="nv-price">6,580</span></div>
+        <div class="nv-row flip"><span class="nv-name">★ Gamma Flip</span><span class="nv-price">6,550–6,560</span></div>
+        <div class="nv-row"><span class="nv-name">VAL 26-Mar → Resistencia</span><span class="nv-price">6,525</span></div>
+        <div class="nv-row hot"><span class="nv-name">⚡ PUT WALL JPM — CRÍTICO</span><span class="nv-price">6,500</span></div>
+        <div class="nv-row"><span class="nv-name">1σ Low / Aceleración</span><span class="nv-price">6,457</span></div>
+        <div class="nv-row"><span class="nv-name">Put Wall 2</span><span class="nv-price">6,400</span></div>
+        <div class="nv-row jpm"><span class="nv-name">Gamma Extrema 0DTE</span><span class="nv-price">6,375</span></div>
+      </div>
+
+      <div class="rango-bar">
+        <span>Rango 1σ hoy (EW4H6 0DTE)</span>
+        <strong>6,424 — 6,575</strong>
+      </div>
+
+      <div class="prime-zone">
+        <div class="prime-zone-title">Prime Zone ES</div>
+        <p><strong>6,500 es el radar hoy.</strong> El precio está encima/en este nivel. Si lo pierde con volumen los dealers no defienden — aceleración a 6,457 en minutos. Si rebota desde aquí con volumen → posible fill hacia 6,525 (VAL). En AMPLIFIED el primer movimiento de apertura suele ser el tramposo: esperar 9:45–10:00 ET para confirmación de dirección.</p>
+      </div>
+
+      <div class="sesgo">
+        <span class="sesgo-label">Sesgo:</span>
+        <span class="sesgo-val bear">BAJISTA</span>
+        <span class="sesgo-label" style="margin-left:auto">Vol:</span>
+        <span class="sesgo-val bear">+2.65 SPIKE</span>
+        <span class="sesgo-label">P/C:</span>
+        <span class="sesgo-val bear">165,965P / 107,472C</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- NQ CARD -->
+  <div class="card">
+    <div class="card-header">
+      <span class="card-title nq">NQ — Nasdaq 100 E-Mini</span>
+      <div style="text-align:right">
+        <div class="card-price">~23,645</div>
+        <div class="card-chg down">▼ −573 vs settle 24,368 · EMA 200: 24,060</div>
+      </div>
+    </div>
+    <div class="card-body">
+      <div class="regime-badge amplified">⚠ RÉGIMEN: AMPLIFIED — Peor que ES</div>
+
+      <div class="tpo-section-label">TPO RTH — 26-Mar</div>
+      <table class="tpo-table">
+        <tr><td>VAH</td><td>24,080.00</td></tr>
+        <tr><td>POC</td><td>23,843.75</td></tr>
+        <tr><td>VAL</td><td>23,765.00</td></tr>
+        <tr><td>HL Range</td><td>479.25 pts</td></tr>
+        <tr><td>IB High</td><td>24,255.00</td></tr>
+        <tr><td>IB Low</td><td>24,062.50</td></tr>
+      </table>
+
+      <div class="tpo-section-label">Análisis Técnico</div>
+      <div class="tech-row">
+        <span class="tech-label">EMA 200</span>
+        <span class="tech-val bear">24,060</span>
+        <span class="tech-signal bear">PRECIO −415 PTS</span>
+      </div>
+      <div class="tech-row">
+        <span class="tech-label">VWAP Session</span>
+        <span class="tech-val bear">23,904</span>
+        <span class="tech-signal bear">PRECIO BAJO</span>
+      </div>
+      <div class="tech-row">
+        <span class="tech-label">VAL 26-Mar</span>
+        <span class="tech-val bear">23,765</span>
+        <span class="tech-signal bear">ROTA → RESISTENCIA</span>
+      </div>
+      <div class="tech-row">
+        <span class="tech-label">Settle 26-Mar</span>
+        <span class="tech-val bear">−573.5</span>
+        <span class="tech-signal bear">CAÍDA MASIVA</span>
+      </div>
+      <div class="tech-row">
+        <span class="tech-label">Tendencia</span>
+        <span class="tech-val bear">Estructura rota</span>
+        <span class="tech-signal bear">BAJISTA ACELERADO</span>
+      </div>
+
+      <div class="tpo-section-label" style="margin-top:12px">Niveles PAD</div>
+      <div class="niveles-mini">
+        <div class="nv-row"><span class="nv-name">Call Wall</span><span class="nv-price">24,200</span></div>
+        <div class="nv-row"><span class="nv-name">EMA 200 / Resistencia</span><span class="nv-price">24,060</span></div>
+        <div class="nv-row"><span class="nv-name">VAH 26-Mar → Resistencia</span><span class="nv-price">24,080</span></div>
+        <div class="nv-row flip"><span class="nv-name">★ Gamma Flip</span><span class="nv-price">23,900–24,000</span></div>
+        <div class="nv-row"><span class="nv-name">VAL 26-Mar → Resistencia</span><span class="nv-price">23,765</span></div>
+        <div class="nv-row hot"><span class="nv-name">⚡ Put Wall 1</span><span class="nv-price">23,600</span></div>
+        <div class="nv-row jpm"><span class="nv-name">Put Wall Mayor 0DTE</span><span class="nv-price">23,500</span></div>
+        <div class="nv-row"><span class="nv-name">Aceleración si rompe</span><span class="nv-price">23,400</span></div>
+      </div>
+
+      <div class="rango-bar">
+        <span>Rango 1σ hoy (QN4H6 0DTE)</span>
+        <strong>23,505 — 24,083</strong>
+      </div>
+
+      <div class="prime-zone">
+        <div class="prime-zone-title">Prime Zone NQ</div>
+        <p>NQ es el activo más débil del tablero hoy. <strong>−573.5 pts en settle</strong> con estructura completamente rota bajo VAL y EMA 200. Si ES cede 6,500, NQ va a 23,500 primero. El P/C ratio de NQ (0.63 — calls dominan) podría indicar que los shorts siguen posicionándose vía calls OTM. Si EW4H6 vence bajo 6,500, el cierre del viernes podría ser violento.</p>
+      </div>
+
+      <div class="sesgo">
+        <span class="sesgo-label">Sesgo:</span>
+        <span class="sesgo-val bear">BAJISTA FUERTE</span>
+        <span class="sesgo-label" style="margin-left:auto">Vol:</span>
+        <span class="sesgo-val bear">31.37 ▲+1.20</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- CL CARD -->
+  <div class="card">
+    <div class="card-header">
+      <span class="card-title cl">CL — WTI Crude Oil</span>
+      <div style="text-align:right">
+        <div class="card-price">~96.56</div>
+        <div class="card-chg up">▲ ETH rally · settle 94.48 · Vol spike +10.70</div>
+      </div>
+    </div>
+    <div class="card-body">
+      <div class="regime-badge bullish">▲ RÉGIMEN: BULLISH — Divergencia vs Equities</div>
+
+      <div class="tpo-section-label">TPO RTH — 26-Mar</div>
+      <table class="tpo-table">
+        <tr><td>VAH</td><td>95.40</td></tr>
+        <tr><td>POC</td><td>94.30</td></tr>
+        <tr><td>VAL</td><td>93.20</td></tr>
+        <tr><td>HL Range</td><td>5.93 pts</td></tr>
+        <tr><td>IB High</td><td>92.60</td></tr>
+        <tr><td>IB Low</td><td>91.00</td></tr>
+      </table>
+
+      <div class="tpo-section-label">Análisis Técnico</div>
+      <div class="tech-row">
+        <span class="tech-label">EMA 200</span>
+        <span class="tech-val bull">93.17</span>
+        <span class="tech-signal bull">PRECIO ENCIMA ▲</span>
+      </div>
+      <div class="tech-row">
+        <span class="tech-label">VWAP Session</span>
+        <span class="tech-val bull">96.25</span>
+        <span class="tech-signal bull">PRECIO SOBRE VWAP</span>
+      </div>
+      <div class="tech-row">
+        <span class="tech-label">VAH 26-Mar</span>
+        <span class="tech-val bull">95.40</span>
+        <span class="tech-signal bull">SOPORTE</span>
+      </div>
+      <div class="tech-row">
+        <span class="tech-label">Vol Implícita</span>
+        <span class="tech-val neutral">112.98 +10.70</span>
+        <span class="tech-signal neutral">GEO SPIKE</span>
+      </div>
+      <div class="tech-row">
+        <span class="tech-label">Driver</span>
+        <span class="tech-val bull">Irán/Hormuz</span>
+        <span class="tech-signal bull">+ TARIFFS</span>
+      </div>
+
+      <div class="tpo-section-label" style="margin-top:12px">Niveles PAD</div>
+      <div class="niveles-mini">
+        <div class="nv-row jpm"><span class="nv-name">Call Wall Psicológico</span><span class="nv-price">$100.00</span></div>
+        <div class="nv-row"><span class="nv-name">Call Wall 2</span><span class="nv-price">$98.00</span></div>
+        <div class="nv-row"><span class="nv-name">Call Wall 1</span><span class="nv-price">$97.00</span></div>
+        <div class="nv-row flip"><span class="nv-name">★ Zona ATM / Precio Actual</span><span class="nv-price">$95.50–$96.00</span></div>
+        <div class="nv-row green"><span class="nv-name">Gamma MAX 0DTE — Pin</span><span class="nv-price">$94.50</span></div>
+        <div class="nv-row"><span class="nv-name">VAH 26-Mar / Soporte</span><span class="nv-price">$95.40</span></div>
+        <div class="nv-row"><span class="nv-name">EMA 200 / Soporte</span><span class="nv-price">$93.17</span></div>
+        <div class="nv-row"><span class="nv-name">Put Wall 1</span><span class="nv-price">$93.00</span></div>
+      </div>
+
+      <div class="rango-bar">
+        <span>Rango 1σ hoy (LO4H6 0DTE)</span>
+        <strong>$92.92 — $100.20</strong>
+      </div>
+
+      <div class="prime-zone">
+        <div class="prime-zone-title">Prime Zone CL</div>
+        <p>CL es la <strong>contratrend alcista</strong> del día. Vol spike de +10.70 señala que el mercado está pricing un evento geopolítico (Irán/Hormuz) más el riesgo de tariffs sobre energía en Liberation Day. Gamma MAX 0DTE en <strong>$94.50</strong> actúa como zona de magnetismo para el vencimiento — si el rally lleva el precio a $97–$98, hay resistencia técnica significativa. Nota: CL excluido de GAIA pipeline — contexto únicamente.</p>
+      </div>
+
+      <div class="sesgo">
+        <span class="sesgo-label">Sesgo:</span>
+        <span class="sesgo-val bull">ALCISTA ETH</span>
+        <span class="sesgo-label" style="margin-left:auto">Vol:</span>
+        <span class="sesgo-val neutral">112.98 ▲+10.70</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- SPX CARD -->
+  <div class="card">
+    <div class="card-header">
+      <span class="card-title spx">SPX — S&P 500 Cash</span>
+      <div style="text-align:right">
+        <div class="card-price">~6,477</div>
+        <div class="card-chg down">▼ EMA 200: 6,592 · GEX 0DTE: −1.6 AMPLIFIED</div>
+      </div>
+    </div>
+    <div class="card-body">
+      <div class="regime-badge amplified">⚠ AMPLIFIED — GEX Total 0DTE: −1.6</div>
+
+      <div class="tpo-section-label">TPO SPX — 26-Mar (perfil diario)</div>
+      <table class="tpo-table">
+        <tr><td>VAH</td><td>6,576.00</td></tr>
+        <tr><td>POC</td><td>6,542.00</td></tr>
+        <tr><td>VAL</td><td>6,504.00</td></tr>
+        <tr><td>HL Range</td><td>99.43 pts</td></tr>
+        <tr><td>IB High</td><td>6,576.00</td></tr>
+        <tr><td>IB Low</td><td>6,532.00</td></tr>
+      </table>
+
+      <div class="tpo-section-label">Análisis Técnico SPX</div>
+      <div class="tech-row">
+        <span class="tech-label">EMA 200</span>
+        <span class="tech-val bear">6,592</span>
+        <span class="tech-signal bear">PRECIO −115 PTS</span>
+      </div>
+      <div class="tech-row">
+        <span class="tech-label">VWAP Session</span>
+        <span class="tech-val bear">6,545</span>
+        <span class="tech-signal bear">PRECIO BAJO</span>
+      </div>
+      <div class="tech-row">
+        <span class="tech-label">VWAP Lower Band</span>
+        <span class="tech-val bear">~6,479</span>
+        <span class="tech-signal neutral">EN BANDA</span>
+      </div>
+      <div class="tech-row">
+        <span class="tech-label">VAL 26-Mar</span>
+        <span class="tech-val bear">6,504</span>
+        <span class="tech-signal bear">ROTA → RESISTENCIA</span>
+      </div>
+      <div class="tech-row">
+        <span class="tech-label">Macro tendencia</span>
+        <span class="tech-val bear">Feb→Mar</span>
+        <span class="tech-signal bear">BAJISTA CONSISTENTE</span>
+      </div>
+
+      <!-- SPX PAD levels from REAL XLS chain -->
+      <div class="tpo-section-label" style="margin-top:12px">Niveles PAD — Chain Real 07:06 AM</div>
+      <div class="niveles-mini">
+        <div class="nv-row"><span class="nv-name">Call Wall / GF High · GEX +288</span><span class="nv-price">6,565</span></div>
+        <div class="nv-row"><span class="nv-name">EMA 200</span><span class="nv-price">6,592</span></div>
+        <div class="nv-row flip"><span class="nv-name">★ Gamma Flip Zone</span><span class="nv-price">6,530–6,545</span></div>
+        <div class="nv-row"><span class="nv-name">Zona Bilateral C/P</span><span class="nv-price">6,540</span></div>
+        <div class="nv-row hot"><span class="nv-name">⚡ Put Wall 0DTE · GEX −123</span><span class="nv-price">6,515</span></div>
+        <div class="nv-row jpm"><span class="nv-name">EOM Put Wall 31-Mar</span><span class="nv-price">6,510</span></div>
+        <div class="nv-row jpm"><span class="nv-name">EOM Put Wall 2</span><span class="nv-price">6,470</span></div>
+        <div class="nv-row jpm"><span class="nv-name">EOM JPM Collar · P_OI=977</span><span class="nv-price">6,410</span></div>
+      </div>
+
+      <div class="rango-bar">
+        <span>1σ 0DTE · ±73.82 pts desde ~6,477</span>
+        <strong>6,403 — 6,551</strong>
+      </div>
+
+      <div class="prime-zone">
+        <div class="prime-zone-title">Prime Zone SPX — Datos Reales XLS</div>
+        <p>La zona bilateral <strong>6,530–6,540</strong> (C_OI=981 / P_OI=838) es el imán natural. Si el precio intenta recuperar, esa zona es la primera resistencia real. El <strong>GEX más negativo está en 6,515 (−123.9)</strong> — si el precio cae a ahí, los dealers aceleran, no frenan. El piso EOM del JPM Collar en <strong>6,410</strong> (P_OI=977) es el soporte estructural de la semana.</p>
+      </div>
+
+      <div class="sesgo">
+        <span class="sesgo-label">GEX 0DTE:</span>
+        <span class="sesgo-val bear">−1.6 AMPLIFIED</span>
+        <span class="sesgo-label" style="margin-left:auto">1σ:</span>
+        <span class="sesgo-val bear">±73.82</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- NEWS FLOW (full) -->
+  <div class="card full">
+    <div class="card-header">
+      <span class="card-title news">⚡ News Flow & Pre-News Context</span>
+      <span style="font-family:'Space Mono',monospace;font-size:10px;color:var(--text3)">27 Mar 2026 · Pre-Market</span>
+    </div>
+    <div class="card-body">
+      <div class="news-flash">
+        <div class="nf-item">
+          <span class="nf-tag risk">🔴 CRÍTICO</span>
+          <span class="nf-text"><strong>Liberation Day — 2 de Abril (6 días).</strong> Trump implementa aranceles recíprocos. Mercado no está plenamente priceando escalada. Riesgo de gap down si la lista de países/productos sorprende en magnitud. El VIX ya en zona elevada — cualquier headline puede mover VIX +2–3 pts intraday en régimen AMPLIFIED.</span>
+        </div>
+        <div class="nf-item">
+          <span class="nf-tag risk">🔴 CRÍTICO</span>
+          <span class="nf-text"><strong>JPM Collar vence 31-Mar — 35,000 contratos.</strong> Put Spread 5,470/6,475 + Short Call 7,155. El rebalanceo post-collar puede crear flujos masivos de compra o venta dependiendo de dónde venza el mercado. Si SPX vence bajo 6,475 el lunes, JPM compra el subyacente. Este flujo puede generar un rebote técnico post-collar — pero es flujo mecánico, no fundamental.</span>
+        </div>
+        <div class="nf-item">
+          <span class="nf-tag watch">⚠ WATCH</span>
+          <span class="nf-text"><strong>PCE Core 8:30 ET hoy.</strong> Consenso +0.3% MoM / +2.7% YoY. Si sale caliente (+0.4% o más), el mercado puede leer hawkish Fed y acelerar la caída. Si sale frío (+0.2%), rebote técnico posible pero limitado por el régimen AMPLIFIED y el contexto collar. Dato más importante de la semana.</span>
+        </div>
+        <div class="nf-item">
+          <span class="nf-tag geo">🌍 GEO</span>
+          <span class="nf-text"><strong>Irán / Estrecho de Hormuz.</strong> CL sube +2 ETH en rally directo — el mercado está pricing riesgo de interrupción de suministro. Cualquier escalada en Medio Oriente esta semana empuja CL a $97–$100 y puede crear divergencia adicional con equities. Monitorear headlines overnight.</span>
+        </div>
+        <div class="nf-item">
+          <span class="nf-tag fx">💱 FX</span>
+          <span class="nf-text"><strong>EUR/USD — Puts masivos 30-Mar ($1.67B) y 3-Apr ($424M).</strong> Institucionales comprando protección EUR bajista para Liberation Day. CHF puts en Mayo ($320M) también apuntan a reducción de apetito de riesgo en FX. AUD calls en Mayo ($1.01B) — única divisa constructiva, sugiere China demand expectations. JPY calls 42% vol corto plazo — cobertura anti-risk-off.</span>
+        </div>
+        <div class="nf-item">
+          <span class="nf-tag macro">📊 MACRO</span>
+          <span class="nf-text"><strong>EOM / Quarter-End flows — 31-Mar.</strong> Los fondos de pensiones y balanced funds necesitan rebalancear hacia fixed income si equities han caído. Si SPX cierra el trimestre bajo los mínimos de Q1, el flujo de rebalanceo puede ser significativo. Este es un factor adicional de presión bajista en la última semana del trimestre.</span>
+        </div>
+        <div class="nf-item">
+          <span class="nf-tag watch">⚠ WATCH</span>
+          <span class="nf-text"><strong>EW4H6 vence HOY — Gamma máxima en 6,500.</strong> El vencimiento del weekly ES crea gamma máxima alrededor del precio de ejercicio más activo. Con el precio en 6,499 exactamente en el Put Wall JPM, la dinámica de vencimiento puede crear movimientos exagerados en la primera hora. Regla: esperar 9:45 ET antes de entrar.</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MACRO + VENCIMIENTOS (full) -->
+  <div class="card full">
+    <div class="card-header">
+      <span class="card-title macro">Macro & Calendario de Vencimientos</span>
+      <span style="font-family:'Space Mono',monospace;font-size:10px;color:var(--text3)">Viernes 27 Mar 2026</span>
+    </div>
+    <div class="card-body" style="display:grid;grid-template-columns:1fr 1fr;gap:24px">
+      <div>
+        <div style="font-family:'Space Mono',monospace;font-size:10px;color:var(--text3);letter-spacing:.08em;text-transform:uppercase;margin-bottom:10px">Datos del Día</div>
+        <div class="macro-row">
+          <div class="mr-left">
+            <span class="mr-event">PCE Price Index (Core)</span>
+            <span class="mr-time">8:30 AM ET · Febrero 2026</span>
+          </div>
+          <div class="mr-data">
+            <div class="actual warn">PENDIENTE</div>
+            <div class="consensus">Cons: +0.3% MoM · +2.7% YoY</div>
+          </div>
+        </div>
+        <div class="macro-row">
+          <div class="mr-left">
+            <span class="mr-event">Personal Income & Spending</span>
+            <span class="mr-time">8:30 AM ET · con PCE</span>
+          </div>
+          <div class="mr-data">
+            <div class="actual warn">PENDIENTE</div>
+            <div class="consensus">Income cons: +0.4% · Spend: +0.5%</div>
+          </div>
+        </div>
+        <div class="macro-row">
+          <div class="mr-left">
+            <span class="mr-event">U. of Michigan Sentiment (Final)</span>
+            <span class="mr-time">10:00 AM ET</span>
+          </div>
+          <div class="mr-data">
+            <div class="actual warn">PENDIENTE</div>
+            <div class="consensus">Prel: 57.9 · Inflation exp watch</div>
+          </div>
+        </div>
+        <div class="macro-row">
+          <div class="mr-left">
+            <span class="mr-event">Baker Hughes Rig Count</span>
+            <span class="mr-time">1:00 PM ET · Relevante para CL</span>
+          </div>
+          <div class="mr-data">
+            <div class="actual warn">WATCH</div>
+            <div class="consensus">Contexto geopolítico activo</div>
+          </div>
+        </div>
+
+        <!-- INSTITUTIONAL EVENT TABLE -->
+        <div style="font-family:'Space Mono',monospace;font-size:10px;color:var(--text3);letter-spacing:.08em;text-transform:uppercase;margin:16px 0 8px">Eventos Institucionales</div>
+        <table class="inst-table">
+          <tr><th>Fecha</th><th>Evento</th><th>Impacto</th></tr>
+          <tr><td>27-Mar</td><td>EW4H6 vence — Gamma máxima viernes</td><td class="high">ALTO</td></tr>
+          <tr><td>30-Mar</td><td>Pre-OPEX EOM · Dealers reducen cobertura</td><td class="med">MEDIO</td></tr>
+          <tr><td>31-Mar</td><td>JPM Collar Expiry · 35K contratos</td><td class="high">CRÍTICO</td></tr>
+          <tr><td>31-Mar</td><td>EOM + Quarter-End rebalanceo</td><td class="high">ALTO</td></tr>
+          <tr><td>2-Abr</td><td>Liberation Day · Aranceles Trump</td><td class="high">MACRO</td></tr>
+        </table>
+      </div>
+      <div>
+        <div style="font-family:'Space Mono',monospace;font-size:10px;color:var(--text3);letter-spacing:.08em;text-transform:uppercase;margin-bottom:10px">Vencimientos</div>
+        <div class="expiry-row">
+          <span class="exp-sym">EW4H6</span>
+          <span class="exp-desc">E-mini S&P 500 Friday Weekly · Gamma MAX en 6,500</span>
+          <span class="exp-badge hoy">0 DTE HOY</span>
+        </div>
+        <div class="expiry-row">
+          <span class="exp-sym">QN4H6</span>
+          <span class="exp-desc">E-mini Nasdaq-100 Friday Weekly · Settle −573.5</span>
+          <span class="exp-badge hoy">0 DTE HOY</span>
+        </div>
+        <div class="expiry-row">
+          <span class="exp-sym">LO4H6</span>
+          <span class="exp-desc">WTI Crude Oil Friday · Pin zone $94.50</span>
+          <span class="exp-badge hoy">0 DTE HOY</span>
+        </div>
+        <div class="expiry-row">
+          <span class="exp-sym">SPXW</span>
+          <span class="exp-desc">SPX Weekly 0DTE · 1σ ±73.82 · GEX −1.6</span>
+          <span class="exp-badge hoy">0 DTE HOY</span>
+        </div>
+        <div class="expiry-row">
+          <span class="exp-sym">E5AH6</span>
+          <span class="exp-desc">E-mini S&P 500 · Lunes 30-Mar · Pre-EOM</span>
+          <span class="exp-badge prox">3 DTE · Lunes</span>
+        </div>
+        <div class="expiry-row">
+          <span class="exp-sym">EWH6</span>
+          <span class="exp-desc">E-mini S&P 500 EOM — JPM Collar P_OI masivo</span>
+          <span class="exp-badge soon">4 DTE · 31-Mar ⚠</span>
+        </div>
+        <div class="expiry-row">
+          <span class="exp-sym">E1CJ6</span>
+          <span class="exp-desc">E-mini S&P 500 · Liberation Day ⚠</span>
+          <span class="exp-badge soon">6 DTE · 2-Abr</span>
+        </div>
+
+        <div style="font-family:'Space Mono',monospace;font-size:10px;color:var(--text3);letter-spacing:.08em;text-transform:uppercase;margin:16px 0 8px">FX Options Context</div>
+        <div class="tech-row">
+          <span class="tech-label">EUR 30-Mar Puts</span>
+          <span class="tech-val bear">$1.67B</span>
+          <span class="tech-signal bear">COBERTURA</span>
+        </div>
+        <div class="tech-row">
+          <span class="tech-label">CHF May Puts</span>
+          <span class="tech-val bear">$320M</span>
+          <span class="tech-signal bear">DEFENSIVO</span>
+        </div>
+        <div class="tech-row">
+          <span class="tech-label">AUD May Calls</span>
+          <span class="tech-val bull">$1.01B</span>
+          <span class="tech-signal bull">CONSTRUCTIVO</span>
+        </div>
+        <div class="tech-row">
+          <span class="tech-label">JPY Short-Term</span>
+          <span class="tech-val neutral">Calls 42%</span>
+          <span class="tech-signal neutral">ANTI RISK-OFF</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- BIAS + TECHNICAL ANALYSIS (full) -->
+  <div class="card full">
+    <div class="card-header">
+      <span class="card-title es">Bias del Día · Análisis Técnico & Operativo</span>
+    </div>
+    <div class="card-body">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px">
+
+        <!-- ES / SPX -->
+        <div>
+          <div style="font-family:'Space Mono',monospace;font-size:10px;color:var(--text3);letter-spacing:.08em;text-transform:uppercase;margin-bottom:10px">ES / SPX — Análisis Completo</div>
+          <div class="bias-box" style="border-left-color:var(--red)">
+            <div class="bias-title" style="color:var(--red)">⚠ SESGO BAJISTA — PUT WALL EN JUEGO</div>
+            <div class="bias-text">
+              ESM6 abre en <strong>~6,499</strong>, exactamente en el Put Wall JPM (6,500) que concentra más de 14,000 contratos de put OI combinados entre el 0DTE y el EOM del 31-Mar. Este nivel es el <em>nivel más importante de la semana</em>.<br><br>
+              <strong>Estructura técnica 100% bajista:</strong> precio bajo EMA 200 (6,580), bajo VWAP (6,533), bajo VAL de ayer (6,551), y con tendencia descendente de 10 sesiones consecutivas. Cada intento de recuperación ha sido vendido.<br><br>
+              <strong>Vol spike:</strong> IV 0DTE subió +2.65 a 29.70 — el mercado está pricing continuación bajista. Straddle de 75 pts implica que la apertura puede ser violenta en cualquier dirección, pero el contexto bajista domina.<br><br>
+              <div class="rule">📐 Gamma Flip en 6,550–6,560. Precio necesita recuperar ESE nivel Y mantenerlo para cambiar el régimen a DAMPENED. Hoy con EW4H6 venciendo, ese recovery es muy improbable.</div>
+              <strong>Escenario bajista primario:</strong> Pérdida de 6,500 con volumen → 6,457 (1σ low) → 6,400. Si EW4H6 vence bajo 6,500 → los dealers no renovarán su cobertura → gap potencial el lunes 30-Mar.<br><br>
+              <strong>Escenario alcista alternativo (25%):</strong> PCE sale frío + rebote desde 6,500 con volumen → intento de fill hacia 6,525–6,551 (VAL). Pero en régimen AMPLIFIED los rebounds son trampas más frecuentemente que recoveries.
+            </div>
+          </div>
+        </div>
+
+        <!-- NQ + CL -->
+        <div>
+          <div style="font-family:'Space Mono',monospace;font-size:10px;color:var(--text3);letter-spacing:.08em;text-transform:uppercase;margin-bottom:10px">NQ — Análisis</div>
+          <div class="bias-box" style="border-left-color:var(--purple)">
+            <div class="bias-title" style="color:var(--purple)">NQ — LIDER BAJISTA DEL DÍA</div>
+            <div class="bias-text">
+              NQ es el activo más débil. <strong>−573.5 pts en settle</strong> (mayor caída absoluta en meses). Pre-market en 23,645 — ya 415 pts bajo la EMA 200 (24,060).<br><br>
+              <strong>Análisis TPO:</strong> VAH 26-Mar en 24,080 es ahora resistencia fuerte. La zona de valor del ayer (23,765–24,080) fue completamente abandonada en ETH. Si NQ no puede recuperar 23,765 (VAL de ayer) en la primera hora, el momentum bajista se confirma hacia 23,500 (Put Wall Mayor 0DTE).<br><br>
+              <div class="rule">📐 VWAP en 23,904 + EMA 200 en 24,060 son las dos referencias técnicas clave. Precio necesita ambas para cambiar régimen.</div>
+              Settle QN4H6 en 23,794 — el pre-market está ya por debajo del settle. Estructura completamente rota.
+            </div>
+          </div>
+          <div class="bias-box" style="border-left-color:var(--teal);margin-top:12px">
+            <div class="bias-title" style="color:var(--teal)">CL — CONTRATREND · MONITOREAR CUIDADO</div>
+            <div class="bias-text">
+              CLK6 en ~96.56 está en rally ETH impulsado por geopolítica. <strong>Zona de magnetismo para el vencimiento: $94.50</strong> (Gamma MAX 0DTE, GEX bilateral). El rally puede continuar hasta $97–$98 si hay headline geopolítico.<br><br>
+              <strong>Análisis técnico:</strong> Precio sobre EMA 200 (93.17) y sobre VAH 26-Mar (95.40). VWAP en 96.25. Estructura alcista intacta.<br><br>
+              La divergencia CL alcista vs ES/NQ bajista es coherente: aranceles sobre China + riesgo Irán = risk-off en equities + risk-on en energía. Monitorear el ratio para entender la magnitud del risk-off.
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- OPERATIONAL RULES -->
+      <div style="margin-top:20px;padding-top:20px;border-top:1px solid var(--border)">
+        <div style="font-family:'Space Mono',monospace;font-size:10px;color:var(--orange);letter-spacing:.08em;text-transform:uppercase;margin-bottom:12px">⚡ Reglas Operativas — Viernes AMPLIFIED con 0DTE</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px">
+          <div class="bias-box" style="margin-top:0;border-left-color:var(--red)">
+            <div class="bias-title" style="color:var(--red);font-size:11px">SIZING</div>
+            <div class="bias-text" style="font-size:12px">Reducir tamaño <strong>−25% a −30%</strong> vs sesión normal. Régimen AMPLIFIED con 0DTE venciendo = movimientos exagerados en ambas direcciones. Un trade correcto con tamaño correcto vale más que dos trades correctos con tamaño incorrecto.</div>
+          </div>
+          <div class="bias-box" style="margin-top:0;border-left-color:var(--orange)">
+            <div class="bias-title" style="color:var(--orange);font-size:11px">TIMING</div>
+            <div class="bias-text" style="font-size:12px">En apertura AMPLIFIED: <strong>esperar 9:45–10:00 ET</strong> antes de entrar. La primera vela de 15 minutos suele ser el engaño. El modelo da la dirección — el timing es tuyo. Si PCE sale a las 8:30, dejar que el mercado digiera el dato antes de entrar.</div>
+          </div>
+          <div class="bias-box" style="margin-top:0;border-left-color:var(--blue)">
+            <div class="bias-title" style="color:var(--blue);font-size:11px">6,500 — LA REGLA</div>
+            <div class="bias-text" style="font-size:12px">Si ES pierde <strong>6,500 con volumen</strong> → los dealers sueltan la cuerda. No promediar. No hero. Dejar que el precio vaya a 6,457 y esperar señal de reversión ahí. Si 6,500 se mantiene con volumen comprador → primera resistencia es 6,525, luego 6,551.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div><!-- /main -->
+
+<!-- CREDIBILITY BAR -->
+<div class="cred-bar">
+  <p><strong>Metodología PAD · GAIA Framework:</strong> Niveles PAD basados en análisis de exposición gamma institucional sobre datos oficiales de <strong>CME Group</strong> (QuikStrike OI Matrix, Delta Matrix, Vol2Vol) y chain real de TradeStation (SPX_OI_270320260706AM.xls · 07:06 AM ET). GEX, Gamma Flip y niveles estructurales calculados con metodología propietaria PAD Lab. Análisis técnico: EMA 200, VWAP Session, TPO RTH. · <strong>pivotalphadesk.com</strong> · Sesión: VIE 27-MAR-2026</p>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div>
+    <div class="brand">▣ PivotAlphaDesk</div>
+    <p style="margin-top:5px">Pre-Open Briefing · Viernes 27 Mar 2026 · 08:00 ET · GAIA v2</p>
+  </div>
+  <div style="text-align:right">
+    <p>Contenido exclusivo para suscriptores PRO</p>
+    <p style="margin-top:3px">Datos: CME Group · TradeStation · Metodología: PAD Gamma Framework · GAIA Project</p>
+  </div>
+</footer>
+
+</body>
+</html>
