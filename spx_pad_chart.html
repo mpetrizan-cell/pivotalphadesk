@@ -27,6 +27,8 @@
     --teal:     #2ec4b6;
     --green:    #3ecf6a;
     --gold:     #f0c040;
+    --lime:     #a8e63a;
+    --ldcolor:  #e67e22;
     --gray:     #5a7080;
   }
 
@@ -39,7 +41,6 @@
     min-height: 100vh;
   }
 
-  /* ── WRAPPER ── */
   .pad-chart-wrap {
     background: var(--bg);
     border: 1px solid var(--border2);
@@ -64,14 +65,10 @@
     position: absolute;
     top: 0; left: 0; right: 0;
     height: 2px;
-    background: linear-gradient(90deg, var(--red), var(--fuchsia), var(--purple));
+    background: linear-gradient(90deg, var(--red), var(--purple), var(--ldcolor));
   }
 
-  .header-left {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-  }
+  .header-left { display: flex; align-items: center; gap: 12px; }
 
   .header-ticker {
     font-family: 'Space Mono', monospace;
@@ -81,15 +78,9 @@
     letter-spacing: -0.5px;
   }
 
-  .header-name {
-    font-size: 12px;
-    color: var(--dim);
-    letter-spacing: 1px;
-  }
+  .header-name { font-size: 12px; color: var(--dim); letter-spacing: 1px; }
 
-  .header-price-block {
-    text-align: right;
-  }
+  .header-price-block { text-align: right; }
 
   .price-main {
     font-family: 'Space Mono', monospace;
@@ -99,12 +90,7 @@
     letter-spacing: -0.5px;
   }
 
-  .price-chg {
-    font-family: 'Space Mono', monospace;
-    font-size: 11px;
-    margin-top: 2px;
-  }
-
+  .price-chg { font-family: 'Space Mono', monospace; font-size: 11px; margin-top: 2px; }
   .price-chg.up   { color: var(--green); }
   .price-chg.dn   { color: var(--red); }
   .price-chg.flat { color: var(--dim); }
@@ -120,16 +106,32 @@
     animation: pulse-reg 2s ease-in-out infinite;
   }
 
+  .jpm-badge {
+    font-family: 'Space Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 1.5px;
+    padding: 3px 10px;
+    border: 1px solid var(--purple);
+    color: var(--purple);
+    background: rgba(155,93,229,0.1);
+    animation: pulse-jpm 2s ease-in-out infinite;
+  }
+
   @keyframes pulse-reg {
     0%,100% { border-color: rgba(232,64,64,0.4); }
     50%      { border-color: var(--red); box-shadow: 0 0 8px rgba(232,64,64,0.2); }
   }
 
+  @keyframes pulse-jpm {
+    0%,100% { border-color: rgba(155,93,229,0.4); }
+    50%      { border-color: var(--purple); box-shadow: 0 0 8px rgba(155,93,229,0.25); }
+  }
+
   /* ── CHART AREA ── */
   .chart-body {
     display: grid;
-    grid-template-columns: 1fr 200px;
-    height: 480px;
+    grid-template-columns: 1fr 210px;
+    height: 500px;
   }
 
   .chart-canvas-wrap {
@@ -144,7 +146,7 @@
     padding: 14px 12px;
     display: flex;
     flex-direction: column;
-    gap: 4px;
+    gap: 3px;
     overflow-y: auto;
   }
 
@@ -157,6 +159,22 @@
     padding-bottom: 4px;
     border-bottom: 1px solid var(--border);
   }
+
+  .panel-section {
+    font-family: 'Space Mono', monospace;
+    font-size: 7px;
+    color: var(--dim);
+    letter-spacing: 1.5px;
+    margin-top: 6px;
+    margin-bottom: 2px;
+    padding: 2px 4px;
+    background: rgba(255,255,255,0.02);
+    border-left: 2px solid var(--border2);
+  }
+
+  .panel-section.jpm  { border-left-color: var(--purple); color: var(--purple); }
+  .panel-section.eom  { border-left-color: var(--fuchsia); color: var(--fuchsia); }
+  .panel-section.ld   { border-left-color: var(--ldcolor); color: var(--ldcolor); }
 
   .level-item {
     display: flex;
@@ -180,19 +198,9 @@
     margin-right: 6px;
   }
 
-  .level-info {
-    display: flex;
-    align-items: center;
-    flex: 1;
-    gap: 4px;
-  }
+  .level-info { display: flex; align-items: center; flex: 1; gap: 4px; }
 
-  .level-name {
-    font-size: 10px;
-    color: var(--text);
-    flex: 1;
-    line-height: 1.3;
-  }
+  .level-name { font-size: 10px; color: var(--text); flex: 1; line-height: 1.3; }
 
   .level-price {
     font-family: 'Space Mono', monospace;
@@ -201,11 +209,7 @@
     text-align: right;
   }
 
-  .sep {
-    height: 1px;
-    background: var(--border);
-    margin: 4px 0;
-  }
+  .sep { height: 1px; background: var(--border); margin: 4px 0; }
 
   /* ── FOOTER ── */
   .chart-footer {
@@ -215,16 +219,13 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
+    flex-wrap: wrap;
+    gap: 8px;
   }
 
-  .footer-sigmas {
-    display: flex;
-    gap: 20px;
-  }
+  .footer-sigmas { display: flex; gap: 16px; flex-wrap: wrap; }
 
-  .sigma-item {
-    text-align: center;
-  }
+  .sigma-item { text-align: center; }
 
   .sigma-lbl {
     font-family: 'Space Mono', monospace;
@@ -235,15 +236,9 @@
     margin-bottom: 2px;
   }
 
-  .sigma-val {
-    font-family: 'Space Mono', monospace;
-    font-size: 11px;
-    font-weight: 700;
-  }
+  .sigma-val { font-family: 'Space Mono', monospace; font-size: 11px; font-weight: 700; }
 
-  .footer-right {
-    text-align: right;
-  }
+  .footer-right { text-align: right; }
 
   .delay-note {
     font-family: 'Space Mono', monospace;
@@ -260,7 +255,6 @@
     margin-top: 2px;
   }
 
-  /* ── STATUS DOT ── */
   .status-dot {
     width: 6px;
     height: 6px;
@@ -271,12 +265,8 @@
     margin-right: 4px;
   }
 
-  @keyframes blink {
-    0%,100% { opacity: 1; }
-    50%      { opacity: 0.3; }
-  }
+  @keyframes blink { 0%,100% { opacity: 1; } 50% { opacity: 0.3; } }
 
-  /* loading state */
   .loading {
     font-family: 'Space Mono', monospace;
     font-size: 11px;
@@ -284,9 +274,50 @@
     animation: blink 1s ease-in-out infinite;
   }
 
-  /* ── EMBED VERSION (cuando se usa como iframe) ── */
-  .embed-notice {
-    display: none;
+  /* ── LD STRIP ── */
+  .ld-strip {
+    background: rgba(230,126,34,0.08);
+    border-top: 1px solid rgba(230,126,34,0.25);
+    padding: 6px 20px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    flex-wrap: wrap;
+  }
+
+  .ld-strip-label {
+    font-family: 'Space Mono', monospace;
+    font-size: 9px;
+    color: var(--ldcolor);
+    letter-spacing: 1.5px;
+    flex-shrink: 0;
+  }
+
+  .ld-strip-levels {
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
+  }
+
+  .ld-level-item { display: flex; gap: 6px; align-items: center; }
+
+  .ld-level-name {
+    font-family: 'Space Mono', monospace;
+    font-size: 9px;
+    color: var(--dim);
+  }
+
+  .ld-level-price {
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    font-weight: 700;
+    color: var(--ldcolor);
+  }
+
+  .ld-level-oi {
+    font-family: 'Space Mono', monospace;
+    font-size: 9px;
+    color: rgba(230,126,34,0.6);
   }
 </style>
 </head>
@@ -299,9 +330,10 @@
     <div class="header-left">
       <div>
         <div class="header-ticker">SPX</div>
-        <div class="header-name">S&P 500 INDEX · CASH · GAMMA STRUCTURE</div>
+        <div class="header-name">S&P 500 INDEX · CASH · GAMMA STRUCTURE · 31-MAR-2026 EOM</div>
       </div>
       <div class="regime-badge" id="regimeBadge">⚠ AMPLIFIED</div>
+      <div class="jpm-badge">◆ JPM VENCE HOY</div>
     </div>
     <div class="header-price-block">
       <div class="price-main" id="priceMain"><span class="loading">cargando...</span></div>
@@ -322,84 +354,111 @@
 
     <!-- LEVEL PANEL -->
     <div class="level-panel">
-      <div class="panel-title">NIVELES PAD</div>
+      <div class="panel-title">NIVELES PAD · 31-MAR EOM</div>
 
-      <div class="level-item" id="li-lib">
-        <div class="level-info">
-          <div class="level-dot" style="background:#e84040"></div>
-          <div class="level-name">Lib Day PW<br><span style="font-size:9px;color:var(--dim)">2-Abr ⚠ MAX OI</span></div>
-        </div>
-        <div class="level-price" style="color:#e84040">6,455</div>
-      </div>
+      <!-- JPM COLLAR -->
+      <div class="panel-section jpm">◆ JPM COLLAR — VENCE HOY</div>
 
-      <div class="level-item" id="li-lib2">
-        <div class="level-info">
-          <div class="level-dot" style="background:#e84040"></div>
-          <div class="level-name">Lib Day PW 2<br><span style="font-size:9px;color:var(--dim)">2-Abr</span></div>
-        </div>
-        <div class="level-price" style="color:#f06060">6,420</div>
-      </div>
-
-      <div class="sep"></div>
-
-      <div class="level-item" id="li-eom1">
+      <div class="level-item" id="li-jpm2">
         <div class="level-info">
           <div class="level-dot" style="background:#9b5de5"></div>
-          <div class="level-name">EOM JPM Collar<br><span style="font-size:9px;color:var(--dim)">31-Mar ⚠</span></div>
+          <div class="level-name">JPM Put 2<br><span style="font-size:9px;color:var(--dim)">P=5,145 EOM</span></div>
         </div>
-        <div class="level-price" style="color:#9b5de5">6,410</div>
+        <div class="level-price" style="color:#9b5de5">6,550</div>
       </div>
 
-      <div class="level-item" id="li-eom2">
+      <div class="level-item" id="li-jpm1">
+        <div class="level-info">
+          <div class="level-dot" style="background:#9b5de5"></div>
+          <div class="level-name">JPM Put 1<br><span style="font-size:9px;color:var(--dim)">P=6,439 EOM ⚠</span></div>
+        </div>
+        <div class="level-price" style="color:#c084fc">6,525</div>
+      </div>
+
+      <!-- EOM GAMMA STRUCTURE -->
+      <div class="panel-section eom">EOM GAMMA STRUCTURE</div>
+
+      <div class="level-item" id="li-gpin">
         <div class="level-info">
           <div class="level-dot" style="background:#e040fb"></div>
-          <div class="level-name">EOM PW Nuevo<br><span style="font-size:9px;color:var(--dim)">31-Mar MAX GEX</span></div>
+          <div class="level-name">Gamma Pin EOM<br><span style="font-size:9px;color:var(--dim)">C=8,878/P=10,936 ██</span></div>
         </div>
-        <div class="level-price" style="color:#e040fb">6,320</div>
+        <div class="level-price" style="color:#e040fb">6,400</div>
       </div>
 
-      <div class="level-item" id="li-eom3">
-        <div class="level-info">
-          <div class="level-dot" style="background:#7c3aed"></div>
-          <div class="level-name">EOM PW 3<br><span style="font-size:9px;color:var(--dim)">31-Mar</span></div>
-        </div>
-        <div class="level-price" style="color:#a78bfa">6,290</div>
-      </div>
-
-      <div class="sep"></div>
-
-      <div class="level-item" id="li-sup">
+      <div class="level-item" id="li-pw1">
         <div class="level-info">
           <div class="level-dot" style="background:#3a8ef0"></div>
-          <div class="level-name">Soporte 0DTE<br><span style="font-size:9px;color:var(--dim)">P_OI=735</span></div>
+          <div class="level-name">Put Wall 1<br><span style="font-size:9px;color:var(--dim)">P=8,224</span></div>
         </div>
-        <div class="level-price" style="color:#3a8ef0">6,280</div>
+        <div class="level-price" style="color:#3a8ef0">6,375</div>
       </div>
 
-      <div class="level-item" id="li-ea">
+      <div class="level-item" id="li-pw2">
+        <div class="level-info">
+          <div class="level-dot" style="background:#3a8ef0"></div>
+          <div class="level-name">Put Wall 2<br><span style="font-size:9px;color:var(--dim)">P=5,696</span></div>
+        </div>
+        <div class="level-price" style="color:#5a9ef5">6,350</div>
+      </div>
+
+      <div class="level-item" id="li-anchor">
         <div class="level-info">
           <div class="level-dot" style="background:#2ec4b6"></div>
-          <div class="level-name">Emergency Anchor<br><span style="font-size:9px;color:var(--dim)">1σ Low</span></div>
+          <div class="level-name">Anchor EOM<br><span style="font-size:9px;color:var(--dim)">P=7,495 Gravitational</span></div>
         </div>
-        <div class="level-price" style="color:#2ec4b6">6,270</div>
+        <div class="level-price" style="color:#2ec4b6">6,300</div>
       </div>
 
       <div class="sep"></div>
 
-      <!-- GEX / PC stats -->
-      <div style="padding:6px 8px;background:rgba(232,64,64,0.06);border:1px solid rgba(232,64,64,0.2);">
-        <div style="font-family:'Space Mono',monospace;font-size:8px;color:var(--dim);letter-spacing:1px;margin-bottom:4px;">DATOS PAD</div>
+      <!-- LIBERATION DAY -->
+      <div class="panel-section ld">⚡ LIBERATION DAY 2-ABR</div>
+
+      <div class="level-item" id="li-ld1">
+        <div class="level-info">
+          <div class="level-dot" style="background:#e67e22"></div>
+          <div class="level-name">LD Put Wall 1<br><span style="font-size:9px;color:var(--dim)">P=7,446</span></div>
+        </div>
+        <div class="level-price" style="color:#e67e22">6,350</div>
+      </div>
+
+      <div class="level-item" id="li-ld2">
+        <div class="level-info">
+          <div class="level-dot" style="background:#e67e22"></div>
+          <div class="level-name">LD Put Wall 2<br><span style="font-size:9px;color:var(--dim)">P=12,407 ██</span></div>
+        </div>
+        <div class="level-price" style="color:#f39c12">6,275</div>
+      </div>
+
+      <div class="level-item" id="li-ld3">
+        <div class="level-info">
+          <div class="level-dot" style="background:#f39c12"></div>
+          <div class="level-name">LD Put Wall MAX<br><span style="font-size:9px;color:var(--dim)">P=16,142 ██ MAX</span></div>
+        </div>
+        <div class="level-price" style="color:#f5c842">6,250</div>
+      </div>
+
+      <div class="sep"></div>
+
+      <!-- STATS BOX -->
+      <div style="padding:6px 8px;background:rgba(155,93,229,0.07);border:1px solid rgba(155,93,229,0.2);">
+        <div style="font-family:'Space Mono',monospace;font-size:8px;color:var(--dim);letter-spacing:1px;margin-bottom:4px;">DATOS PAD · EOM</div>
         <div style="display:flex;justify-content:space-between;margin-bottom:2px;">
-          <span style="font-size:10px;color:var(--dim)">Net GEX</span>
-          <span style="font-family:'Space Mono',monospace;font-size:10px;color:var(--red)">−68.7M</span>
+          <span style="font-size:10px;color:var(--dim)">Régimen</span>
+          <span style="font-family:'Space Mono',monospace;font-size:10px;color:var(--red)">AMPLIFIED</span>
         </div>
         <div style="display:flex;justify-content:space-between;margin-bottom:2px;">
-          <span style="font-size:10px;color:var(--dim)">P/C Ratio</span>
-          <span style="font-family:'Space Mono',monospace;font-size:10px;color:var(--red)">26.75 ⚠</span>
+          <span style="font-size:10px;color:var(--dim)">Vol 0DTE</span>
+          <span style="font-family:'Space Mono',monospace;font-size:10px;color:var(--orange)">28.71</span>
+        </div>
+        <div style="display:flex;justify-content:space-between;margin-bottom:2px;">
+          <span style="font-size:10px;color:var(--dim)">Vol EOM</span>
+          <span style="font-family:'Space Mono',monospace;font-size:10px;color:var(--red)">29.23 +2.64</span>
         </div>
         <div style="display:flex;justify-content:space-between;">
-          <span style="font-size:10px;color:var(--dim)">GF</span>
-          <span style="font-family:'Space Mono',monospace;font-size:10px;color:var(--red)">NO EXISTE</span>
+          <span style="font-size:10px;color:var(--dim)">JPM Collar</span>
+          <span style="font-family:'Space Mono',monospace;font-size:10px;color:var(--purple)">◆ VENCE HOY</span>
         </div>
       </div>
 
@@ -407,24 +466,51 @@
 
   </div><!-- end chart body -->
 
+  <!-- LIBERATION DAY STRIP -->
+  <div class="ld-strip">
+    <div class="ld-strip-label">⚡ LIB DAY 2-ABR</div>
+    <div class="ld-strip-levels">
+      <div class="ld-level-item">
+        <span class="ld-level-name">Put Wall MAX</span>
+        <span class="ld-level-price">6,250</span>
+        <span class="ld-level-oi">P=16,142</span>
+      </div>
+      <div class="ld-level-item">
+        <span class="ld-level-name">Put Wall 2</span>
+        <span class="ld-level-price">6,275</span>
+        <span class="ld-level-oi">P=12,407</span>
+      </div>
+      <div class="ld-level-item">
+        <span class="ld-level-name">Put Wall 3</span>
+        <span class="ld-level-price">6,350</span>
+        <span class="ld-level-oi">P=7,446</span>
+      </div>
+      <div class="ld-level-item">
+        <span class="ld-level-name">Call Wall</span>
+        <span class="ld-level-price">6,400</span>
+        <span class="ld-level-oi">C=2,496</span>
+      </div>
+    </div>
+  </div>
+
   <!-- FOOTER -->
   <div class="chart-footer">
     <div class="footer-sigmas">
       <div class="sigma-item">
-        <span class="sigma-lbl">1σ 0DTE</span>
-        <span class="sigma-val" style="color:var(--text)">6,176 – 6,424</span>
+        <span class="sigma-lbl">1σ 0DTE EWH6</span>
+        <span class="sigma-val" style="color:var(--text)">6,366 – 6,485</span>
       </div>
       <div class="sigma-item">
-        <span class="sigma-lbl">1σ EOM 31-Mar</span>
-        <span class="sigma-val" style="color:var(--purple)">6,123 – 6,497</span>
+        <span class="sigma-lbl">Gamma Pin EOM</span>
+        <span class="sigma-val" style="color:var(--fuchsia)">6,400</span>
       </div>
       <div class="sigma-item">
-        <span class="sigma-lbl">1σ Lib Day 2-Abr</span>
-        <span class="sigma-val" style="color:var(--red)">6,079 – 6,521</span>
+        <span class="sigma-lbl">EOM Range ±1σ</span>
+        <span class="sigma-val" style="color:var(--purple)">±176 / ±181</span>
       </div>
     </div>
     <div class="footer-right">
-      <div class="delay-note">Fuente: Yahoo Finance · delay ~15 min · 30-Mar-2026</div>
+      <div class="delay-note">Fuente: Yahoo Finance · delay ~15 min · 31-Mar-2026 EOM</div>
       <div class="watermark">pivotalphadesk.com</div>
     </div>
   </div>
@@ -433,38 +519,42 @@
 
 <script>
 // ═══════════════════════════════════════════════════════════
-// CONFIGURACIÓN — actualizar cada lunes pre-market
+// CONFIGURACIÓN PAD — 31-Mar-2026 EOM
 // ═══════════════════════════════════════════════════════════
 const PAD_CONFIG = {
-  fecha:    "30-Mar-2026",
-  regimen:  "AMPLIFIED",  // AMPLIFIED | DAMPENED | NEUTRAL
-  ticker:   "^GSPC",      // Yahoo Finance symbol para SPX
+  fecha:    "31-Mar-2026 EOM",
+  regimen:  "AMPLIFIED",
+  ticker:   "^GSPC",
 
   niveles: [
-    { id:"lib",  precio:6455, label:"Lib Day PW MAX",  color:"#e84040", dash:false, width:2 },
-    { id:"lib2", precio:6420, label:"Lib Day PW 2",    color:"#f06060", dash:true,  width:1 },
-    { id:"eom1", precio:6410, label:"EOM JPM Collar",  color:"#9b5de5", dash:false, width:2 },
-    { id:"eom2", precio:6320, label:"EOM PW Nuevo",    color:"#e040fb", dash:false, width:1.5 },
-    { id:"eom3", precio:6290, label:"EOM PW 3",        color:"#7c3aed", dash:true,  width:1 },
-    { id:"sup",  precio:6280, label:"Soporte 0DTE",    color:"#3a8ef0", dash:true,  width:1 },
-    { id:"ea",   precio:6270, label:"Emergency Anchor",color:"#2ec4b6", dash:true,  width:1 },
+    // JPM Collar (purple)
+    { id:"jpm2",   precio:6550, label:"JPM Collar 2 EOM",      color:"#9b5de5", dash:true,  width:1.5 },
+    { id:"jpm1",   precio:6525, label:"JPM Collar 1 EOM",      color:"#c084fc", dash:false, width:2 },
+    // EOM Gamma Structure
+    { id:"gpin",   precio:6400, label:"Gamma Pin EOM",          color:"#e040fb", dash:false, width:2.5 },
+    { id:"pw1",    precio:6375, label:"Put Wall 1 EOM",         color:"#3a8ef0", dash:false, width:2 },
+    { id:"pw2",    precio:6350, label:"Put Wall 2 EOM",         color:"#5a9ef5", dash:true,  width:1.5 },
+    { id:"anchor", precio:6300, label:"Anchor EOM",             color:"#2ec4b6", dash:true,  width:1.5 },
+    // Liberation Day (orange)
+    { id:"ld1",    precio:6350, label:"LD Put Wall 1",          color:"#e67e22", dash:false, width:1.5 },
+    { id:"ld2",    precio:6275, label:"LD Put Wall 2",          color:"#f39c12", dash:false, width:2 },
+    { id:"ld3",    precio:6250, label:"LD Put Wall MAX",        color:"#f5c842", dash:false, width:2.5 },
   ],
 
-  rango_0dte_hi: 6424,
-  rango_0dte_lo: 6176,
-  rango_eom_hi:  6497,
-  rango_eom_lo:  6123,
+  rango_0dte_hi: 6485,
+  rango_0dte_lo: 6366,
+  rango_eom_hi:  6607,
+  rango_eom_lo:  6249,
 };
 
 // ═══════════════════════════════════════════════════════════
-// FETCH PRECIO SPX (Yahoo Finance CORS proxy)
+// FETCH PRECIO SPX
 // ═══════════════════════════════════════════════════════════
 let currentPrice = null;
 let prevClose    = null;
 
 async function fetchPrice() {
   try {
-    // Yahoo Finance via allorigins proxy (free, no API key)
     const url = `https://api.allorigins.win/raw?url=${encodeURIComponent(
       `https://query1.finance.yahoo.com/v8/finance/chart/%5EGSPC?interval=5m&range=1d`
     )}`;
@@ -479,12 +569,10 @@ async function fetchPrice() {
     const prev   = meta.previousClose || meta.chartPreviousClose;
     const chg    = price - prev;
     const pct    = (chg / prev) * 100;
-    const ts     = new Date(meta.regularMarketTime * 1000);
 
     currentPrice = price;
     prevClose    = prev;
 
-    // Update header
     document.getElementById("priceMain").textContent =
       price.toLocaleString("en-US", { minimumFractionDigits:2, maximumFractionDigits:2 });
 
@@ -493,22 +581,16 @@ async function fetchPrice() {
     chgEl.textContent = `${sign}${chg.toFixed(2)} (${sign}${pct.toFixed(2)}%)`;
     chgEl.className   = `price-chg ${chg >= 0 ? "up" : "dn"}`;
 
-    // Highlight nearest level
     highlightNearestLevel(price);
 
-    // Update chart with current price line
-    updateChart(price, prev);
-
-    // Get historical data for chart
     const closes = result.indicators?.quote?.[0]?.close?.filter(v => v != null) || [];
     const times  = result.timestamp || [];
     buildChart(closes, times, price);
 
-    return { price, chg, pct, ts };
+    return { price, chg, pct };
 
   } catch(e) {
     console.warn("Price fetch error:", e);
-    // Fallback — show last known or placeholder
     document.getElementById("priceMain").textContent = "N/D";
     document.getElementById("priceChg").textContent  = "delay data unavailable";
     document.getElementById("priceChg").className    = "price-chg flat";
@@ -516,13 +598,13 @@ async function fetchPrice() {
   }
 }
 
-// ═══════════════════════════════════════════════════════════
-// HIGHLIGHT NIVEL MÁS CERCANO AL PRECIO
-// ═══════════════════════════════════════════════════════════
 function highlightNearestLevel(price) {
   if (!price) return;
   let closest = null, minDist = Infinity;
-  PAD_CONFIG.niveles.forEach(n => {
+  const uniqueLevels = PAD_CONFIG.niveles.filter((n, i, a) =>
+    a.findIndex(x => x.id === n.id) === i
+  );
+  uniqueLevels.forEach(n => {
     const d = Math.abs(n.precio - price);
     if (d < minDist) { minDist = d; closest = n.id; }
   });
@@ -541,24 +623,19 @@ let chart = null;
 function buildChart(closes, timestamps, currentPx) {
   const canvas = document.getElementById("spxCanvas");
   const ctx    = canvas.getContext("2d");
-
   if (chart) { chart.destroy(); }
 
-  // Build time labels
   const labels = timestamps.map(t => {
     const d = new Date(t * 1000);
     return d.toLocaleTimeString("en-US", { hour:"2-digit", minute:"2-digit", hour12:false });
   });
 
-  // Determine y-axis range from levels + price
   const allPrices = [...closes.filter(Boolean)];
   PAD_CONFIG.niveles.forEach(n => allPrices.push(n.precio));
   if (currentPx) allPrices.push(currentPx);
-  const yMin = Math.min(...allPrices) - 30;
-  const yMax = Math.max(...allPrices) + 30;
+  const yMin = Math.min(...allPrices, 6220) - 20;
+  const yMax = Math.max(...allPrices, 6580) + 20;
 
-  // Annotations — horizontal lines for each PAD level
-  // We'll draw them as datasets (fake lines)
   const levelDatasets = PAD_CONFIG.niveles.map(n => ({
     label: n.label,
     data: labels.map(() => n.precio),
@@ -571,11 +648,58 @@ function buildChart(closes, timestamps, currentPx) {
     order: 1,
   }));
 
-  // Rango 0DTE — fill band
-  const rangoHiData = labels.map(() => PAD_CONFIG.rango_0dte_hi);
-  const rangoLoData = labels.map(() => PAD_CONFIG.rango_0dte_lo);
+  // 0DTE range band
+  const rangoHiDS = {
+    label: "1σ Hi",
+    data: labels.map(() => PAD_CONFIG.rango_0dte_hi),
+    borderColor: "rgba(90,112,128,0.35)",
+    borderWidth: 1,
+    borderDash: [4,4],
+    backgroundColor: "rgba(90,112,128,0.04)",
+    pointRadius: 0,
+    fill: "+1",
+    tension: 0,
+    order: 2,
+  };
 
-  // Price line
+  const rangoLoDS = {
+    label: "1σ Lo",
+    data: labels.map(() => PAD_CONFIG.rango_0dte_lo),
+    borderColor: "rgba(90,112,128,0.35)",
+    borderWidth: 1,
+    borderDash: [4,4],
+    pointRadius: 0,
+    fill: false,
+    tension: 0,
+    order: 2,
+  };
+
+  // Liberation Day zone fill (6,249 to 6,275)
+  const ldHiDS = {
+    label: "LD Zone Hi",
+    data: labels.map(() => 6275),
+    borderColor: "rgba(230,126,34,0.25)",
+    borderWidth: 1,
+    borderDash: [3,3],
+    backgroundColor: "rgba(230,126,34,0.06)",
+    pointRadius: 0,
+    fill: "+1",
+    tension: 0,
+    order: 3,
+  };
+
+  const ldLoDS = {
+    label: "LD Zone Lo",
+    data: labels.map(() => 6249),
+    borderColor: "rgba(230,126,34,0.25)",
+    borderWidth: 1,
+    borderDash: [3,3],
+    pointRadius: 0,
+    fill: false,
+    tension: 0,
+    order: 3,
+  };
+
   const priceDataset = {
     label: "SPX",
     data: closes,
@@ -587,11 +711,10 @@ function buildChart(closes, timestamps, currentPx) {
     order: 0,
   };
 
-  // Current price horizontal line (dashed white)
   const currentDataset = currentPx ? {
     label: "Precio actual",
     data: labels.map(() => currentPx),
-    borderColor: "rgba(255,255,255,0.5)",
+    borderColor: "rgba(255,255,255,0.45)",
     borderWidth: 1,
     borderDash: [3,3],
     pointRadius: 0,
@@ -600,36 +723,7 @@ function buildChart(closes, timestamps, currentPx) {
     order: 0,
   } : null;
 
-  // Rango fill datasets
-  const rangoHiDS = {
-    label: "1σ Hi",
-    data: rangoHiData,
-    borderColor: "rgba(90,112,128,0.3)",
-    borderWidth: 1,
-    borderDash: [4,4],
-    backgroundColor: "rgba(90,112,128,0.04)",
-    pointRadius: 0,
-    fill: "+1",
-    tension: 0,
-    order: 2,
-  };
-  const rangoLoDS = {
-    label: "1σ Lo",
-    data: rangoLoData,
-    borderColor: "rgba(90,112,128,0.3)",
-    borderWidth: 1,
-    borderDash: [4,4],
-    pointRadius: 0,
-    fill: false,
-    tension: 0,
-    order: 2,
-  };
-
-  const datasets = [
-    rangoHiDS, rangoLoDS,
-    ...levelDatasets,
-    priceDataset,
-  ];
+  const datasets = [ldHiDS, ldLoDS, rangoHiDS, rangoLoDS, ...levelDatasets, priceDataset];
   if (currentDataset) datasets.push(currentDataset);
 
   chart = new Chart(ctx, {
@@ -654,13 +748,16 @@ function buildChart(closes, timestamps, currentPx) {
           callbacks: {
             title: (items) => items[0]?.label || "",
             label: (item) => {
+              const ignore = ["1σ Hi","1σ Lo","LD Zone Hi","LD Zone Lo"];
+              if (ignore.includes(item.dataset.label)) return null;
               if (item.dataset.label === "SPX" || item.dataset.label === "Precio actual")
                 return ` ${item.dataset.label}: ${item.formattedValue}`;
-              if (item.dataset.label === "1σ Hi" || item.dataset.label === "1σ Lo")
-                return null;
               return ` ${item.dataset.label}: ${item.formattedValue}`;
             },
-            filter: (item) => item.parsed.y !== null && item.dataset.label !== "1σ Hi" && item.dataset.label !== "1σ Lo",
+            filter: (item) => {
+              const ignore = ["1σ Hi","1σ Lo","LD Zone Hi","LD Zone Lo"];
+              return item.parsed.y !== null && !ignore.includes(item.dataset.label);
+            },
           }
         },
       },
@@ -683,7 +780,7 @@ function buildChart(closes, timestamps, currentPx) {
           ticks: {
             color:"#4a6070",
             font:{ family:"Space Mono", size:9 },
-            maxTicksLimit: 10,
+            maxTicksLimit: 12,
             callback: (v) => v.toLocaleString("en-US"),
           },
           border: { color:"#1a2535" },
@@ -693,19 +790,12 @@ function buildChart(closes, timestamps, currentPx) {
   });
 }
 
-function updateChart(price, prev) {
-  // Called on refresh — chart rebuilds on fetchPrice
-}
-
 // ═══════════════════════════════════════════════════════════
-// INIT + AUTO-REFRESH cada 60 segundos
+// INIT + AUTO-REFRESH cada 60s
 // ═══════════════════════════════════════════════════════════
 document.addEventListener("DOMContentLoaded", () => {
-  // Initial empty chart while loading
   buildChart([], [], null);
-  // Fetch price
   fetchPrice();
-  // Refresh cada 60s
   setInterval(fetchPrice, 60000);
 });
 </script>
