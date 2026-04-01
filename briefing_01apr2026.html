@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PAD GAIA Briefing | 01-Abr-2026</title>
+<style>
+  :root {
+    --bg:       #0D1117;
+    --surface:  #161B22;
+    --surface2: #1C2330;
+    --border:   #30363D;
+    --gold:     #F0C040;
+    --gold2:    #B8860B;
+    --red:      #C0392B;
+    --blue:     #1A5276;
+    --blue2:    #2E86C1;
+    --ocre:     #B7950B;
+    --purple:   #6C3483;
+    --teal:     #0E6655;
+    --green:    #1E8449;
+    --text:     #CDD9E5;
+    --muted:    #768390;
+    --white:    #FFFFFF;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { background:var(--bg); color:var(--text); font-family:'Segoe UI',Arial,sans-serif; font-size:14px; line-height:1.5; }
+
+  /* HEADER */
+  .header { background:linear-gradient(135deg,#0D1B2A 0%,#1A2A4A 60%,#0D1117 100%); border-bottom:2px solid var(--gold); padding:28px 32px 20px; }
+  .header-top { display:flex; justify-content:space-between; align-items:flex-start; }
+  .brand { font-size:22px; font-weight:700; color:var(--gold); letter-spacing:1px; }
+  .brand span { color:var(--text); font-weight:400; font-size:14px; }
+  .date-badge { text-align:right; }
+  .date-badge .date { font-size:18px; font-weight:700; color:var(--white); }
+  .date-badge .time { font-size:12px; color:var(--muted); }
+  .event-banner { margin-top:14px; background:rgba(192,57,43,0.15); border:1px solid var(--red); border-radius:6px; padding:10px 16px; display:flex; align-items:center; gap:10px; }
+  .event-banner .dot { width:10px; height:10px; border-radius:50%; background:var(--red); animation:pulse 1.5s infinite; flex-shrink:0; }
+  @keyframes pulse { 0%,100%{opacity:1;} 50%{opacity:0.4;} }
+  .event-text { font-size:13px; color:#E74C3C; font-weight:600; }
+  .event-sub { font-size:12px; color:var(--muted); }
+
+  /* TICKER */
+  .ticker-wrap { background:var(--surface); border-bottom:1px solid var(--border); overflow:hidden; height:36px; display:flex; align-items:center; }
+  .ticker-content { display:flex; gap:0; animation:scroll 40s linear infinite; white-space:nowrap; }
+  @keyframes scroll { 0%{transform:translateX(0);} 100%{transform:translateX(-50%);} }
+  .tick-item { padding:0 28px; font-size:12px; font-weight:600; border-right:1px solid var(--border); display:flex; align-items:center; gap:6px; }
+  .tick-up { color:#2ECC71; } .tick-dn { color:#E74C3C; } .tick-neu { color:var(--gold); }
+  .tick-label { color:var(--muted); font-weight:400; font-size:11px; }
+
+  /* MAIN */
+  .main { max-width:1280px; margin:0 auto; padding:24px 24px; }
+
+  /* REGIME STRIP */
+  .regime-strip { display:grid; grid-template-columns:repeat(4,1fr); gap:12px; margin-bottom:24px; }
+  .regime-card { background:var(--surface); border:1px solid var(--border); border-radius:8px; padding:14px 16px; display:flex; flex-direction:column; gap:4px; }
+  .regime-card .instr { font-size:11px; color:var(--muted); text-transform:uppercase; letter-spacing:1px; }
+  .regime-card .spot { font-size:20px; font-weight:700; color:var(--gold); }
+  .regime-card .regime { font-size:12px; font-weight:700; padding:2px 8px; border-radius:4px; display:inline-block; width:fit-content; }
+  .dampened { background:rgba(30,132,73,0.2); color:#2ECC71; border:1px solid #1E8449; }
+  .amplified { background:rgba(192,57,43,0.2); color:#E74C3C; border:1px solid #C0392B; }
+  .transition { background:rgba(183,149,11,0.2); color:#F0C040; border:1px solid #B7950B; }
+  .regime-card .sigma { font-size:11px; color:var(--muted); margin-top:2px; }
+
+  /* SECTION HEADER */
+  .section-header { display:flex; align-items:center; gap:10px; margin:28px 0 14px; }
+  .section-header h2 { font-size:16px; font-weight:700; color:var(--gold); }
+  .section-header .line { flex:1; height:1px; background:var(--border); }
+  .section-header .tag { font-size:11px; color:var(--muted); background:var(--surface2); padding:2px 8px; border-radius:10px; border:1px solid var(--border); }
+
+  /* INSTRUMENT GRID */
+  .instr-grid { display:grid; grid-template-columns:repeat(2,1fr); gap:16px; margin-bottom:24px; }
+
+  /* LEVEL TABLE */
+  .level-card { background:var(--surface); border:1px solid var(--border); border-radius:8px; overflow:hidden; }
+  .level-card-header { padding:12px 16px; display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid var(--border); }
+  .level-card-header .instr-name { font-size:15px; font-weight:700; color:var(--white); }
+  .level-card-header .badges { display:flex; gap:6px; }
+  .badge { font-size:10px; font-weight:700; padding:2px 7px; border-radius:4px; }
+  .badge-green { background:rgba(30,132,73,0.25); color:#2ECC71; border:1px solid #1E8449; }
+  .badge-red { background:rgba(192,57,43,0.2); color:#E74C3C; border:1px solid #C0392B; }
+  .badge-gold { background:rgba(240,192,64,0.15); color:var(--gold); border:1px solid var(--gold2); }
+  .badge-ocre { background:rgba(183,149,11,0.2); color:#F0C040; border:1px solid var(--ocre); }
+
+  .level-table { width:100%; border-collapse:collapse; }
+  .level-table th { background:var(--surface2); padding:6px 12px; font-size:11px; color:var(--muted); text-align:left; font-weight:600; text-transform:uppercase; letter-spacing:0.5px; }
+  .level-table td { padding:7px 12px; font-size:13px; border-bottom:1px solid rgba(48,54,61,0.5); }
+  .level-table tr:last-child td { border-bottom:none; }
+  .level-table tr:hover td { background:rgba(255,255,255,0.02); }
+
+  .lv-call-wall td:first-child { border-left:3px solid var(--red); }
+  .lv-gamma-ceil td:first-child { border-left:3px solid rgba(192,57,43,0.5); }
+  .lv-spot td { background:rgba(240,192,64,0.06); font-weight:700; }
+  .lv-spot td:first-child { border-left:3px solid var(--gold); }
+  .lv-gamma-flip td:first-child { border-left:3px solid var(--ocre); }
+  .lv-put-wall td:first-child { border-left:3px solid var(--blue); }
+  .lv-anchor td:first-child { border-left:3px solid var(--teal); }
+  .lv-tpo td:first-child { border-left:3px solid var(--border); }
+  .lv-pin td:first-child { border-left:3px solid var(--purple); }
+
+  .price { font-weight:700; font-family:'Consolas',monospace; }
+  .pr-call { color:#E74C3C; }
+  .pr-flip { color:#F0C040; }
+  .pr-put  { color:#5DADE2; }
+  .pr-anch { color:#1ABC9C; }
+  .pr-pin  { color:#9B59B6; }
+  .pr-spot { color:var(--gold); }
+
+  /* MACRO TABLE */
+  .macro-table { width:100%; border-collapse:collapse; margin-bottom:24px; }
+  .macro-table th { background:var(--surface2); padding:8px 14px; font-size:11px; color:var(--muted); text-align:left; font-weight:600; text-transform:uppercase; border-bottom:1px solid var(--border); }
+  .macro-table td { padding:9px 14px; font-size:13px; border-bottom:1px solid rgba(48,54,61,0.4); vertical-align:top; }
+  .macro-table tr:last-child td { border-bottom:none; }
+  .macro-table tr:hover td { background:rgba(255,255,255,0.02); }
+  .tag-red { color:#E74C3C; font-weight:700; }
+  .tag-gold { color:var(--gold); font-weight:700; }
+  .tag-green { color:#2ECC71; font-weight:700; }
+
+  /* RULES */
+  .rules-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:14px; margin-bottom:28px; }
+  .rule-card { background:var(--surface); border:1px solid var(--border); border-radius:8px; padding:16px; }
+  .rule-card .rule-num { font-size:11px; color:var(--muted); text-transform:uppercase; letter-spacing:1px; margin-bottom:6px; }
+  .rule-card .rule-title { font-size:14px; font-weight:700; color:var(--gold); margin-bottom:8px; }
+  .rule-card .rule-body { font-size:13px; color:var(--text); line-height:1.6; }
+  .rule-card.rule-danger { border-color:rgba(192,57,43,0.4); }
+  .rule-card.rule-warning { border-color:rgba(183,149,11,0.4); }
+  .rule-card.rule-info { border-color:rgba(26,82,118,0.5); }
+
+  /* FOOTER */
+  .footer { border-top:1px solid var(--border); padding:16px 24px; display:flex; justify-content:space-between; align-items:center; background:var(--surface); margin-top:16px; }
+  .footer .brand-sm { font-size:13px; color:var(--muted); }
+  .footer .brand-sm strong { color:var(--gold); }
+  .footer .links a { color:var(--muted); text-decoration:none; font-size:12px; margin-left:16px; }
+  .footer .links a:hover { color:var(--gold); }
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div class="header">
+  <div class="header-top">
+    <div>
+      <div class="brand">PivotAlphaDesk <span>| GAIA Market Briefing</span></div>
+      <div style="color:var(--muted);font-size:12px;margin-top:4px;">pivotalphadesk.com · Framework GAIA v1.0</div>
+    </div>
+    <div class="date-badge">
+      <div class="date">Miércoles 01 Abr 2026</div>
+      <div class="time">Pre-Market · 07:43 ET · Coral Gables FL</div>
+    </div>
+  </div>
+  <div class="event-banner">
+    <div class="dot"></div>
+    <div>
+      <div class="event-text">INSTITUTIONAL EVENT ZONE — Liberation Day</div>
+      <div class="event-sub">Anuncio aranceles recíprocos Trump · 02-Abr-2026 4:00 PM ET · Reducir sizing -25% adicional en todos los instrumentos</div>
+    </div>
+  </div>
+</div>
+
+<!-- TICKER -->
+<div class="ticker-wrap">
+  <div class="ticker-content">
+    <div class="tick-item"><span class="tick-label">ESM6</span><span class="tick-up">~6,617</span><span class="tick-up">+182.5 EOM</span></div>
+    <div class="tick-item"><span class="tick-label">NQM6</span><span class="tick-up">~24,060</span><span class="tick-up">+775 EOM</span></div>
+    <div class="tick-item"><span class="tick-label">CLK6</span><span class="tick-neu">~$100.00</span><span class="tick-dn">-1.50 ayer</span></div>
+    <div class="tick-item"><span class="tick-label">SPX</span><span class="tick-up">~6,528</span><span class="tick-label">GEX +12,597</span></div>
+    <div class="tick-item"><span class="tick-label">VOL ES</span><span class="tick-dn">24.90</span><span class="tick-dn">-0.21</span></div>
+    <div class="tick-item"><span class="tick-label">VOL NQ</span><span class="tick-dn">27.95</span><span class="tick-dn">-0.04</span></div>
+    <div class="tick-item"><span class="tick-label">VOL CL</span><span class="tick-up" style="color:#E74C3C;">123.25</span><span class="tick-up" style="color:#E74C3C;">+11.46 ⚠</span></div>
+    <div class="tick-item"><span class="tick-label">ADP Mar</span><span class="tick-dn">40K</span><span class="tick-label">est 63K</span></div>
+    <div class="tick-item"><span class="tick-label">ISM PMI</span><span class="tick-neu">52.0</span><span class="tick-label">est 52.5</span></div>
+    <div class="tick-item"><span class="tick-label">EIA Crude</span><span class="tick-label">10:30 AM · +2M est</span></div>
+    <!-- duplicado para loop -->
+    <div class="tick-item"><span class="tick-label">ESM6</span><span class="tick-up">~6,617</span><span class="tick-up">+182.5 EOM</span></div>
+    <div class="tick-item"><span class="tick-label">NQM6</span><span class="tick-up">~24,060</span><span class="tick-up">+775 EOM</span></div>
+    <div class="tick-item"><span class="tick-label">CLK6</span><span class="tick-neu">~$100.00</span><span class="tick-dn">-1.50 ayer</span></div>
+    <div class="tick-item"><span class="tick-label">SPX</span><span class="tick-up">~6,528</span><span class="tick-label">GEX +12,597</span></div>
+    <div class="tick-item"><span class="tick-label">VOL CL</span><span style="color:#E74C3C;font-weight:700;">123.25 +11.46 ⚠</span></div>
+    <div class="tick-item"><span class="tick-label">EIA Crude</span><span class="tick-label">10:30 AM · +2M est</span></div>
+  </div>
+</div>
+
+<!-- MAIN -->
+<div class="main">
+
+  <!-- REGIME STRIP -->
+  <div class="regime-strip">
+    <div class="regime-card">
+      <span class="instr">ES · ESM6</span>
+      <span class="spot">~6,617</span>
+      <span class="regime dampened">DAMPENED ✅</span>
+      <span class="sigma">P/C 1.61 · 1σ ±53 → 6,549–6,656</span>
+    </div>
+    <div class="regime-card">
+      <span class="instr">NQ · NQM6</span>
+      <span class="spot">~24,060</span>
+      <span class="regime dampened">DAMPENED ✅</span>
+      <span class="sigma">P/C 1.09 · 1σ ±217 → 23,876–24,310</span>
+    </div>
+    <div class="regime-card">
+      <span class="instr">CL · CLK6</span>
+      <span class="spot">~$100.00</span>
+      <span class="regime transition">TRANSICIÓN ⚡</span>
+      <span class="sigma">Vol 123.25 (+11.46) · 1σ ±3.56</span>
+    </div>
+    <div class="regime-card">
+      <span class="instr">SPX · Cash Index</span>
+      <span class="spot">~6,528</span>
+      <span class="regime dampened">DAMPENED ✅</span>
+      <span class="sigma">GEX Net +12,597 · EMA200 6,449</span>
+    </div>
+  </div>
+
+  <!-- MACRO -->
+  <div class="section-header">
+    <h2>📋 CONTEXTO MACRO</h2>
+    <div class="line"></div>
+    <div class="tag">01-Abr-2026 · Pre-Market</div>
+  </div>
+
+  <table class="macro-table">
+    <thead>
+      <tr><th>Tema</th><th>Tendencia</th><th>Datos Clave</th><th>Implicación PAD</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="tag-red">Liberation Day</span></td>
+        <td>Evento macro alto impacto</td>
+        <td>Aranceles recíprocos Trump — 02-Abr 4:00 PM ET. Hoy: sesión pre-evento con incertidumbre máxima.</td>
+        <td>Reducir sizing -25% adicional. Niveles PAD válidos pero movimientos amplificados.</td>
+      </tr>
+      <tr>
+        <td><span class="tag-green">EOM Rally</span></td>
+        <td>Alcista — continuación Globex</td>
+        <td>ES +182.5 pts (31-Mar). NQ +775.25 pts. Vol récord 8.5M contratos ES. Ambos en DAMPENED.</td>
+        <td>Regime positivo post-EOM. VWAP y EMA200 como soportes clave si el precio retrocede.</td>
+      </tr>
+      <tr>
+        <td><span class="tag-gold">Datos AM</span></td>
+        <td>Mixto — laboral débil</td>
+        <td>ADP Mar: 40K (vs 63K prev). ISM PMI: 52 (vs 52.5 est). EIA Crude 10:30 AM (consensus +2M).</td>
+        <td>Dato laboral débil ya absorbido. EIA es catalizador intraday principal para CL y spread.</td>
+      </tr>
+      <tr>
+        <td><span class="tag-red">Petróleo / OPEP+</span></td>
+        <td>Bajista — presión Liberation Day</td>
+        <td>CLK6 -$1.50 ayer. Vol CL explotó +11.46 a 123.25. Sell-off hasta $96.50 Globex. Curva en backwardation.</td>
+        <td>CL en PIN crítico $100. EIA miss → break bajo $100 → aceleración a Put Wall $97. CL es barómetro macro hoy.</td>
+      </tr>
+      <tr>
+        <td><span class="tag-gold">Flow Opciones</span></td>
+        <td>Put-heavy estructural</td>
+        <td>ES P/C EOD 1.61. SPX OI 72.84% puts. Verticals 37.97%. Spreads dominantes el EOM.</td>
+        <td>Hedging institucional masivo pre-Liberation Day. Soporta floors gamma — Put Walls bien defendidos.</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- INSTRUMENT LEVELS -->
+  <div class="section-header">
+    <h2>📊 ESTRUCTURA GAIA — NIVELES PAD</h2>
+    <div class="line"></div>
+    <div class="tag">Fuente: CME QuikStrike 31-Mar + TradeStation XLS 07:22 AM</div>
+  </div>
+
+  <div class="instr-grid">
+
+    <!-- ES -->
+    <div class="level-card">
+      <div class="level-card-header">
+        <span class="instr-name">ES — E-mini S&P 500</span>
+        <div class="badges">
+          <span class="badge badge-green">DAMPENED</span>
+          <span class="badge badge-gold">ESM6 ~6,617</span>
+        </div>
+      </div>
+      <table class="level-table">
+        <thead><tr><th>Nivel PAD</th><th>Precio</th><th>OI Ref</th><th>Nota</th></tr></thead>
+        <tbody>
+          <tr class="lv-call-wall"><td>Call Wall Mayor</td><td class="price pr-call">6,800</td><td>9,655C EWJ6</td><td>Techo estructural. Fuera de 1σ hoy.</td></tr>
+          <tr class="lv-gamma-ceil"><td>Gamma Ceiling</td><td class="price pr-call">6,750 / 6,700</td><td>Multi-exp</td><td>Resistencia intermedia.</td></tr>
+          <tr class="lv-spot"><td>▶ SPOT ACTUAL</td><td class="price pr-spot">~6,617</td><td>Sobre Flip</td><td>DAMPENED confirmado. VWAP support.</td></tr>
+          <tr class="lv-gamma-flip"><td>Gamma Flip</td><td class="price pr-flip">6,600</td><td>3,027C 0DTE</td><td>Soporte principal. Prime Zone + VWAP.</td></tr>
+          <tr class="lv-tpo"><td>EMA 200</td><td class="price" style="color:#F0C040;">~6,567</td><td>Técnico</td><td>Soporte intermedio post-Flip.</td></tr>
+          <tr class="lv-put-wall"><td>Put Wall Mayor</td><td class="price pr-put">6,500</td><td>9,298P EWJ6</td><td>Piso estructural. Dealers defienden.</td></tr>
+          <tr class="lv-anchor"><td>Emergency Anchor</td><td class="price pr-anch">6,450</td><td>3,509P 0DTE</td><td>Fuera del rango 1σ hoy.</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- NQ -->
+    <div class="level-card">
+      <div class="level-card-header">
+        <span class="instr-name">NQ — E-mini Nasdaq-100</span>
+        <div class="badges">
+          <span class="badge badge-green">DAMPENED</span>
+          <span class="badge badge-gold">NQM6 ~24,060</span>
+        </div>
+      </div>
+      <table class="level-table">
+        <thead><tr><th>Nivel PAD</th><th>Precio</th><th>OI Ref</th><th>Nota</th></tr></thead>
+        <tbody>
+          <tr class="lv-call-wall"><td>Call Wall Mayor</td><td class="price pr-call">24,300</td><td>NEJ6 74C</td><td>Techo del día. En limite 1σ.</td></tr>
+          <tr class="lv-gamma-ceil"><td>Gamma Ceiling</td><td class="price pr-call">24,250 / 24,200</td><td>Δ-98 en 24,200</td><td>Resistencia creciente.</td></tr>
+          <tr class="lv-spot"><td>▶ SPOT ACTUAL</td><td class="price pr-spot">~24,060</td><td>Sobre Flip</td><td>Extended. Vol NQ +3 pts vs ES.</td></tr>
+          <tr class="lv-pin"><td>PIN Gravitacional</td><td class="price pr-pin">24,000</td><td>NEJ6 547P</td><td>PIN estructural. 547 puts 29DTE.</td></tr>
+          <tr class="lv-gamma-flip"><td>Gamma Flip</td><td class="price pr-flip">23,900</td><td>Prime Zone</td><td>EMA200 coincide. Soporte triple.</td></tr>
+          <tr class="lv-put-wall"><td>Put Wall Mayor</td><td class="price pr-put">23,800</td><td>Q1DJ6 325P</td><td>Liberation Day puede testear.</td></tr>
+          <tr class="lv-anchor"><td>Emergency Anchor</td><td class="price pr-anch">23,500</td><td>NEJ6 256P</td><td>Piso de pánico tech/semis.</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- CL -->
+    <div class="level-card">
+      <div class="level-card-header">
+        <span class="instr-name">CL — WTI Crude Oil</span>
+        <div class="badges">
+          <span class="badge badge-ocre">TRANSICIÓN ⚡</span>
+          <span class="badge badge-gold">CLK6 ~$100</span>
+          <span class="badge badge-red">Vol 123.25</span>
+        </div>
+      </div>
+      <table class="level-table">
+        <thead><tr><th>Nivel PAD</th><th>Precio</th><th>OI Ref</th><th>Nota</th></tr></thead>
+        <tbody>
+          <tr class="lv-call-wall"><td>Call Wall Mayor</td><td class="price pr-call">$105.00</td><td>LOK6 12,579C</td><td>Gamma MAX absoluto.</td></tr>
+          <tr class="lv-gamma-ceil"><td>Gamma Ceiling</td><td class="price pr-call">$103 / $102</td><td>-68C en $103 ayer</td><td>Cierre bajista de calls.</td></tr>
+          <tr class="lv-tpo"><td>EMA 200</td><td class="price" style="color:#F0C040;">$101.03</td><td>Resistencia</td><td>Spot BAJO EMA → sesgo bajista.</td></tr>
+          <tr class="lv-spot"><td>▶ PIN Gravitacional</td><td class="price pr-pin">$100.00</td><td>LOK6 14,168C</td><td>NIVEL CRÍTICO. Anclaje del día.</td></tr>
+          <tr class="lv-gamma-flip"><td>Soporte 1</td><td class="price pr-flip">$99.00</td><td>1,717C LOK6</td><td>EIA trigger intraday.</td></tr>
+          <tr class="lv-put-wall"><td>Put Wall Mayor</td><td class="price pr-put">$97.00</td><td>2,653C/1,022P</td><td>Piso gamma. Settle CLM6 $96.02.</td></tr>
+          <tr class="lv-anchor"><td>Emergency Anchor</td><td class="price pr-anch">$95.00</td><td>574C/230P</td><td>Piso de pánico extremo.</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- SPX -->
+    <div class="level-card">
+      <div class="level-card-header">
+        <span class="instr-name">SPX — S&P 500 Index Cash</span>
+        <div class="badges">
+          <span class="badge badge-green">DAMPENED</span>
+          <span class="badge badge-gold">~6,528</span>
+        </div>
+      </div>
+      <table class="level-table">
+        <thead><tr><th>Nivel PAD</th><th>Precio</th><th>OI XLS</th><th>Nota</th></tr></thead>
+        <tbody>
+          <tr class="lv-call-wall"><td>Call Wall Mayor</td><td class="price pr-call">6,700</td><td>19,881 OI</td><td>Techo estructural SPX.</td></tr>
+          <tr class="lv-gamma-ceil"><td>Gamma Ceiling</td><td class="price pr-call">6,690 / 6,675</td><td>12,989 / 12,892</td><td>Resistencia escalonada.</td></tr>
+          <tr class="lv-spot"><td>▶ SPOT SPX</td><td class="price pr-spot">~6,528</td><td>Sobre VAH 31-Mar</td><td>Extended. "Above value area."</td></tr>
+          <tr class="lv-gamma-flip"><td>Gamma Flip / PIN</td><td class="price pr-flip">6,600</td><td>14,813 OI</td><td>Alineado con ES Gamma Flip.</td></tr>
+          <tr class="lv-tpo"><td>EMA 200 SPX</td><td class="price" style="color:#F0C040;">~6,449</td><td>Técnico</td><td>Spot sobre EMA200 ✅</td></tr>
+          <tr class="lv-put-wall"><td>Put Wall Mayor</td><td class="price pr-put">6,500</td><td>8,351 OI</td><td>Coincide con ES Put Wall.</td></tr>
+          <tr class="lv-anchor"><td>Emergency Anchor</td><td class="price pr-anch">6,400</td><td>4,264 OI</td><td>Piso de stress Liberation Day.</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+  </div><!-- /instr-grid -->
+
+  <!-- RULES -->
+  <div class="section-header">
+    <h2>⚡ REGLAS OPERATIVAS PAD</h2>
+    <div class="line"></div>
+    <div class="tag">01-Abr-2026 · Pre-Liberation Day</div>
+  </div>
+
+  <div class="rules-grid">
+    <div class="rule-card rule-info">
+      <div class="rule-num">Regla #1</div>
+      <div class="rule-title">Timing de Apertura</div>
+      <div class="rule-body">9:30–9:45 ET: <strong>NO OPERAR.</strong> En día pre-Liberation Day el primer movimiento es una trampa. Esperar 9:45–10:00 ET. El segundo test de un nivel PAD confirmado es la entrada óptima.</div>
+    </div>
+    <div class="rule-card rule-danger">
+      <div class="rule-num">Regla #2</div>
+      <div class="rule-title">Sizing Pre-Evento</div>
+      <div class="rule-body">Reducir sizing <strong>-25%</strong> por Liberation Day. Si el precio rompe el Gamma Flip de cualquier instrumento → reducir otro <strong>-25%</strong>. No operar ES/NQ contra sus Put Walls en AMPLIFIED.</div>
+    </div>
+    <div class="rule-card rule-warning">
+      <div class="rule-num">Regla #3</div>
+      <div class="rule-title">CL es el Barómetro</div>
+      <div class="rule-body">PIN <strong>$100</strong> en CL es la bisagra del día. CL ≥ $100 = risk-on. CL < $100 con volumen = señal bearish macro para ES/NQ. <strong>EIA 10:30 AM</strong> es el catalizador. Monitorear CL antes de operar índices.</div>
+    </div>
+  </div>
+
+</div><!-- /main -->
+
+<!-- FOOTER -->
+<div class="footer">
+  <div class="brand-sm"><strong>PivotAlphaDesk</strong> · GAIA Framework v1.0 · pivotalphadesk.com</div>
+  <div class="links">
+    <a href="#">Briefing Anterior</a>
+    <a href="#">Pine Scripts</a>
+    <a href="#">Options Calculator</a>
+  </div>
+</div>
+
+</body>
+</html>
