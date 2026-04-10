@@ -1,0 +1,910 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PAD Briefing | 10 Abr 2026</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Mono:wght@300;400;500&family=Fraunces:ital,wght@0,300;0,600;1,300&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink: #0a0a0f;
+    --paper: #f5f2eb;
+    --accent: #c8a84b;
+    --accent2: #e05c3a;
+    --accent3: #3a7be0;
+    --muted: #6b6860;
+    --border: #d4cfc4;
+    --green: #2d7a4f;
+    --red: #c03030;
+    --purple: #6b3fa0;
+    --orange: #d06020;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--paper);
+    color: var(--ink);
+    font-family: 'DM Mono', monospace;
+    font-size: 13px;
+    line-height: 1.6;
+  }
+
+  /* ── MASTHEAD ── */
+  .masthead {
+    border-bottom: 3px solid var(--ink);
+    padding: 28px 48px 20px;
+    display: grid;
+    grid-template-columns: 1fr auto;
+    align-items: end;
+    gap: 20px;
+  }
+  .brand {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 52px;
+    letter-spacing: 4px;
+    line-height: 1;
+    color: var(--ink);
+  }
+  .brand span { color: var(--accent); }
+  .tagline {
+    font-family: 'Fraunces', serif;
+    font-style: italic;
+    font-weight: 300;
+    font-size: 13px;
+    color: var(--muted);
+    margin-top: 4px;
+    letter-spacing: 0.5px;
+  }
+  .masthead-right { text-align: right; }
+  .date-block {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 32px;
+    letter-spacing: 2px;
+    line-height: 1;
+  }
+  .date-sub {
+    font-size: 10px;
+    color: var(--muted);
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    margin-top: 4px;
+  }
+
+  /* ── CPI ALERT BANNER ── */
+  .cpi-banner {
+    background: #eef6f0;
+    border-top: 3px solid var(--green);
+    border-bottom: 3px solid var(--green);
+    padding: 14px 48px;
+    display: flex;
+    align-items: center;
+    gap: 24px;
+  }
+  .cpi-label {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 18px;
+    letter-spacing: 3px;
+    color: var(--green);
+    min-width: 160px;
+  }
+  .cpi-items {
+    display: flex;
+    gap: 32px;
+    flex-wrap: wrap;
+  }
+  .cpi-item {
+    font-size: 11px;
+    letter-spacing: 0.5px;
+  }
+  .cpi-item-name { color: var(--muted); font-size: 9px; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 2px; }
+  .cpi-val { font-weight: 500; }
+  .cpi-cold { color: var(--green); }
+  .cpi-inline { color: var(--orange); }
+  .cpi-verdict {
+    margin-left: auto;
+    font-family: 'Fraunces', serif;
+    font-weight: 600;
+    font-size: 13px;
+    color: var(--green);
+    text-align: right;
+    max-width: 260px;
+    line-height: 1.4;
+  }
+
+  /* ── TICKER ── */
+  .ticker-wrap {
+    overflow: hidden;
+    background: var(--ink);
+    padding: 8px 0;
+    margin-bottom: 0;
+  }
+  .ticker-inner {
+    display: flex;
+    gap: 40px;
+    animation: ticker 35s linear infinite;
+    width: max-content;
+  }
+  @keyframes ticker {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(-50%); }
+  }
+  .tick-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--paper);
+    font-size: 11px;
+    letter-spacing: 1px;
+    white-space: nowrap;
+  }
+  .tick-sym { color: var(--accent); font-weight: 500; }
+  .tick-up { color: #5ecf8a; }
+  .tick-dn { color: #f07070; }
+  .tick-sep { color: var(--muted); }
+
+  /* ── LAYOUT ── */
+  .container { padding: 0 48px; }
+
+  /* ── SECTION HEADERS ── */
+  .section-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin: 32px 0 16px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--border);
+  }
+  .section-num {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 28px;
+    color: var(--accent);
+    line-height: 1;
+    min-width: 32px;
+  }
+  .section-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 20px;
+    letter-spacing: 3px;
+    color: var(--ink);
+    text-transform: uppercase;
+  }
+  .section-badge {
+    margin-left: auto;
+    font-size: 9px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--muted);
+    border: 1px solid var(--border);
+    padding: 2px 8px;
+  }
+
+  /* ── MACRO CARDS ── */
+  .macro-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    margin-bottom: 20px;
+  }
+  .macro-card {
+    border: 1px solid var(--border);
+    padding: 16px 20px;
+    position: relative;
+  }
+  .macro-card::before {
+    content: '';
+    position: absolute;
+    left: 0; top: 0; bottom: 0;
+    width: 3px;
+  }
+  .macro-card.red::before { background: var(--red); }
+  .macro-card.amber::before { background: var(--accent); }
+  .macro-card.blue::before { background: var(--accent3); }
+  .macro-card.green::before { background: var(--green); }
+  .macro-label {
+    font-size: 9px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 8px;
+  }
+  .macro-headline {
+    font-family: 'Fraunces', serif;
+    font-weight: 600;
+    font-size: 15px;
+    line-height: 1.4;
+    margin-bottom: 6px;
+  }
+  .macro-body {
+    font-size: 11.5px;
+    color: var(--muted);
+    line-height: 1.7;
+  }
+
+  /* ── LEVELS GRID — 4 col ── */
+  .levels-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+    margin-bottom: 24px;
+  }
+  .asset-panel { border: 1px solid var(--border); }
+  .asset-header {
+    background: var(--ink);
+    color: var(--paper);
+    padding: 10px 16px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .asset-name {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 18px;
+    letter-spacing: 2px;
+  }
+  .asset-price { font-size: 11px; color: var(--accent); letter-spacing: 1px; }
+  .asset-regime {
+    padding: 6px 16px;
+    font-size: 9px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    border-bottom: 1px solid var(--border);
+  }
+  .asset-regime.amplified { background: #fef0ee; color: var(--red); }
+  .asset-regime.dampened  { background: #eef6f0; color: var(--green); }
+  .level-row {
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    align-items: center;
+    gap: 8px;
+    padding: 5px 16px;
+    border-bottom: 1px solid #ece9e2;
+    font-size: 11px;
+  }
+  .level-row:last-child { border-bottom: none; }
+  .level-dot { width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0; }
+  .level-name { color: var(--muted); font-size: 10px; }
+  .level-price { font-weight: 500; text-align: right; letter-spacing: 0.5px; }
+  .level-row.flip { background: #f5f0ff; }
+  .level-row.flip .level-name { color: var(--purple); }
+  .level-row.flip .level-price { color: var(--purple); font-weight: 500; }
+  .level-row.spot-row { background: #fffbef; }
+  .level-row.spot-row .level-price { color: var(--accent); font-weight: 600; }
+
+  /* ── BIAS TABLE ── */
+  .bias-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 24px;
+    font-size: 11.5px;
+  }
+  .bias-table th {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 13px;
+    letter-spacing: 2px;
+    text-align: left;
+    padding: 8px 14px;
+    background: var(--ink);
+    color: var(--paper);
+    border-right: 1px solid #222;
+  }
+  .bias-table td {
+    padding: 9px 14px;
+    border-bottom: 1px solid var(--border);
+    border-right: 1px solid var(--border);
+    vertical-align: top;
+    line-height: 1.6;
+  }
+  .bias-table tr:last-child td { border-bottom: none; }
+  .bias-table td:last-child { border-right: none; }
+  .bias-table th:last-child { border-right: none; }
+  .bias-bull { color: var(--green); font-weight: 500; }
+  .bias-bear { color: var(--red); font-weight: 500; }
+  .bias-neut { color: var(--orange); font-weight: 500; }
+  .instr-label {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 15px;
+    letter-spacing: 2px;
+  }
+
+  /* ── CVD BLOCK ── */
+  .cvd-block {
+    border: 1px solid var(--border);
+    padding: 16px 20px;
+    display: flex;
+    gap: 20px;
+    align-items: flex-start;
+    margin-bottom: 24px;
+    background: white;
+  }
+  .cvd-icon {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 36px;
+    color: var(--accent);
+    letter-spacing: 3px;
+    line-height: 1;
+    min-width: 60px;
+  }
+  .cvd-title {
+    font-family: 'Fraunces', serif;
+    font-weight: 600;
+    font-size: 13px;
+    margin-bottom: 8px;
+  }
+  .cvd-rule { font-size: 11.5px; line-height: 1.8; color: var(--ink); }
+  .cvd-rule strong { color: var(--accent2); }
+
+  /* ── CALENDAR ── */
+  .cal-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 1px;
+    background: var(--border);
+    border: 1px solid var(--border);
+    margin-bottom: 24px;
+  }
+  .cal-day { background: var(--paper); padding: 12px 14px; }
+  .cal-day-name {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 14px;
+    letter-spacing: 2px;
+    color: var(--muted);
+    margin-bottom: 8px;
+  }
+  .cal-day-name.today { color: var(--ink); border-bottom: 2px solid var(--accent); padding-bottom: 4px; margin-bottom: 8px; }
+  .cal-event { margin-bottom: 6px; }
+  .cal-time { font-size: 9px; color: var(--muted); letter-spacing: 0.5px; }
+  .cal-name { font-size: 10.5px; line-height: 1.4; }
+  .cal-imp { display: inline-block; width: 6px; height: 6px; border-radius: 50%; margin-right: 4px; vertical-align: middle; }
+  .imp-h { background: var(--red); }
+  .imp-m { background: var(--accent); }
+  .imp-l { background: var(--border); }
+  .actual-tag {
+    display: inline-block;
+    background: var(--green);
+    color: white;
+    font-size: 8px;
+    padding: 1px 4px;
+    letter-spacing: 1px;
+    margin-left: 4px;
+  }
+  .actual-miss {
+    display: inline-block;
+    background: var(--orange);
+    color: white;
+    font-size: 8px;
+    padding: 1px 4px;
+    letter-spacing: 1px;
+    margin-left: 4px;
+  }
+  .actual-hot {
+    display: inline-block;
+    background: var(--red);
+    color: white;
+    font-size: 8px;
+    padding: 1px 4px;
+    letter-spacing: 1px;
+    margin-left: 4px;
+  }
+
+  /* ── SCENARIOS ── */
+  .scenarios-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+    margin-bottom: 24px;
+  }
+  .scenario-card { border: 1px solid var(--border); overflow: hidden; }
+  .scenario-header {
+    padding: 12px 16px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .scenario-1 .scenario-header { background: #fef0ee; border-bottom: 2px solid var(--red); }
+  .scenario-2 .scenario-header { background: #fffbef; border-bottom: 2px solid var(--accent); }
+  .scenario-3 .scenario-header { background: #eef6f0; border-bottom: 2px solid var(--green); }
+  .scenario-num {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 32px;
+    line-height: 1;
+    color: var(--muted);
+    opacity: 0.4;
+  }
+  .scenario-title {
+    font-family: 'Fraunces', serif;
+    font-weight: 600;
+    font-size: 12px;
+    line-height: 1.4;
+    flex: 1;
+    padding: 0 12px;
+  }
+  .scenario-prob {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 22px;
+    letter-spacing: 1px;
+  }
+  .scenario-body { padding: 14px 16px; font-size: 11px; line-height: 1.7; }
+  .scenario-trigger {
+    font-size: 9px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin: 8px 0 4px;
+  }
+  .scenario-trigger:first-child { margin-top: 0; }
+  .scenario-text { color: var(--ink); }
+  .scenario-targets { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 6px; }
+  .target-pill {
+    font-size: 9.5px;
+    padding: 2px 8px;
+    border: 1px solid;
+    letter-spacing: 0.5px;
+  }
+  .target-pill.up { border-color: var(--green); color: var(--green); }
+  .target-pill.dn { border-color: var(--red); color: var(--red); }
+  .target-pill.nt { border-color: var(--muted); color: var(--muted); }
+
+  /* ── NOTE BOX ── */
+  .note-box {
+    border: 2px solid var(--ink);
+    padding: 16px 20px;
+    margin-bottom: 32px;
+    background: white;
+  }
+  .note-box-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 14px;
+    letter-spacing: 3px;
+    margin-bottom: 8px;
+    color: var(--ink);
+  }
+  .note-box-body { font-size: 11.5px; line-height: 1.8; }
+
+  /* ── DIVIDER ── */
+  .divider {
+    border: none;
+    border-top: 1px solid var(--border);
+    margin: 28px 0;
+  }
+
+  /* ── FOOTER ── */
+  .footer {
+    border-top: 3px solid var(--ink);
+    padding: 16px 48px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 9px;
+    color: var(--muted);
+    letter-spacing: 0.5px;
+    line-height: 1.8;
+  }
+  .footer-right {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 48px;
+    color: var(--border);
+    letter-spacing: 6px;
+    line-height: 1;
+  }
+</style>
+</head>
+<body>
+
+<!-- MASTHEAD -->
+<div class="masthead">
+  <div>
+    <div class="brand">Pivot<span>Alpha</span>Desk</div>
+    <div class="tagline">GAIA Framework · Gamma Market Structure · Pre-Market Briefing</div>
+  </div>
+  <div class="masthead-right">
+    <div class="date-block">Viernes 10 Abr 2026</div>
+    <div class="date-sub">Generated 07:10 ET · ESM6 · NQM6 · CLK6 · SPX</div>
+    <div class="date-sub" style="margin-top:4px; color:var(--red); letter-spacing:2px;">▲ CPI MARZO — DATO PUBLICADO</div>
+  </div>
+</div>
+
+<!-- CPI RESULT BANNER -->
+<div class="cpi-banner">
+  <div class="cpi-label">CPI Mar 2026<br>PUBLICADO</div>
+  <div class="cpi-items">
+    <div class="cpi-item">
+      <div class="cpi-item-name">CPI YoY</div>
+      <div class="cpi-val">fcst 3.3% → <span class="cpi-cold">act 3.2% ↓</span></div>
+    </div>
+    <div class="cpi-item">
+      <div class="cpi-item-name">Inflation MoM</div>
+      <div class="cpi-val">fcst 0.9% → <span class="cpi-cold">act 0.8% ↓</span></div>
+    </div>
+    <div class="cpi-item">
+      <div class="cpi-item-name">Core CPI MoM</div>
+      <div class="cpi-val">fcst 0.3% → <span class="cpi-inline">act 0.3% →</span></div>
+    </div>
+    <div class="cpi-item">
+      <div class="cpi-item-name">Core CPI YoY</div>
+      <div class="cpi-val">fcst 2.7% → <span class="cpi-inline">act 2.7% →</span></div>
+    </div>
+    <div class="cpi-item">
+      <div class="cpi-item-name">Michigan Sentiment Prel</div>
+      <div class="cpi-val">fcst 52 → <span class="cpi-inline">act 52.3 →</span></div>
+    </div>
+  </div>
+  <div class="cpi-verdict">CPI LEVEMENTE FRÍO — Headline miss, Core en línea. Escenario de squeeze moderado activo.</div>
+</div>
+
+<!-- TICKER -->
+<div class="ticker-wrap">
+  <div class="ticker-inner">
+    <div class="tick-item"><span class="tick-sym">ESM6</span> 6,862.75 <span class="tick-dn">−0.5</span> <span class="tick-sep">·</span> Vol 16.27% <span class="tick-sep">|</span></div>
+    <div class="tick-item"><span class="tick-sym">NQM6</span> 25,262.5 <span class="tick-up">+11.0</span> <span class="tick-sep">·</span> Vol 20.23% <span class="tick-sep">|</span></div>
+    <div class="tick-item"><span class="tick-sym">CLK6</span> 97.76 <span class="tick-dn">−0.11</span> <span class="tick-sep">·</span> IV 129.34% <span class="tick-sep">|</span></div>
+    <div class="tick-item"><span class="tick-sym">SPX</span> 6,823.94 <span class="tick-sep">·</span> Spot Cash <span class="tick-sep">|</span></div>
+    <div class="tick-item"><span class="tick-sym">CPI YoY</span> 3.2% <span class="tick-up">↓ vs 3.3% fcst</span> <span class="tick-sep">|</span></div>
+    <div class="tick-item"><span class="tick-sym">Core MoM</span> 0.3% <span class="tick-sep">en línea</span> <span class="tick-sep">|</span></div>
+    <div class="tick-item"><span class="tick-sym">Michigan</span> 52.3 <span class="tick-sep">en línea</span> <span class="tick-sep">|</span></div>
+    <!-- duplicate for seamless loop -->
+    <div class="tick-item"><span class="tick-sym">ESM6</span> 6,862.75 <span class="tick-dn">−0.5</span> <span class="tick-sep">·</span> Vol 16.27% <span class="tick-sep">|</span></div>
+    <div class="tick-item"><span class="tick-sym">NQM6</span> 25,262.5 <span class="tick-up">+11.0</span> <span class="tick-sep">·</span> Vol 20.23% <span class="tick-sep">|</span></div>
+    <div class="tick-item"><span class="tick-sym">CLK6</span> 97.76 <span class="tick-dn">−0.11</span> <span class="tick-sep">·</span> IV 129.34% <span class="tick-sep">|</span></div>
+    <div class="tick-item"><span class="tick-sym">SPX</span> 6,823.94 <span class="tick-sep">·</span> Spot Cash <span class="tick-sep">|</span></div>
+    <div class="tick-item"><span class="tick-sym">CPI YoY</span> 3.2% <span class="tick-up">↓ vs 3.3% fcst</span> <span class="tick-sep">|</span></div>
+    <div class="tick-item"><span class="tick-sym">Core MoM</span> 0.3% <span class="tick-sep">en línea</span> <span class="tick-sep">|</span></div>
+    <div class="tick-item"><span class="tick-sym">Michigan</span> 52.3 <span class="tick-sep">en línea</span> <span class="tick-sep">|</span></div>
+  </div>
+</div>
+
+<div class="container">
+
+  <!-- 01. ANÁLISIS PRE-MERCADO -->
+  <div class="section-header">
+    <div class="section-num">01</div>
+    <div class="section-title">Análisis Pre-Mercado</div>
+    <div class="section-badge">GAIA · 07:10 ET · Post-CPI</div>
+  </div>
+
+  <div class="macro-grid">
+    <div class="macro-card green">
+      <div class="macro-label">CPI Marzo — Evento Dominante del Día</div>
+      <div class="macro-headline">Headline frío + Core en línea = squeeze moderado activo</div>
+      <div class="macro-body">CPI YoY 3.2% vs consenso 3.3% — miss modesto que activa el escenario intermedio: no un squeeze violento, pero suficiente para que los dealers en régimen DAMPENED compren gamma en la apertura. Core MoM 0.3% en línea elimina el riesgo de un dato caliente que hubiera revertido la estructura. El mercado ya venía +125 pts en ESM6 desde el 8-Abr (7,568 → ~6,863 post-corrección). El CPI frío valida el rebote técnico — no lo genera, lo respalda. Escenario activo: Consolidación Constructiva / Squeeze Moderado hacia Call Wall 6,900 en ES.</div>
+    </div>
+    <div class="macro-card amber">
+      <div class="macro-label">Análisis Técnico — ES / NQ (TPO Charts)</div>
+      <div class="macro-headline">ES y NQ sobre VWAP — estructura post-rebote del 8-Abr</div>
+      <div class="macro-body"><strong>ESM6:</strong> Spot 6,862.75 con VWAP sesión ~6,844. POC sesión 9-Abr ~6,821. VAH ~6,877, VAL ~6,800. EMA200 en 6,694. El spot opera 19 pts sobre VWAP — constructivo pero comprimido entre VWAP y Call Wall/Flip 6,900 (-37 pts del Flip). 1σ del día: 6,826–6,899. La estructura DAMPENED (GEX +139,942) mantiene el rango contenido.<br><br>
+      <strong>NQM6:</strong> Spot 25,262.5 con VWAP ~25,197. POC sesión ~25,187, VAH ~25,275, VAL ~25,075. EMA200 en 24,521. Spot +65 pts sobre VWAP. Flip/Call Wall 25,500 a solo 237 pts — más manejable que ayer cuando el Flip era 26,000. P/C 1.73 muestra mayor protección put. 1σ: 25,097–25,428.</div>
+    </div>
+    <div class="macro-card blue">
+      <div class="macro-label">Análisis Técnico — CL / SPX (TPO Charts)</div>
+      <div class="macro-headline">SPX sobre Gamma Ceiling 6,850 — CL debajo de VWAP en estructura débil</div>
+      <div class="macro-body"><strong>SPX:</strong> Spot cash 6,823.94 operando 123.94 pts sobre Gamma Flip 6,700. VWAP sesión ~6,807. POC ~6,821, VAH ~6,786, VAL ~6,769. EMA200 en 6,653. El spot ya supera el Gamma Ceiling 6,850 del JSON — la estructura más constructiva de los 4 instrumentos. Call Wall 6,900 es el objetivo natural del día.<br><br>
+      <strong>CLK6 (contrato activo):</strong> Spot 97.76 con VWAP ~98.97. El spot opera BAJO el VWAP por más de 1 punto — sesgo bajista intradía. POC sesión ~99, VAH ~100, VAL ~95. EMA200 en 102.62. La transición del contrato vencido (XL2J6) al activo (CLK6) representa el cambio principal vs ayer. IV 129.34% con +11.45 en Vol Chg — volatilidad subiendo en el nuevo contrato. GEX 37,756 con P/C 0.88 — sesgado hacia calls.</div>
+    </div>
+    <div class="macro-card red">
+      <div class="macro-label">Contexto de Estructura — Lectura de Régimen</div>
+      <div class="macro-headline">Todos en DAMPENED — ES y NQ aún bajo sus Flips</div>
+      <div class="macro-body">Los 4 instrumentos permanecen en régimen DAMPENED. Esto es crítico: el bounce del 8-Abr fue violento (+125 pts en ES) pero no cambió el régimen. ES sigue 37 pts bajo su Gamma Flip 6,900 — mientras no lo rompa, el sesgo sigue siendo contenido. NQ tiene el Flip en 25,500 a 237 pts — más accesible post-ajuste. SPX es el único instrumento operando sobre su Flip (6,700) con +124 pts de margen — confirma la lectura alcista del cash. CL pierde relevancia estructural con la transición de contrato. El CPI frío elimina el riesgo de gap bajista al cierre — viernes de opción expiry (EW2J6, QN2J6, YM2J6, R2EJ6) añade pin gravitacional en niveles redondos.</div>
+    </div>
+  </div>
+
+  <!-- 02. ZONAS GAMMA -->
+  <div class="section-header">
+    <div class="section-num">02</div>
+    <div class="section-title">Zonas Gamma — Niveles PAD</div>
+    <div class="section-badge">ESM6 · NQM6 · CLK6 · SPX</div>
+  </div>
+
+  <div class="levels-grid">
+
+    <!-- ES -->
+    <div class="asset-panel">
+      <div class="asset-header">
+        <div class="asset-name">ESM6</div>
+        <div class="asset-price">6,862.75 · Chg −0.5 · Vol 16.27%</div>
+      </div>
+      <div class="asset-regime dampened">⬆ DAMPENED · GEX +139,942 · P/C 1.26</div>
+      <div class="level-row"><div class="level-dot" style="background:#E74C3C"></div><div class="level-name">Gamma Ceiling</div><div class="level-price">6,950</div></div>
+      <div class="level-row"><div class="level-dot" style="background:#C0392B"></div><div class="level-name">Call Wall</div><div class="level-price">6,900</div></div>
+      <div class="level-row flip"><div class="level-dot" style="background:#6b3fa0"></div><div class="level-name">★ Gamma Flip</div><div class="level-price">6,900</div></div>
+      <div class="level-row spot-row"><div class="level-dot" style="background:#c8a84b"></div><div class="level-name">▶ Spot ESM6</div><div class="level-price">6,862.75</div></div>
+      <div class="level-row"><div class="level-dot" style="background:#c8a84b"></div><div class="level-name">VWAP Sesión</div><div class="level-price">~6,844</div></div>
+      <div class="level-row"><div class="level-dot" style="background:#1A5276"></div><div class="level-name">1σ Superior</div><div class="level-price">6,898.94</div></div>
+      <div class="level-row"><div class="level-dot" style="background:#1A5276"></div><div class="level-name">1σ Inferior</div><div class="level-price">6,826.56</div></div>
+      <div class="level-row"><div class="level-dot" style="background:#1A5276"></div><div class="level-name">Gamma Floor 1 (Put Wall 2)</div><div class="level-price">6,800</div></div>
+      <div class="level-row"><div class="level-dot" style="background:#1A5276"></div><div class="level-name">Gamma Floor 2</div><div class="level-price">6,750</div></div>
+      <div class="level-row"><div class="level-dot" style="background:#1A5276"></div><div class="level-name">Put Wall</div><div class="level-price">6,700</div></div>
+      <div class="level-row"><div class="level-dot" style="background:#0E6655"></div><div class="level-name">Emergency Anchor</div><div class="level-price">6,650</div></div>
+    </div>
+
+    <!-- NQ -->
+    <div class="asset-panel">
+      <div class="asset-header">
+        <div class="asset-name">NQM6</div>
+        <div class="asset-price">25,262.5 · Chg +11.0 · Vol 20.23%</div>
+      </div>
+      <div class="asset-regime dampened">⬆ DAMPENED · GEX +5,523 · P/C 1.73</div>
+      <div class="level-row flip"><div class="level-dot" style="background:#6b3fa0"></div><div class="level-name">★ Call Wall / Gamma Flip</div><div class="level-price">25,500</div></div>
+      <div class="level-row"><div class="level-dot" style="background:#E74C3C"></div><div class="level-name">Gamma Ceiling</div><div class="level-price">25,400</div></div>
+      <div class="level-row"><div class="level-dot" style="background:#C0392B"></div><div class="level-name">Call Wall 2</div><div class="level-price">25,300</div></div>
+      <div class="level-row spot-row"><div class="level-dot" style="background:#c8a84b"></div><div class="level-name">▶ Spot NQM6</div><div class="level-price">25,262.5</div></div>
+      <div class="level-row"><div class="level-dot" style="background:#c8a84b"></div><div class="level-name">VWAP Sesión</div><div class="level-price">~25,197</div></div>
+      <div class="level-row"><div class="level-dot" style="background:#1A5276"></div><div class="level-name">1σ Superior</div><div class="level-price">25,427.82</div></div>
+      <div class="level-row"><div class="level-dot" style="background:#1A5276"></div><div class="level-name">1σ Inferior</div><div class="level-price">25,097.18</div></div>
+      <div class="level-row"><div class="level-dot" style="background:#1A5276"></div><div class="level-name">Put Wall</div><div class="level-price">25,000</div></div>
+      <div class="level-row"><div class="level-dot" style="background:#0E6655"></div><div class="level-name">Emergency Anchor</div><div class="level-price">24,900</div></div>
+    </div>
+
+    <!-- CL -->
+    <div class="asset-panel">
+      <div class="asset-header">
+        <div class="asset-name">CLK6</div>
+        <div class="asset-price">97.76 · Chg −0.11 · IV 129.34%</div>
+      </div>
+      <div class="asset-regime dampened">⬆ DAMPENED · GEX +37,756 · P/C 0.88 · NUEVO CONTRATO</div>
+      <div class="level-row"><div class="level-dot" style="background:#C0392B"></div><div class="level-name">Call Wall</div><div class="level-price">$100.00</div></div>
+      <div class="level-row"><div class="level-dot" style="background:#E74C3C"></div><div class="level-name">Gamma Ceiling</div><div class="level-price">$99.00</div></div>
+      <div class="level-row flip"><div class="level-dot" style="background:#6b3fa0"></div><div class="level-name">★ Gamma Flip</div><div class="level-price">$91.75</div></div>
+      <div class="level-row"><div class="level-dot" style="background:#c8a84b"></div><div class="level-name">VWAP Sesión</div><div class="level-price">~$98.97</div></div>
+      <div class="level-row spot-row"><div class="level-dot" style="background:#c8a84b"></div><div class="level-name">▶ Spot CLK6</div><div class="level-price">$97.76</div></div>
+      <div class="level-row"><div class="level-dot" style="background:#1A5276"></div><div class="level-name">1σ Superior</div><div class="level-price">$101.49</div></div>
+      <div class="level-row"><div class="level-dot" style="background:#1A5276"></div><div class="level-name">1σ Inferior</div><div class="level-price">$94.03</div></div>
+      <div class="level-row"><div class="level-dot" style="background:#1A5276"></div><div class="level-name">Put Wall</div><div class="level-price">$95.00</div></div>
+      <div class="level-row"><div class="level-dot" style="background:#0E6655"></div><div class="level-name">Emergency Anchor</div><div class="level-price">$97.00</div></div>
+    </div>
+
+    <!-- SPX -->
+    <div class="asset-panel">
+      <div class="asset-header">
+        <div class="asset-name">SPX</div>
+        <div class="asset-price">Cash 6,823.94 · Sobre Flip +124 pts</div>
+      </div>
+      <div class="asset-regime dampened">⬆ DAMPENED · Sobre Flip 6,700 · +123.94 pts</div>
+      <div class="level-row"><div class="level-dot" style="background:#C0392B"></div><div class="level-name">Call Wall</div><div class="level-price">6,900</div></div>
+      <div class="level-row"><div class="level-dot" style="background:#E74C3C"></div><div class="level-name">Gamma Ceiling</div><div class="level-price">6,850</div></div>
+      <div class="level-row spot-row"><div class="level-dot" style="background:#c8a84b"></div><div class="level-name">▶ Spot SPX</div><div class="level-price">6,823.94</div></div>
+      <div class="level-row"><div class="level-dot" style="background:#c8a84b"></div><div class="level-name">VWAP Sesión</div><div class="level-price">~6,807</div></div>
+      <div class="level-row"><div class="level-dot" style="background:#C0392B"></div><div class="level-name">Call Wall 2</div><div class="level-price">6,700</div></div>
+      <div class="level-row flip"><div class="level-dot" style="background:#6b3fa0"></div><div class="level-name">★ Gamma Flip</div><div class="level-price">6,700</div></div>
+      <div class="level-row"><div class="level-dot" style="background:#1A5276"></div><div class="level-name">Gamma Floor 1</div><div class="level-price">6,600</div></div>
+      <div class="level-row"><div class="level-dot" style="background:#1A5276"></div><div class="level-name">Gamma Floor 2</div><div class="level-price">6,500</div></div>
+      <div class="level-row"><div class="level-dot" style="background:#1A5276"></div><div class="level-name">Put Wall</div><div class="level-price">6,400</div></div>
+      <div class="level-row"><div class="level-dot" style="background:#0E6655"></div><div class="level-name">Emergency Anchor</div><div class="level-price">6,500</div></div>
+    </div>
+
+  </div>
+
+  <!-- 03. SESGO DEL DÍA -->
+  <div class="section-header">
+    <div class="section-num">03</div>
+    <div class="section-title">Sesgo del Día</div>
+    <div class="section-badge">VWAP · TPO/POC · EMA 200</div>
+  </div>
+
+  <table class="bias-table">
+    <thead>
+      <tr>
+        <th>Instrumento</th>
+        <th>Sesgo</th>
+        <th>Régimen</th>
+        <th>Referencias Técnicas</th>
+        <th>Regla Operativa</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><div class="instr-label">ESM6</div></td>
+        <td><span class="bias-bull">ALCISTA MODERADO</span></td>
+        <td>DAMPENED</td>
+        <td>Spot 6,862.75 a solo 37 pts del Gamma Flip/Call Wall 6,900. VWAP sesión ~6,844 — spot sobre VWAP es constructivo. POC Apr 9 ~6,821. 1σ superior 6,898.94 casi toca el Flip — zona densa de resistencia. Expiry de EW2J6 hoy genera pin gravitacional adicional en 6,850–6,900. P/C 1.26 — puts dominan (bajista implícito pero DAMPENED absorbe).</td>
+        <td>Mientras spot mantenga sobre VWAP ~6,844 → sesgo alcista hacia Call Wall 6,900. Test de 6,900 es decisivo: ruptura con volumen abre Gamma Ceiling 6,950. Pérdida de VWAP activa mean reversion a 6,826 (1σ inf) → 6,800. No perseguir rebotes bajo VWAP.</td>
+      </tr>
+      <tr>
+        <td><div class="instr-label">NQM6</div></td>
+        <td><span class="bias-bull">ALCISTA MODERADO</span></td>
+        <td>DAMPENED</td>
+        <td>Spot 25,262.5 sobre VWAP ~25,197 por +65 pts — la brecha VWAP/spot más limpia de los 4. Gamma Flip 25,500 a 237 pts — objetivo alcanzable en sesión fuerte. P/C 1.73 (alta protección put) sugiere posicionamiento defensivo — un squeeze fuerza cobertura. Put Wall 25,000 como soporte sólido. EMA200 en 24,521 — lejos, no relevante hoy.</td>
+        <td>NQ lidera en escenario alcista CPI frío. Objetivo primario: Gamma Ceiling 25,400. Objetivo extendido: Flip 25,500. Put Wall 25,000 es el stop estructural del día — si lo pierde con volumen, la estructura se deteriora. Confirmar con CVD positivo en apertura.</td>
+      </tr>
+      <tr>
+        <td><div class="instr-label">CLK6</div></td>
+        <td><span class="bias-neut">NEUTRO / DÉBIL BAJISTA</span></td>
+        <td>DAMPENED</td>
+        <td>Transición de contrato XL2J6 → CLK6. Spot 97.76 operando BAJO VWAP ~98.97 por 1.21 pts — señal bajista intradía. Gamma Ceiling 99 y Call Wall 100 como resistencias superiores. Flip en 91.75 (spot muy sobre el flip — estructura alcista de largo plazo). IV 129.34% con Vol Chg +11.45 — volatilidad subiendo en nuevo contrato (normal en rollover). P/C 0.88 — calls dominan.</td>
+        <td>CL desacoplado de índices hoy — la narrativa de petróleo responde a OPEC/macro, no al CPI. Bajo VWAP ~98.97 = sesgo bajista intradía hacia Emergency Anchor 97.00. Defensa de 97 es crítica — pérdida activa Put Wall 95. Recuperación de VWAP abre test de Gamma Ceiling 99. No operar CL en apertura hasta que el nuevo contrato establezca rango.</td>
+      </tr>
+      <tr>
+        <td><div class="instr-label">SPX</div></td>
+        <td><span class="bias-bull">ALCISTA — ESTRUCTURA LÍDER</span></td>
+        <td>DAMPENED</td>
+        <td>Spot cash 6,823.94 — el único instrumento ya sobre su Gamma Ceiling (6,850 del JSON). Opera +123.94 pts sobre Gamma Flip 6,700. VWAP sesión ~6,807. EMA200 en 6,653. La estructura cash lidera al futuro (ES aún bajo su Flip). Call Wall 6,900 como objetivo natural del día. Put Wall 6,400 da margen de maniobra enorme hacia abajo.</td>
+        <td>SPX es el instrumento con mejor estructura del día. Mientras mantenga sobre 6,807 (VWAP) → sesgo alcista claro hacia Call Wall 6,900. Gamma Ceiling 6,850 ya superada en preapertura — spot abre sobre esa zona. Pérdida de 6,807 VWAP activa consolidación hacia 6,700 Flip. El Flip 6,700 es el stop estructural de la sesión — su pérdida invierte el sesgo.</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- 04. CVD -->
+  <div class="section-header">
+    <div class="section-num">04</div>
+    <div class="section-title">Regla CVD — Apertura 9:30 ET</div>
+    <div class="section-badge">Confirmación de sesgo · Post-CPI</div>
+  </div>
+
+  <div class="cvd-block">
+    <div class="cvd-icon">CVD</div>
+    <div>
+      <div class="cvd-title">Protocolo de Confirmación — Primera Vela 9:30–9:35 ET · Escenario CPI Levemente Frío Activo</div>
+      <div class="cvd-rule">
+        <strong>ES/SPX · Régimen DAMPENED — CPI frío confirmado:</strong> CVD acumulado primera vela <strong>positivo</strong> + precio sobre VWAP ES ~6,844 → sesgo alcista confirmado, bias hacia Call Wall 6,900 en ES y 6,900 en SPX. ES puede hacer squeeze acelerado dado que el 1σ superior (6,898.94) casi toca el Flip — los dealers cubren agresivamente. CVD <strong>negativo</strong> + pérdida de VWAP en apertura → mean reversion a 6,826 / 6,800, pero la estructura general sigue constructiva gracias al CPI frío. No operar shorts estructurales salvo pérdida de 6,800 con volumen.<br><br>
+        <strong>NQ · Líder alcista del día:</strong> CVD positivo + precio sobre VWAP ~25,197 → impulso hacia Gamma Ceiling 25,400 y eventual test de Flip/Call Wall 25,500. NQ tiene el mayor recorrido relativo al Flip de los índices (237 pts). CVD negativo + pérdida de VWAP → consolidación entre 25,100 y 25,200, con soporte en Put Wall 25,000. El P/C 1.73 hace que un squeeze force cobertura intensa.<br><br>
+        <strong>CL · Nuevo contrato — esperar estabilización:</strong> CVD en CL pierde señal limpia en los primeros 15 min por la transición de contrato. Spot bajo VWAP ~98.97 sugiere sesgo bajista intradía. CVD positivo + recuperación de VWAP abre test de Gamma Ceiling 99. CVD negativo + pérdida de Emergency Anchor 97 → presión hacia Put Wall 95. <strong>Esperar 9:45–10:00 ET antes de primera entrada en CL.</strong><br><br>
+        <strong>Expiry de opciones semanales (EW2J6, QN2J6, YM2J6, R2EJ6):</strong> El vencimiento de las semanas 2 en ES, NQ, Dow y Russell añade pin gravitacional en niveles redondos. ES tiene mayor concentración en 6,900 (21,022 contratos) — este nivel actúa como imán de cierre. El DAMPENED amplifica el pin. En días de expiry semana 2, el rango suele comprimirse en las últimas 2 horas hacia el strike dominante.
+      </div>
+    </div>
+  </div>
+
+  <!-- 05. CALENDARIO -->
+  <div class="section-header">
+    <div class="section-num">05</div>
+    <div class="section-title">Calendario Económico</div>
+    <div class="section-badge">Semana 6–10 Abr · Cierre</div>
+  </div>
+
+  <div class="cal-grid">
+    <div class="cal-day">
+      <div class="cal-day-name">Lunes 6</div>
+      <div class="cal-event">
+        <div class="cal-time">Completado</div>
+        <div class="cal-name"><span class="cal-imp imp-h"></span>ISM Services PMI · act 53.4</div>
+      </div>
+    </div>
+    <div class="cal-day">
+      <div class="cal-day-name">Martes 7</div>
+      <div class="cal-event">
+        <div class="cal-time">Completado</div>
+        <div class="cal-name"><span class="cal-imp imp-m"></span>JOLTS Job Openings Feb · act 7.57M</div>
+      </div>
+    </div>
+    <div class="cal-day">
+      <div class="cal-day-name">Miércoles 8</div>
+      <div class="cal-event">
+        <div class="cal-time">Completado</div>
+        <div class="cal-name"><span class="cal-imp imp-h"></span>FOMC Minutes — sin sorpresas hawk</div>
+      </div>
+      <div class="cal-event">
+        <div class="cal-time">Completado</div>
+        <div class="cal-name"><span class="cal-imp imp-h"></span>EIA Crude Stocks · act −1.1M</div>
+      </div>
+    </div>
+    <div class="cal-day">
+      <div class="cal-day-name">Jueves 9</div>
+      <div class="cal-event">
+        <div class="cal-time"><span class="actual-miss">PUBLICADO</span></div>
+        <div class="cal-name"><span class="cal-imp imp-m"></span>Initial Claims Apr/04 · act 215K · fcst 210K — miss</div>
+      </div>
+      <div class="cal-event">
+        <div class="cal-time"><span class="actual-tag">PUBLICADO</span></div>
+        <div class="cal-name"><span class="cal-imp imp-h"></span>Core PCE MoM Feb · act 0.2% · fcst 0.4% — ENFRIAMIENTO</div>
+      </div>
+      <div class="cal-event">
+        <div class="cal-time"><span class="actual-tag">PUBLICADO</span></div>
+        <div class="cal-name"><span class="cal-imp imp-h"></span>GDP Q4 Final · act 0.7% · en línea</div>
+      </div>
+    </div>
+    <div class="cal-day">
+      <div class="cal-day-name today">Viernes 10 — HOY</div>
+      <div class="cal-event">
+        <div class="cal-time">08:30 ET <span class="actual-tag">PUBLICADO</span></div>
+        <div class="cal-name"><span class="cal-imp imp-h"></span>CPI YoY Mar · fcst 3.3% → <strong>act 3.2%</strong> ↓ frío</div>
+      </div>
+      <div class="cal-event">
+        <div class="cal-time">08:30 ET <span class="actual-tag">PUBLICADO</span></div>
+        <div class="cal-name"><span class="cal-imp imp-h"></span>Core CPI MoM · fcst 0.3% → <strong>act 0.3%</strong> en línea</div>
+      </div>
+      <div class="cal-event">
+        <div class="cal-time">10:00 ET <span class="actual-tag">PUBLICADO</span></div>
+        <div class="cal-name"><span class="cal-imp imp-h"></span>Michigan Sentiment Prel Abr · fcst 52 → <strong>act 52.3</strong></div>
+      </div>
+      <div class="cal-event">
+        <div class="cal-time">13:00 ET</div>
+        <div class="cal-name"><span class="cal-imp imp-l"></span>Baker Hughes Oil Rig Count</div>
+      </div>
+      <div class="cal-event">
+        <div class="cal-time">Todo el día</div>
+        <div class="cal-name"><span class="cal-imp imp-h"></span>EW2J6 · QN2J6 · YM2J6 · R2EJ6 — EXPIRY SEMANAL SEMANA 2</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 06. ESCENARIOS -->
+  <div class="section-header">
+    <div class="section-num">06</div>
+    <div class="section-title">Escenarios del Día</div>
+    <div class="section-badge">ESM6 · NQM6 · CLK6 · SPX</div>
+  </div>
+
+  <div class="scenarios-grid">
+
+    <div class="scenario-card scenario-3">
+      <div class="scenario-header">
+        <div class="scenario-num">1</div>
+        <div class="scenario-title">Squeeze Alcista Moderado — CPI frío + expiry pin 6,900</div>
+        <div class="scenario-prob" style="color:var(--green)">55%</div>
+      </div>
+      <div class="scenario-body">
+        <div class="scenario-trigger">Trigger</div>
+        <div class="scenario-text">CPI YoY 3.2% (frío) + apertura de cash sobre VWAP en ES y SPX. CVD positivo primera vela. Dealers en DAMPENED compran gamma mientras el precio sube hacia Call Wall 6,900. NQ lidera con mayor recorrido. Expiry semana 2 concentra OI en 6,900 (21,022 contratos ES) generando pin adicional. El régimen DAMPENED amplifica el movimiento alcista comprando hedges.</div>
+        <div class="scenario-trigger">Objetivos</div>
+        <div class="scenario-targets">
+          <div class="target-pill up">ES → 6,900 CW/Flip</div>
+          <div class="target-pill up">NQ → 25,400 GC</div>
+          <div class="target-pill up">NQ ext → 25,500 Flip</div>
+          <div class="target-pill up">SPX → 6,900 CW</div>
+          <div class="target-pill nt">CL neutro $97–$99</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="scenario-card scenario-2">
+      <div class="scenario-header">
+        <div class="scenario-num">2</div>
+        <div class="scenario-title">Consolidación — Apertura sobre VWAP sin follow-through</div>
+        <div class="scenario-prob" style="color:var(--accent)">30%</div>
+      </div>
+      <div class="scenario-body">
+        <div class="scenario-trigger">Trigger</div>
+        <div class="scenario-text">CPI frío ya descontado en ETH — apertura de cash no genera nueva presión compradora. ES abre sobre VWAP pero rebota desde Call Wall 6,900 sin romperlo. SPX y NQ también comprimen entre VWAP y Call Wall. Régimen DAMPENED absorbe la energía. El expiry semana 2 crea rango comprimido en las últimas 2 horas. CL continúa débil bajo VWAP con transición de contrato.</div>
+        <div class="scenario-trigger">Objetivos</div>
+        <div class="scenario-targets">
+          <div class="target-pill nt">ES rango 6,844–6,900</div>
+          <div class="target-pill nt">NQ rango 25,197–25,400</div>
+          <div class="target-pill nt">SPX rango 6,807–6,900</div>
+          <div class="target-pill dn">CL $95–$98.97</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="scenario-card scenario-1">
+      <div class="scenario-header">
+        <div class="scenario-num">3</div>
+        <div class="scenario-title">Reversión — Core CPI hot re-rating + pérdida de VWAP</div>
+        <div class="scenario-prob" style="color:var(--red)">15%</div>
+      </div>
+      <div class="scenario-body">
+        <div class="scenario-trigger">Trigger</div>
+        <div class="scenario-text">Mercado re-lee el Core CPI 0.3% como confirmación de inflación persistente. El Michigan Consumer Sentiment prel ya publicado en 52.3 refuerza narrativa de deterioro. ES pierde VWAP ~6,844 y cae hacia 1σ inferior 6,826. SPX testea Gamma Ceiling 6,850 desde arriba como resistencia. NQ pierde VWAP 25,197 con volumen. CL acelera hacia Put Wall 95. El DAMPENED limita la caída pero puede generar un flush rápido hacia zonas Put.</div>
+        <div class="scenario-trigger">Objetivos</div>
+        <div class="scenario-targets">
+          <div class="target-pill dn">ES → 6,826 / 6,800</div>
+          <div class="target-pill dn">NQ → 25,097 / 25,000</div>
+          <div class="target-pill dn">SPX → 6,807 VWAP / 6,700 Flip</div>
+          <div class="target-pill dn">CL → $95 Put Wall</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- NOTA OPERATIVA -->
+  <div class="note-box">
+    <div class="note-box-title">ADVERTENCIA OPERATIVA PAD — SESIÓN 10 ABR 2026</div>
+    <div class="note-box-body">
+      <strong>CPI levemente frío — escenario alcista moderado activo.</strong> El dato de 3.2% YoY (vs 3.3% fcst) elimina el riesgo de reversión bajista agresiva pero no genera el squeeze explosivo de un miss significativo. El Core 0.3% en línea confirma que la inflación no ha cedido lo suficiente para cambiar la narrativa Fed — el mercado seguirá pricing recortes tardíos. <strong style="color:var(--orange)">(1) Viernes de expiry semanal (EW2J6, QN2J6, YM2J6, R2EJ6) — el OI concentrado en 6,900 ES (21,022 contratos) actúa como pin gravitacional de cierre. El DAMPENED amplifica este efecto: esperar que el precio migre mecánicamente hacia 6,900 en las últimas 2 horas.</strong> <strong style="color:var(--red)">(2) CLK6 es un contrato nuevo — los primeros 15 min tienen spreads amplios y data de OI incompleta. No operar CL hasta las 9:45–10:00 ET. El spot bajo VWAP ~98.97 sugiere sesgo bajista en el nuevo contrato.</strong> Las zonas PAD continúan siendo el radar primario — ES Call Wall 6,900 / Flip 6,900 es el nivel decisivo del día. Mientras no se rompa con volumen y sostenimiento, el DAMPENED mantiene el rango. Sesgo del día: <strong style="color:var(--green)">ALCISTA MODERADO en índices (ES/NQ/SPX) — NEUTRO/DÉBIL BAJISTA en CL.</strong>
+    </div>
+  </div>
+
+</div><!-- /container -->
+
+<!-- FOOTER -->
+<div class="footer">
+  <div class="footer-left">
+    PivotAlphaDesk · Gamma Market Structure Framework · briefing_10abr2026.html<br>
+    Contratos activos: ESM6 · NQM6 · CLK6 · SPX · Metodología: GAIA Framework v2.0 · Fuentes: CME QuikStrike PDFs · IV SPX: pendiente PM<br>
+    <em>Este briefing es para uso interno de análisis. No constituye asesoramiento de inversión.</em>
+  </div>
+  <div class="footer-right">PAD</div>
+</div>
+
+</body>
+</html>
