@@ -1,0 +1,1381 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PAD Briefing | 15 Abr 2026</title>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@300;400;500;600&family=IBM+Plex+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:       #0a0e14;
+  --bg2:      #0f1520;
+  --bg3:      #141c28;
+  --bg4:      #1a2332;
+  --border:   #1e2d3d;
+  --border2:  #243448;
+  --text:     #e2e8f0;
+  --text2:    #8fa8c0;
+  --text3:    #4a6070;
+  --bb-orange:#f5820a;
+  --bb-blue:  #00a8e0;
+  --bb-green: #00c06a;
+  --bb-red:   #e03030;
+  --bb-yellow:#f0c040;
+  --bb-purple:#a855f7;
+  --bb-teal:  #00c4b4;
+  --white:    #ffffff;
+  /* PAD zone colors */
+  --call-wall:#C0392B;
+  --gamma-ceil:#E74C3C;
+  --gamma-flip:#8E44AD;
+  --put-wall: #1A5276;
+  --emerg:    #0E6655;
+  --regime:   #B7950B;
+  --spot:     #F0C040;
+}
+*,*::before,*::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 12px;
+  line-height: 1.65;
+}
+
+/* ── TERMINAL TOP BAR ── */
+.terminal-bar {
+  background: var(--bb-orange);
+  padding: 4px 48px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: .15em;
+  text-transform: uppercase;
+  color: #000;
+}
+
+/* ── MASTHEAD ── */
+.masthead {
+  background: var(--bg2);
+  border-bottom: 1px solid var(--bb-orange);
+  padding: 20px 48px 16px;
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: end;
+  gap: 20px;
+}
+.brand {
+  font-family: 'IBM Plex Sans', sans-serif;
+  font-weight: 700;
+  font-size: 28px;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color: var(--white);
+  line-height: 1;
+}
+.brand span { color: var(--bb-orange); }
+.tagline {
+  font-size: 10px;
+  letter-spacing: .15em;
+  text-transform: uppercase;
+  color: var(--text3);
+  margin-top: 4px;
+}
+.masthead-right { text-align: right; }
+.date-block {
+  font-family: 'IBM Plex Sans', sans-serif;
+  font-weight: 700;
+  font-size: 22px;
+  letter-spacing: .05em;
+  color: var(--bb-orange);
+  line-height: 1;
+}
+.date-sub {
+  font-size: 9px;
+  color: var(--text3);
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  margin-top: 4px;
+}
+
+/* ── ALERT BANNER ── */
+.alert-banner {
+  background: rgba(245,130,10,0.10);
+  border-top: 2px solid var(--bb-orange);
+  border-bottom: 2px solid var(--bb-orange);
+  padding: 10px 48px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+.alert-tag {
+  background: var(--bb-orange);
+  color: #000;
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: .18em;
+  text-transform: uppercase;
+  padding: 3px 10px;
+  white-space: nowrap;
+}
+.alert-text {
+  font-size: 11px;
+  color: var(--bb-yellow);
+  letter-spacing: .04em;
+}
+
+/* ── NAVIGATION ── */
+nav {
+  background: var(--bg3);
+  border-bottom: 1px solid var(--border);
+  padding: 0 48px;
+  display: flex;
+  gap: 0;
+  overflow-x: auto;
+}
+nav a {
+  display: block;
+  padding: 10px 18px;
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  text-decoration: none;
+  color: var(--text3);
+  border-bottom: 2px solid transparent;
+  white-space: nowrap;
+  transition: color .2s, border-color .2s;
+}
+nav a:hover { color: var(--bb-orange); border-color: var(--bb-orange); }
+
+/* ── MAIN LAYOUT ── */
+.main { padding: 32px 48px; max-width: 1400px; margin: 0 auto; }
+.section { margin-bottom: 40px; }
+.section-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 16px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--border);
+}
+.section-num {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 10px;
+  color: var(--bb-orange);
+  letter-spacing: .12em;
+}
+.section-title {
+  font-family: 'IBM Plex Sans', sans-serif;
+  font-weight: 700;
+  font-size: 14px;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  color: var(--white);
+}
+.section-badge {
+  font-size: 9px;
+  padding: 2px 8px;
+  border-radius: 2px;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  font-weight: 600;
+}
+.badge-warning { background: rgba(245,130,10,.18); color: var(--bb-orange); border: 1px solid var(--bb-orange); }
+.badge-bull    { background: rgba(0,192,106,.15);  color: var(--bb-green);  border: 1px solid var(--bb-green); }
+.badge-bear    { background: rgba(224,48,48,.15);   color: var(--bb-red);   border: 1px solid var(--bb-red); }
+.badge-neutral { background: rgba(0,168,224,.15);  color: var(--bb-blue);  border: 1px solid var(--bb-blue); }
+.badge-live    { background: rgba(168,85,247,.18);  color: var(--bb-purple); border: 1px solid var(--bb-purple); }
+
+/* ── TICKER GRID ── */
+.ticker-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+  margin-bottom: 28px;
+}
+.ticker-card {
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  border-top: 3px solid var(--border2);
+  padding: 14px 16px;
+}
+.ticker-card.bull  { border-top-color: var(--bb-green); }
+.ticker-card.bear  { border-top-color: var(--bb-red); }
+.ticker-card.range { border-top-color: var(--bb-yellow); }
+.ticker-card.warn  { border-top-color: var(--bb-orange); }
+.ticker-sym {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: .1em;
+  color: var(--text2);
+}
+.ticker-price {
+  font-family: 'IBM Plex Sans', sans-serif;
+  font-size: 26px;
+  font-weight: 700;
+  color: var(--white);
+  line-height: 1.1;
+  margin: 4px 0;
+}
+.ticker-sub {
+  font-size: 10px;
+  color: var(--text3);
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.ticker-sub .up   { color: var(--bb-green); }
+.ticker-sub .down { color: var(--bb-red); }
+.ticker-sub .flat { color: var(--bb-yellow); }
+
+/* ── TABLES ── */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 11px;
+}
+th {
+  background: var(--bg4);
+  color: var(--text2);
+  font-size: 9px;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  padding: 7px 10px;
+  text-align: left;
+  border-bottom: 1px solid var(--border);
+}
+td {
+  padding: 6px 10px;
+  border-bottom: 1px solid var(--border);
+  color: var(--text);
+}
+tr:last-child td { border-bottom: none; }
+tr:hover td { background: rgba(255,255,255,.025); }
+.tbl-wrap {
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  overflow: hidden;
+  margin-bottom: 16px;
+}
+
+/* PAD zone color badges in table */
+.z-cw  { color: var(--call-wall);  font-weight: 600; }
+.z-gc  { color: var(--gamma-ceil); font-weight: 600; }
+.z-gf  { color: var(--gamma-flip); font-weight: 600; }
+.z-pw  { color: #5DADE2;           font-weight: 600; }
+.z-em  { color: var(--bb-teal);    font-weight: 600; }
+.z-rt  { color: var(--regime);     font-weight: 600; }
+.z-fl  { color: #2E86C1;           font-weight: 600; }
+
+/* ── ANALYSIS BLOCKS ── */
+.analysis-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+.analysis-card {
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  padding: 16px;
+}
+.analysis-card h4 {
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  color: var(--bb-orange);
+  margin-bottom: 10px;
+  padding-bottom: 6px;
+  border-bottom: 1px solid var(--border);
+}
+.analysis-card p, .analysis-card li {
+  font-size: 11px;
+  color: var(--text2);
+  line-height: 1.7;
+}
+.analysis-card ul { list-style: none; padding: 0; }
+.analysis-card li::before { content: "▸ "; color: var(--bb-orange); }
+.analysis-card li.bull::before { content: "▲ "; color: var(--bb-green); }
+.analysis-card li.bear::before { content: "▼ "; color: var(--bb-red); }
+.analysis-card li.warn::before { content: "⚠ "; color: var(--bb-yellow); }
+.analysis-card li.note::before { content: "◆ "; color: var(--bb-purple); }
+
+/* ── DHP PANEL ── */
+.dhp-panel {
+  background: var(--bg3);
+  border: 1px solid var(--bb-purple);
+  padding: 20px;
+  margin-bottom: 20px;
+}
+.dhp-header {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+.dhp-title {
+  font-family: 'IBM Plex Sans', sans-serif;
+  font-weight: 700;
+  font-size: 13px;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: var(--bb-purple);
+}
+.dhp-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+  margin-bottom: 16px;
+}
+.dhp-metric {
+  background: var(--bg4);
+  border: 1px solid var(--border);
+  padding: 10px 12px;
+  text-align: center;
+}
+.dhp-metric .lbl {
+  font-size: 9px;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  color: var(--text3);
+}
+.dhp-metric .val {
+  font-family: 'IBM Plex Sans', sans-serif;
+  font-size: 18px;
+  font-weight: 700;
+  line-height: 1.2;
+  margin-top: 2px;
+}
+.dhp-metric .val.bull  { color: var(--bb-green); }
+.dhp-metric .val.bear  { color: var(--bb-red); }
+.dhp-metric .val.warn  { color: var(--bb-yellow); }
+.dhp-metric .val.blue  { color: var(--bb-blue); }
+
+/* ── SCENARIO TABLE ── */
+.scenario-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 12px;
+}
+.scenario-card {
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  padding: 14px;
+}
+.scenario-card.bull { border-top: 3px solid var(--bb-green); }
+.scenario-card.bear { border-top: 3px solid var(--bb-red); }
+.scenario-card.base { border-top: 3px solid var(--bb-blue); }
+.scenario-label {
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  margin-bottom: 6px;
+}
+.scenario-card.bull .scenario-label { color: var(--bb-green); }
+.scenario-card.bear .scenario-label { color: var(--bb-red); }
+.scenario-card.base .scenario-label { color: var(--bb-blue); }
+.scenario-card p {
+  font-size: 11px;
+  color: var(--text2);
+  line-height: 1.7;
+}
+
+/* ── CALENDAR TABLE ── */
+.cal-row-high td { background: rgba(224,48,48,.07); }
+.cal-row-med  td { background: rgba(245,130,10,.05); }
+.cal-time { color: var(--bb-blue); font-size: 10px; }
+.cal-event { color: var(--white); }
+.cal-imp { font-size: 9px; font-weight: 600; letter-spacing: .1em; }
+.cal-imp.h { color: var(--bb-red); }
+.cal-imp.m { color: var(--bb-orange); }
+.cal-imp.l { color: var(--text3); }
+.cal-prev  { color: var(--text3); }
+.cal-cons  { color: var(--bb-yellow); }
+.cal-actual { color: var(--bb-green); font-weight: 600; }
+
+/* ── EDGE BOX ── */
+.edge-box {
+  background: linear-gradient(135deg, rgba(168,85,247,.08), rgba(0,168,224,.06));
+  border: 1px solid var(--bb-purple);
+  border-left: 4px solid var(--bb-purple);
+  padding: 18px 20px;
+  margin-bottom: 20px;
+}
+.edge-box h3 {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  color: var(--bb-purple);
+  margin-bottom: 10px;
+}
+.edge-box p, .edge-box li {
+  font-size: 11px;
+  color: var(--text2);
+  line-height: 1.75;
+}
+.edge-box ul { list-style: none; padding: 0; }
+.edge-box li::before { content: "◆ "; color: var(--bb-purple); }
+
+/* ── TPO CHART PLACEHOLDER ── */
+.tpo-wrap {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin-bottom: 20px;
+}
+.tpo-card {
+  background: var(--bg4);
+  border: 1px solid var(--border);
+  overflow: hidden;
+}
+.tpo-label {
+  background: var(--bg3);
+  padding: 7px 12px;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  color: var(--text2);
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.tpo-label span { color: var(--bb-orange); font-size: 9px; }
+.tpo-stats {
+  padding: 10px 12px;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+}
+.tpo-stat .k { font-size: 9px; color: var(--text3); letter-spacing: .1em; text-transform: uppercase; }
+.tpo-stat .v { font-size: 13px; font-weight: 600; color: var(--white); }
+.tpo-stat .v.up   { color: var(--bb-green); }
+.tpo-stat .v.down { color: var(--bb-red); }
+
+/* ── EARNINGS ROW ── */
+.earnings-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 12px;
+  border-bottom: 1px solid var(--border);
+  font-size: 11px;
+}
+.earnings-row:last-child { border-bottom: none; }
+.earn-sym { font-weight: 600; color: var(--white); width: 60px; }
+.earn-name { color: var(--text2); flex: 1; }
+.earn-time { color: var(--text3); font-size: 10px; }
+.earn-type { font-size: 9px; padding: 2px 6px; border-radius: 2px; }
+.earn-type.am  { background: rgba(0,192,106,.15); color: var(--bb-green); }
+.earn-type.pm  { background: rgba(0,168,224,.15); color: var(--bb-blue); }
+
+/* ── FOOTER ── */
+footer {
+  background: var(--bg2);
+  border-top: 1px solid var(--border);
+  padding: 16px 48px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 9px;
+  color: var(--text3);
+  letter-spacing: .1em;
+}
+footer a { color: var(--bb-orange); text-decoration: none; }
+.divider {
+  height: 1px;
+  background: var(--border);
+  margin: 20px 0;
+}
+.mono-note {
+  font-size: 10px;
+  color: var(--text3);
+  font-style: italic;
+  padding: 6px 0;
+}
+.highlight { color: var(--bb-yellow); font-weight: 600; }
+.highlight-green { color: var(--bb-green); font-weight: 600; }
+.highlight-red { color: var(--bb-red); font-weight: 600; }
+.highlight-purple { color: var(--bb-purple); font-weight: 600; }
+.highlight-orange { color: var(--bb-orange); font-weight: 600; }
+.highlight-blue { color: var(--bb-blue); font-weight: 600; }
+
+/* ── RESPONSIVE ── */
+@media (max-width: 900px) {
+  .masthead, .main, .terminal-bar, nav, footer { padding-left: 20px; padding-right: 20px; }
+  .ticker-grid { grid-template-columns: repeat(2, 1fr); }
+  .analysis-grid, .tpo-wrap, .scenario-grid { grid-template-columns: 1fr; }
+  .dhp-grid { grid-template-columns: repeat(2, 1fr); }
+}
+</style>
+</head>
+<body>
+
+<!-- TERMINAL BAR -->
+<div class="terminal-bar">
+  <span>PivotAlphaDesk · GAIA Framework · Sistema Activo</span>
+  <span>Mié 15 Abr 2026 · 08:20 ET · Sesión: RTH Pre-Market</span>
+</div>
+
+<!-- MASTHEAD -->
+<div class="masthead">
+  <div>
+    <div class="brand">Pivot<span>Alpha</span>Desk</div>
+    <div class="tagline">GAIA Framework · Daily Pre-Market Briefing · Edición Interna</div>
+  </div>
+  <div class="masthead-right">
+    <div class="date-block">15 ABR 2026</div>
+    <div class="date-sub">Miércoles · Semana OpEx · Day 3 GAIA DHP</div>
+  </div>
+</div>
+
+<!-- ALERT BANNER -->
+<div class="alert-banner">
+  <span class="alert-tag">⚑ Focus Day</span>
+  <span class="alert-text">
+    BofA + Morgan Stanley pre-open &nbsp;|&nbsp; EIA Oil Stocks 10:30 ET &nbsp;|&nbsp;
+    Empire State Mfg: −3.1 vs −0.5 exp (MISS) &nbsp;|&nbsp;
+    GAIA DHP · Día 3 · ES/NQ sobre EMA200 &nbsp;|&nbsp;
+    CL compresión $90–$95 · Bloqueo Hormuz vigente
+  </span>
+</div>
+
+<!-- NAVIGATION -->
+<nav>
+  <a href="#snapshot">Snapshot</a>
+  <a href="#gaia-dhp">GAIA DHP</a>
+  <a href="#es">ES · ESM6</a>
+  <a href="#nq">NQ · NQM6</a>
+  <a href="#cl">CL · CLK6</a>
+  <a href="#spx">SPX</a>
+  <a href="#edge">Edge &amp; Scenarios</a>
+  <a href="#calendar">Calendario</a>
+  <a href="#earnings">Earnings</a>
+</nav>
+
+<!-- ══════════════════════════════════════════════════ -->
+<div class="main">
+
+<!-- ── 0. SNAPSHOT TICKER ── -->
+<section class="section" id="snapshot">
+  <div class="section-header">
+    <span class="section-num">00</span>
+    <span class="section-title">Market Snapshot — 08:20 ET</span>
+    <span class="section-badge badge-warning">Pre-Market</span>
+  </div>
+
+  <div class="ticker-grid">
+    <!-- ES -->
+    <div class="ticker-card bull">
+      <div class="ticker-sym">ESM6 · S&amp;P 500 E-mini</div>
+      <div class="ticker-price">7,004.25</div>
+      <div class="ticker-sub">
+        <span class="up">▲ Sobre EMA200 (6,997.77)</span>
+        <span class="flat">VWAP Session: 7,005.08</span>
+        <span>PAD: rango 6,950–7,050</span>
+      </div>
+    </div>
+    <!-- NQ -->
+    <div class="ticker-card bull">
+      <div class="ticker-sym">NQM6 · Nasdaq 100 E-mini</div>
+      <div class="ticker-price">25,990.00</div>
+      <div class="ticker-sub">
+        <span class="up">▲ Sobre EMA200 (25,957.99)</span>
+        <span class="flat">VWAP Session: 25,998.77</span>
+        <span>PAD: rango 25,600–26,100</span>
+      </div>
+    </div>
+    <!-- CL -->
+    <div class="ticker-card bear">
+      <div class="ticker-sym">CLK6 · WTI Crude Oil</div>
+      <div class="ticker-price">92.09</div>
+      <div class="ticker-sub">
+        <span class="down">▼ Bajo EMA200 (92.08) · neutral</span>
+        <span class="flat">VWAP Session: 91.45</span>
+        <span>PAD: compresión $90–$95</span>
+      </div>
+    </div>
+    <!-- SPX -->
+    <div class="ticker-card range">
+      <div class="ticker-sym">SPX · S&amp;P 500 Cash Index</div>
+      <div class="ticker-price">6,965.35</div>
+      <div class="ticker-sub">
+        <span class="up">▲ EMA200: 6,781.26</span>
+        <span class="flat">PAD Flip: 6,800</span>
+        <span>VWAP sesión: pendiente AM</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="tbl-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>Instrumento</th>
+          <th>Spot</th>
+          <th>EMA200</th>
+          <th>VWAP</th>
+          <th>vs EMA200</th>
+          <th>Gamma Flip (PAD)</th>
+          <th>Régimen</th>
+          <th>RF (Rotation Factor)</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="highlight">ESM6</td>
+          <td>7,004.25</td>
+          <td>6,997.77</td>
+          <td>7,005.08</td>
+          <td class="highlight-green">+6.48 ↑</td>
+          <td class="z-gf">7,050</td>
+          <td><span class="highlight-green">DAMPENED→BULL</span></td>
+          <td>+1 (rotando alza)</td>
+        </tr>
+        <tr>
+          <td class="highlight">NQM6</td>
+          <td>25,990.00</td>
+          <td>25,957.99</td>
+          <td>25,998.77</td>
+          <td class="highlight-green">+32.01 ↑</td>
+          <td class="z-gf">26,500</td>
+          <td><span class="highlight-orange">DAMPENED</span></td>
+          <td>+5 (impulso fuerte)</td>
+        </tr>
+        <tr>
+          <td class="highlight">CLK6</td>
+          <td>92.09</td>
+          <td>92.08</td>
+          <td>91.45</td>
+          <td class="highlight-red">−0.01 ≈ neutral</td>
+          <td class="z-gf">85.25</td>
+          <td><span class="highlight-green">AMPLIFIED BULL</span></td>
+          <td>−4 (rotando baja)</td>
+        </tr>
+        <tr>
+          <td class="highlight">SPX</td>
+          <td>6,965</td>
+          <td>6,781.26</td>
+          <td>—</td>
+          <td class="highlight-green">+183.7 ↑</td>
+          <td class="z-gf">6,800</td>
+          <td><span class="highlight-green">SOBRE FLIP</span></td>
+          <td>+18 (rally sostenido)</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- ── 1. GAIA DHP — DÍA 3 ── -->
+<section class="section" id="gaia-dhp">
+  <div class="section-header">
+    <span class="section-num">01</span>
+    <span class="section-title">GAIA DHP · Día 3 de Operación</span>
+    <span class="section-badge badge-live">● LIVE</span>
+    <span class="section-badge badge-bull">BULLISH</span>
+  </div>
+
+  <div class="dhp-panel">
+    <div class="dhp-header">
+      <span class="dhp-title">Delta Hedging Pressure — Estado 08:20 ET</span>
+      <span class="section-badge badge-live">gaia_chart_v3.html · localhost:8080</span>
+    </div>
+    <div class="dhp-grid">
+      <div class="dhp-metric">
+        <div class="lbl">DHP Total</div>
+        <div class="val bull">+BULL</div>
+      </div>
+      <div class="dhp-metric">
+        <div class="lbl">Momentum</div>
+        <div class="val bull">BLD.BULL</div>
+      </div>
+      <div class="dhp-metric">
+        <div class="lbl">Gamma Node</div>
+        <div class="val blue">7,050 ES</div>
+      </div>
+      <div class="dhp-metric">
+        <div class="lbl">Régimen</div>
+        <div class="val warn">DAMPENED</div>
+      </div>
+    </div>
+
+    <div class="analysis-grid">
+      <div class="analysis-card">
+        <h4>Lectura DHP · Días 1–3</h4>
+        <ul>
+          <li class="bull">Día 1 (Lun 13): Debut DHP — gap-up post-diplomacia Irán. HIRO Line en alza desde apertura. BLD.BULL confirmado en primeros 30 min RTH.</li>
+          <li class="bull">Día 2 (Mar 14): ES rally desde 6,920 → 7,004. DHP acumulado positivo. HIRO Line sostenida. Rotation Factor ETH: +26 →  luego +1 (consolidación última hora).</li>
+          <li class="note">Día 3 (Hoy): ES pre-mkt 7,004. Gamma Node 7,050. Presión dealers: comprando futuros para cubrir gamma de calls entre 7,000–7,050. <span class="highlight">Zona crítica: si cruza 7,050 = cambio régimen → ACC.BULL potencial.</span></li>
+          <li class="warn">Call Wall 7,050 actúa como techo CONTENCIÓN (GEX alto). Si el DHP no acelera positivo, esperar rechazo y mean reversion hacia 6,950–6,900.</li>
+        </ul>
+      </div>
+      <div class="analysis-card">
+        <h4>Señales GAIA DHP a monitorear</h4>
+        <ul>
+          <li class="bull">ACC.BULL + apertura sobre 7,004 + CVD positivo = setup largo de alta convicción. Target: 7,050 → 7,100.</li>
+          <li class="bear">BLD.BEAR + rechazo en 7,050 + CVD negativo = setup short hacia 6,950 → 6,900.</li>
+          <li class="note">NEUTRAL entre 6,980–7,020: mean reversion territory. Esperar señal clara del DHP antes de entrar.</li>
+          <li class="warn">HIRO Line: atención a cambio de dirección brusco. Si DHP total cae desde positivo → sinal dealer hedge flip.</li>
+          <li class="note">NQ DHP: RF=+5 ETH sugiere momentum constructor fuerte. Confirmar con Call DHP sobre 26,000 en apertura.</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="divider"></div>
+    <p class="mono-note">▸ GAIA Flow v1 (gaia_flow_v1.html): monitorear Call DHP vs Put DHP por strike en tiempo real durante RTH. GEX Ladder: strikes $7,000 y $7,050 son los nodos críticos del día.</p>
+  </div>
+</section>
+
+<!-- ── 2. ES · ESM6 ── -->
+<section class="section" id="es">
+  <div class="section-header">
+    <span class="section-num">02</span>
+    <span class="section-title">ES · ESM6 — S&amp;P 500 E-mini</span>
+    <span class="section-badge badge-bull">DAMPENED → BULLISH EDGE</span>
+  </div>
+
+  <!-- TPO Stats -->
+  <div class="tpo-wrap">
+    <div class="tpo-card">
+      <div class="tpo-label">TPO Daily (M30 · 5 sesiones) <span>ETH Actual</span></div>
+      <div class="tpo-stats">
+        <div class="tpo-stat"><div class="k">VAH</div><div class="v up">7,010.00</div></div>
+        <div class="tpo-stat"><div class="k">POC</div><div class="v">7,002.50</div></div>
+        <div class="tpo-stat"><div class="k">VAL</div><div class="v">6,985.00</div></div>
+      </div>
+    </div>
+    <div class="tpo-card">
+      <div class="tpo-label">TPO Semanal (M30 · consolidación) <span>Rf +1 → baja</span></div>
+      <div class="tpo-stats">
+        <div class="tpo-stat"><div class="k">VAH prev</div><div class="v">6,985.00</div></div>
+        <div class="tpo-stat"><div class="k">POC prev</div><div class="v">6,925.75</div></div>
+        <div class="tpo-stat"><div class="k">VAL prev</div><div class="v">6,920.00</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PAD Zones ES -->
+  <div class="tbl-wrap" style="margin-bottom:16px;">
+    <table>
+      <thead>
+        <tr><th>Zona PAD</th><th>Strike</th><th>OI</th><th>Gamma</th><th>Tipo</th><th>Lectura Operativa</th></tr>
+      </thead>
+      <tbody>
+        <tr><td class="z-gc">▲ Gamma Ceiling</td><td>7,250</td><td>15.6K</td><td>&lt;5</td><td>Aceleración</td><td>Target expansión si rompe 7,050</td></tr>
+        <tr><td class="z-cw">▲ Call Wall</td><td>7,050</td><td>16.5K</td><td>&gt;10</td><td>Contención</td><td><span class="highlight">TECHO CRÍTICO HOY. Gamma Node = Imán.</span></td></tr>
+        <tr><td class="z-gf">◆ Gamma Flip</td><td>7,050</td><td>Máx total</td><td>&gt;10</td><td>Núcleo</td><td>Precio debajo = sesgo bajista controlado</td></tr>
+        <tr><td style="color:#5DADE2;">▼ Gamma Floor 3</td><td>6,950</td><td>—</td><td>&gt;10</td><td>Soporte táctico</td><td>Primer soporte en baja. Pivote intraday.</td></tr>
+        <tr><td style="color:#5DADE2;">▼ Gamma Floor 2</td><td>6,900</td><td>12.5K</td><td>&gt;10</td><td>Contención</td><td>Soporte intermedio. Bounce esperado.</td></tr>
+        <tr><td class="z-pw">▼ Put Wall</td><td>6,800</td><td>20.6K</td><td>&gt;10</td><td>Contención fuerte</td><td><span class="highlight-red">PISO ESTRUCTURAL. No debería romper fácil.</span></td></tr>
+        <tr><td class="z-em">▼ Emergency Anchor</td><td>6,850</td><td>12.8K</td><td>&gt;10</td><td>Soporte crítico</td><td>Zona entre Put Wall y Floor 2. Buffer.</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="analysis-grid">
+    <div class="analysis-card">
+      <h4>Análisis Técnico TPO + VWAP + EMA200</h4>
+      <ul>
+        <li class="bull">EMA200 (6,997.77): precio en 7,004.25 acaba de cruzar por arriba. Señal técnica positiva confirmada en ETH.</li>
+        <li class="bull">VWAP sesión (7,005.08): precio pegado a VWAP. Si apertura RTH mantiene sobre VWAP = sesgo alcista intradía.</li>
+        <li class="note">TPO ETH: VAH 7,010 / POC 7,002.50 / VAL 6,985. Precio concentrado en valor. Rotation Factor +1: consolidando, no extending.</li>
+        <li class="bull">M15 RTH día 14: suba impulsiva desde VAL 6,920 → VAH 6,985 anterior → cierre sobre 7,000. Estructura de aceptación alcista clara.</li>
+        <li class="warn">RF ETH actual +1 desde +26 (día previo): momentum se frenó. Possible overnight excess → apertura puede ser retrace hacia 6,985–6,970.</li>
+      </ul>
+    </div>
+    <div class="analysis-card">
+      <h4>Niveles Intraday — Plan de Trading</h4>
+      <ul>
+        <li class="bull"><span class="highlight-green">LONG setup:</span> apertura sobre 7,004 + CVD positivo + DHP ACC.BULL → entrada 7,005–7,010. Target 7,050. Stop 6,990.</li>
+        <li class="bear"><span class="highlight-red">SHORT setup:</span> rechazo en 7,050 (Call Wall) + DHP BLD.BEAR + CVD flip negativo → entrada 7,045. Target 6,980 → 6,950. Stop 7,065.</li>
+        <li class="note">Rango pivotal: 6,980–7,020. Dentro de este rango: mean reversion puro. No perseguir.</li>
+        <li class="warn">Break &gt;7,050 con volumen: expansión hacia 7,100–7,150. Sin volumen = fakeout. Esperar retest.</li>
+        <li class="warn">Break &lt;6,950: acelera hacia 6,900 → 6,850. GEX low entre 6,950–6,900 = zona de velocidad, no de freno.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ── 3. NQ · NQM6 ── -->
+<section class="section" id="nq">
+  <div class="section-header">
+    <span class="section-num">03</span>
+    <span class="section-title">NQ · NQM6 — Nasdaq 100 E-mini</span>
+    <span class="section-badge badge-bull">RF +5 · IMPULSO</span>
+  </div>
+
+  <div class="tpo-wrap">
+    <div class="tpo-card">
+      <div class="tpo-label">TPO Daily (M30 · sesión actual ETH) <span>RF +5</span></div>
+      <div class="tpo-stats">
+        <div class="tpo-stat"><div class="k">VAH</div><div class="v up">26,025.00</div></div>
+        <div class="tpo-stat"><div class="k">POC</div><div class="v">25,997.50</div></div>
+        <div class="tpo-stat"><div class="k">VAL</div><div class="v">25,975.00</div></div>
+      </div>
+    </div>
+    <div class="tpo-card">
+      <div class="tpo-label">TPO Previo (sesión 14 Abr) <span>RF +32</span></div>
+      <div class="tpo-stats">
+        <div class="tpo-stat"><div class="k">VAH</div><div class="v">25,835.00</div></div>
+        <div class="tpo-stat"><div class="k">POC</div><div class="v">25,587.50</div></div>
+        <div class="tpo-stat"><div class="k">VAL</div><div class="v">25,560.00</div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="tbl-wrap" style="margin-bottom:16px;">
+    <table>
+      <thead>
+        <tr><th>Zona PAD</th><th>Strike</th><th>OI</th><th>Gamma</th><th>Tipo</th><th>Lectura Operativa</th></tr>
+      </thead>
+      <tbody>
+        <tr><td class="z-cw">▲ Call Wall</td><td>26,500</td><td>942</td><td>&gt;10</td><td>Contención</td><td>Techo estructural. Target si extiende.</td></tr>
+        <tr><td class="z-gc">▲ Gamma Ceiling</td><td>26,100</td><td>698</td><td>&lt;5</td><td>Aceleración</td><td><span class="highlight">Zona velocidad. Entre 26,000–26,100 sin freno.</span></td></tr>
+        <tr><td class="z-gf">◆ Gamma Flip</td><td>26,500</td><td>Máx</td><td>&gt;10</td><td>Núcleo</td><td>Precio muy lejos del flip = sesgo bajista estructural activo</td></tr>
+        <tr><td style="color:#5DADE2;">▼ Gamma Floor 2</td><td>25,900</td><td>433</td><td>&gt;10</td><td>Contención</td><td>Soporte clave. Si pierde → acceleración bajista</td></tr>
+        <tr><td style="color:#5DADE2;">▼ Gamma Floor 3</td><td>25,750</td><td>349</td><td>&gt;10</td><td>Contención</td><td>Soporte intermedio.</td></tr>
+        <tr><td class="z-pw">▼ Put Wall</td><td>25,600</td><td>694</td><td>&gt;10</td><td>Contención</td><td>Piso estructural semanal.</td></tr>
+        <tr><td class="z-em">▼ Emergency Anchor</td><td>25,900</td><td>—</td><td>—</td><td>Soporte</td><td>Buffer entre Floor 2 y Put Wall.</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="analysis-grid">
+    <div class="analysis-card">
+      <h4>Análisis Técnico TPO + VWAP + EMA200</h4>
+      <ul>
+        <li class="bull">EMA200 (25,957.99): precio en 25,990 — sobre EMA200 por +32 pts. Confirmación técnica alcista. Cruza de abajo arriba vía rally impulsivo días 13–14.</li>
+        <li class="bull">VWAP sesión (25,998.77): precio pegado a VWAP. Sostenimiento sobre 25,990–26,000 = sesgo alcista.</li>
+        <li class="note">RF ETH: +5. Impulso fuerte pero decelerando vs +32 del día previo. Posible day de digestión o consolidación antes de siguiente movimiento.</li>
+        <li class="warn">Precio aún debajo del Gamma Flip (26,500). Sesgo estructural es bajista según PAD. El rally actual es un bounce dentro de régimen DAMPENED — no un cambio estructural hasta romper 26,500.</li>
+      </ul>
+    </div>
+    <div class="analysis-card">
+      <h4>Niveles Intraday — Plan de Trading</h4>
+      <ul>
+        <li class="bull"><span class="highlight-green">LONG setup:</span> mantener sobre 25,990 + DHP NQ bullish + EMA200 como soporte → target 26,100 (Gamma Ceiling, zona velocidad). Stop 25,930.</li>
+        <li class="note">Gamma Ceiling 26,100: si llega sin freno gamma = movimiento rápido hacia 26,500 (Call Wall). Alta volatilidad posible.</li>
+        <li class="bear"><span class="highlight-red">SHORT setup:</span> pérdida de EMA200 (25,960) + CVD negativo → baja hacia 25,900 (Floor 2) → 25,750. Stop 26,020.</li>
+        <li class="warn">25,900: nivel crítico. Pérdida de este soporte activa aceleración bajista hacia 25,600 (Put Wall). GEX bajo entre 25,750–25,900 = zona de velocidad.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ── 4. CL · CLK6 ── -->
+<section class="section" id="cl">
+  <div class="section-header">
+    <span class="section-num">04</span>
+    <span class="section-title">CL · CLK6 — WTI Crude Oil</span>
+    <span class="section-badge badge-bear">RF −4 · COMPRESIÓN</span>
+    <span class="section-badge badge-warning">EIA 10:30 ET</span>
+  </div>
+
+  <div class="tpo-wrap">
+    <div class="tpo-card">
+      <div class="tpo-label">TPO Daily (M30 · sesión actual) <span>RF −4</span></div>
+      <div class="tpo-stats">
+        <div class="tpo-stat"><div class="k">VAH</div><div class="v">92.25</div></div>
+        <div class="tpo-stat"><div class="k">POC</div><div class="v">91.28</div></div>
+        <div class="tpo-stat"><div class="k">VAL</div><div class="v">90.30</div></div>
+      </div>
+    </div>
+    <div class="tpo-card">
+      <div class="tpo-label">TPO Previo (14 Abr) <span>RF −6</span></div>
+      <div class="tpo-stats">
+        <div class="tpo-stat"><div class="k">VAH</div><div class="v">98.10</div></div>
+        <div class="tpo-stat"><div class="k">POC</div><div class="v">96.98</div></div>
+        <div class="tpo-stat"><div class="k">VAL</div><div class="v">93.90</div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="tbl-wrap" style="margin-bottom:16px;">
+    <table>
+      <thead>
+        <tr><th>Zona PAD</th><th>Strike</th><th>OI</th><th>Gamma</th><th>Tipo</th><th>Lectura Operativa</th></tr>
+      </thead>
+      <tbody>
+        <tr><td class="z-gc">▲ Gamma Ceiling</td><td>$97.00</td><td>4.7K</td><td>&lt;5</td><td>Aceleración</td><td>Target expansión si rompe $95</td></tr>
+        <tr><td class="z-cw">▲ Call Wall</td><td>$95.00</td><td>28K</td><td>&gt;10</td><td>Contención fuerte</td><td><span class="highlight">TECHO CLAVE. OI enorme. Rechazo múltiple.</span></td></tr>
+        <tr><td class="z-gf">◆ Gamma Flip</td><td>$85.25</td><td>Máx</td><td>&gt;10</td><td>Núcleo</td><td>Precio muy arriba del flip = ALCISTA estructural</td></tr>
+        <tr><td style="color:#5DADE2;">▼ Gamma Floor 3</td><td>$89.50</td><td>6.4K</td><td>&gt;10</td><td>Contención</td><td>Soporte táctico inmediato</td></tr>
+        <tr><td style="color:#5DADE2;">▼ Gamma Floor 2</td><td>$87.00</td><td>5.8K</td><td>&gt;10</td><td>Contención</td><td>Soporte intermedio</td></tr>
+        <tr><td class="z-pw">▼ Put Wall</td><td>$90.00</td><td>43K</td><td>&gt;10</td><td>Contención fuerte</td><td><span class="highlight-red">PISO CRÍTICO. OI masivo. No debería romper.</span></td></tr>
+        <tr><td class="z-em">▼ Emergency Anchor</td><td>$89.50</td><td>—</td><td>—</td><td>Soporte</td><td>Buffer bajo Put Wall.</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="analysis-grid">
+    <div class="analysis-card">
+      <h4>Análisis Técnico TPO + VWAP + EMA200</h4>
+      <ul>
+        <li class="note">EMA200 (92.08): precio en 92.09 — literalmente EN la EMA200. Zona de equilibrio máxima. Decisión técnica pendiente.</li>
+        <li class="bear">RF −4 (y −6 día anterior): tendencia bajista en TPO. Precio cayó de $103+ (semana del 9) a $92 en 5 sesiones. Presión de venta sostenida.</li>
+        <li class="note">VWAP sesión (91.45): precio sobre VWAP. Ligero sesgo intradía alcista. Pero contexto semanal bajista.</li>
+        <li class="warn">Compresión $90–$95: Put Wall masivo abajo ($90 / 43K OI) y Call Wall arriba ($95 / 28K OI). Rango comprimido. Esperar evento para dirección.</li>
+        <li class="warn">EIA Oil Stocks 10:30 ET: consenso +2.1M barriles (build). Si confirma → presión bajista hacia $90. Si sorpresa draw → posible spike hacia $95.</li>
+      </ul>
+    </div>
+    <div class="analysis-card">
+      <h4>Fundamental: Hormuz + EIA + Geopolítica</h4>
+      <ul>
+        <li class="warn">Bloqueo Hormuz: riesgo de oferta activo. 21M bbl/día atraviesan el Estrecho. Escalada = premium de guerra. Sin escalada = precio en compresión.</li>
+        <li class="note">Backdoor diplomático (embajador iraní en Pakistan): señal de que negociaciones no están completamente muertas. Reduce risk premium.</li>
+        <li class="note">Inventarios EIA (prev: +3.081M). Consenso: +2.1M. Actual: pendiente 10:30. Build por tercera semana = bearish.</li>
+        <li class="bear">Escenario bajista: EIA build + resolución diplomática = CL cae $90 → $89.50 → $87.</li>
+        <li class="bull">Escenario alcista: EIA draw + escalada IRGC = CL rompe $95 → zona de velocidad hacia $97+.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ── 5. SPX ── -->
+<section class="section" id="spx">
+  <div class="section-header">
+    <span class="section-num">05</span>
+    <span class="section-title">SPX · S&amp;P 500 Cash Index</span>
+    <span class="section-badge badge-bull">SOBRE FLIP · RF +18</span>
+  </div>
+
+  <div class="tpo-wrap">
+    <div class="tpo-card">
+      <div class="tpo-label">TPO SPX M15 (sesión 14 Abr / ETH 15) <span>RF +18</span></div>
+      <div class="tpo-stats">
+        <div class="tpo-stat"><div class="k">VAH</div><div class="v up">6,968.00</div></div>
+        <div class="tpo-stat"><div class="k">POC</div><div class="v">6,956.00</div></div>
+        <div class="tpo-stat"><div class="k">VAL</div><div class="v">6,944.00</div></div>
+      </div>
+    </div>
+    <div class="tpo-card">
+      <div class="tpo-label">SPX vs EMA200 (semanal) <span>+183 pts sobre EMA</span></div>
+      <div class="tpo-stats">
+        <div class="tpo-stat"><div class="k">Spot</div><div class="v up">6,965</div></div>
+        <div class="tpo-stat"><div class="k">EMA200</div><div class="v">6,781</div></div>
+        <div class="tpo-stat"><div class="k">GAP</div><div class="v up">+184</div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="tbl-wrap" style="margin-bottom:16px;">
+    <table>
+      <thead>
+        <tr><th>Zona PAD</th><th>Strike</th><th>OI / Label</th><th>Lectura Operativa</th></tr>
+      </thead>
+      <tbody>
+        <tr><td class="z-gc">▲ Gamma Ceiling</td><td>7,000</td><td>C=2,910</td><td>Resistencia inmediata. Precio cerca.</td></tr>
+        <tr><td class="z-cw">▲ Call Wall</td><td>6,950</td><td>C=3,024</td><td><span class="highlight">Spot actual ≈ Call Wall. Zona densa.</span></td></tr>
+        <tr><td class="z-gf">◆ Gravity Point / Flip</td><td>6,780</td><td>Total=5,517</td><td>Soporte estructural. Precio 185 pts arriba.</td></tr>
+        <tr><td style="color:#5DADE2;">▼ Gamma Floor 1</td><td>6,800</td><td>P=3,323</td><td>Soporte inmediato en baja.</td></tr>
+        <tr><td class="z-pw">▼ Put Wall</td><td>6,800</td><td>P=3,323</td><td>Coincide con Floor 1. Zona de soporte doble.</td></tr>
+        <tr><td class="z-em">▼ Emergency Anchor</td><td>6,800</td><td>P=3,323</td><td>Triple coincidencia. Piso sólido.</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="analysis-grid">
+    <div class="analysis-card">
+      <h4>Análisis Técnico SPX M15</h4>
+      <ul>
+        <li class="bull">SPX en 6,965 — sobre Gamma Flip (6,780) por 185 pts. Estructura de precio claramente alcista respecto a PAD.</li>
+        <li class="bull">EMA200 (6,781): precio 184 pts arriba. La EMA y el Flip coinciden — zona de soporte estructural masivo en caso de corrección.</li>
+        <li class="note">IV% manual: ingresar mañana AM para actualizar Pine SPX. Con rally fuerte, IV% debería haber comprimido (VIX bajando).</li>
+        <li class="warn">Spot muy cerca de Call Wall (6,950) y Gamma Ceiling (7,000). Zona densa de OI calls. Dealers en modo contención. Expansión solo si rompe 7,000 con convicción.</li>
+        <li class="note">RF +18 (sesión 14): rally impulsivo. HOY esperar digestión. Rotation Factor debería bajar → confirmación de pausa.</li>
+      </ul>
+    </div>
+    <div class="analysis-card">
+      <h4>Earnings Impact: BofA + Morgan Stanley</h4>
+      <ul>
+        <li class="note">Bank of America pre-mkt: resultados Q1. Contexto: entorno de tasas altas, tarifas → incertidumbre loan growth. Si beat → soporte sector financiero → SPX / ES alcista.</li>
+        <li class="note">Morgan Stanley pre-mkt: wealth management + trading. Si trading revenues fuertes (volatilidad Q1 alta) → beat probable.</li>
+        <li class="bull">Escenario positivo: ambos bancos baten → ES/SPX mantiene 7,000+ → DHP ACC.BULL potencial.</li>
+        <li class="bear">Escenario negativo: miss o guidance cautious → ES retrace hacia 6,950 → 6,900.</li>
+        <li class="warn">Goldman ya reportó lunes (positivo). JPM/Citi/WF reportaron martes. El tono del sector financiero ya está establecido — BofA/MS confirman o interrumpen la narrativa.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ── 6. EDGE & SCENARIOS ── -->
+<section class="section" id="edge">
+  <div class="section-header">
+    <span class="section-num">06</span>
+    <span class="section-title">Edge · Proyecciones · Escenarios</span>
+    <span class="section-badge badge-live">GAIA + PAD + Fundamentals</span>
+  </div>
+
+  <!-- EDGE BOX -->
+  <div class="edge-box">
+    <h3>◆ GAIA Edge — Síntesis Operativa del Día</h3>
+    <ul>
+      <li>ES/NQ sobre EMA200 por primera vez desde el selloff de aranceles. <span class="highlight">Señal técnica de primera importancia.</span> El rally desde mínimos ha sido impulsivo (RF +32 NQ / +26 ES en día pico). Hoy esperamos <span class="highlight-green">digestión / consolidación</span> antes de siguiente leg.</li>
+      <li>Gamma Flip de ES en 7,050 = techo CONTENCIÓN activo. Dealers frenando movimiento. <span class="highlight">El DHP BLD.BULL confirma que los dealers están comprando — pero todavía no ACC.BULL.</span> Necesitamos ACC.BULL para el siguiente impulso.</li>
+      <li>CL en EMA200 exacta + EIA 10:30 = la trade más binaria del día. <span class="highlight-orange">Esperar el dato antes de posicionarse.</span> El rango $90–$95 es el campo de batalla entre Put Wall masivo y Call Wall masivo.</li>
+      <li>SPX con IV% manual pendiente: actualizar para Pine antes de 09:30. Si VIX comprimió = gamma dealers más neutrales = movimientos más suaves.</li>
+      <li>GAIA DHP Día 3: el sistema está operando correctamente. HOY es el primer día donde tenemos datos de 3 sesiones completas para calibrar baseline de DHP. <span class="highlight-purple">Foco en: ¿la HIRO Line sostiene nivel o empieza a divergir?</span></li>
+    </ul>
+  </div>
+
+  <!-- SCENARIOS -->
+  <div class="scenario-grid">
+    <div class="scenario-card base">
+      <div class="scenario-label">📊 Escenario Base (55%)</div>
+      <p>Consolidación rango ES 6,980–7,040. Digestión de rally días 13–14. BofA/MS en línea. DHP NEUTRAL-BLD.BULL. CL cotiza $91–$93 hasta EIA. NQ holding 25,950–26,050. SPX entre 6,930–6,980. Sesión de menor volatilidad tras dos días de impulso.</p>
+    </div>
+    <div class="scenario-card bull">
+      <div class="scenario-label">▲ Escenario Alcista (30%)</div>
+      <p>BofA/MS baten expectativas → apertura gap-up ES &gt;7,010 → DHP ACC.BULL → rompimiento Call Wall 7,050 → expansión hacia 7,100. NQ extiende hacia 26,100 (Gamma Ceiling) → velocidad hacia 26,500. CL EIA draw → spike $95 (Call Wall) → posible $97. SPX cierra sobre 7,000.</p>
+    </div>
+    <div class="scenario-card bear">
+      <div class="scenario-label">▼ Escenario Bajista (15%)</div>
+      <p>Miss BofA/MS + EIA build grande → ES rechaza 7,004 → rompe EMA200 (6,997) → acelera hacia 6,950 → 6,900. DHP BLD.BEAR → ACC.BEAR. CL rompe $91 hacia $90 (Put Wall masivo). NQ pierde EMA200 (25,958) → 25,900 → 25,750. SPX cae hacia 6,850–6,800 (zona triple soporte).</p>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <div class="analysis-grid" style="margin-top:16px;">
+    <div class="analysis-card">
+      <h4>Sugerencias Operativas</h4>
+      <ul>
+        <li>Esperar primeros 30 min RTH para leer DHP direction. No entrar al open sin confirmación ACC.BULL o ACC.BEAR.</li>
+        <li class="warn">CL: no operar antes de EIA 10:30. El dato puede mover $1.50–$2.00 en segundos.</li>
+        <li class="bull">ES LONG de mayor convicción: apertura sostenida sobre EMA200 + VWAP + DHP ACC.BULL alineados.</li>
+        <li class="note">NQ tiene más momentum relativo que ES (RF +5 vs +1). Si hay trade, NQ ofrece mayor recorrido.</li>
+        <li class="bull">GAIA DHP: si la HIRO Line hace nuevo máximo en primeros 30 min → señal de continuación alcista sostenida.</li>
+        <li class="warn">Atención a Fed Barr Speech (8:30) y Fed Bowman (1:45 PM). Cualquier hawkish comment puede comprimir ES/SPX.</li>
+      </ul>
+    </div>
+    <div class="analysis-card">
+      <h4>Checklist Pre-Market 08:20 ET</h4>
+      <ul>
+        <li class="bull">✅ gaia_levels.json generado (~07:00)</li>
+        <li class="bull">✅ Pines ES/NQ/CL cargados (ChatGPT)</li>
+        <li class="warn">⏳ Pine SPX — IV% manual pendiente ingreso AM</li>
+        <li class="bull">✅ GAIA DHP gaia_chart_v3.html — localhost:8080</li>
+        <li class="bull">✅ GAIA Flow gaia_flow_v1.html — activo</li>
+        <li class="warn">⏳ IV% SPX manual — ingresar antes 09:15 ET</li>
+        <li class="warn">⏳ BofA + Morgan Stanley resultados — leer pre-open</li>
+        <li class="note">📋 EIA Oil Stocks — 10:30 ET (consenso +2.1M)</li>
+        <li class="note">📋 Empire State Mfg: ya publicado −3.1 (MISS vs −0.5)</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ── 7. CALENDARIO ECONÓMICO ── -->
+<section class="section" id="calendar">
+  <div class="section-header">
+    <span class="section-num">07</span>
+    <span class="section-title">Calendario Económico — 15 Abr 2026</span>
+    <span class="section-badge badge-warning">CME QuikStrike</span>
+  </div>
+
+  <div class="tbl-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>Hora ET</th>
+          <th>Evento</th>
+          <th>Período</th>
+          <th>Impacto</th>
+          <th>Previo</th>
+          <th>Consenso</th>
+          <th>Forecast</th>
+          <th>Actual</th>
+          <th>Nota PAD</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr class="cal-row-high">
+          <td class="cal-time">05:00</td>
+          <td class="cal-event">Industrial Production MoM</td>
+          <td>Feb</td>
+          <td><span class="cal-imp m">MED</span></td>
+          <td class="cal-prev">−0.8%</td>
+          <td class="cal-cons">+0.3%</td>
+          <td class="cal-cons">+0.5%</td>
+          <td class="cal-actual">+0.4% ✓</td>
+          <td>Moderadamente positivo. En línea.</td>
+        </tr>
+        <tr>
+          <td class="cal-time">07:00</td>
+          <td class="cal-event">MBA 30-Year Mortgage Rate</td>
+          <td>Apr 10</td>
+          <td><span class="cal-imp l">LOW</span></td>
+          <td class="cal-prev">6.51%</td>
+          <td class="cal-cons">—</td>
+          <td class="cal-cons">—</td>
+          <td class="cal-actual">Pendiente</td>
+          <td>Referencia tasas. Sin impacto directo ES.</td>
+        </tr>
+        <tr class="cal-row-high">
+          <td class="cal-time">08:30</td>
+          <td class="cal-event">Fed Barr Speech</td>
+          <td>—</td>
+          <td><span class="cal-imp h">HIGH</span></td>
+          <td class="cal-prev">—</td>
+          <td class="cal-cons">—</td>
+          <td class="cal-cons">—</td>
+          <td class="cal-actual">Pendiente</td>
+          <td>⚠ Monitor hawkish vs dovish tone</td>
+        </tr>
+        <tr class="cal-row-high">
+          <td class="cal-time">08:30</td>
+          <td class="cal-event">NY Empire State Mfg Index</td>
+          <td>Abr</td>
+          <td><span class="cal-imp h">HIGH</span></td>
+          <td class="cal-prev">−0.20</td>
+          <td class="cal-cons">−0.5</td>
+          <td class="cal-cons">−3.1</td>
+          <td class="cal-actual" style="color:var(--bb-red);">−3.1 MISS</td>
+          <td>⚠ Miss manufacturero. Bearish signal débil.</td>
+        </tr>
+        <tr>
+          <td class="cal-time">08:30</td>
+          <td class="cal-event">Export Prices MoM</td>
+          <td>Mar</td>
+          <td><span class="cal-imp m">MED</span></td>
+          <td class="cal-prev">1.5%</td>
+          <td class="cal-cons">1.5%</td>
+          <td class="cal-cons">2.2%</td>
+          <td class="cal-actual">Pendiente</td>
+          <td>Inflacionario moderado si confirma.</td>
+        </tr>
+        <tr>
+          <td class="cal-time">08:30</td>
+          <td class="cal-event">Import Prices MoM</td>
+          <td>Mar</td>
+          <td><span class="cal-imp m">MED</span></td>
+          <td class="cal-prev">1.3%</td>
+          <td class="cal-cons">2.0%</td>
+          <td class="cal-cons">1.9%</td>
+          <td class="cal-actual">Pendiente</td>
+          <td>Impacto tarifas esperado. Inflacionario.</td>
+        </tr>
+        <tr>
+          <td class="cal-time">10:00</td>
+          <td class="cal-event">NAHB Housing Market Index</td>
+          <td>Abr</td>
+          <td><span class="cal-imp l">LOW</span></td>
+          <td class="cal-prev">38</td>
+          <td class="cal-cons">37</td>
+          <td class="cal-cons">37</td>
+          <td class="cal-actual">37 (en línea)</td>
+          <td>Sin sorpresa. Sector housing deprimido.</td>
+        </tr>
+        <tr class="cal-row-high">
+          <td class="cal-time">10:30</td>
+          <td class="cal-event">EIA Crude Oil Stocks Change</td>
+          <td>Apr 10</td>
+          <td><span class="cal-imp h">HIGH</span></td>
+          <td class="cal-prev">+3.081M</td>
+          <td class="cal-cons">+2.1M</td>
+          <td class="cal-cons">—</td>
+          <td class="cal-actual" style="color:var(--bb-yellow);">⏳ 10:30 ET</td>
+          <td>⚠ BUILD → bearish CL. DRAW → spike $95.</td>
+        </tr>
+        <tr>
+          <td class="cal-time">10:30</td>
+          <td class="cal-event">EIA Gasoline Stocks Change</td>
+          <td>Apr 10</td>
+          <td><span class="cal-imp m">MED</span></td>
+          <td class="cal-prev">−1.589M</td>
+          <td class="cal-cons">—</td>
+          <td class="cal-cons">—</td>
+          <td class="cal-actual">⏳ 10:30 ET</td>
+          <td>Draw en gasolina = bullish refined products.</td>
+        </tr>
+        <tr class="cal-row-high">
+          <td class="cal-time">13:45</td>
+          <td class="cal-event">Fed Bowman Speech</td>
+          <td>—</td>
+          <td><span class="cal-imp h">HIGH</span></td>
+          <td class="cal-prev">—</td>
+          <td class="cal-cons">—</td>
+          <td class="cal-cons">—</td>
+          <td class="cal-actual">Pendiente</td>
+          <td>⚠ Segunda voz Fed del día. Monitor.</td>
+        </tr>
+        <tr>
+          <td class="cal-time">14:00</td>
+          <td class="cal-event">BoE Gov Bailey Speech</td>
+          <td>—</td>
+          <td><span class="cal-imp m">MED</span></td>
+          <td class="cal-prev">—</td>
+          <td class="cal-cons">—</td>
+          <td class="cal-cons">—</td>
+          <td class="cal-actual">Pendiente</td>
+          <td>Impacto FX GBP. Marginal en ES.</td>
+        </tr>
+        <tr>
+          <td class="cal-time">15:30</td>
+          <td class="cal-event">ECB President Lagarde Speech</td>
+          <td>—</td>
+          <td><span class="cal-imp m">MED</span></td>
+          <td class="cal-prev">—</td>
+          <td class="cal-cons">—</td>
+          <td class="cal-cons">—</td>
+          <td class="cal-actual">Pendiente</td>
+          <td>Impacto EUR/USD. Correlación moderada ES.</td>
+        </tr>
+        <tr>
+          <td class="cal-time">16:00</td>
+          <td class="cal-event">Net Long-term TIC Flows</td>
+          <td>Feb</td>
+          <td><span class="cal-imp l">LOW</span></td>
+          <td class="cal-prev">$15.5B</td>
+          <td class="cal-cons">$36.6B</td>
+          <td class="cal-cons">—</td>
+          <td class="cal-actual">Pendiente</td>
+          <td>Demanda Treasuries. Impacto post-cierre.</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <p class="mono-note">Opciones que expiran hoy: WL3J6 (Crude Oil Wed Week 3) · JN3J6 (Natural Gas Wed Financial Week 3). Observar pin risk en $92–$93 CL.</p>
+</section>
+
+<!-- ── 8. EARNINGS ── -->
+<section class="section" id="earnings">
+  <div class="section-header">
+    <span class="section-num">08</span>
+    <span class="section-title">Earnings — Semana 13–17 Abr 2026</span>
+    <span class="section-badge badge-warning">Bank Earnings Week</span>
+  </div>
+
+  <div class="tbl-wrap">
+    <div class="earnings-row" style="background:var(--bg4); border-bottom: 1px solid var(--border);">
+      <span class="earn-sym" style="color:var(--text3);">FECHA</span>
+      <span class="earn-name" style="color:var(--text3);">EMPRESA</span>
+      <span class="earn-time" style="color:var(--text3);">HORA</span>
+      <span style="color:var(--text3); font-size:10px; letter-spacing:.1em; text-transform:uppercase;">STATUS</span>
+    </div>
+    <div class="earnings-row">
+      <span class="earn-sym" style="color:var(--text3);">Lun 13</span>
+      <span class="earn-name">Goldman Sachs (GS)</span>
+      <span class="earn-time">Post-Market</span>
+      <span class="earn-type pm" style="background:rgba(0,192,106,.2); color:var(--bb-green); border:1px solid var(--bb-green);">✓ REPORTÓ · POSITIVO</span>
+    </div>
+    <div class="earnings-row">
+      <span class="earn-sym" style="color:var(--text3);">Mar 14</span>
+      <span class="earn-name">JPMorgan Chase (JPM)</span>
+      <span class="earn-time">Pre-Market</span>
+      <span class="earn-type am" style="background:rgba(0,192,106,.2); color:var(--bb-green); border:1px solid var(--bb-green);">✓ REPORTÓ</span>
+    </div>
+    <div class="earnings-row">
+      <span class="earn-sym" style="color:var(--text3);">Mar 14</span>
+      <span class="earn-name">Citigroup (C)</span>
+      <span class="earn-time">Pre-Market</span>
+      <span class="earn-type am" style="background:rgba(0,192,106,.2); color:var(--bb-green); border:1px solid var(--bb-green);">✓ REPORTÓ</span>
+    </div>
+    <div class="earnings-row">
+      <span class="earn-sym" style="color:var(--text3);">Mar 14</span>
+      <span class="earn-name">Wells Fargo (WFC)</span>
+      <span class="earn-time">Pre-Market</span>
+      <span class="earn-type am" style="background:rgba(0,192,106,.2); color:var(--bb-green); border:1px solid var(--bb-green);">✓ REPORTÓ</span>
+    </div>
+    <div class="earnings-row">
+      <span class="earn-sym" style="color:var(--text3);">Mar 14</span>
+      <span class="earn-name">BlackRock (BLK)</span>
+      <span class="earn-time">Pre-Market</span>
+      <span class="earn-type am">✓ REPORTÓ</span>
+    </div>
+    <div class="earnings-row" style="background:rgba(245,130,10,.05);">
+      <span class="earn-sym" style="color:var(--bb-orange);">HOY ◆</span>
+      <span class="earn-name"><strong>Bank of America (BAC)</strong></span>
+      <span class="earn-time">Pre-Market</span>
+      <span class="earn-type am" style="background:rgba(245,130,10,.2); color:var(--bb-orange); border:1px solid var(--bb-orange);">⏳ PENDIENTE</span>
+    </div>
+    <div class="earnings-row" style="background:rgba(245,130,10,.05);">
+      <span class="earn-sym" style="color:var(--bb-orange);">HOY ◆</span>
+      <span class="earn-name"><strong>Morgan Stanley (MS)</strong></span>
+      <span class="earn-time">Pre-Market</span>
+      <span class="earn-type am" style="background:rgba(245,130,10,.2); color:var(--bb-orange); border:1px solid var(--bb-orange);">⏳ PENDIENTE</span>
+    </div>
+    <div class="earnings-row">
+      <span class="earn-sym" style="color:var(--text3);">Jue 16</span>
+      <span class="earn-name">Netflix (NFLX)</span>
+      <span class="earn-time">Post-Market</span>
+      <span class="earn-type pm">PRÓXIMO</span>
+    </div>
+    <div class="earnings-row">
+      <span class="earn-sym" style="color:var(--text3);">Jue 16</span>
+      <span class="earn-name">PepsiCo (PEP)</span>
+      <span class="earn-time">Pre-Market</span>
+      <span class="earn-type am">PRÓXIMO</span>
+    </div>
+    <div class="earnings-row">
+      <span class="earn-sym" style="color:var(--text3);">Jue 16</span>
+      <span class="earn-name">Charles Schwab (SCHW)</span>
+      <span class="earn-time">Pre-Market</span>
+      <span class="earn-type am">PRÓXIMO</span>
+    </div>
+  </div>
+</section>
+
+<!-- ── 9. GAIA DHP — ESTADO TÉCNICO DEL SISTEMA ── -->
+<section class="section">
+  <div class="section-header">
+    <span class="section-num">09</span>
+    <span class="section-title">GAIA DHP — Estado del Sistema · Operación</span>
+    <span class="section-badge badge-live">Día 3 de Producción</span>
+  </div>
+
+  <div class="dhp-panel">
+    <div class="dhp-header">
+      <span class="dhp-title">Resumen Técnico · gaia_chart_v3.html + gaia_flow_v1.html</span>
+    </div>
+
+    <div class="analysis-grid">
+      <div class="analysis-card">
+        <h4>Funcionamiento Confirmado (Días 1–2)</h4>
+        <ul>
+          <li class="bull">GAIA CVD Bookmap (JAR v2): validación live ES + NQ confirmada. Delta acumulando correctamente por zona PAD. onTrade() price fix (ticks → price × pips) operativo.</li>
+          <li class="bull">DHP Chart v3: HIRO Line activa, GEX por strike renderizando, Momentum states actualizando cada 30 seg.</li>
+          <li class="bull">GAIA Flow v1: GEX Ladder operativo, Call/Put DHP por strike visible, Net DHP calculando correctamente.</li>
+          <li class="note">Patrón observado días 1–2: DHP positivo en apertura → correlación con dirección ES confirmada. Sistema validando su edge.</li>
+        </ul>
+      </div>
+      <div class="analysis-card">
+        <h4>Focus de Observación — Día 3</h4>
+        <ul>
+          <li class="note">¿La HIRO Line hace nuevo máximo en apertura RTH? → confirma continuación alcista dealers.</li>
+          <li class="note">¿Call DHP &gt; Put DHP en strikes 7,000–7,050? → confirma que dealers cubriendo calls = comprando futuros.</li>
+          <li class="warn">Zona de velocidad entre 7,000–7,050: GEX bajo aquí. Si DHP empuja precio en esta zona → movimiento puede ser rápido. No fading.</li>
+          <li class="note">Documenta el estado de Momentum en 09:30, 10:00 y 11:00 para calibrar patrones intraday del sistema.</li>
+          <li class="warn">Pendiente: reactivar Bookmap subscription + enviar JAR a Andry para Marketplace ($19/mes, 73% PAD).</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+</div><!-- /main -->
+
+<!-- FOOTER -->
+<footer>
+  <div>
+    <span>© 2026 <a href="https://pivotalphadesk.com">PivotAlphaDesk</a> · GAIA Framework · Edición Interna · No distribuir</span>
+  </div>
+  <div style="text-align:center; color: var(--text3);">
+    briefing_15abr2026.html · Generado 08:20 ET · Claude Sonnet 4.6
+  </div>
+  <div style="text-align:right;">
+    <span>ES · NQ · CL · SPX · GAIA DHP Día 3</span>
+  </div>
+</footer>
+
+</body>
+</html>
