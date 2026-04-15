@@ -1,0 +1,675 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SPY Gamma Structure | PivotAlphaDesk</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Barlow+Condensed:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<style>
+  :root {
+    --bg:       #070a0e;
+    --bg2:      #0c1118;
+    --bg3:      #101820;
+    --border:   #1a2535;
+    --border2:  #1e2d40;
+    --text:     #c0d0dc;
+    --dim:      #4a6070;
+    --bright:   #e8f4f8;
+    --red:      #e84040;
+    --red2:     rgba(232,64,64,0.15);
+    --orange:   #f0853a;
+    --yellow:   #f5c842;
+    --purple:   #9b5de5;
+    --purple2:  rgba(155,93,229,0.12);
+    --fuchsia:  #e040fb;
+    --blue:     #3a8ef0;
+    --teal:     #2ec4b6;
+    --green:    #3ecf6a;
+    --gold:     #f0c040;
+    --gray:     #5a7080;
+  }
+
+  * { margin:0; padding:0; box-sizing:border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Barlow Condensed', sans-serif;
+    min-height: 100vh;
+  }
+
+  .pad-chart-wrap {
+    background: var(--bg);
+    border: 1px solid var(--border2);
+    max-width: 960px;
+    margin: 0 auto;
+    overflow: hidden;
+  }
+
+  /* ── HEADER ── */
+  .chart-header {
+    background: var(--bg2);
+    border-bottom: 1px solid var(--border2);
+    padding: 14px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: relative;
+  }
+
+  .chart-header::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, var(--teal), var(--green), var(--yellow));
+  }
+
+  .header-left { display: flex; align-items: center; gap: 12px; }
+
+  .header-ticker {
+    font-family: 'Space Mono', monospace;
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--fuchsia);
+    letter-spacing: -0.5px;
+  }
+
+  .header-name { font-size: 12px; color: var(--dim); letter-spacing: 1px; }
+
+  .header-price-block { text-align: right; }
+
+  .price-main {
+    font-family: 'Space Mono', monospace;
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--bright);
+    letter-spacing: -0.5px;
+  }
+
+  .price-chg { font-family: 'Space Mono', monospace; font-size: 11px; margin-top: 2px; }
+  .price-chg.up   { color: var(--green); }
+  .price-chg.dn   { color: var(--red); }
+  .price-chg.flat { color: var(--dim); }
+
+  .regime-badge {
+    font-family: 'Space Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 2px;
+    padding: 3px 10px;
+    border: 1px solid var(--green);
+    color: var(--green);
+    background: rgba(62,207,106,0.08);
+    animation: pulse-reg 2s ease-in-out infinite;
+  }
+
+  @keyframes pulse-reg {
+    0%,100% { border-color: rgba(62,207,106,0.4); }
+    50%      { border-color: var(--green); box-shadow: 0 0 8px rgba(62,207,106,0.2); }
+  }
+
+  /* ── CHART AREA ── */
+  .chart-body {
+    display: grid;
+    grid-template-columns: 1fr 210px;
+    height: 500px;
+  }
+
+  .chart-canvas-wrap {
+    position: relative;
+    padding: 12px 0 12px 12px;
+    border-right: 1px solid var(--border);
+  }
+
+  /* ── LEVEL PANEL ── */
+  .level-panel {
+    background: var(--bg2);
+    padding: 14px 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    overflow-y: auto;
+  }
+
+  .panel-title {
+    font-family: 'Space Mono', monospace;
+    font-size: 8px;
+    color: var(--dim);
+    letter-spacing: 2px;
+    margin-bottom: 6px;
+    padding-bottom: 4px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .panel-section {
+    font-family: 'Space Mono', monospace;
+    font-size: 7px;
+    color: var(--dim);
+    letter-spacing: 1.5px;
+    margin-top: 6px;
+    margin-bottom: 2px;
+    padding: 2px 4px;
+    background: rgba(255,255,255,0.02);
+    border-left: 2px solid var(--border2);
+  }
+
+  .panel-section.call { border-left-color: var(--red);    color: var(--red); }
+  .panel-section.flip { border-left-color: var(--fuchsia); color: var(--fuchsia); }
+  .panel-section.put  { border-left-color: var(--blue);   color: var(--blue); }
+
+  .level-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 5px 8px;
+    border-left: 2px solid transparent;
+    background: rgba(255,255,255,0.02);
+  }
+
+  .level-item.active {
+    background: rgba(62,207,106,0.08);
+    border-left-color: var(--green);
+  }
+
+  .level-dot {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    flex-shrink: 0;
+    margin-right: 6px;
+  }
+
+  .level-info { display: flex; align-items: center; flex: 1; gap: 4px; }
+  .level-name { font-size: 10px; color: var(--text); flex: 1; line-height: 1.3; }
+
+  .level-price {
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    font-weight: 700;
+    text-align: right;
+  }
+
+  .sep { height: 1px; background: var(--border); margin: 4px 0; }
+
+  /* ── FOOTER ── */
+  .chart-footer {
+    background: var(--bg2);
+    border-top: 1px solid var(--border);
+    padding: 8px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .footer-sigmas { display: flex; gap: 16px; flex-wrap: wrap; }
+
+  .sigma-item { text-align: center; }
+
+  .sigma-lbl {
+    font-family: 'Space Mono', monospace;
+    font-size: 8px;
+    color: var(--dim);
+    letter-spacing: 1px;
+    display: block;
+    margin-bottom: 2px;
+  }
+
+  .sigma-val { font-family: 'Space Mono', monospace; font-size: 11px; font-weight: 700; }
+
+  .footer-right { text-align: right; }
+
+  .delay-note {
+    font-family: 'Space Mono', monospace;
+    font-size: 9px;
+    color: var(--dim);
+    letter-spacing: 1px;
+  }
+
+  .watermark {
+    font-family: 'Space Mono', monospace;
+    font-size: 9px;
+    color: var(--fuchsia);
+    letter-spacing: 1px;
+    margin-top: 2px;
+  }
+
+  .status-dot {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: var(--green);
+    display: inline-block;
+    animation: blink 2s ease-in-out infinite;
+    margin-right: 4px;
+  }
+
+  @keyframes blink { 0%,100% { opacity:1; } 50% { opacity:0.3; } }
+
+  .loading {
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    color: var(--dim);
+    animation: blink 1s ease-in-out infinite;
+  }
+</style>
+</head>
+<body>
+
+<div class="pad-chart-wrap">
+
+  <!-- HEADER -->
+  <div class="chart-header">
+    <div class="header-left">
+      <div>
+        <div class="header-ticker">SPY</div>
+        <div class="header-name">SPDR S&amp;P 500 ETF · GAIA ZONES · 15-ABR-2026 AM</div>
+      </div>
+      <div class="regime-badge">DAMPENED</div>
+    </div>
+    <div class="header-price-block">
+      <div class="price-main" id="priceMain"><span class="loading">···</span></div>
+      <div class="price-chg flat" id="priceChg">cargando</div>
+    </div>
+  </div>
+
+  <!-- CHART + LEVEL PANEL -->
+  <div class="chart-body">
+    <div class="chart-canvas-wrap">
+      <canvas id="spxCanvas"></canvas>
+    </div>
+
+    <div class="level-panel">
+      <div class="panel-title">ZONAS PAD · 15-ABR-2026 AM</div>
+
+      <div class="panel-section call">▲ CALL WALLS</div>
+      <div class="level-item" id="li-cw1">
+        <div class="level-info">
+          <div class="level-dot" style="background:#e84040"></div>
+          <div class="level-name">Call Wall · C=21,414</div>
+        </div>
+        <div class="level-price" style="color:#e84040">700.00</div>
+      </div>
+      <div class="level-item" id="li-gc">
+        <div class="level-info">
+          <div class="level-dot" style="background:#e84040; opacity:.7"></div>
+          <div class="level-name">Gamma Ceiling · C=13,644</div>
+        </div>
+        <div class="level-price" style="color:#e84040; opacity:.8">697.00</div>
+      </div>
+      <div class="level-item" id="li-cw3">
+        <div class="level-info">
+          <div class="level-dot" style="background:#e84040; opacity:.55"></div>
+          <div class="level-name">Call Wall 2 · C=12,862</div>
+        </div>
+        <div class="level-price" style="color:#e84040; opacity:.75">695.00</div>
+      </div>
+
+      <div class="sep"></div>
+      <div class="panel-section flip">◆ GAMMA FLIP</div>
+      <div class="level-item" id="li-spot">
+        <div class="level-info">
+          <div class="level-dot" style="background:#f0c040"></div>
+          <div class="level-name">▶ Spot AM</div>
+        </div>
+        <div class="level-price" style="color:#f0c040">694.08</div>
+      </div>
+      <div class="level-item" id="li-flip">
+        <div class="level-info">
+          <div class="level-dot" style="background:#e040fb"></div>
+          <div class="level-name">Gravity Point / Pin · OI=55,713</div>
+        </div>
+        <div class="level-price" style="color:#e040fb">694.00</div>
+      </div>
+
+      <div class="sep"></div>
+      <div class="panel-section put">▼ GAMMA FLOOR</div>
+      <div class="level-item" id="li-gf2">
+        <div class="level-info">
+          <div class="level-dot" style="background:#3a8ef0; opacity:.7"></div>
+          <div class="level-name">Gamma Floor 1 · P=18,742</div>
+        </div>
+        <div class="level-price" style="color:#3a8ef0; opacity:.8">690.00</div>
+      </div>
+      <div class="level-item" id="li-gf1">
+        <div class="level-info">
+          <div class="level-dot" style="background:#3a8ef0"></div>
+          <div class="level-name">Gamma Floor 2 · P=18,770</div>
+        </div>
+        <div class="level-price" style="color:#3a8ef0">681.00</div>
+      </div>
+      <div class="level-item" id="li-gf3">
+        <div class="level-info">
+          <div class="level-dot" style="background:#3a8ef0; opacity:.6"></div>
+          <div class="level-name">Gamma Floor 3 · P=17,755</div>
+        </div>
+        <div class="level-price" style="color:#3a8ef0; opacity:.75">677.00</div>
+      </div>
+      <div class="level-item" id="li-ea">
+        <div class="level-info">
+          <div class="level-dot" style="background:#2ec4b6"></div>
+          <div class="level-name">Tactical Anchor · P=14,984</div>
+        </div>
+        <div class="level-price" style="color:#2ec4b6">683.00</div>
+      </div>
+      <div class="level-item" id="li-pw">
+        <div class="level-info">
+          <div class="level-dot" style="background:#3a8ef0"></div>
+          <div class="level-name">Emergency Anchor · P=16,213</div>
+        </div>
+        <div class="level-price" style="color:#3a8ef0">655.00</div>
+      </div>
+
+      <div class="sep"></div>
+      <div class="panel-section" style="border-left-color:#5a7080; color:#5a7080">1σ RANGO · IV 21.63%</div>
+      <div class="level-item" id="li-shi">
+        <div class="level-info">
+          <div class="level-dot" style="background:#5a7080"></div>
+          <div class="level-name">1σ Superior</div>
+        </div>
+        <div class="level-price" style="color:#5a7080">6,959.14</div>
+      </div>
+      <div class="level-item" id="li-slo">
+        <div class="level-info">
+          <div class="level-dot" style="background:#5a7080"></div>
+          <div class="level-name">1σ Inferior</div>
+        </div>
+        <div class="level-price" style="color:#5a7080">6,812.68</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <div class="chart-footer">
+    <div class="footer-sigmas">
+      <div class="sigma-item">
+        <span class="sigma-lbl">RÉGIMEN</span>
+        <span class="sigma-val" style="color:var(--green)">DAMPENED</span>
+      </div>
+      <div class="sigma-item">
+        <span class="sigma-lbl">SPOT AM</span>
+        <span class="sigma-val" style="color:var(--gold)">694.08</span>
+      </div>
+      <div class="sigma-item">
+        <span class="sigma-lbl">GAMMA FLIP</span>
+        <span class="sigma-val" style="color:var(--fuchsia)">694.00</span>
+      </div>
+      <div class="sigma-item">
+        <span class="sigma-lbl">PUT WALL</span>
+        <span class="sigma-val" style="color:var(--blue)">694.00</span>
+      </div>
+      <div class="sigma-item">
+        <span class="sigma-lbl">1σ RANGO · IV 20.18%</span>
+        <span class="sigma-val" style="color:var(--gray)">685.26 / 702.90</span>
+      </div>
+    </div>
+    <div class="footer-right">
+      <div class="delay-note"><span class="status-dot"></span>Yahoo Finance · delay ~15 min · 15-Abr-2026 AM</div>
+      <div class="watermark">pivotalphadesk.com</div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+// ═══════════════════════════════════════════════════════════
+// CONFIGURACIÓN PAD — 14-Abr-2026 AM — ZONAS DIARIAS
+// Fuente: TradeStation XLS + IV manual 21.63%
+// ═══════════════════════════════════════════════════════════
+const PAD_CONFIG = {
+  fecha:   "15-Apr-2026 AM",
+  regimen: "DAMPENED",
+  ticker:  "SPY",
+
+  niveles: [
+    { id:"cw1",  precio:700.0, label:"Call Wall · C=21,414", color:"#e84040", dash:false, width:2.5 },
+    { id:"gc",   precio:697.0, label:"Gamma Ceiling · C=13,644", color:"#e84040", dash:true,  width:1.5 },
+    { id:"cw3",  precio:695.0, label:"Call Wall 2 · C=12,862", color:"#e84040", dash:true,  width:1.5 },
+    { id:"flip", precio:694.0, label:"Gravity Point / Pin · OI=55,713", color:"#e040fb", dash:false, width:2   },
+    { id:"gf1",  precio:681.0, label:"Gamma Floor 2 · P=18,770", color:"#3a8ef0", dash:true, width:1   },
+    { id:"gf2",  precio:690.0, label:"Gamma Floor 1 · P=18,742", color:"#3a8ef0", dash:false, width:2.5 },
+    { id:"gf3",  precio:677.0, label:"Gamma Floor 3 · P=17,755", color:"#3a8ef0", dash:true, width:1   },
+    { id:"ea",   precio:683.0, label:"Tactical Anchor · P=14,984", color:"#2ec4b6", dash:true,  width:1.5 },
+    { id:"pw",   precio:655.0, label:"Emergency Anchor · P=16,213", color:"#3a8ef0", dash:false, width:2.5 },
+  ],
+
+  spot_cierre: 694.08,
+  sigma_hi:    702.90,
+  sigma_lo:    685.26,
+};
+
+// ═══════════════════════════════════════════════════════════
+// FETCH PRECIO SPX
+// ═══════════════════════════════════════════════════════════
+let currentPrice = null;
+let prevClose    = null;
+
+async function fetchPrice() {
+  try {
+    const url = `https://api.allorigins.win/raw?url=${encodeURIComponent(
+      `https://query1.finance.yahoo.com/v8/finance/chart/%5EGSPC?interval=5m&range=1d`
+    )}`;
+    const res  = await fetch(url);
+    const data = await res.json();
+
+    const result = data?.chart?.result?.[0];
+    if (!result) throw new Error("No data");
+
+    const meta  = result.meta;
+    const price = meta.regularMarketPrice;
+    const prev  = meta.previousClose || meta.chartPreviousClose;
+    const chg   = price - prev;
+    const pct   = (chg / prev) * 100;
+
+    currentPrice = price;
+    prevClose    = prev;
+
+    document.getElementById("priceMain").textContent =
+      price.toLocaleString("en-US", { minimumFractionDigits:2, maximumFractionDigits:2 });
+
+    const chgEl = document.getElementById("priceChg");
+    const sign  = chg >= 0 ? "+" : "";
+    chgEl.textContent = `${sign}${chg.toFixed(2)} (${sign}${pct.toFixed(2)}%)`;
+    chgEl.className   = `price-chg ${chg >= 0 ? "up" : "dn"}`;
+
+    highlightNearestLevel(price);
+
+    const closes = result.indicators?.quote?.[0]?.close?.filter(v => v != null) || [];
+    const times  = result.timestamp || [];
+    buildChart(closes, times, price);
+
+  } catch(e) {
+    console.warn("Price fetch error:", e);
+    document.getElementById("priceMain").textContent = "N/D";
+    document.getElementById("priceChg").textContent  = "delay data unavailable";
+    document.getElementById("priceChg").className    = "price-chg flat";
+    buildChart([], [], null);
+  }
+}
+
+function highlightNearestLevel(price) {
+  if (!price) return;
+  let closest = null, minDist = Infinity;
+  PAD_CONFIG.niveles.forEach(n => {
+    const d = Math.abs(n.precio - price);
+    if (d < minDist) { minDist = d; closest = n.id; }
+  });
+  document.querySelectorAll(".level-item").forEach(el => el.classList.remove("active"));
+  if (closest) {
+    const el = document.getElementById("li-" + closest);
+    if (el) el.classList.add("active");
+  }
+}
+
+// ═══════════════════════════════════════════════════════════
+// CHART.JS
+// ═══════════════════════════════════════════════════════════
+let chart = null;
+
+function buildChart(closes, timestamps, currentPx) {
+  const canvas = document.getElementById("spxCanvas");
+  const ctx    = canvas.getContext("2d");
+  if (chart) { chart.destroy(); }
+
+  const labels = timestamps.map(t => {
+    const d = new Date(t * 1000);
+    return d.toLocaleTimeString("en-US", { hour:"2-digit", minute:"2-digit", hour12:false });
+  });
+
+  const allPrices = [...closes.filter(Boolean)];
+  PAD_CONFIG.niveles.forEach(n => allPrices.push(n.precio));
+  if (currentPx) allPrices.push(currentPx);
+  const yMin = Math.min(...allPrices, PAD_CONFIG.sigma_lo) - 30;
+  const yMax = Math.max(...allPrices, PAD_CONFIG.sigma_hi) + 30;
+
+  const levelDatasets = PAD_CONFIG.niveles.map(n => ({
+    label: n.label,
+    data: labels.map(() => n.precio),
+    borderColor: n.color,
+    borderWidth: n.width,
+    borderDash: n.dash ? [5,3] : [],
+    pointRadius: 0,
+    fill: false,
+    tension: 0,
+    order: 1,
+  }));
+
+  // 1σ range band
+  const sigmaHiDS = {
+    label: "1σ Hi",
+    data: labels.map(() => PAD_CONFIG.sigma_hi),
+    borderColor: "rgba(90,112,128,0.3)",
+    borderWidth: 1,
+    borderDash: [4,4],
+    backgroundColor: "rgba(90,112,128,0.04)",
+    pointRadius: 0,
+    fill: "+1",
+    tension: 0,
+    order: 2,
+  };
+
+  const sigmaLoDS = {
+    label: "1σ Lo",
+    data: labels.map(() => PAD_CONFIG.sigma_lo),
+    borderColor: "rgba(90,112,128,0.3)",
+    borderWidth: 1,
+    borderDash: [4,4],
+    pointRadius: 0,
+    fill: false,
+    tension: 0,
+    order: 2,
+  };
+
+  // Spot AM reference line
+  const spotRefDS = {
+    label: "Spot AM",
+    data: labels.map(() => PAD_CONFIG.spot_cierre),
+    borderColor: "rgba(240,192,64,0.4)",
+    borderWidth: 1,
+    borderDash: [3,3],
+    pointRadius: 0,
+    fill: false,
+    tension: 0,
+    order: 1,
+  };
+
+  const priceDataset = {
+    label: "SPY",
+    data: closes,
+    borderColor: "#c0d0dc",
+    borderWidth: 2,
+    pointRadius: 0,
+    fill: false,
+    tension: 0.2,
+    order: 0,
+  };
+
+  const currentDataset = currentPx ? {
+    label: "Precio actual",
+    data: labels.map(() => currentPx),
+    borderColor: "rgba(255,255,255,0.4)",
+    borderWidth: 1,
+    borderDash: [3,3],
+    pointRadius: 0,
+    fill: false,
+    tension: 0,
+    order: 0,
+  } : null;
+
+  const datasets = [sigmaHiDS, sigmaLoDS, spotRefDS, ...levelDatasets, priceDataset];
+  if (currentDataset) datasets.push(currentDataset);
+
+  chart = new Chart(ctx, {
+    type: "line",
+    data: { labels, datasets },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      animation: { duration: 600, easing: "easeOutQuart" },
+      interaction: { mode:"index", intersect:false },
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          enabled: true,
+          backgroundColor: "#0c1118",
+          borderColor: "#1e2d40",
+          borderWidth: 1,
+          titleFont: { family:"Space Mono", size:10 },
+          bodyFont:  { family:"Space Mono", size:11 },
+          titleColor: "#5a7080",
+          bodyColor:  "#e8f4f8",
+          callbacks: {
+            title: (items) => items[0]?.label || "",
+            label: (item) => {
+              const ignore = ["1σ Hi","1σ Lo"];
+              if (ignore.includes(item.dataset.label)) return null;
+              return ` ${item.dataset.label}: ${item.formattedValue}`;
+            },
+            filter: (item) => {
+              const ignore = ["1σ Hi","1σ Lo"];
+              return item.parsed.y !== null && !ignore.includes(item.dataset.label);
+            },
+          }
+        },
+      },
+      scales: {
+        x: {
+          grid: { color:"rgba(255,255,255,0.03)", drawBorder:false },
+          ticks: {
+            color:"#4a6070",
+            font:{ family:"Space Mono", size:9 },
+            maxTicksLimit: 8,
+            maxRotation: 0,
+          },
+          border: { color:"#1a2535" },
+        },
+        y: {
+          position: "right",
+          min: yMin,
+          max: yMax,
+          grid: { color:"rgba(255,255,255,0.03)", drawBorder:false },
+          ticks: {
+            color:"#4a6070",
+            font:{ family:"Space Mono", size:9 },
+            maxTicksLimit: 12,
+            callback: (v) => v.toLocaleString("en-US"),
+          },
+          border: { color:"#1a2535" },
+        },
+      },
+    },
+  });
+}
+
+// ═══════════════════════════════════════════════════════════
+// INIT + AUTO-REFRESH cada 60s
+// ═══════════════════════════════════════════════════════════
+document.addEventListener("DOMContentLoaded", () => {
+  buildChart([], [], null);
+  fetchPrice();
+  setInterval(fetchPrice, 60000);
+});
+</script>
+
+</body>
+</html>
