@@ -38,7 +38,18 @@ LOGIN_HTML = """
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>GAIA DHP | PivotAlphaDesk</title>
+<link rel="manifest" href="/manifest.json">
+<meta name="theme-color" content="#00d4ff">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="GAIA Live">
+<link rel="apple-touch-icon" href="/static/icon-192.png">
 <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@700;800&display=swap" rel="stylesheet">
+<script>
+if('serviceWorker' in navigator){
+  window.addEventListener('load', () => navigator.serviceWorker.register('/sw.js'));
+}
+</script>
 <style>
 *{box-sizing:border-box;margin:0;padding:0;}
 body{background:#070a0e;color:#e8f4f8;font-family:'Space Mono',monospace;
@@ -98,7 +109,18 @@ DASHBOARD_HTML = """
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>GAIA DHP | PivotAlphaDesk</title>
+<link rel="manifest" href="/manifest.json">
+<meta name="theme-color" content="#00d4ff">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="GAIA Live">
+<link rel="apple-touch-icon" href="/static/icon-192.png">
 <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@700;800&display=swap" rel="stylesheet">
+<script>
+if('serviceWorker' in navigator){
+  window.addEventListener('load', () => navigator.serviceWorker.register('/sw.js'));
+}
+</script>
 <style>
 *{box-sizing:border-box;margin:0;padding:0;}
 body{background:#070a0e;color:#e8f4f8;font-family:'Space Mono',monospace;}
@@ -183,6 +205,19 @@ def get_spot():
         return f"{_live_data.get('spot_es', '——'):.2f}"
     except:
         return str(_live_data.get('spot_es', '——'))
+
+# ── PWA ROUTES ────────────────────────────────────────────────────────────────
+@app.route('/manifest.json')
+def manifest():
+    return send_from_directory(BASE_DIR, 'manifest.json', mimetype='application/manifest+json')
+
+@app.route('/sw.js')
+def service_worker():
+    return send_from_directory(BASE_DIR, 'sw.js', mimetype='application/javascript')
+
+@app.route('/static/<path:filename>')
+def static_files(filename):
+    return send_from_directory(os.path.join(BASE_DIR, 'static'), filename)
 
 # ── PUSH ENDPOINT (llamado desde ts_gaia_chart.py local) ──────────────────────
 @app.route('/push', methods=['POST'])
