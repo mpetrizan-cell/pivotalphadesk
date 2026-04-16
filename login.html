@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Member Access | PivotAlphaDesk</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@700;800&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html,body{height:100%;}
+body{
+  background:#070a0e;
+  color:#e8f4f8;
+  font-family:'Space Mono',monospace;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  min-height:100vh;
+  padding:20px;
+}
+body::before{
+  content:'';
+  position:fixed;
+  inset:0;
+  background-image:linear-gradient(rgba(0,212,255,0.02) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(0,212,255,0.02) 1px,transparent 1px);
+  background-size:48px 48px;
+  pointer-events:none;
+  z-index:0;
+}
+.wrap{
+  position:relative;
+  z-index:1;
+  width:100%;
+  max-width:440px;
+  text-align:center;
+}
+.logo{
+  font-family:'Syne',sans-serif;
+  font-weight:800;
+  font-size:28px;
+  letter-spacing:-.02em;
+  color:#fff;
+  margin-bottom:4px;
+}
+.logo span{color:#00d4ff;}
+.tagline{
+  font-size:9px;
+  letter-spacing:.18em;
+  text-transform:uppercase;
+  color:#4a6070;
+  margin-bottom:48px;
+}
+.card{
+  background:#0d1319;
+  border:1px solid #1e2d3d;
+  padding:40px 36px;
+}
+.card-title{
+  font-family:'Syne',sans-serif;
+  font-weight:700;
+  font-size:20px;
+  color:#fff;
+  margin-bottom:8px;
+}
+.card-sub{
+  font-size:10px;
+  color:#4a6070;
+  letter-spacing:.08em;
+  margin-bottom:32px;
+  line-height:1.6;
+}
+.input-wrap{
+  position:relative;
+  margin-bottom:8px;
+}
+input[type=text]{
+  width:100%;
+  background:#111820;
+  border:1px solid #1e2d3d;
+  color:#e8f4f8;
+  font-family:'Space Mono',monospace;
+  font-size:14px;
+  letter-spacing:.12em;
+  padding:14px 16px;
+  text-align:center;
+  text-transform:uppercase;
+  outline:none;
+  transition:border-color .2s;
+}
+input[type=text]:focus{border-color:#00d4ff;}
+input[type=text]::placeholder{color:#2a3a48;letter-spacing:.1em;}
+.error{
+  font-size:10px;
+  color:#ff4444;
+  letter-spacing:.08em;
+  min-height:20px;
+  margin-bottom:12px;
+  text-align:center;
+}
+.btn{
+  width:100%;
+  background:#00d4ff;
+  color:#070a0e;
+  border:none;
+  padding:14px;
+  font-family:'Space Mono',monospace;
+  font-size:11px;
+  letter-spacing:.14em;
+  text-transform:uppercase;
+  font-weight:700;
+  cursor:pointer;
+  transition:background .2s;
+  margin-bottom:24px;
+}
+.btn:hover{background:#fff;}
+.divider{
+  border:none;
+  border-top:1px solid #1e2d3d;
+  margin-bottom:20px;
+}
+.access-list{
+  text-align:left;
+  margin-bottom:24px;
+}
+.access-list p{
+  font-size:9px;
+  color:#4a6070;
+  letter-spacing:.1em;
+  text-transform:uppercase;
+  margin-bottom:12px;
+}
+.access-item{
+  display:flex;
+  align-items:center;
+  gap:12px;
+  padding:10px 12px;
+  background:#111820;
+  border:1px solid #1e2d3d;
+  margin-bottom:6px;
+  cursor:pointer;
+  transition:border-color .2s;
+  text-decoration:none;
+}
+.access-item:hover{border-color:#00d4ff;}
+.access-dot{
+  width:6px;
+  height:6px;
+  border-radius:50%;
+  background:#00d4ff;
+  flex-shrink:0;
+}
+.access-dot.red{background:#ff4444;}
+.access-dot.gold{background:#f0b429;}
+.access-label{
+  font-size:10px;
+  color:#8ba4b8;
+  letter-spacing:.06em;
+  flex:1;
+}
+.access-date{
+  font-size:9px;
+  color:#2a3a48;
+  letter-spacing:.06em;
+}
+.back-link{
+  font-size:9px;
+  color:#4a6070;
+  letter-spacing:.1em;
+  text-decoration:none;
+}
+.back-link:hover{color:#00d4ff;}
+.trial-note{
+  font-size:9px;
+  color:#f0b429;
+  letter-spacing:.08em;
+  margin-top:16px;
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="logo">Pivot<span>Alpha</span>Desk</div>
+  <div class="tagline">Member Access Portal</div>
+
+  <div class="card">
+    <div class="card-title">Enter Access Code</div>
+    <div class="card-sub">Enter your Pro access code below to unlock<br>daily briefings and gamma intelligence.</div>
+
+    <div class="input-wrap">
+      <input type="text" id="code-input" placeholder="YOUR CODE HERE" maxlength="20" autocomplete="off" />
+    </div>
+    <div class="error" id="error-msg"></div>
+    <button class="btn" id="access-btn">ACCESS BRIEFINGS →</button>
+
+    <hr class="divider">
+
+    <div class="access-list">
+      <p>Latest Briefings</p>
+      <a class="access-item" href="briefing_16abr2026.html">
+        <div class="access-dot red"></div>
+        <span class="access-label">Pre-Open Briefing · 16 Abr 2026</span>
+        <span class="access-date">HOY</span>
+      </a>
+      <a class="access-item" href="briefing_15abr2026.html">
+        <div class="access-dot"></div>
+        <span class="access-label">Pre-Open Briefing · 15 Abr 2026</span>
+        <span class="access-date">AYER</span>
+      </a>
+      <a class="access-item" href="briefing_13abr2026.html">
+        <div class="access-dot"></div>
+        <span class="access-label">Pre-Open Briefing · 13 Abr 2026</span>
+        <span class="access-date">LUN</span>
+      </a>
+      <a class="access-item" href="briefing_10abr2026.html">
+        <div class="access-dot gold"></div>
+        <span class="access-label">Pre-Open Briefing · 10 Abr 2026</span>
+        <span class="access-date">VIE</span>
+      </a>
+    </div>
+
+    <div class="trial-note">Free trial available · use code PADTRIAL</div>
+  </div>
+
+  <br>
+  <a href="index.html" class="back-link">← Back to PivotAlphaDesk</a>
+</div>
+
+<script>
+var ACCESS_CODES = ['PAD2026PRO', 'PADTRIAL'];
+var TRIAL_CODES  = { 'PADTRIAL': 7 };
+var SESSION_HOURS = 12;
+var STORAGE_KEY   = 'pad_access_v1';
+
+function isValid(code){ return ACCESS_CODES.indexOf(code.toUpperCase().trim()) !== -1; }
+
+function grant(code){
+  code = code.toUpperCase().trim();
+  var now = Date.now();
+  var data = { code: code, session_expiry: now + SESSION_HOURS*3600*1000 };
+  if(TRIAL_CODES[code] !== undefined){
+    var existing = null;
+    try{ existing = JSON.parse(localStorage.getItem(STORAGE_KEY)); }catch(e){}
+    var ts = (existing && existing.trial_start) ? existing.trial_start : now;
+    data.trial_start  = ts;
+    data.trial_expiry = ts + TRIAL_CODES[code]*24*3600*1000;
+  }
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+}
+
+function hasAccess(){
+  try{
+    var d = JSON.parse(localStorage.getItem(STORAGE_KEY));
+    if(!d) return false;
+    if(Date.now() > d.session_expiry) return false;
+    var code = (d.code||'').toUpperCase();
+    if(TRIAL_CODES[code] !== undefined && Date.now() > (d.trial_expiry||0)){
+      localStorage.removeItem(STORAGE_KEY); return false;
+    }
+    return true;
+  }catch(e){ return false; }
+}
+
+// If already has access — show welcome
+if(hasAccess()){
+  document.getElementById('access-btn').textContent = '✓ ACCESS ACTIVE — VIEW BRIEFINGS';
+  document.getElementById('access-btn').style.background = '#00c06a';
+  document.getElementById('code-input').style.display = 'none';
+  document.querySelector('.card-sub').textContent = 'Your access is active. Click a briefing below to open it.';
+}
+
+document.getElementById('access-btn').addEventListener('click', function(){
+  if(hasAccess()){ window.location.href = 'briefing_16abr2026.html'; return; }
+  var code = document.getElementById('code-input').value;
+  if(!code){ document.getElementById('error-msg').textContent = 'Enter your access code.'; return; }
+  if(isValid(code)){
+    grant(code);
+    window.location.href = 'briefing_16abr2026.html';
+  } else {
+    document.getElementById('error-msg').textContent = 'Invalid code. Try again.';
+    document.getElementById('code-input').value = '';
+    document.getElementById('code-input').focus();
+  }
+});
+
+document.getElementById('code-input').addEventListener('keydown', function(e){
+  if(e.key === 'Enter') document.getElementById('access-btn').click();
+});
+</script>
+</body>
+</html>
