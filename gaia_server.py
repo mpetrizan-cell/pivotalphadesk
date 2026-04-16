@@ -10,7 +10,8 @@ from flask import Flask, jsonify, request, send_from_directory, redirect, sessio
 import json, os, time, logging
 from functools import wraps
 
-app = Flask(__name__, static_folder='.')
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+app = Flask(__name__, static_folder=BASE_DIR)
 app.secret_key = os.environ.get('SECRET_KEY', 'pad_gaia_2026_secret_key_change_in_prod')
 
 # ── CONFIGURACIÓN ──────────────────────────────────────────────────────────────
@@ -249,12 +250,12 @@ def flow():
 @app.route('/gaia_chart_v3.html')
 @require_auth
 def serve_chart():
-    return send_from_directory('.', 'gaia_chart_v3.html')
+    return send_from_directory(BASE_DIR, 'gaia_chart_v3.html')
 
 @app.route('/gaia_flow_v1.html')
 @require_auth
 def serve_flow():
-    return send_from_directory('.', 'gaia_flow_v1.html')
+    return send_from_directory(BASE_DIR, 'gaia_flow_v1.html')
 
 @app.route('/gaia_live.json')
 @require_auth
