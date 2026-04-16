@@ -1,0 +1,1154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GAIA Live v3 — PivotAlphaDesk</title>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@300;400;600;700&family=Barlow+Condensed:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg0:      #05080f;
+  --bg1:      #090d18;
+  --bg2:      #0d1222;
+  --bg3:      #111828;
+  --border:   #1a2440;
+  --border2:  #243050;
+  --call:     #f5a623;
+  --call2:    #ffcc66;
+  --put:      #3b9eff;
+  --put2:     #7ec8ff;
+  --dhp-pos:  #00e5a0;
+  --dhp-neg:  #ff3355;
+  --node:     #cc44ff;
+  --price:    #ffffff;
+  --gold:     #f0c040;
+  --text:     #b8cce0;
+  --dim:      #3a5070;
+  --dim2:     #2a3850;
+  --green:    #00e5a0;
+  --red:      #ff3355;
+  --yellow:   #ffd700;
+}
+
+* { margin:0; padding:0; box-sizing:border-box; }
+
+body {
+  background: var(--bg0);
+  color: var(--text);
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 12px;
+  height: 100vh;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ── HEADER ── */
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 20px;
+  background: var(--bg1);
+  border-bottom: 1px solid var(--border);
+  flex-shrink: 0;
+}
+
+.logo-block {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.logo-badge {
+  width: 28px; height: 28px;
+  border: 1.5px solid var(--gold);
+  border-radius: 3px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 9px; font-weight: 700;
+  color: var(--gold);
+  letter-spacing: -0.5px;
+}
+
+.logo-name {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 20px;
+  font-weight: 700;
+  letter-spacing: 3px;
+  color: #fff;
+}
+
+.logo-sub {
+  font-size: 8px;
+  color: var(--dim);
+  letter-spacing: 2px;
+  margin-top: 1px;
+}
+
+.header-center {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.conn-dot {
+  width: 7px; height: 7px;
+  border-radius: 50%;
+  background: var(--green);
+  box-shadow: 0 0 6px var(--green);
+  transition: all 0.3s;
+}
+
+.conn-dot.off {
+  background: var(--red);
+  box-shadow: 0 0 6px var(--red);
+  animation: none;
+}
+
+.conn-dot.live {
+  animation: blink 2s infinite;
+}
+
+@keyframes blink {
+  0%,100% { opacity:1; }
+  50% { opacity:0.3; }
+}
+
+.conn-label {
+  font-size: 9px;
+  letter-spacing: 2px;
+  color: var(--dim);
+}
+
+.header-right {
+  text-align: right;
+}
+
+.spx-label {
+  font-size: 8px;
+  color: var(--dim);
+  letter-spacing: 2px;
+}
+
+.spx-price {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 32px;
+  font-weight: 700;
+  color: #fff;
+  letter-spacing: 1px;
+  line-height: 1;
+}
+
+/* ── METRICS BAR ── */
+.metrics {
+  display: flex;
+  background: var(--bg1);
+  border-bottom: 1px solid var(--border);
+  flex-shrink: 0;
+}
+
+.metric {
+  flex: 1;
+  padding: 6px 16px;
+  border-right: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.metric:last-child { border-right: none; }
+
+.metric-label {
+  font-size: 8px;
+  color: var(--dim);
+  letter-spacing: 2px;
+}
+
+.metric-val {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 22px;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.metric-val.pos  { color: var(--green); }
+.metric-val.neg  { color: var(--red); }
+.metric-val.call { color: var(--call); }
+.metric-val.put  { color: var(--put); }
+.metric-val.node { color: var(--node); }
+.metric-val.neu  { color: var(--text); }
+
+/* ── MAIN LAYOUT ── */
+.body {
+  display: grid;
+  grid-template-columns: 220px 1fr 200px;
+  flex: 1;
+  overflow: hidden;
+  gap: 0;
+  background: var(--border);
+}
+
+/* ── LEFT PANEL ── */
+.left {
+  background: var(--bg1);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.panel-title {
+  font-size: 8px;
+  letter-spacing: 2px;
+  color: var(--dim);
+  padding: 8px 14px 6px;
+  border-bottom: 1px solid var(--border);
+  text-transform: uppercase;
+}
+
+/* GAIA LEVELS */
+.levels-block {
+  padding: 10px 14px;
+  border-bottom: 1px solid var(--border);
+}
+
+.level-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 4px 0;
+  border-bottom: 1px solid var(--border2);
+}
+
+.level-row:last-child { border-bottom: none; }
+
+.level-name {
+  font-size: 9px;
+  color: var(--dim);
+  letter-spacing: 1px;
+}
+
+.level-val {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 18px;
+  font-weight: 700;
+}
+
+/* DHP WHEEL */
+.wheel-block {
+  padding: 12px 14px;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+.wheel-title {
+  font-size: 8px;
+  color: var(--dim);
+  letter-spacing: 2px;
+  align-self: flex-start;
+}
+
+.wheel-wrap {
+  position: relative;
+  width: 140px;
+  height: 140px;
+}
+
+#wheel-canvas {
+  width: 140px;
+  height: 140px;
+}
+
+.wheel-center {
+  position: absolute;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  text-align: center;
+}
+
+.wheel-dhp {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 22px;
+  font-weight: 800;
+  line-height: 1;
+}
+
+.wheel-dir {
+  font-size: 8px;
+  color: var(--dim);
+  letter-spacing: 1px;
+  margin-top: 2px;
+}
+
+/* DEALER SIGNAL */
+.signal-block {
+  padding: 10px 14px;
+  flex: 1;
+}
+
+.signal-arrow {
+  font-size: 28px;
+  font-weight: 700;
+  line-height: 1;
+  margin-bottom: 4px;
+}
+
+.signal-text {
+  font-size: 9px;
+  color: var(--dim);
+  line-height: 1.5;
+}
+
+/* ── CENTER CHART ── */
+.center {
+  background: var(--bg0);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.chart-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 6px 16px;
+  background: var(--bg1);
+  border-bottom: 1px solid var(--border);
+  flex-shrink: 0;
+}
+
+.chart-title {
+  font-size: 8px;
+  letter-spacing: 2px;
+  color: var(--dim);
+}
+
+.legend {
+  display: flex;
+  gap: 16px;
+}
+
+.leg {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 8px;
+  color: var(--dim);
+  letter-spacing: 1px;
+}
+
+.leg-dot {
+  width: 8px; height: 8px;
+  border-radius: 1px;
+}
+
+.gex-wrap {
+  flex: 1;
+  position: relative;
+  overflow: hidden;
+}
+
+#gex-canvas {
+  position: absolute;
+  top: 0; left: 0;
+}
+
+.no-data {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  color: var(--dim);
+}
+
+.no-data-icon { font-size: 36px; opacity: 0.3; }
+.no-data-text {
+  font-size: 10px;
+  letter-spacing: 2px;
+  text-align: center;
+  line-height: 2;
+}
+
+/* DHP CHART */
+.dhp-wrap {
+  height: 90px;
+  background: var(--bg1);
+  border-top: 1px solid var(--border);
+  flex-shrink: 0;
+  position: relative;
+  padding: 4px 0 0 0;
+}
+
+.dhp-label {
+  font-size: 7px;
+  color: var(--dim);
+  letter-spacing: 2px;
+  padding: 0 12px;
+  margin-bottom: 2px;
+}
+
+#dhp-canvas {
+  width: 100%;
+  height: 70px;
+  display: block;
+}
+
+.dhp-current {
+  position: absolute;
+  right: 12px;
+  bottom: 6px;
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 16px;
+  font-weight: 700;
+}
+
+/* ── RIGHT PANEL ── */
+.right {
+  background: var(--bg1);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.strike-list {
+  flex: 1;
+  overflow-y: auto;
+}
+
+.strike-list::-webkit-scrollbar { width: 3px; }
+.strike-list::-webkit-scrollbar-thumb { background: var(--border2); }
+
+.strike-row {
+  display: grid;
+  grid-template-columns: 44px 1fr 44px;
+  align-items: center;
+  padding: 3px 10px;
+  border-bottom: 1px solid rgba(26,36,64,0.5);
+  gap: 4px;
+  transition: background 0.15s;
+}
+
+.strike-row:hover { background: rgba(255,255,255,0.02); }
+
+.strike-row.atm {
+  background: rgba(204,68,255,0.06);
+  border-left: 2px solid var(--node);
+}
+
+.strike-row.call-wall-row { border-left: 2px solid var(--call); }
+.strike-row.put-wall-row  { border-left: 2px solid var(--put); }
+
+.sk-price {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  text-align: center;
+}
+
+.sk-bars {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  height: 18px;
+  justify-content: center;
+}
+
+.sk-bar-call {
+  height: 7px;
+  background: var(--call);
+  border-radius: 1px;
+  min-width: 1px;
+  transition: width 0.4s ease;
+  opacity: 0.85;
+}
+
+.sk-bar-put {
+  height: 7px;
+  background: var(--put);
+  border-radius: 1px;
+  min-width: 1px;
+  transition: width 0.4s ease;
+  opacity: 0.85;
+}
+
+.sk-net {
+  font-size: 9px;
+  text-align: right;
+  font-weight: 600;
+}
+
+.ts-footer {
+  padding: 6px 10px;
+  font-size: 8px;
+  color: var(--dim);
+  letter-spacing: 1px;
+  border-top: 1px solid var(--border);
+  text-align: center;
+}
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div class="header">
+  <div class="logo-block">
+    <div class="logo-badge">PAD</div>
+    <div>
+      <div class="logo-name">PIVOTALPHADESK</div>
+      <div class="logo-sub">GAIA LIVE  ·  DEALER POSITIONING  ·  0DTE</div>
+    </div>
+  </div>
+  <div class="header-center">
+    <div class="conn-dot live" id="conn-dot"></div>
+    <div class="conn-label" id="conn-label">CONNECTING</div>
+  </div>
+  <div class="header-right">
+    <div class="spx-label">$SPXW.X  INDEX</div>
+    <div class="spx-price" id="spx-price">——</div>
+  </div>
+</div>
+
+<!-- METRICS -->
+<div class="metrics">
+  <div class="metric">
+    <div class="metric-label">DHP TOTAL</div>
+    <div class="metric-val neu" id="m-dhp">—</div>
+  </div>
+  <div class="metric">
+    <div class="metric-label">REGIME</div>
+    <div class="metric-val neu" id="m-regime">—</div>
+  </div>
+  <div class="metric">
+    <div class="metric-label">MOMENTUM</div>
+    <div class="metric-val neu" id="m-momentum">—</div>
+  </div>
+  <div class="metric">
+    <div class="metric-label">EXPIRATION</div>
+    <div class="metric-val neu" id="m-exp">—</div>
+  </div>
+  <div class="metric">
+    <div class="metric-label">CALL WALL</div>
+    <div class="metric-val call" id="m-cw">—</div>
+  </div>
+  <div class="metric">
+    <div class="metric-label">PUT WALL</div>
+    <div class="metric-val put" id="m-pw">—</div>
+  </div>
+  <div class="metric">
+    <div class="metric-label">GAMMA NODE</div>
+    <div class="metric-val node" id="m-node">—</div>
+  </div>
+</div>
+
+<!-- BODY -->
+<div class="body">
+
+  <!-- LEFT -->
+  <div class="left">
+    <div class="panel-title">GAIA LEVELS</div>
+    <div class="levels-block">
+      <div class="level-row">
+        <div class="level-name">CALL WALL</div>
+        <div class="level-val" id="l-cw" style="color:var(--call)">—</div>
+      </div>
+      <div class="level-row">
+        <div class="level-name">PUT WALL</div>
+        <div class="level-val" id="l-pw" style="color:var(--put)">—</div>
+      </div>
+      <div class="level-row">
+        <div class="level-name">GAMMA NODE</div>
+        <div class="level-val" id="l-node" style="color:var(--node)">—</div>
+      </div>
+      <div class="level-row">
+        <div class="level-name">GRAVITY PIN</div>
+        <div class="level-val" id="l-pin" style="color:var(--gold)">—</div>
+      </div>
+      <div class="level-row">
+        <div class="level-name">GAMMA FLIP</div>
+        <div class="level-val" id="l-flip" style="color:var(--yellow)">—</div>
+      </div>
+    </div>
+
+    <!-- WHEEL -->
+    <div class="panel-title">DHP MOMENTUM</div>
+    <div class="wheel-block">
+      <div class="wheel-wrap">
+        <canvas id="wheel-canvas" width="140" height="140"></canvas>
+        <div class="wheel-center">
+          <div class="wheel-dhp" id="wheel-val">—</div>
+          <div class="wheel-dir" id="wheel-dir">FLOW</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SIGNAL -->
+    <div class="panel-title">DEALER SIGNAL</div>
+    <div class="signal-block">
+      <div class="signal-arrow" id="sig-arrow">—</div>
+      <div class="signal-text" id="sig-text">Waiting for data...</div>
+    </div>
+  </div>
+
+  <!-- CENTER -->
+  <div class="center">
+    <div class="chart-header">
+      <div class="chart-title">GAMMA EXPOSURE BY STRIKE — CALLS / PUTS SEPARATED</div>
+      <div class="legend">
+        <div class="leg"><div class="leg-dot" style="background:var(--call)"></div>CALL GEX</div>
+        <div class="leg"><div class="leg-dot" style="background:var(--put)"></div>PUT GEX</div>
+        <div class="leg"><div class="leg-dot" style="background:var(--node);border-radius:50%"></div>GAMMA NODE</div>
+        <div class="leg"><div class="leg-dot" style="background:var(--price)"></div>SPOT</div>
+      </div>
+    </div>
+
+    <div class="gex-wrap" id="gex-wrap">
+      <canvas id="gex-canvas"></canvas>
+      <div class="no-data" id="no-data">
+        <div class="no-data-icon">◈</div>
+        <div class="no-data-text">WAITING FOR DATA<br>RUN ts_gaia_chart.py</div>
+      </div>
+    </div>
+
+    <div class="dhp-wrap">
+      <div class="dhp-label">DELTA HEDGING PRESSURE  ·  DEALER FLOW LINE</div>
+      <canvas id="dhp-canvas"></canvas>
+      <div class="dhp-current" id="dhp-current"></div>
+    </div>
+  </div>
+
+  <!-- RIGHT -->
+  <div class="right">
+    <div class="panel-title">STRIKE POSITIONING</div>
+    <div class="strike-list" id="strike-list"></div>
+    <div class="ts-footer" id="ts-footer">——</div>
+  </div>
+
+</div>
+
+<script>
+const DATA_FILE   = 'gaia_live.json';
+const REFRESH_MS  = 5000;
+const MAX_HISTORY = 80;
+const STALE_SEC   = 90; // segundos antes de marcar DISCONNECTED
+
+const dhpHistory = [];
+let lastData = null;
+
+// ── FETCH ─────────────────────────────────────────────────────────────────────
+let _updating = false;
+async function fetchData() {
+  try {
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), 4000);
+    const r = await fetch(DATA_FILE + '?t=' + Date.now(), { signal: controller.signal });
+    clearTimeout(timeout);
+    if (!r.ok) return null;
+    return await r.json();
+  } catch(e) { return null; }
+}
+
+// ── CONNECTION STATUS ─────────────────────────────────────────────────────────
+function updateConnectionStatus(data) {
+  const dot   = document.getElementById('conn-dot');
+  const label = document.getElementById('conn-label');
+
+  if (!data) {
+    dot.className   = 'conn-dot off';
+    label.textContent = 'NO DATA';
+    label.style.color = 'var(--red)';
+    return false;
+  }
+
+  // Verificar antigüedad del timestamp
+  const ts      = data.timestamp;
+  const parsed  = new Date(ts.replace(' ', 'T'));
+  const ageSec  = (Date.now() - parsed.getTime()) / 1000;
+
+  if (ageSec > STALE_SEC) {
+    dot.className   = 'conn-dot off';
+    label.textContent = 'DISCONNECTED';
+    label.style.color = 'var(--red)';
+    return false;
+  }
+
+  dot.className   = 'conn-dot live';
+  label.textContent = 'LIVE';
+  label.style.color = 'var(--green)';
+  return true;
+}
+
+// ── METRICS ───────────────────────────────────────────────────────────────────
+function updateMetrics(data) {
+  const dhp = data.total_dhp;
+  const dir = data.dhp_direction || 'NEUTRAL';
+  const mom = data.dhp_momentum  || 0;
+  const lv  = data.levels        || {};
+
+  // DHP
+  const dhpEl = document.getElementById('m-dhp');
+  dhpEl.textContent = `${dhp > 0 ? '+' : ''}${dhp.toFixed(0)}M`;
+  dhpEl.className   = `metric-val ${dhp >= 0 ? 'pos' : 'neg'}`;
+
+  // Regime
+  const regEl = document.getElementById('m-regime');
+  if (dhp > 100)       { regEl.textContent = 'BULLISH';  regEl.className = 'metric-val pos'; }
+  else if (dhp < -100) { regEl.textContent = 'BEARISH';  regEl.className = 'metric-val neg'; }
+  else                 { regEl.textContent = 'NEUTRAL';  regEl.className = 'metric-val neu'; }
+
+  // Momentum
+  const momEl = document.getElementById('m-momentum');
+  const momShort = dir.replace('ACCELERATING_', 'ACC.').replace('BUILDING_', 'BLD.');
+  momEl.textContent = momShort;
+  momEl.className   = `metric-val ${dir.includes('BULL') ? 'pos' : dir.includes('BEAR') ? 'neg' : 'neu'}`;
+
+  // Otros
+  document.getElementById('m-exp').textContent  = data.expiration || '—';
+  document.getElementById('m-cw').textContent   = lv.call_wall   || '—';
+  document.getElementById('m-pw').textContent   = lv.put_wall    || '—';
+  document.getElementById('m-node').textContent = lv.gamma_node  || '—';
+
+  // Levels sidebar
+  document.getElementById('l-cw').textContent   = lv.call_wall   || '—';
+  document.getElementById('l-pw').textContent   = lv.put_wall    || '—';
+  document.getElementById('l-node').textContent = lv.gamma_node  || '—';
+  document.getElementById('l-pin').textContent  = lv.gravity_pin || '—';
+  document.getElementById('l-flip').textContent = lv.gamma_flip  || '—';
+
+  // Price
+  document.getElementById('spx-price').textContent = data.spot_es ? data.spot_es.toFixed(2) : '——';
+
+  // Timestamp
+  document.getElementById('ts-footer').textContent = data.timestamp || '—';
+}
+
+// ── WHEEL ─────────────────────────────────────────────────────────────────────
+function drawWheel(dhp, direction) {
+  const canvas = document.getElementById('wheel-canvas');
+  const ctx    = canvas.getContext('2d');
+  const W = 140, H = 140, cx = 70, cy = 70, R = 58, r = 42;
+
+  ctx.clearRect(0, 0, W, H);
+
+  // Background arc
+  ctx.beginPath();
+  ctx.arc(cx, cy, R, Math.PI, 2 * Math.PI);
+  ctx.strokeStyle = 'rgba(26,36,64,0.8)';
+  ctx.lineWidth   = 12;
+  ctx.stroke();
+
+  // Colored arc based on direction
+  const isPos   = dhp >= 0;
+  const maxDHP  = 5000;
+  const pct     = Math.min(Math.abs(dhp) / maxDHP, 1);
+  const startA  = Math.PI;
+  const endA    = Math.PI + pct * Math.PI;
+
+  const grad = ctx.createLinearGradient(cx - R, cy, cx + R, cy);
+  if (isPos) {
+    grad.addColorStop(0, 'rgba(0,229,160,0.3)');
+    grad.addColorStop(1, 'rgba(0,229,160,1)');
+  } else {
+    grad.addColorStop(0, 'rgba(255,51,85,0.3)');
+    grad.addColorStop(1, 'rgba(255,51,85,1)');
+  }
+
+  ctx.beginPath();
+  ctx.arc(cx, cy, R, startA, endA);
+  ctx.strokeStyle = grad;
+  ctx.lineWidth   = 12;
+  ctx.lineCap     = 'round';
+  ctx.stroke();
+
+  // Tick marks
+  for (let i = 0; i <= 10; i++) {
+    const a   = Math.PI + (i / 10) * Math.PI;
+    const x1  = cx + (R - 7) * Math.cos(a);
+    const y1  = cy + (R - 7) * Math.sin(a);
+    const x2  = cx + (R + 2) * Math.cos(a);
+    const y2  = cy + (R + 2) * Math.sin(a);
+    ctx.beginPath();
+    ctx.moveTo(x1, y1);
+    ctx.lineTo(x2, y2);
+    ctx.strokeStyle = 'rgba(58,80,112,0.6)';
+    ctx.lineWidth   = 1;
+    ctx.stroke();
+  }
+
+  // Needle
+  const needleAngle = Math.PI + pct * Math.PI * (isPos ? 1 : -1) + Math.PI;
+  // Simpler: angle maps from left (BEAR) to right (BULL) based on DHP
+  const normalizedDHP = Math.max(-maxDHP, Math.min(maxDHP, dhp));
+  const needleA = Math.PI + ((normalizedDHP + maxDHP) / (2 * maxDHP)) * Math.PI;
+
+  const nx = cx + (R - 16) * Math.cos(needleA);
+  const ny = cy + (R - 16) * Math.sin(needleA);
+
+  ctx.beginPath();
+  ctx.moveTo(cx, cy);
+  ctx.lineTo(nx, ny);
+  ctx.strokeStyle = '#ffffff';
+  ctx.lineWidth   = 2;
+  ctx.lineCap     = 'round';
+  ctx.stroke();
+
+  // Center dot
+  ctx.beginPath();
+  ctx.arc(cx, cy, 4, 0, 2 * Math.PI);
+  ctx.fillStyle = '#ffffff';
+  ctx.fill();
+
+  // Labels
+  ctx.fillStyle = 'rgba(58,80,112,0.8)';
+  ctx.font      = '7px IBM Plex Mono';
+  ctx.textAlign = 'left';
+  ctx.fillText('BEAR', 10, cy + 16);
+  ctx.textAlign = 'right';
+  ctx.fillText('BULL', 130, cy + 16);
+  ctx.textAlign = 'center';
+  ctx.fillText('NEUTRAL', cx, cy + 24);
+
+  // Value
+  const wVal = document.getElementById('wheel-val');
+  wVal.textContent  = `${dhp > 0 ? '+' : ''}${dhp.toFixed(0)}M`;
+  wVal.style.color  = isPos ? 'var(--green)' : 'var(--red)';
+
+  const wDir = document.getElementById('wheel-dir');
+  wDir.textContent  = direction.replace('ACCELERATING_', '').replace('BUILDING_', '');
+  wDir.style.color  = isPos ? 'var(--green)' : 'var(--red)';
+}
+
+// ── SIGNAL ────────────────────────────────────────────────────────────────────
+function updateSignal(dhp, direction) {
+  const arrow = document.getElementById('sig-arrow');
+  const text  = document.getElementById('sig-text');
+
+  if (direction === 'ACCELERATING_BULL') {
+    arrow.textContent = '▲▲';
+    arrow.style.color = 'var(--green)';
+    text.textContent  = 'Strong call buying. Dealers aggressively buying ES futures. Momentum building.';
+  } else if (direction === 'BUILDING_BULL') {
+    arrow.textContent = '▲';
+    arrow.style.color = 'var(--green)';
+    text.textContent  = 'Call flow increasing. Dealers buying ES. Bullish pressure.';
+  } else if (direction === 'ACCELERATING_BEAR') {
+    arrow.textContent = '▼▼';
+    arrow.style.color = 'var(--red)';
+    text.textContent  = 'Strong put buying. Dealers aggressively selling ES futures. Bearish acceleration.';
+  } else if (direction === 'BUILDING_BEAR') {
+    arrow.textContent = '▼';
+    arrow.style.color = 'var(--red)';
+    text.textContent  = 'Put flow increasing. Dealers selling ES. Bearish pressure.';
+  } else {
+    arrow.textContent = '—';
+    arrow.style.color = 'var(--dim)';
+    text.textContent  = 'Balanced flow. Dealers neutral. No directional pressure.';
+  }
+}
+
+// ── GEX CHART ─────────────────────────────────────────────────────────────────
+function renderGEX(data) {
+  const wrap    = document.getElementById('gex-wrap');
+  const canvas  = document.getElementById('gex-canvas');
+  const noData  = document.getElementById('no-data');
+  const strikes = data.strikes;
+  const spot    = data.spot_es;
+  const lv      = data.levels || {};
+
+  if (!strikes || strikes.length === 0) {
+    noData.style.display = 'flex';
+    return;
+  }
+  noData.style.display = 'none';
+
+  const W = wrap.clientWidth;
+  const H = wrap.clientHeight;
+  if (canvas.width !== W || canvas.height !== H) {
+    canvas.width  = W;
+    canvas.height = H;
+    canvas.style.width  = W + 'px';
+    canvas.style.height = H + 'px';
+  }
+
+  const ctx = canvas.getContext('2d');
+  ctx.clearRect(0, 0, W, H);
+
+  const n       = strikes.length;
+  const maxCall = strikes.reduce((m, s) => Math.max(m, s.call_gex), 0.001);
+  const maxPut  = strikes.reduce((m, s) => Math.max(m, Math.abs(s.put_gex)), 0.001);
+  const maxGex  = Math.max(maxCall, maxPut);
+
+  const PADDING_TOP    = 20;
+  const PADDING_BOTTOM = 24;
+  const midY   = H / 2;
+  const maxBarH = (H / 2) - PADDING_TOP - PADDING_BOTTOM;
+  const barGroup = Math.floor(W / n);
+  const barW     = Math.max(2, barGroup - 3);
+
+  // Grid
+  ctx.strokeStyle = 'rgba(26,36,64,0.5)';
+  ctx.lineWidth   = 1;
+  ctx.setLineDash([2, 4]);
+  [0.15, 0.35, 0.65, 0.85].forEach(p => {
+    const y = H * p;
+    ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(W, y); ctx.stroke();
+  });
+  ctx.setLineDash([]);
+
+  // Zero line
+  ctx.strokeStyle = 'rgba(180,200,220,0.15)';
+  ctx.lineWidth   = 1;
+  ctx.setLineDash([3, 5]);
+  ctx.beginPath(); ctx.moveTo(0, midY); ctx.lineTo(W, midY); ctx.stroke();
+  ctx.setLineDash([]);
+
+  // Draw bars
+  strikes.forEach((s, i) => {
+    const x        = i * barGroup + (barGroup - barW) / 2;
+    const isATM    = Math.abs(s.strike - spot) < 3;
+    const isCW     = s.strike === lv.call_wall;
+    const isPW     = s.strike === lv.put_wall;
+    const isNode   = s.strike === lv.gamma_node;
+    const isFlip   = s.strike === lv.gamma_flip;
+
+    // ATM highlight
+    if (isATM) {
+      ctx.fillStyle = 'rgba(204,68,255,0.05)';
+      ctx.fillRect(x - 2, 0, barW + 4, H);
+    }
+
+    // Gamma Node highlight
+    if (isNode) {
+      ctx.fillStyle = 'rgba(204,68,255,0.08)';
+      ctx.fillRect(x - 2, 0, barW + 4, H);
+      // Node border
+      ctx.strokeStyle = 'rgba(204,68,255,0.4)';
+      ctx.lineWidth   = 1;
+      ctx.strokeRect(x - 2, PADDING_TOP, barW + 4, H - PADDING_TOP - PADDING_BOTTOM);
+    }
+
+    // CALL bar (above midY)
+    const callH = (s.call_gex / maxGex) * maxBarH;
+    if (callH > 0.5) {
+      const grad = ctx.createLinearGradient(0, midY - callH, 0, midY);
+      if (isCW) {
+        grad.addColorStop(0, 'rgba(255,204,102,1)');
+        grad.addColorStop(1, 'rgba(245,166,35,0.4)');
+      } else {
+        grad.addColorStop(0, 'rgba(245,166,35,0.9)');
+        grad.addColorStop(1, 'rgba(245,166,35,0.3)');
+      }
+      ctx.fillStyle = grad;
+      ctx.fillRect(x, midY - callH, barW, callH);
+
+      // Call Wall marker
+      if (isCW) {
+        ctx.fillStyle = 'var(--call2)';
+        ctx.fillRect(x, midY - callH - 3, barW, 3);
+      }
+    }
+
+    // PUT bar (below midY)
+    const putH = (Math.abs(s.put_gex) / maxGex) * maxBarH;
+    if (putH > 0.5) {
+      const grad = ctx.createLinearGradient(0, midY, 0, midY + putH);
+      if (isPW) {
+        grad.addColorStop(0, 'rgba(59,158,255,0.4)');
+        grad.addColorStop(1, 'rgba(126,200,255,1)');
+      } else {
+        grad.addColorStop(0, 'rgba(59,158,255,0.3)');
+        grad.addColorStop(1, 'rgba(59,158,255,0.9)');
+      }
+      ctx.fillStyle = grad;
+      ctx.fillRect(x, midY, barW, putH);
+
+      // Put Wall marker
+      if (isPW) {
+        ctx.fillStyle = 'var(--put2)';
+        ctx.fillRect(x, midY + putH, barW, 3);
+      }
+    }
+
+    // Strike label
+    if (i % 2 === 0 || n < 20) {
+      ctx.fillStyle = isATM ? 'var(--node)' : isNode ? 'rgba(204,68,255,0.7)' : 'rgba(58,80,112,0.8)';
+      ctx.font      = isATM ? 'bold 9px IBM Plex Mono' : '8px IBM Plex Mono';
+      ctx.textAlign = 'center';
+      ctx.fillText(s.strike, x + barW/2, H - 6);
+    }
+  });
+
+  // Price line
+  const priceIdx = strikes.findIndex(s => s.strike >= spot);
+  const priceX   = priceIdx >= 0
+    ? (priceIdx / n) * W
+    : (strikes.length / n) * W;
+
+  ctx.strokeStyle = 'rgba(255,255,255,0.7)';
+  ctx.lineWidth   = 1.5;
+  ctx.setLineDash([3, 4]);
+  ctx.beginPath();
+  ctx.moveTo(priceX, PADDING_TOP);
+  ctx.lineTo(priceX, H - PADDING_BOTTOM - 4);
+  ctx.stroke();
+  ctx.setLineDash([]);
+
+  // Price label
+  const priceLabel = spot.toFixed(2);
+  const lblW       = 52;
+  ctx.fillStyle    = 'rgba(255,255,255,0.15)';
+  ctx.fillRect(priceX - lblW/2, 2, lblW, 16);
+  ctx.fillStyle    = '#ffffff';
+  ctx.font         = 'bold 9px IBM Plex Mono';
+  ctx.textAlign    = 'center';
+  ctx.fillText(priceLabel, priceX, 13);
+
+  // Gamma Flip line
+  if (lv.gamma_flip) {
+    const flipIdx = strikes.findIndex(s => s.strike >= lv.gamma_flip);
+    if (flipIdx >= 0) {
+      const flipX = (flipIdx / n) * W;
+      ctx.strokeStyle = 'rgba(255,215,0,0.4)';
+      ctx.lineWidth   = 1;
+      ctx.setLineDash([2, 6]);
+      ctx.beginPath();
+      ctx.moveTo(flipX, PADDING_TOP);
+      ctx.lineTo(flipX, H - PADDING_BOTTOM);
+      ctx.stroke();
+      ctx.setLineDash([]);
+    }
+  }
+}
+
+// ── DHP LINE ──────────────────────────────────────────────────────────────────
+function renderDHP() {
+  const canvas = document.getElementById('dhp-canvas');
+  const W      = canvas.parentElement.clientWidth;
+  const H      = 70;
+  if (canvas.width !== W || canvas.height !== H) {
+    canvas.width  = W;
+    canvas.height = H;
+  }
+  const ctx     = canvas.getContext('2d');
+  ctx.clearRect(0, 0, W, H);
+
+  if (dhpHistory.length < 2) return;
+
+  const maxAbs = dhpHistory.reduce((m, v) => Math.max(m, Math.abs(v)), 1);
+  const midY   = H / 2;
+  const stepX  = W / (MAX_HISTORY - 1);
+
+  // Zero line
+  ctx.strokeStyle = 'rgba(58,80,112,0.4)';
+  ctx.lineWidth   = 1;
+  ctx.setLineDash([2, 4]);
+  ctx.beginPath(); ctx.moveTo(0, midY); ctx.lineTo(W, midY); ctx.stroke();
+  ctx.setLineDash([]);
+
+  const lastVal = dhpHistory[dhpHistory.length - 1];
+  const isPos   = lastVal >= 0;
+
+  // Fill
+  ctx.beginPath();
+  const startIdx = Math.max(0, MAX_HISTORY - dhpHistory.length);
+  dhpHistory.forEach((v, i) => {
+    const x = (startIdx + i) * stepX;
+    const y = midY - (v / maxAbs) * (midY * 0.85);
+    i === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
+  });
+  ctx.lineTo((startIdx + dhpHistory.length - 1) * stepX, midY);
+  ctx.lineTo(startIdx * stepX, midY);
+  ctx.closePath();
+  ctx.fillStyle = isPos ? 'rgba(0,229,160,0.07)' : 'rgba(255,51,85,0.07)';
+  ctx.fill();
+
+  // Line
+  ctx.beginPath();
+  dhpHistory.forEach((v, i) => {
+    const x = (startIdx + i) * stepX;
+    const y = midY - (v / maxAbs) * (midY * 0.85);
+    i === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
+  });
+  ctx.strokeStyle = isPos ? 'var(--green)' : 'var(--red)';
+  ctx.lineWidth   = 1.5;
+  ctx.lineJoin    = 'round';
+  ctx.stroke();
+
+  // Current value
+  const cur = document.getElementById('dhp-current');
+  cur.textContent  = `${lastVal > 0 ? '+' : ''}${lastVal.toFixed(0)}M`;
+  cur.style.color  = isPos ? 'var(--green)' : 'var(--red)';
+}
+
+// ── STRIKE LIST ───────────────────────────────────────────────────────────────
+function renderStrikeList(data) {
+  const list    = document.getElementById('strike-list');
+  const strikes = data.strikes;
+  const spot    = data.spot_es;
+  const lv      = data.levels || {};
+
+  if (!strikes) { list.innerHTML = ''; return; }
+
+  const maxGex = Math.max(...strikes.map(s => Math.max(s.call_gex, Math.abs(s.put_gex))), 0.001);
+  const sorted = [...strikes].sort((a, b) => b.strike - a.strike);
+
+  list.innerHTML = sorted.map(s => {
+    const isATM  = Math.abs(s.strike - spot) < 3;
+    const isCW   = s.strike === lv.call_wall;
+    const isPW   = s.strike === lv.put_wall;
+    const isNode = s.strike === lv.gamma_node;
+    const callPct = Math.min((s.call_gex / maxGex) * 70, 70);
+    const putPct  = Math.min((Math.abs(s.put_gex) / maxGex) * 70, 70);
+    const netCol  = s.net_gex > 0 ? 'var(--call)' : 'var(--put)';
+    const rowClass = isATM ? 'strike-row atm' : isCW ? 'strike-row call-wall-row' : isPW ? 'strike-row put-wall-row' : 'strike-row';
+    const priceCol = isATM ? 'var(--node)' : isCW ? 'var(--call)' : isPW ? 'var(--put)' : 'var(--text)';
+
+    return `<div class="${rowClass}">
+      <div class="sk-price" style="color:${priceCol}">${s.strike}</div>
+      <div class="sk-bars">
+        <div class="sk-bar-call" style="width:${callPct}%"></div>
+        <div class="sk-bar-put"  style="width:${putPct}%"></div>
+      </div>
+      <div class="sk-net" style="color:${netCol}">${s.net_gex > 0 ? '+' : ''}${s.net_gex.toFixed(0)}</div>
+    </div>`;
+  }).join('');
+}
+
+// ── MAIN UPDATE ───────────────────────────────────────────────────────────────
+async function update() {
+  if (_updating) return;
+  _updating = true;
+  try {
+  const data = await fetchData();
+  const connected = updateConnectionStatus(data);
+
+  if (!data || !connected) return;
+
+  lastData = data;
+
+  if (data.total_dhp !== undefined) {
+    dhpHistory.push(data.total_dhp);
+    if (dhpHistory.length > MAX_HISTORY) dhpHistory.shift();
+  }
+
+  updateMetrics(data);
+  renderGEX(data);
+  renderDHP();
+  renderStrikeList(data);
+  drawWheel(data.total_dhp, data.dhp_direction || 'NEUTRAL');
+  updateSignal(data.total_dhp, data.dhp_direction || 'NEUTRAL');
+  } finally {
+    _updating = false;
+  }
+}
+
+update();
+setInterval(update, REFRESH_MS);
+window.addEventListener('resize', () => { if (lastData) { renderGEX(lastData); renderDHP(); } });
+</script>
+</body>
+</html>
