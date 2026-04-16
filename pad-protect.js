@@ -16,7 +16,7 @@ if(navLinks){
     <li><a href="#pricing">Pricing</a></li>
     <li><a href="pad-library-zonas-algo.html">Library</a></li>
     <li><a href="contact.html">Contact</a></li>
-    <li><a href="#pricing" class="nav-cta" style="display:flex;align-items:center;gap:6px;">&#128274; Login</a></li>
+    <li><a href="login.html" class="nav-cta" style="display:flex;align-items:center;gap:6px;">&#128274; Login</a></li>
   `;
 }
 
