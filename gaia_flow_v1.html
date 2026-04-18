@@ -390,15 +390,18 @@
     <div class="chart-section">
       <div class="chart-title">
         <span>CALL DHP vs PUT DHP — DEALER FLOW OVER TIME</span>
-        <div class="legend">
-          <div class="legend-item">
-            <div class="legend-dot" style="background:var(--call)"></div>
-            <span style="color:var(--call)">CALL</span>
+        <div style="display:flex;align-items:center;gap:16px;">
+          <div class="legend">
+            <div class="legend-item">
+              <div class="legend-dot" style="background:var(--call)"></div>
+              <span style="color:var(--call)">CALL</span>
+            </div>
+            <div class="legend-item">
+              <div class="legend-dot" style="background:var(--put)"></div>
+              <span style="color:var(--put)">PUT</span>
+            </div>
           </div>
-          <div class="legend-item">
-            <div class="legend-dot" style="background:var(--put)"></div>
-            <span style="color:var(--put)">PUT</span>
-          </div>
+          <button onclick="clearHistory()" style="font-family:var(--mono);font-size:9px;letter-spacing:1px;color:var(--text);background:transparent;border:1px solid rgba(255,255,255,0.1);padding:2px 8px;cursor:pointer;text-transform:uppercase;">RESET</button>
         </div>
       </div>
       <div class="chart-wrap">
@@ -435,12 +438,42 @@ const REFRESH_MS   = 5000;
 const MAX_HISTORY  = 120; // 60 minutos a 30s
 
 // ── STATE ─────────────────────────────────────────────────────────────────────
-const callHistory  = [];
-const putHistory   = [];
-const netHistory   = [];
-const timeHistory  = [];
+const LS_KEY = 'gaia_flow_history';
+
+function loadHistory() {
+  try {
+    const saved = localStorage.getItem(LS_KEY);
+    if (!saved) return { call: [], put: [], net: [], time: [] };
+    return JSON.parse(saved);
+  } catch(e) { return { call: [], put: [], net: [], time: [] }; }
+}
+
+function saveHistory() {
+  try {
+    localStorage.setItem(LS_KEY, JSON.stringify({
+      call: callHistory, put: putHistory, net: netHistory, time: timeHistory
+    }));
+  } catch(e) {}
+}
+
+function clearHistory() {
+  callHistory.length = 0;
+  putHistory.length  = 0;
+  netHistory.length  = 0;
+  timeHistory.length = 0;
+  localStorage.removeItem(LS_KEY);
+  if (lastData) { renderFlow(); renderNet(); renderTimeAxis(); }
+}
+
+// Restore history from localStorage on load
+const _saved = loadHistory();
+const callHistory  = _saved.call.slice(-MAX_HISTORY);
+const putHistory   = _saved.put.slice(-MAX_HISTORY);
+const netHistory   = _saved.net.slice(-MAX_HISTORY);
+const timeHistory  = _saved.time.slice(-MAX_HISTORY);
 let lastData       = null;
 let _updating      = false;
+let _lastTimestamp = null;
 
 // ── FETCH ─────────────────────────────────────────────────────────────────────
 async function fetchData() {
@@ -757,7 +790,11 @@ async function update() {
       putSum  += (s.put_dhp  || 0);
     });
 
-    // Push to history
+    // Push to history — solo si el timestamp cambió
+    const ts = data.timestamp || '';
+    if (ts && ts === _lastTimestamp) return;
+    _lastTimestamp = ts;
+
     callHistory.push(callSum * 1e6);
     putHistory.push(putSum * 1e6);
     netHistory.push(data.total_dhp * 1e6);
@@ -770,6 +807,9 @@ async function update() {
 
     // Trim
     if (callHistory.length > MAX_HISTORY) { callHistory.shift(); putHistory.shift(); netHistory.shift(); timeHistory.shift(); }
+
+    // Persist
+    saveHistory();
 
     updateMetrics(data, callSum, putSum);
     renderLadder(data);
