@@ -1,0 +1,967 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GAIA Alerts — PivotAlphaDesk</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Barlow+Condensed:wght@300;400;600;700&display=swap');
+
+  :root {
+    --bg:        #060a0f;
+    --bg2:       #0a1018;
+    --bg3:       #0f1820;
+    --border:    rgba(0,180,255,0.08);
+    --call:      #00e5a0;
+    --put:       #ff4060;
+    --net:       #00cfff;
+    --gold:      #f0c040;
+    --text:      #8ba4b8;
+    --text2:     #c8dde8;
+    --white:     #e8f4ff;
+    --mono:      'Share Tech Mono', monospace;
+    --sans:      'Barlow Condensed', sans-serif;
+    --alert-bg:  rgba(0,180,255,0.04);
+  }
+
+  * { margin:0; padding:0; box-sizing:border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--text2);
+    font-family: var(--sans);
+    height: 100vh;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* HEADER */
+  #header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 8px 16px;
+    background: var(--bg2);
+    border-bottom: 1px solid var(--border);
+    flex-shrink: 0;
+  }
+
+  #header-left { display: flex; align-items: center; gap: 16px; }
+
+  .logo {
+    font-family: var(--sans);
+    font-weight: 700;
+    font-size: 13px;
+    letter-spacing: 2px;
+    color: var(--net);
+    text-transform: uppercase;
+  }
+  .logo span { color: var(--text); font-weight: 300; }
+
+  #live-dot {
+    width: 7px; height: 7px;
+    border-radius: 50%;
+    background: var(--call);
+    box-shadow: 0 0 6px var(--call);
+    animation: pulse 2s infinite;
+  }
+  @keyframes pulse { 0%,100%{opacity:1;} 50%{opacity:0.3;} }
+
+  #spot-display {
+    font-family: var(--mono);
+    font-size: 22px;
+    color: var(--gold);
+    letter-spacing: 1px;
+  }
+
+  /* SOUND TOGGLE */
+  #sound-toggle {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 1px;
+    color: var(--text);
+    cursor: pointer;
+    border: 1px solid var(--border);
+    padding: 5px 12px;
+    user-select: none;
+    transition: all 0.2s;
+  }
+  #sound-toggle:hover { border-color: var(--net); color: var(--net); }
+  #sound-toggle.on { border-color: var(--call); color: var(--call); }
+  #sound-icon { font-size: 14px; }
+
+  /* METRICS BAR */
+  #metrics {
+    display: flex;
+    background: var(--bg2);
+    border-bottom: 1px solid var(--border);
+    flex-shrink: 0;
+  }
+  .metric {
+    flex: 1;
+    padding: 6px 14px;
+    border-right: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+  }
+  .metric:last-child { border-right: none; }
+  .metric-label {
+    font-size: 9px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--text);
+    font-family: var(--mono);
+  }
+  .metric-value {
+    font-family: var(--mono);
+    font-size: 16px;
+    font-weight: 600;
+  }
+  .call-color  { color: var(--call); }
+  .put-color   { color: var(--put); }
+  .net-color   { color: var(--net); }
+  .gold-color  { color: var(--gold); }
+
+  .momentum-badge {
+    display: inline-block;
+    font-family: var(--mono);
+    font-size: 11px;
+    padding: 2px 8px;
+    border-radius: 2px;
+    letter-spacing: 1px;
+    font-weight: 700;
+  }
+  .badge-bull     { background: rgba(0,229,160,0.15); color: var(--call); border: 1px solid rgba(0,229,160,0.3); }
+  .badge-bear     { background: rgba(255,64,96,0.15);  color: var(--put);  border: 1px solid rgba(255,64,96,0.3); }
+  .badge-neutral  { background: rgba(0,207,255,0.1);   color: var(--net);  border: 1px solid rgba(0,207,255,0.2); }
+  .badge-acc-bull { background: rgba(0,229,160,0.25); color: #00ff99; border: 1px solid rgba(0,255,153,0.5); }
+  .badge-acc-bear { background: rgba(255,64,96,0.25);  color: #ff2050; border: 1px solid rgba(255,32,80,0.5); }
+
+  /* MAIN LAYOUT */
+  #main {
+    flex: 1;
+    display: flex;
+    overflow: hidden;
+    min-height: 0;
+  }
+
+  /* LEFT PANEL — ALERT CONFIG */
+  #config-panel {
+    width: 340px;
+    flex-shrink: 0;
+    background: var(--bg2);
+    border-right: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+  }
+
+  #config-panel::-webkit-scrollbar { width: 4px; }
+  #config-panel::-webkit-scrollbar-track { background: var(--bg); }
+  #config-panel::-webkit-scrollbar-thumb { background: var(--border); }
+
+  .config-section {
+    border-bottom: 1px solid var(--border);
+    padding: 0;
+  }
+
+  .config-section-title {
+    padding: 8px 14px;
+    font-size: 9px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--text);
+    font-family: var(--mono);
+    background: rgba(0,180,255,0.03);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .alert-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 14px;
+    border-bottom: 1px solid rgba(0,180,255,0.04);
+    gap: 10px;
+    transition: background 0.15s;
+  }
+  .alert-row:last-child { border-bottom: none; }
+  .alert-row:hover { background: rgba(0,207,255,0.03); }
+
+  .alert-info { flex: 1; }
+  .alert-name {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--text2);
+    letter-spacing: 0.5px;
+  }
+  .alert-desc {
+    font-size: 10px;
+    color: var(--text);
+    margin-top: 2px;
+    letter-spacing: 0.3px;
+  }
+
+  /* THRESHOLD INPUT */
+  .threshold-wrap {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-top: 6px;
+  }
+  .threshold-wrap label {
+    font-family: var(--mono);
+    font-size: 9px;
+    color: var(--text);
+    letter-spacing: 1px;
+  }
+  .threshold-input {
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    color: var(--net);
+    font-family: var(--mono);
+    font-size: 11px;
+    padding: 3px 8px;
+    width: 80px;
+    text-align: center;
+    outline: none;
+  }
+  .threshold-input:focus { border-color: var(--net); }
+
+  /* TOGGLE SWITCH */
+  .toggle {
+    position: relative;
+    width: 36px;
+    height: 20px;
+    flex-shrink: 0;
+  }
+  .toggle input { opacity: 0; width: 0; height: 0; }
+  .slider {
+    position: absolute;
+    inset: 0;
+    background: rgba(255,255,255,0.08);
+    border: 1px solid rgba(255,255,255,0.12);
+    cursor: pointer;
+    transition: all 0.2s;
+    border-radius: 2px;
+  }
+  .slider:before {
+    content: '';
+    position: absolute;
+    width: 14px; height: 14px;
+    left: 2px; top: 2px;
+    background: var(--text);
+    transition: all 0.2s;
+    border-radius: 1px;
+  }
+  .toggle input:checked + .slider { background: rgba(0,229,160,0.15); border-color: var(--call); }
+  .toggle input:checked + .slider:before { transform: translateX(16px); background: var(--call); }
+
+  /* RIGHT PANEL — ALERT FEED */
+  #feed-panel {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    min-width: 0;
+  }
+
+  #feed-header {
+    padding: 8px 14px;
+    font-size: 9px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--text);
+    font-family: var(--mono);
+    border-bottom: 1px solid var(--border);
+    background: var(--bg2);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-shrink: 0;
+  }
+
+  #clear-feed {
+    font-family: var(--mono);
+    font-size: 9px;
+    letter-spacing: 1px;
+    color: var(--text);
+    background: transparent;
+    border: 1px solid rgba(255,255,255,0.1);
+    padding: 2px 8px;
+    cursor: pointer;
+    text-transform: uppercase;
+  }
+  #clear-feed:hover { color: var(--put); border-color: var(--put); }
+
+  #feed-list {
+    flex: 1;
+    overflow-y: auto;
+    padding: 8px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  #feed-list::-webkit-scrollbar { width: 4px; }
+  #feed-list::-webkit-scrollbar-track { background: var(--bg); }
+  #feed-list::-webkit-scrollbar-thumb { background: var(--border); }
+
+  .feed-empty {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    gap: 10px;
+    color: var(--text);
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 1px;
+    opacity: 0.5;
+  }
+  .feed-empty-icon { font-size: 32px; opacity: 0.3; }
+
+  .feed-item {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-left-width: 3px;
+    padding: 10px 12px;
+    animation: slideIn 0.3s ease;
+  }
+
+  @keyframes slideIn {
+    from { opacity: 0; transform: translateX(-8px); }
+    to   { opacity: 1; transform: translateX(0); }
+  }
+
+  .feed-item.type-cvd      { border-left-color: var(--net); }
+  .feed-item.type-price    { border-left-color: var(--gold); }
+  .feed-item.type-momentum { border-left-color: #c39bd3; }
+
+  .feed-item-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 8px;
+    margin-bottom: 4px;
+  }
+
+  .feed-item-title {
+    font-family: var(--mono);
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+  }
+  .feed-item.type-cvd      .feed-item-title { color: var(--net); }
+  .feed-item.type-price    .feed-item-title { color: var(--gold); }
+  .feed-item.type-momentum .feed-item-title { color: #c39bd3; }
+
+  .feed-item-time {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--text);
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+
+  .feed-item-detail {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--text);
+    letter-spacing: 0.3px;
+  }
+
+  /* FLASH effect on new alert */
+  .feed-item.flash {
+    animation: flashIn 0.5s ease;
+  }
+  @keyframes flashIn {
+    0%   { background: rgba(0,207,255,0.15); }
+    100% { background: var(--bg2); }
+  }
+  .feed-item.type-price.flash {
+    animation: flashGold 0.5s ease;
+  }
+  @keyframes flashGold {
+    0%   { background: rgba(240,192,64,0.15); }
+    100% { background: var(--bg2); }
+  }
+  .feed-item.type-momentum.flash {
+    animation: flashPurple 0.5s ease;
+  }
+  @keyframes flashPurple {
+    0%   { background: rgba(195,155,211,0.15); }
+    100% { background: var(--bg2); }
+  }
+
+  /* COUNTER BADGE */
+  #alert-count {
+    background: var(--put);
+    color: #fff;
+    font-family: var(--mono);
+    font-size: 10px;
+    padding: 1px 6px;
+    border-radius: 2px;
+    min-width: 20px;
+    text-align: center;
+    display: none;
+  }
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div id="header">
+  <div id="header-left">
+    <div class="logo">PAD <span>·</span> GAIA ALERTS</div>
+    <div id="live-dot"></div>
+  </div>
+  <div id="spot-display">——.——</div>
+  <div id="sound-toggle" class="on" onclick="toggleSound()">
+    <span id="sound-icon">🔊</span>
+    <span id="sound-label">SOUND ON</span>
+  </div>
+</div>
+
+<!-- METRICS -->
+<div id="metrics">
+  <div class="metric">
+    <div class="metric-label">CVD DHP</div>
+    <div class="metric-value net-color" id="m-cvd">+0.00M</div>
+  </div>
+  <div class="metric">
+    <div class="metric-label">Call Wall</div>
+    <div class="metric-value gold-color" id="m-cw">——</div>
+  </div>
+  <div class="metric">
+    <div class="metric-label">Put Wall</div>
+    <div class="metric-value put-color" id="m-pw">——</div>
+  </div>
+  <div class="metric">
+    <div class="metric-label">Gamma Node</div>
+    <div class="metric-value" style="color:#c39bd3" id="m-node">——</div>
+  </div>
+  <div class="metric">
+    <div class="metric-label">Momentum</div>
+    <div id="m-momentum"><span class="momentum-badge badge-neutral">NEUTRAL</span></div>
+  </div>
+  <div class="metric">
+    <div class="metric-label">Expiration</div>
+    <div class="metric-value" style="color:var(--text2);font-size:13px;" id="m-exp">——</div>
+  </div>
+</div>
+
+<!-- MAIN -->
+<div id="main">
+
+  <!-- LEFT: ALERT CONFIG -->
+  <div id="config-panel">
+
+    <!-- CVD ALERTS -->
+    <div class="config-section">
+      <div class="config-section-title">CVD Alerts</div>
+
+      <div class="alert-row">
+        <div class="alert-info">
+          <div class="alert-name">CVD ZERO CROSS</div>
+          <div class="alert-desc">CVD DHP crosses zero line (+ ↔ −)</div>
+        </div>
+        <label class="toggle">
+          <input type="checkbox" id="chk-cvd-zero" checked onchange="saveConfig()">
+          <span class="slider"></span>
+        </label>
+      </div>
+
+      <div class="alert-row">
+        <div class="alert-info">
+          <div class="alert-name">CVD THRESHOLD</div>
+          <div class="alert-desc">CVD exceeds ± threshold value</div>
+          <div class="threshold-wrap">
+            <label>± THRESHOLD (M)</label>
+            <input type="number" class="threshold-input" id="cvd-threshold" value="500" min="50" step="50" onchange="saveConfig()">
+          </div>
+        </div>
+        <label class="toggle">
+          <input type="checkbox" id="chk-cvd-threshold" checked onchange="saveConfig()">
+          <span class="slider"></span>
+        </label>
+      </div>
+
+    </div>
+
+    <!-- PRICE VS STRUCTURE -->
+    <div class="config-section">
+      <div class="config-section-title">Price vs Structure</div>
+
+      <div class="alert-row">
+        <div class="alert-info">
+          <div class="alert-name">CALL WALL TEST</div>
+          <div class="alert-desc">Spot price touches Call Wall level</div>
+        </div>
+        <label class="toggle">
+          <input type="checkbox" id="chk-call-wall" checked onchange="saveConfig()">
+          <span class="slider"></span>
+        </label>
+      </div>
+
+      <div class="alert-row">
+        <div class="alert-info">
+          <div class="alert-name">PUT WALL TEST</div>
+          <div class="alert-desc">Spot price touches Put Wall level</div>
+        </div>
+        <label class="toggle">
+          <input type="checkbox" id="chk-put-wall" checked onchange="saveConfig()">
+          <span class="slider"></span>
+        </label>
+      </div>
+
+      <div class="alert-row">
+        <div class="alert-info">
+          <div class="alert-name">GAMMA NODE CROSS</div>
+          <div class="alert-desc">Spot crosses Gamma Node — acceleration zone</div>
+        </div>
+        <label class="toggle">
+          <input type="checkbox" id="chk-gamma-node" checked onchange="saveConfig()">
+          <span class="slider"></span>
+        </label>
+      </div>
+
+    </div>
+
+    <!-- MOMENTUM -->
+    <div class="config-section">
+      <div class="config-section-title">Momentum</div>
+
+      <div class="alert-row">
+        <div class="alert-info">
+          <div class="alert-name">MOMENTUM CHANGE</div>
+          <div class="alert-desc">Any momentum state transition</div>
+        </div>
+        <label class="toggle">
+          <input type="checkbox" id="chk-momentum-any" checked onchange="saveConfig()">
+          <span class="slider"></span>
+        </label>
+      </div>
+
+      <div class="alert-row">
+        <div class="alert-info">
+          <div class="alert-name">ACCELERATING SIGNAL</div>
+          <div class="alert-desc">Momentum enters ACC.BULL or ACC.BEAR</div>
+        </div>
+        <label class="toggle">
+          <input type="checkbox" id="chk-momentum-acc" checked onchange="saveConfig()">
+          <span class="slider"></span>
+        </label>
+      </div>
+
+    </div>
+
+  </div>
+
+  <!-- RIGHT: ALERT FEED -->
+  <div id="feed-panel">
+    <div id="feed-header">
+      <div style="display:flex;align-items:center;gap:10px;">
+        <span>ALERT FEED</span>
+        <span id="alert-count">0</span>
+      </div>
+      <button id="clear-feed" onclick="clearFeed()">CLEAR</button>
+    </div>
+    <div id="feed-list">
+      <div class="feed-empty" id="feed-empty">
+        <div class="feed-empty-icon">⚡</div>
+        <div>NO ALERTS TRIGGERED</div>
+        <div style="font-size:9px;opacity:0.6;">Monitoring active — alerts will appear here</div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+// ── CONFIG ────────────────────────────────────────────────────────────────────
+const DATA_FILE  = 'gaia_live.json';
+const REFRESH_MS = 5000;
+const LS_CONFIG  = 'gaia_alerts_config';
+const LS_FEED    = 'gaia_alerts_feed';
+
+// ── STATE ─────────────────────────────────────────────────────────────────────
+let soundOn       = true;
+let lastData      = null;
+let _lastTimestamp = null;
+let _updating     = false;
+
+// Tracking state for edge detection
+let _prevCVD      = null;
+let _prevMomentum = null;
+let _prevSpot     = null;
+let _cvdThresholdTriggeredPos = false;
+let _cvdThresholdTriggeredNeg = false;
+let _callWallTriggered = false;
+let _putWallTriggered  = false;
+let _gammaNodeTriggered = false;
+
+let feedItems = [];
+
+// ── AUDIO ─────────────────────────────────────────────────────────────────────
+const AudioCtx = window.AudioContext || window.webkitAudioContext;
+let audioCtx = null;
+
+function getAudioCtx() {
+  if (!audioCtx) audioCtx = new AudioCtx();
+  return audioCtx;
+}
+
+function playBeep(freq, duration, type = 'sine', gain = 0.3) {
+  if (!soundOn) return;
+  try {
+    const ctx = getAudioCtx();
+    const osc = ctx.createOscillator();
+    const vol = ctx.createGain();
+    osc.connect(vol);
+    vol.connect(ctx.destination);
+    osc.frequency.value = freq;
+    osc.type = type;
+    vol.gain.setValueAtTime(gain, ctx.currentTime);
+    vol.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + duration);
+    osc.start(ctx.currentTime);
+    osc.stop(ctx.currentTime + duration);
+  } catch(e) {}
+}
+
+function playCVDSound() {
+  playBeep(440, 0.15);
+  setTimeout(() => playBeep(660, 0.15), 120);
+}
+
+function playPriceSound() {
+  playBeep(880, 0.1);
+  setTimeout(() => playBeep(880, 0.1), 100);
+  setTimeout(() => playBeep(1100, 0.2), 200);
+}
+
+function playMomentumSound() {
+  playBeep(330, 0.1, 'square', 0.2);
+  setTimeout(() => playBeep(440, 0.1, 'square', 0.2), 120);
+  setTimeout(() => playBeep(550, 0.2, 'square', 0.2), 240);
+}
+
+function playAcceleratingSound() {
+  [0, 80, 160, 240].forEach((d, i) => {
+    setTimeout(() => playBeep(440 + i * 110, 0.12, 'sawtooth', 0.15), d);
+  });
+}
+
+// ── SOUND TOGGLE ──────────────────────────────────────────────────────────────
+function toggleSound() {
+  soundOn = !soundOn;
+  const btn = document.getElementById('sound-toggle');
+  const icon = document.getElementById('sound-icon');
+  const label = document.getElementById('sound-label');
+  if (soundOn) {
+    btn.classList.add('on');
+    icon.textContent = '🔊';
+    label.textContent = 'SOUND ON';
+    // Unlock audio context on user interaction
+    try { getAudioCtx().resume(); } catch(e) {}
+  } else {
+    btn.classList.remove('on');
+    icon.textContent = '🔇';
+    label.textContent = 'SOUND OFF';
+  }
+  saveConfig();
+}
+
+// ── PERSIST CONFIG ────────────────────────────────────────────────────────────
+function saveConfig() {
+  try {
+    localStorage.setItem(LS_CONFIG, JSON.stringify({
+      soundOn,
+      cvdZero:       document.getElementById('chk-cvd-zero').checked,
+      cvdThreshold:  document.getElementById('chk-cvd-threshold').checked,
+      cvdThresholdV: parseFloat(document.getElementById('cvd-threshold').value) || 500,
+      callWall:      document.getElementById('chk-call-wall').checked,
+      putWall:       document.getElementById('chk-put-wall').checked,
+      gammaNode:     document.getElementById('chk-gamma-node').checked,
+      momentumAny:   document.getElementById('chk-momentum-any').checked,
+      momentumAcc:   document.getElementById('chk-momentum-acc').checked,
+    }));
+  } catch(e) {}
+}
+
+function loadConfig() {
+  try {
+    const s = localStorage.getItem(LS_CONFIG);
+    if (!s) return;
+    const c = JSON.parse(s);
+    soundOn = c.soundOn !== false;
+    if (!soundOn) {
+      document.getElementById('sound-toggle').classList.remove('on');
+      document.getElementById('sound-icon').textContent = '🔇';
+      document.getElementById('sound-label').textContent = 'SOUND OFF';
+    }
+    if (c.cvdZero      !== undefined) document.getElementById('chk-cvd-zero').checked      = c.cvdZero;
+    if (c.cvdThreshold !== undefined) document.getElementById('chk-cvd-threshold').checked  = c.cvdThreshold;
+    if (c.cvdThresholdV!== undefined) document.getElementById('cvd-threshold').value        = c.cvdThresholdV;
+    if (c.callWall     !== undefined) document.getElementById('chk-call-wall').checked      = c.callWall;
+    if (c.putWall      !== undefined) document.getElementById('chk-put-wall').checked       = c.putWall;
+    if (c.gammaNode    !== undefined) document.getElementById('chk-gamma-node').checked     = c.gammaNode;
+    if (c.momentumAny  !== undefined) document.getElementById('chk-momentum-any').checked   = c.momentumAny;
+    if (c.momentumAcc  !== undefined) document.getElementById('chk-momentum-acc').checked   = c.momentumAcc;
+  } catch(e) {}
+}
+
+// ── FEED PERSIST ──────────────────────────────────────────────────────────────
+function saveFeed() {
+  try {
+    localStorage.setItem(LS_FEED, JSON.stringify(feedItems.slice(-50)));
+  } catch(e) {}
+}
+
+function loadFeed() {
+  try {
+    const s = localStorage.getItem(LS_FEED);
+    if (!s) return;
+    feedItems = JSON.parse(s);
+    feedItems.forEach(item => renderFeedItem(item, false));
+    updateCount();
+  } catch(e) {}
+}
+
+// ── FEED RENDER ───────────────────────────────────────────────────────────────
+function now() {
+  const d = new Date();
+  return String(d.getHours()).padStart(2,'0') + ':' +
+         String(d.getMinutes()).padStart(2,'0') + ':' +
+         String(d.getSeconds()).padStart(2,'0');
+}
+
+function addAlert(type, title, detail, sound) {
+  const item = { type, title, detail, time: now() };
+  feedItems.push(item);
+  if (feedItems.length > 50) feedItems.shift();
+  saveFeed();
+  renderFeedItem(item, true);
+  updateCount();
+  if (sound) sound();
+}
+
+function renderFeedItem(item, flash) {
+  const empty = document.getElementById('feed-empty');
+  if (empty) empty.remove();
+
+  const list = document.getElementById('feed-list');
+  const div = document.createElement('div');
+  div.className = `feed-item type-${item.type}${flash ? ' flash' : ''}`;
+  div.innerHTML = `
+    <div class="feed-item-top">
+      <div class="feed-item-title">${item.title}</div>
+      <div class="feed-item-time">${item.time}</div>
+    </div>
+    <div class="feed-item-detail">${item.detail}</div>
+  `;
+  // Prepend so newest is on top
+  list.insertBefore(div, list.firstChild);
+}
+
+function updateCount() {
+  const badge = document.getElementById('alert-count');
+  if (feedItems.length > 0) {
+    badge.style.display = 'inline-block';
+    badge.textContent = feedItems.length;
+  } else {
+    badge.style.display = 'none';
+  }
+}
+
+function clearFeed() {
+  feedItems = [];
+  localStorage.removeItem(LS_FEED);
+  const list = document.getElementById('feed-list');
+  list.innerHTML = `<div class="feed-empty" id="feed-empty">
+    <div class="feed-empty-icon">⚡</div>
+    <div>NO ALERTS TRIGGERED</div>
+    <div style="font-size:9px;opacity:0.6;">Monitoring active — alerts will appear here</div>
+  </div>`;
+  updateCount();
+}
+
+// ── METRICS UPDATE ────────────────────────────────────────────────────────────
+function fmtM(v) {
+  const sign = v >= 0 ? '+' : '';
+  return sign + (v/1e6).toFixed(2) + 'M';
+}
+
+function updateMetrics(data) {
+  document.getElementById('spot-display').textContent =
+    data.spot_es ? data.spot_es.toFixed(2) : '——';
+  document.getElementById('m-cvd').textContent = fmtM((data.total_dhp || 0) * 1e6);
+
+  const lv = data.levels || {};
+  document.getElementById('m-cw').textContent   = lv.call_wall  || '——';
+  document.getElementById('m-pw').textContent   = lv.put_wall   || '——';
+  document.getElementById('m-node').textContent = lv.gamma_node || '——';
+  document.getElementById('m-exp').textContent  = data.expiration || '——';
+
+  const dir = (data.dhp_direction || 'NEUTRAL').toUpperCase();
+  const map = {
+    'ACCELERATING_BULL': ['ACC.BULL', 'badge-acc-bull'],
+    'ACCELERATING_BEAR': ['ACC.BEAR', 'badge-acc-bear'],
+    'BUILDING_BULL':     ['BLD.BULL', 'badge-bull'],
+    'BUILDING_BEAR':     ['BLD.BEAR', 'badge-bear'],
+    'NEUTRAL':           ['NEUTRAL',  'badge-neutral'],
+    'BULLISH':           ['BULLISH',  'badge-bull'],
+    'BEARISH':           ['BEARISH',  'badge-bear'],
+  };
+  const [label, cls] = map[dir] || ['——', 'badge-neutral'];
+  document.getElementById('m-momentum').innerHTML =
+    `<span class="momentum-badge ${cls}">${label}</span>`;
+}
+
+// ── ALERT CHECKS ──────────────────────────────────────────────────────────────
+function checkAlerts(data) {
+  const spot     = data.spot_es || 0;
+  const lv       = data.levels  || {};
+  const callWall = lv.call_wall  || 0;
+  const putWall  = lv.put_wall   || 0;
+  const gammaNode= lv.gamma_node || 0;
+  const momentum = (data.dhp_direction || 'NEUTRAL').toUpperCase();
+
+  // Calculate net CVD from strikes
+  let netCVD = 0;
+  (data.strikes || []).forEach(s => {
+    netCVD += (s.call_dhp || 0) + (s.put_dhp || 0);
+  });
+  netCVD *= 1e6;
+
+  const thr = (parseFloat(document.getElementById('cvd-threshold').value) || 500) * 1e6;
+
+  // ── CVD ZERO CROSS
+  if (document.getElementById('chk-cvd-zero').checked && _prevCVD !== null) {
+    if (_prevCVD < 0 && netCVD >= 0) {
+      addAlert('cvd', 'CVD ZERO CROSS ↑', `CVD crossed zero — Bullish flow: ${fmtM(netCVD)}`, playCVDSound);
+    } else if (_prevCVD > 0 && netCVD <= 0) {
+      addAlert('cvd', 'CVD ZERO CROSS ↓', `CVD crossed zero — Bearish flow: ${fmtM(netCVD)}`, playCVDSound);
+    }
+  }
+
+  // ── CVD THRESHOLD
+  if (document.getElementById('chk-cvd-threshold').checked) {
+    if (!_cvdThresholdTriggeredPos && netCVD >= thr) {
+      _cvdThresholdTriggeredPos = true;
+      addAlert('cvd', 'CVD BULL THRESHOLD', `CVD exceeded +${(thr/1e6).toFixed(0)}M: ${fmtM(netCVD)}`, playCVDSound);
+    } else if (_cvdThresholdTriggeredPos && netCVD < thr * 0.8) {
+      _cvdThresholdTriggeredPos = false; // reset when retreats
+    }
+    if (!_cvdThresholdTriggeredNeg && netCVD <= -thr) {
+      _cvdThresholdTriggeredNeg = true;
+      addAlert('cvd', 'CVD BEAR THRESHOLD', `CVD exceeded −${(thr/1e6).toFixed(0)}M: ${fmtM(netCVD)}`, playCVDSound);
+    } else if (_cvdThresholdTriggeredNeg && netCVD > -thr * 0.8) {
+      _cvdThresholdTriggeredNeg = false;
+    }
+  }
+
+  // ── CALL WALL TEST
+  if (document.getElementById('chk-call-wall').checked && callWall > 0) {
+    const near = Math.abs(spot - callWall) <= 2;
+    if (!_callWallTriggered && near) {
+      _callWallTriggered = true;
+      addAlert('price', 'CALL WALL TEST', `Spot ${spot.toFixed(2)} testing Call Wall ${callWall}`, playPriceSound);
+    } else if (_callWallTriggered && Math.abs(spot - callWall) > 5) {
+      _callWallTriggered = false;
+    }
+  }
+
+  // ── PUT WALL TEST
+  if (document.getElementById('chk-put-wall').checked && putWall > 0) {
+    const near = Math.abs(spot - putWall) <= 2;
+    if (!_putWallTriggered && near) {
+      _putWallTriggered = true;
+      addAlert('price', 'PUT WALL TEST', `Spot ${spot.toFixed(2)} testing Put Wall ${putWall}`, playPriceSound);
+    } else if (_putWallTriggered && Math.abs(spot - putWall) > 5) {
+      _putWallTriggered = false;
+    }
+  }
+
+  // ── GAMMA NODE CROSS
+  if (document.getElementById('chk-gamma-node').checked && gammaNode > 0 && _prevSpot !== null) {
+    const crossed = (_prevSpot < gammaNode && spot >= gammaNode) ||
+                    (_prevSpot > gammaNode && spot <= gammaNode);
+    if (!_gammaNodeTriggered && crossed) {
+      _gammaNodeTriggered = true;
+      const dir = spot >= gammaNode ? '↑' : '↓';
+      addAlert('price', `GAMMA NODE CROSS ${dir}`, `Spot ${spot.toFixed(2)} crossed Gamma Node ${gammaNode}`, playPriceSound);
+    } else if (_gammaNodeTriggered && Math.abs(spot - gammaNode) > 3) {
+      _gammaNodeTriggered = false;
+    }
+  }
+
+  // ── MOMENTUM CHANGE
+  if (_prevMomentum !== null && momentum !== _prevMomentum) {
+    if (document.getElementById('chk-momentum-any').checked) {
+      addAlert('momentum', 'MOMENTUM SHIFT', `${_prevMomentum} → ${momentum}`, playMomentumSound);
+    }
+    if (document.getElementById('chk-momentum-acc').checked &&
+        (momentum === 'ACCELERATING_BULL' || momentum === 'ACCELERATING_BEAR')) {
+      addAlert('momentum', `ACCELERATING SIGNAL`, `Momentum entered ${momentum}`, playAcceleratingSound);
+    }
+  }
+
+  // Update prev state
+  _prevCVD      = netCVD;
+  _prevMomentum = momentum;
+  _prevSpot     = spot;
+}
+
+// ── FETCH ─────────────────────────────────────────────────────────────────────
+async function fetchData() {
+  try {
+    const ctrl = new AbortController();
+    const t = setTimeout(() => ctrl.abort(), 4000);
+    const r = await fetch(DATA_FILE + '?t=' + Date.now(), { signal: ctrl.signal });
+    clearTimeout(t);
+    if (!r.ok) return null;
+    return await r.json();
+  } catch(e) { return null; }
+}
+
+// ── MAIN UPDATE ───────────────────────────────────────────────────────────────
+async function update() {
+  if (_updating) return;
+  _updating = true;
+  try {
+    const data = await fetchData();
+    if (!data) return;
+    lastData = data;
+
+    const ts = data.timestamp || '';
+    if (ts && ts === _lastTimestamp) return;
+    _lastTimestamp = ts;
+
+    updateMetrics(data);
+    checkAlerts(data);
+
+  } finally {
+    _updating = false;
+  }
+}
+
+// ── INIT ──────────────────────────────────────────────────────────────────────
+loadConfig();
+loadFeed();
+
+// Unlock audio on first click anywhere
+document.addEventListener('click', () => {
+  try { getAudioCtx().resume(); } catch(e) {}
+}, { once: true });
+
+update();
+setInterval(update, REFRESH_MS);
+</script>
+</body>
+</html>
