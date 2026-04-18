@@ -4,13 +4,13 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="google-site-verification" content="rO1JRC7HFLGKWoK_5kzdd7OmHACRFl5xcf1RmNoGPLY" />
-<meta name="description" content="Gamma structure institucional para ES, NQ, CL y SPX. Briefings diarios pre-market con niveles PAD, Put Walls, Gamma Flip y régimen AMPLIFIED/DAMPENED. Para traders independientes.">
+<meta name="description" content="Institutional-grade gamma structure for ES, NQ, CL and SPX. Daily pre-market briefings with PAD levels, Put Walls, Gamma Flip and AMPLIFIED/DAMPENED regime. For independent traders.">
 <meta name="keywords" content="gamma levels, SPX, ES futures, NQ futures, options flow, put wall, gamma flip, options trading, market structure">
 <meta property="og:title" content="Pivot Alpha Desk — Daily Gamma Market Intelligence">
 <meta property="og:description" content="Institutional-grade gamma levels for ES, NQ, CL and SPX. Know where dealers are positioned before the market opens.">
 <meta property="og:url" content="https://www.pivotalphadesk.com">
 <meta property="og:type" content="website">
-<title>Pivot Alpha Desk — 16 Abr 2026 · SPX ATH 7,026 · Claims 207K Beat · GAIA DHP Día 4</title>
+<title>Pivot Alpha Desk — Daily Gamma Market Intelligence</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Space+Mono:wght@400;700&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
@@ -36,6 +36,14 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:cen
 .nav-links a:hover{color:var(--accent);}
 .nav-cta{background:transparent;border:1px solid var(--accent);color:var(--accent)!important;padding:7px 16px;border-radius:2px;transition:all .2s!important;}
 .nav-cta:hover{background:var(--accent)!important;color:var(--bg)!important;}
+.nav-right{display:flex;align-items:center;gap:12px;}
+.lang-switch{display:flex;align-items:center;border:1px solid var(--border);border-radius:2px;overflow:hidden;}
+.lang-btn{font-family:'Space Mono',monospace;font-size:10px;letter-spacing:.1em;text-transform:uppercase;padding:6px 10px;background:transparent;color:var(--text3);text-decoration:none;transition:all .2s;}
+.lang-btn:hover{color:var(--text2);}
+.lang-btn.active{background:rgba(0,212,255,0.1);color:var(--accent);}
+.lang-divider{width:1px;height:20px;background:var(--border);}
+.nav-login{font-family:'Space Mono',monospace;font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--accent);text-decoration:none;border:1px solid var(--accent);padding:7px 16px;border-radius:2px;transition:all .2s;}
+.nav-login:hover{background:var(--accent);color:var(--bg);}
 .hero{position:relative;z-index:1;min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:120px 48px 80px;overflow:hidden;}
 .hero-glow{position:absolute;top:20%;left:50%;transform:translateX(-50%);width:800px;height:400px;background:radial-gradient(ellipse,rgba(239,68,68,0.07) 0%,transparent 70%);pointer-events:none;}
 .hero-glow-gold{position:absolute;top:40%;left:30%;width:400px;height:300px;background:radial-gradient(ellipse,rgba(240,180,41,0.04) 0%,transparent 70%);pointer-events:none;}
@@ -269,11 +277,15 @@ footer{position:relative;z-index:1;background:var(--bg);border-top:1px solid var
     <li><a href="#pricing">Pricing</a></li>
     <li><a href="pad-library-zonas-algo.html">Library</a></li>
     <li><a href="contact.html">Contact</a></li>
-    <li><a href="briefing_16abr2026.html" class="nav-cta" style="background:linear-gradient(135deg,#00c06a,#007a40);color:#fff;border:none;margin-right:4px;animation:pulse-logo 1.5s ease-in-out infinite;">★ Briefing 16 Abr HOY</a></li>
-    <li><a href="briefing_10abr2026.html" class="nav-cta" style="background:rgba(0,212,255,0.12);color:var(--accent);border:1px solid rgba(0,212,255,0.3);margin-right:4px;">&#128203; Briefing 10 Abr</a></li>
-    <li><a href="pad_options_calc_v5.html" class="nav-cta" style="background:rgba(240,180,41,0.15);color:#f0b429;border:1px solid rgba(240,180,41,0.3);margin-right:8px">&#128200; Options Calc</a></li>
-    <li><a href="#pricing" class="nav-cta">Get Access</a></li>
   </ul>
+  <div class="nav-right">
+    <div class="lang-switch">
+      <a href="index.html" class="lang-btn active">EN</a>
+      <div class="lang-divider"></div>
+      <a href="index_es.html" class="lang-btn">ES</a>
+    </div>
+    <a href="login.html" class="nav-login">LOGIN →</a>
+  </div>
 </nav>
 
 <section class="hero">
@@ -281,35 +293,30 @@ footer{position:relative;z-index:1;background:var(--bg);border-top:1px solid var
   <div class="hero-glow-gold"></div>
   <div class="hero-badge">
     <div class="badge-dot"></div>
-    &#9888; BLOQUEO NAVAL HORMUZ &mdash; TRUMP · EARNINGS BANCARIOS SEMANA · GOLDMAN SACHS PM HOY#9888; BofA + MORGAN STANLEY PRE-OPEN HOY · EIA OIL STOCKS 10:30 ET · GAIA DHP DÍA 3 · ES/NQ SOBRE EMA200
+    LIVE · ES &amp; NQ ABOVE EMA200 · GAIA DHP ACTIVE · DEALER FLOW MONITORING
   </div>
   <h1><span class="accent">Pivot</span><span class="gold">Alpha</span><br>Desk</h1>
   <div class="hero-sub">Daily Market Intelligence</div>
   <p class="hero-desc">Institutional-grade gamma levels for independent traders. Know where dealers are positioned before the market opens.</p>
   <div class="hero-actions">
-    <a href="briefing_15abr2026.html" class="btn-primary" style="background:linear-gradient(135deg,#f5820a,#c05000);color:#fff;box-shadow:0 0 30px rgba(245,130,10,0.4)">href="briefing_13abr2026.html" class="btn-primary" style="background:linear-gradient(135deg,#ff4444,#cc0000);color:#fff;box-shadow:0 0 30px rgba(255,68,68,0.4)">&#9888; Briefing 13 Abr &mdash; HOY#9888; Briefing 15 Abr &mdash; HOY</a>
-    <a href="briefing_10abr2026.html" class="btn-primary" style="background:rgba(0,212,255,0.12);border:1px solid rgba(0,212,255,0.3);color:var(--accent);box-shadow:none">&#128203; Briefing 10 Abr</a>
-    <a href="pad_options_calc_v5.html" class="btn-primary" style="background:rgba(240,180,41,0.15);border:1px solid rgba(240,180,41,0.4);color:#f0b429;box-shadow:none">&#128200; Options Calculator</a>
+    <a href="briefing_16abr2026.html" class="btn-primary" style="background:linear-gradient(135deg,#00c06a,#007a40);color:#fff;">★ Latest Briefing</a>
+    <a href="login.html" class="btn-primary" style="background:rgba(0,212,255,0.12);border:1px solid rgba(0,212,255,0.3);color:var(--accent);box-shadow:none">→ Member Login</a>
     <a href="#how" class="btn-secondary">See How It Works</a>
   </div>
 </section>
 
 <div class="ticker-wrap">
   <div class="ticker">
-    <div class="ticker-item"><span class="sym" style="color:#00c06a;">★ ATH</span> <span class="up">SPX 7,026 NEW HIGH · Claims 207K Beat</span> <span class="text3">|</span> <span class="up">Philly Fed 26.7 ★ BEAT</span></div>
-    <div class="ticker-item"><span class="sym">ESM26</span> <span class="up">7,071 ▲</span> <span class="text3">|</span> <span>EMA200</span> <span class="up">7,062</span> <span class="text3">|</span> <span>Call Wall</span> <span class="neu">7,150</span> <span class="text3">|</span> <span>Put Wall</span> <span class="dn">7,050</span> <span class="text3">|</span> <span class="up">ATH ZONE</span></div>
-    <div class="ticker-item"><span class="sym">NQM26</span> <span class="up">26,416 ▲</span> <span class="text3">|</span> <span>EMA200</span> <span class="up">26,380</span> <span class="text3">|</span> <span>Call Wall</span> <span class="neu">26,500</span> <span class="text3">|</span> <span>Flip</span> <span class="neu">26,500</span> <span class="text3">|</span> <span class="up">ATH ZONE</span></div>
-    <div class="ticker-item"><span class="sym">CLK26</span> <span class="dn">$91.32 ▼</span> <span class="text3">|</span> <span>EMA200</span> <span class="neu">$91.80</span> <span class="text3">|</span> <span>Call Wall</span> <span class="up">$95</span> <span class="text3">|</span> <span>Put Wall</span> <span class="dn">$90</span> <span class="text3">|</span> <span class="neu">Perfil D</span></div>
-    <div class="ticker-item"><span class="sym">SPX</span> <span class="up">7,022 ★ATH</span> <span class="text3">|</span> <span>DHP</span> <span class="up">+6,692M BULLISH</span> <span class="text3">|</span> <span>Gamma Flip</span> <span class="up">7,150</span> <span class="text3">|</span> <span>EMA200</span> <span class="neu">6,840</span> <span class="text3">|</span> <span>GEX −8.60M</span></div>
-    <div class="ticker-item"><span class="sym">EARNINGS</span> <span class="neu">Goldman Sachs HOY PM</span> <span class="text3">|</span> <span class="alert">JPMorgan · Citi · WFC · BlackRock MARTES AM</span> <span class="text3">|</span> <span class="neu">BofA · Morgan Stanley MIÉRCOLES</span></div>
-    <div class="ticker-item"><span class="sym">MACRO</span> <span class="neu">Existing Home Sales 10:00 ET</span> <span class="text3">|</span> <span class="neu">Fed Miran 6:20 PM ET</span> <span class="text3">|</span> <span class="alert">PPI MoM Martes 8:30 ET · fcst 1.3%</span></div>
-    <div class="ticker-item"><span class="sym" style="color:#00c06a;">★ ATH</span> <span class="up">SPX 7,026 NEW HIGH · Claims 207K Beat</span> <span class="text3">|</span> <span class="up">Philly Fed 26.7 ★ BEAT</span></div>
-    <div class="ticker-item"><span class="sym">ESM26</span> <span class="up">7,071 ▲</span> <span class="text3">|</span> <span>EMA200</span> <span class="up">7,062</span> <span class="text3">|</span> <span>Call Wall</span> <span class="neu">7,150</span> <span class="text3">|</span> <span>Put Wall</span> <span class="dn">7,050</span> <span class="text3">|</span> <span class="up">ATH ZONE</span></div>
-    <div class="ticker-item"><span class="sym">NQM26</span> <span class="up">26,416 ▲</span> <span class="text3">|</span> <span>EMA200</span> <span class="up">26,380</span> <span class="text3">|</span> <span>Call Wall</span> <span class="neu">26,500</span> <span class="text3">|</span> <span>Flip</span> <span class="neu">26,500</span> <span class="text3">|</span> <span class="up">ATH ZONE</span></div>
-    <div class="ticker-item"><span class="sym">CLK26</span> <span class="dn">$91.32 ▼</span> <span class="text3">|</span> <span>EMA200</span> <span class="neu">$91.80</span> <span class="text3">|</span> <span>Call Wall</span> <span class="up">$95</span> <span class="text3">|</span> <span>Put Wall</span> <span class="dn">$90</span> <span class="text3">|</span> <span class="neu">Perfil D</span></div>
-    <div class="ticker-item"><span class="sym">SPX</span> <span class="up">7,022 ★ATH</span> <span class="text3">|</span> <span>DHP</span> <span class="up">+6,692M BULLISH</span> <span class="text3">|</span> <span>Gamma Flip</span> <span class="up">7,150</span> <span class="text3">|</span> <span>EMA200</span> <span class="neu">6,840</span> <span class="text3">|</span> <span>GEX −8.60M</span></div>
-    <div class="ticker-item"><span class="sym">EARNINGS</span> <span class="neu">Goldman Sachs HOY PM</span> <span class="text3">|</span> <span class="alert">JPMorgan · Citi · WFC · BlackRock MARTES AM</span> <span class="text3">|</span> <span class="neu">BofA · Morgan Stanley MIÉRCOLES</span></div>
-    <div class="ticker-item"><span class="sym">MACRO</span> <span class="neu">Existing Home Sales 10:00 ET</span> <span class="text3">|</span> <span class="neu">Fed Miran 6:20 PM ET</span> <span class="text3">|</span> <span class="alert">PPI MoM Martes 8:30 ET · fcst 1.3%</span></div>
+    <div class="ticker-item"><span class="sym">ESM26</span> <span class="text3">|</span> <span>Call Wall</span> <span class="neu">7,150</span> <span class="text3">|</span> <span>Put Wall</span> <span class="dn">7,060</span> <span class="text3">|</span> <span>Gamma Node</span> <span class="neu">7,100</span></div>
+    <div class="ticker-item"><span class="sym">NQM26</span> <span class="text3">|</span> <span>Call Wall</span> <span class="neu">19,500</span> <span class="text3">|</span> <span>Put Wall</span> <span class="dn">19,000</span> <span class="text3">|</span> <span>Regime</span> <span class="up">AMPLIFIED</span></div>
+    <div class="ticker-item"><span class="sym">CLK26</span> <span class="text3">|</span> <span>Call Wall</span> <span class="up">$65</span> <span class="text3">|</span> <span>Put Wall</span> <span class="dn">$60</span> <span class="text3">|</span> <span>Regime</span> <span class="neu">DAMPENED</span></div>
+    <div class="ticker-item"><span class="sym">SPX</span> <span class="text3">|</span> <span>Gamma Flip</span> <span class="up">5,800</span> <span class="text3">|</span> <span>Call Wall</span> <span class="neu">5,900</span> <span class="text3">|</span> <span>Put Wall</span> <span class="dn">5,700</span></div>
+    <div class="ticker-item"><span class="sym">GAIA DHP</span> <span class="up">LIVE</span> <span class="text3">|</span> <span>Dealer flow monitoring active</span> <span class="text3">|</span> <span class="up">app.pivotalphadesk.com</span></div>
+    <div class="ticker-item"><span class="sym">ESM26</span> <span class="text3">|</span> <span>Call Wall</span> <span class="neu">7,150</span> <span class="text3">|</span> <span>Put Wall</span> <span class="dn">7,060</span> <span class="text3">|</span> <span>Gamma Node</span> <span class="neu">7,100</span></div>
+    <div class="ticker-item"><span class="sym">NQM26</span> <span class="text3">|</span> <span>Call Wall</span> <span class="neu">19,500</span> <span class="text3">|</span> <span>Put Wall</span> <span class="dn">19,000</span> <span class="text3">|</span> <span>Regime</span> <span class="up">AMPLIFIED</span></div>
+    <div class="ticker-item"><span class="sym">CLK26</span> <span class="text3">|</span> <span>Call Wall</span> <span class="up">$65</span> <span class="text3">|</span> <span>Put Wall</span> <span class="dn">$60</span> <span class="text3">|</span> <span>Regime</span> <span class="neu">DAMPENED</span></div>
+    <div class="ticker-item"><span class="sym">SPX</span> <span class="text3">|</span> <span>Gamma Flip</span> <span class="up">5,800</span> <span class="text3">|</span> <span>Call Wall</span> <span class="neu">5,900</span> <span class="text3">|</span> <span>Put Wall</span> <span class="dn">5,700</span></div>
+    <div class="ticker-item"><span class="sym">GAIA DHP</span> <span class="up">LIVE</span> <span class="text3">|</span> <span>Dealer flow monitoring active</span> <span class="text3">|</span> <span class="up">app.pivotalphadesk.com</span></div>
   </div>
 </div>
 
@@ -561,8 +568,8 @@ footer{position:relative;z-index:1;background:var(--bg);border-top:1px solid var
       <div class="section-title">Trade with the dealers.<br>Not against them.</div>
       <p class="section-desc">Join traders who start every session knowing exactly where the institutional money is positioned.</p>
       <div class="hero-actions">
-        <a href="briefing_16abr2026.html" class="btn-primary" style="background:linear-gradient(135deg,#00c06a,#007a40);color:#fff;">★ Briefing 16 Abr &mdash; HOY</a>
-        <a href="briefing_10abr2026.html" class="btn-primary" style="background:linear-gradient(135deg,#00d4ff,#0088aa)">&#128203; Briefing 10 Abr</a>
+        <a href="briefing_16abr2026.html" class="btn-primary" style="background:linear-gradient(135deg,#00c06a,#007a40);color:#fff;">★ Latest Briefing</a>
+        <a href="login.html" class="btn-primary" style="background:rgba(0,212,255,0.12);border:1px solid rgba(0,212,255,0.3);color:var(--accent);box-shadow:none">→ Member Login</a>
         <a href="pad_options_calc_v5.html" class="btn-primary" style="background:rgba(240,180,41,0.2);border:1px solid rgba(240,180,41,0.4);color:#f0b429;">&#128200; Options Calculator</a>
         <a href="#how" class="btn-secondary">Learn More</a>
       </div>
@@ -574,15 +581,12 @@ footer{position:relative;z-index:1;background:var(--bg);border-top:1px solid var
   <div class="footer-inner">
     <div class="footer-left"><strong>Pivot Alpha Desk</strong><br>Daily market intelligence for independent traders.</div>
     <div style="display:flex;gap:20px;align-items:center;flex-wrap:wrap;">
-      <a href="briefing_16abr2026.html" style="font-family:'Space Mono',monospace;font-size:10px;color:#00c06a;text-decoration:none;letter-spacing:.08em;animation:blink 1.5s ease-in-out infinite;">★ Briefing 16 Abr &mdash; HOY</a>
-      <a href="briefing_10abr2026.html" style="font-family:'Space Mono',monospace;font-size:10px;color:var(--accent);text-decoration:none;letter-spacing:.08em;">&#128203; Briefing 10 Abr</a>
-      <a href="cpi_card_10abr2026.html" style="font-family:'Space Mono',monospace;font-size:10px;color:#00e676;text-decoration:none;letter-spacing:.08em;">&#9670; CPI Flash 10 Abr</a>
-      <a href="deep-desk-tregua-08abr2026.html" style="font-family:'Space Mono',monospace;font-size:10px;color:#ff6666;text-decoration:none;letter-spacing:.08em;">&#128240; Deep Desk Tregua</a>
+      <a href="briefing_16abr2026.html" style="font-family:'Space Mono',monospace;font-size:10px;color:#00c06a;text-decoration:none;letter-spacing:.08em;">★ Latest Briefing</a>
+      <a href="briefing_07abr2026.html" style="font-family:'Space Mono',monospace;font-size:10px;color:var(--text2);text-decoration:none;letter-spacing:.08em;">&#128203; Apr 7</a>
+      <a href="briefing_06abr2026.html" style="font-family:'Space Mono',monospace;font-size:10px;color:var(--text2);text-decoration:none;letter-spacing:.08em;">&#128203; Apr 6</a>
       <a href="pad_options_calc_v5.html" style="font-family:'Space Mono',monospace;font-size:10px;color:#f0b429;text-decoration:none;letter-spacing:.08em;">&#128200; Options Calc</a>
-      <a href="briefing_07abr2026.html" style="font-family:'Space Mono',monospace;font-size:10px;color:#8ba4b8;text-decoration:none;letter-spacing:.08em;">&#128203; 07 Abr</a>
-      <a href="briefing_06abr2026.html" style="font-family:'Space Mono',monospace;font-size:10px;color:#8ba4b8;text-decoration:none;letter-spacing:.08em;">&#128203; 06 Abr</a>
-      <a href="pad-library-zonas-algo.html" style="font-family:'Space Mono',monospace;font-size:10px;color:var(--text2);text-decoration:none;letter-spacing:.08em;">&#128218; Zonas Algo</a>
-      <a href="pad_pick_semana12_2026.html" style="font-family:'Space Mono',monospace;font-size:10px;color:#f59e0b;text-decoration:none;letter-spacing:.08em;">&#11041; PAD Pick</a>
+      <a href="pad-library-zonas-algo.html" style="font-family:'Space Mono',monospace;font-size:10px;color:var(--text2);text-decoration:none;letter-spacing:.08em;">&#128218; Library</a>
+      <a href="login.html" style="font-family:'Space Mono',monospace;font-size:10px;color:var(--accent);text-decoration:none;letter-spacing:.08em;">→ Login</a>
       <a href="contact.html" style="font-family:'Space Mono',monospace;font-size:10px;color:var(--text2);text-decoration:none;letter-spacing:.08em;">Contact</a>
     </div>
     <div class="footer-right">pivotalphadesk.com &middot; 2026</div>
@@ -607,6 +611,5 @@ document.querySelectorAll('.mock-tab').forEach(tab => {
   });
 });
 </script>
-  <script src="pad-protect.js"></script>
 </body>
 </html>
