@@ -146,6 +146,9 @@ iframe{width:100%;height:100%;border:none;}
   <a href="/cvd" class="tab {% if active == 'cvd' %}active{% endif %}">
     CVD
   </a>
+  <a href="/alerts" class="tab {% if active == 'alerts' %}active{% endif %}">
+    Alerts
+  </a>
 </div>
 <div class="frame-wrap">
   <iframe src="/{{ page }}" id="gaia-frame"></iframe>
@@ -256,6 +259,18 @@ def cvd():
     return render_template_string(DASHBOARD_HTML,
         active='cvd', page='gaia_cvd_v1.html',
         spot=get_spot(), trial_days=get_trial_days())
+
+@app.route('/alerts')
+@require_auth
+def alerts():
+    return render_template_string(DASHBOARD_HTML,
+        active='alerts', page='gaia_alerts_v1.html',
+        spot=get_spot(), trial_days=get_trial_days())
+
+@app.route('/gaia_alerts_v1.html')
+@require_auth
+def serve_alerts():
+    return send_from_directory(BASE_DIR, 'gaia_alerts_v1.html')
 
 @app.route('/gaia_cvd_v1.html')
 @require_auth
