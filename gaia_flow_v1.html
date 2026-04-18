@@ -828,6 +828,13 @@ window.addEventListener('resize', () => {
 });
 
 // ── START ─────────────────────────────────────────────────────────────────────
+// Render inmediato si hay historia guardada (evita esperar 5s al volver a la tab)
+if (callHistory.length > 0) {
+  renderFlow();
+  renderNet();
+  renderTimeAxis();
+}
+
 update();
 setInterval(update, REFRESH_MS);
 </script>
