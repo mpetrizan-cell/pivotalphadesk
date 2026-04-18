@@ -112,8 +112,6 @@ body{background:#070a0e;color:#e8f4f8;font-family:'Space Mono',monospace;}
 .logout{font-size:9px;color:#4a6070;letter-spacing:.1em;text-decoration:none;
   border:1px solid #1e2d3d;padding:5px 12px;}
 .logout:hover{color:#ff4444;border-color:#ff4444;}
-.topbar{-webkit-app-region:drag;}
-.topbar a,.topbar button{-webkit-app-region:no-drag;}
 .tabs{display:flex;background:#0d1319;border-bottom:1px solid #1e2d3d;padding:0 24px;}
 .tab{padding:10px 20px;font-size:10px;letter-spacing:.12em;text-transform:uppercase;
   color:#4a6070;cursor:pointer;border-bottom:2px solid transparent;text-decoration:none;}
@@ -144,6 +142,9 @@ iframe{width:100%;height:100%;border:none;}
   </a>
   <a href="/flow" class="tab {% if active == 'flow' %}active{% endif %}">
     DHP Flow
+  </a>
+  <a href="/cvd" class="tab {% if active == 'cvd' %}active{% endif %}">
+    CVD
   </a>
 </div>
 <div class="frame-wrap">
@@ -248,6 +249,18 @@ def flow():
     return render_template_string(DASHBOARD_HTML,
         active='flow', page='gaia_flow_v1.html',
         spot=get_spot(), trial_days=get_trial_days())
+
+@app.route('/cvd')
+@require_auth
+def cvd():
+    return render_template_string(DASHBOARD_HTML,
+        active='cvd', page='gaia_cvd_v1.html',
+        spot=get_spot(), trial_days=get_trial_days())
+
+@app.route('/gaia_cvd_v1.html')
+@require_auth
+def serve_cvd():
+    return send_from_directory(BASE_DIR, 'gaia_cvd_v1.html')
 
 @app.route('/gaia_chart_v3.html')
 @require_auth
