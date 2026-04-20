@@ -474,7 +474,7 @@ function fmtM(v) {
 
 function updateMetrics(data, callSum, putSum) {
   document.getElementById('spot-display').textContent =
-    data.spot_es ? data.spot_es.toFixed(2) : '——';
+    data.spot_spx ? data.spot_spx.toFixed(2) : '——';
 
   document.getElementById('m-call').textContent = fmtM(callAccum);
   document.getElementById('m-put').textContent  = fmtM(putAccum);
@@ -504,7 +504,7 @@ function updateMetrics(data, callSum, putSum) {
 function renderLadder(data) {
   const body   = document.getElementById('ladder-body');
   const strikes = [...(data.strikes || [])].sort((a,b) => b.strike - a.strike);
-  const spot   = data.spot_es || 0;
+  const spot   = data.spot_spx || 0;
   const lv     = data.levels  || {};
 
   const maxCall = strikes.reduce((m,s) => Math.max(m, s.call_dhp || 0), 0.001);
@@ -707,7 +707,7 @@ async function update() {
     const netCVD = callAccum + putAccum;
 
     cvdHistory.push(netCVD);
-    priceHistory.push(data.spot_es || 0);
+    priceHistory.push(data.spot_spx || 0);
 
     const now = new Date();
     const hh = String(now.getHours()).padStart(2,'0');
