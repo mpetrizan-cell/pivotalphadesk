@@ -720,7 +720,7 @@ function updateMetrics(data) {
   document.getElementById('l-flip').textContent = lv.gamma_flip  || '—';
 
   // Price
-  document.getElementById('spx-price').textContent = data.spot_es ? data.spot_es.toFixed(2) : '——';
+  document.getElementById('spx-price').textContent = data.spot_spx ? data.spot_spx.toFixed(2) : '——';
 
   // Timestamp
   document.getElementById('ts-footer').textContent = data.timestamp || '—';
@@ -856,7 +856,7 @@ function renderGEX(data) {
   const canvas  = document.getElementById('gex-canvas');
   const noData  = document.getElementById('no-data');
   const strikes = data.strikes;
-  const spot    = data.spot_es;
+  const spot    = data.spot_spx;
   const lv      = data.levels || {};
 
   if (!strikes || strikes.length === 0) {
@@ -1088,7 +1088,7 @@ function renderDHP() {
 function renderStrikeList(data) {
   const list    = document.getElementById('strike-list');
   const strikes = data.strikes;
-  const spot    = data.spot_es;
+  const spot    = data.spot_spx;
   const lv      = data.levels || {};
 
   if (!strikes) { list.innerHTML = ''; return; }
