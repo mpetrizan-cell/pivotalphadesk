@@ -799,7 +799,7 @@ function fmtM(v) {
 
 function updateMetrics(data) {
   document.getElementById('spot-display').textContent =
-    data.spot_es ? data.spot_es.toFixed(2) : '——';
+    data.spot_spx ? data.spot_spx.toFixed(2) : '——';
   document.getElementById('m-cvd').textContent = fmtM((data.total_dhp || 0) * 1e6);
 
   const lv = data.levels || {};
@@ -825,7 +825,7 @@ function updateMetrics(data) {
 
 // ── ALERT CHECKS ──────────────────────────────────────────────────────────────
 function checkAlerts(data) {
-  const spot     = data.spot_es || 0;
+  const spot     = data.spot_spx || 0;
   const lv       = data.levels  || {};
   const callWall = lv.call_wall  || 0;
   const putWall  = lv.put_wall   || 0;
