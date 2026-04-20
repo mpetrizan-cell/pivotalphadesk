@@ -495,7 +495,7 @@ function fmtM(v) {
 
 function updateMetrics(data, callSum, putSum) {
   document.getElementById('spot-display').textContent =
-    data.spot_es ? data.spot_es.toFixed(2) : '——';
+    data.spot_spx ? data.spot_spx.toFixed(2) : '——';
 
   document.getElementById('m-call').textContent = fmtM(callSum * 1e6);
   document.getElementById('m-put').textContent  = fmtM(putSum * 1e6);
@@ -527,7 +527,7 @@ function updateMetrics(data, callSum, putSum) {
 function renderLadder(data) {
   const body   = document.getElementById('ladder-body');
   const strikes = [...(data.strikes || [])].sort((a,b) => b.strike - a.strike);
-  const spot   = data.spot_es || 0;
+  const spot   = data.spot_spx || 0;
   const lv     = data.levels  || {};
 
   const maxCall = strikes.reduce((m,s) => Math.max(m, s.call_dhp || 0), 0.001);
