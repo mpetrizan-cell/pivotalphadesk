@@ -186,9 +186,9 @@ def require_auth(f):
 
 def get_spot():
     try:
-        return f"{_live_data.get('spot_spx', '——'):.2f}"
+        return f"{_live_data.get('spot_es', '——'):.2f}"
     except:
-        return str(_live_data.get('spot_spx', '——'))
+        return str(_live_data.get('spot_es', '——'))
 
 # ── PUSH ENDPOINT (llamado desde ts_gaia_chart.py local) ──────────────────────
 @app.route('/push', methods=['POST'])
@@ -239,93 +239,33 @@ def logout():
     session.clear()
     return redirect('/login')
 
-def inject_page(filename, active):
-    """Lee el HTML del disco e inyecta el topbar + tabs encima — sin iframe."""
-    filepath = os.path.join(BASE_DIR, filename)
-    try:
-        with open(filepath, 'r', encoding='utf-8') as f:
-            html = f.read()
-    except FileNotFoundError:
-        return f"<h1>File not found: {filename}</h1>", 404
-
-    trial_days = get_trial_days()
-    trial_bar = ''
-    if trial_days is not None:
-        trial_bar = f'''<div style="background:rgba(240,180,41,0.1);border-bottom:1px solid #f0b429;
-          padding:6px 24px;font-size:9px;color:#f0b429;letter-spacing:.1em;text-align:center;
-          position:fixed;top:40px;left:0;right:0;z-index:99999;">
-          TRIAL ACCESS &middot; {trial_days} days remaining &middot;
-          <a href="https://pivotalphadesk.com/#pricing" style="color:#f0b429;">Upgrade to Pro &rarr;</a>
-        </div>'''
-        top_offset = '80px'
-    else:
-        top_offset = '40px'
-
-    tabs_html = ''
-    for tab_id, tab_label, tab_file in [
-        ('chart', 'GEX Structure', 'gaia_chart_v3.html'),
-        ('flow',  'DHP Flow',      'gaia_flow_v1.html'),
-        ('cvd',   'CVD',           'gaia_cvd_v1.html'),
-        ('alerts','Alerts',        'gaia_alerts_v1.html'),
-    ]:
-        is_active = 'color:#00d4ff;border-bottom:2px solid #00d4ff;' if tab_id == active else 'color:#4a6070;border-bottom:2px solid transparent;'
-        tabs_html += f'<a href="/{tab_id}" style="padding:6px 16px;font-size:10px;letter-spacing:.12em;text-transform:uppercase;text-decoration:none;{is_active}">{tab_label}</a>'
-
-    overlay = f'''<div id="pad-overlay" style="position:fixed;top:0;left:0;right:0;z-index:99999;font-family:\'Space Mono\',monospace;">
-      <div style="background:#0d1319;border-bottom:1px solid #1e2d3d;padding:6px 24px;
-        display:flex;align-items:center;justify-content:space-between;height:40px;">
-        <div style="font-family:\'Syne\',sans-serif;font-weight:800;font-size:15px;color:#fff;">
-          Pivot<span style="color:#00d4ff;">Alpha</span>Desk &middot; GAIA Live
-        </div>
-        <div style="display:flex;align-items:center;gap:8px;font-size:10px;color:#4a6070;letter-spacing:.1em;">
-          <div style="width:6px;height:6px;border-radius:50%;background:#00c06a;animation:blink 1.5s infinite;"></div>
-          <span>LIVE &middot; {get_spot()}</span>
-        </div>
-        <a href="/logout" style="font-size:9px;color:#4a6070;letter-spacing:.1em;text-decoration:none;
-          border:1px solid #1e2d3d;padding:4px 10px;">LOGOUT</a>
-      </div>
-      {trial_bar}
-      <div style="background:#0d1319;border-bottom:1px solid #1e2d3d;padding:0 24px;display:flex;">
-        {tabs_html}
-      </div>
-    </div>
-    <style>
-      @keyframes blink{{0%,100%{{opacity:1;}}50%{{opacity:.3;}}}}
-      body {{ padding-top: {top_offset} !important; }}
-      #pad-overlay * {{ box-sizing: border-box; }}
-    </style>'''
-
-    # Inyectar overlay justo después de <body>
-    if '<body>' in html:
-        html = html.replace('<body>', '<body>\n' + overlay, 1)
-    else:
-        html = overlay + html
-
-    return html, 200
-
 @app.route('/chart')
 @require_auth
 def chart():
-    content, status = inject_page('gaia_chart_v3.html', 'chart')
-    return content, status
+    return render_template_string(DASHBOARD_HTML,
+        active='chart', page='gaia_chart_v3.html',
+        spot=get_spot(), trial_days=get_trial_days())
 
 @app.route('/flow')
 @require_auth
 def flow():
-    content, status = inject_page('gaia_flow_v1.html', 'flow')
-    return content, status
+    return render_template_string(DASHBOARD_HTML,
+        active='flow', page='gaia_flow_v1.html',
+        spot=get_spot(), trial_days=get_trial_days())
 
 @app.route('/cvd')
 @require_auth
 def cvd():
-    content, status = inject_page('gaia_cvd_v1.html', 'cvd')
-    return content, status
+    return render_template_string(DASHBOARD_HTML,
+        active='cvd', page='gaia_cvd_v1.html',
+        spot=get_spot(), trial_days=get_trial_days())
 
 @app.route('/alerts')
 @require_auth
 def alerts():
-    content, status = inject_page('gaia_alerts_v1.html', 'alerts')
-    return content, status
+    return render_template_string(DASHBOARD_HTML,
+        active='alerts', page='gaia_alerts_v1.html',
+        spot=get_spot(), trial_days=get_trial_days())
 
 @app.route('/gaia_alerts_v1.html')
 @require_auth
@@ -348,6 +288,7 @@ def serve_flow():
     return send_from_directory(BASE_DIR, 'gaia_flow_v1.html')
 
 @app.route('/gaia_live.json')
+@require_auth
 def serve_json():
     if not _live_data:
         return jsonify({'error': 'no data yet', 'status': 'waiting'}), 503
