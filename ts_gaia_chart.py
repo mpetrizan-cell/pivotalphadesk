@@ -429,17 +429,7 @@ def push_to_railway(data: dict):
     except Exception as e:
         log.warning(f"Railway push error: {e}")
 
-# ── RAILWAY KEEP-ALIVE ────────────────────────────────────────────────────────
-def keep_alive_railway():
-    """Ping /health cada 60 ciclos para evitar que Railway duerma el servidor."""
-    try:
-        req = urllib.request.Request(RAILWAY_URL + "/health")
-        with urllib.request.urlopen(req, timeout=5) as resp:
-            pass  # silencioso
-    except Exception as e:
-        log.warning(f"Keep-alive ping error: {e}")
-
-
+# ── CONSTANTES DE RECUPERACION ────────────────────────────────────────────────
 MAX_TOKEN_RETRIES    = 5       # reintentos antes de espera larga
 TOKEN_RETRY_WAIT     = 60      # segundos entre reintentos de token
 TOKEN_LONGWAIT       = 300     # espera larga si todos los reintentos fallan
@@ -548,10 +538,6 @@ def main():
                         expiration = new_exp
                 except Exception as e:
                     log.warning(f"No se pudo actualizar expiracion: {e} — usando {expiration}")
-
-            # ── KEEP-ALIVE RAILWAY (cada 60 ciclos = ~5 min) ──────────────────
-            if cycle % 60 == 0:
-                keep_alive_railway()
 
             # ── PRECIO SPX ─────────────────────────────────────────────────────
             spot = 0.0
