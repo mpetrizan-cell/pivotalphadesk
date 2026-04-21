@@ -288,7 +288,6 @@ def serve_flow():
     return send_from_directory(BASE_DIR, 'gaia_flow_v1.html')
 
 @app.route('/gaia_live.json')
-@require_auth
 def serve_json():
     if not _live_data:
         return jsonify({'error': 'no data yet', 'status': 'waiting'}), 503
