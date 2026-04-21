@@ -160,7 +160,7 @@ def get_spx_price(token):
 # ── PRECIO ES ─────────────────────────────────────────────────────────────────
 def get_es_price(token):
     try:
-        result = api_get("/marketdata/quotes/ESM25", token)
+        result = api_get("/marketdata/quotes/ESM26", token)
         quotes = result.get("Quotes", [])
         if quotes:
             last = quotes[0].get("Last", 0)
