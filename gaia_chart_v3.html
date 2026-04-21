@@ -631,7 +631,7 @@ body {
 </div>
 
 <script>
-const DATA_FILE   = 'gaia_live.json';
+const DATA_FILE = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' ? 'gaia_live.json' : '/gaia_live.json';
 const REFRESH_MS  = 5000;
 const MAX_HISTORY = 80;
 const STALE_SEC   = 90; // segundos antes de marcar DISCONNECTED
