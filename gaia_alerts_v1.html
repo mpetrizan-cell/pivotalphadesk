@@ -585,7 +585,7 @@
 
 <script>
 // ── CONFIG ────────────────────────────────────────────────────────────────────
-const DATA_FILE  = 'gaia_live.json';
+const DATA_FILE = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' ? 'gaia_live.json' : '/gaia_live.json';
 const REFRESH_MS = 5000;
 const LS_CONFIG  = 'gaia_alerts_config';
 const LS_FEED    = 'gaia_alerts_feed';
