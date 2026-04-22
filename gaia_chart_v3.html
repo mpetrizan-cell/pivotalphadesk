@@ -666,7 +666,7 @@ function updateConnectionStatus(data) {
 
   // Verificar antigüedad del timestamp
   const ts      = data.timestamp;
-  const parsed  = new Date(ts.replace(' ', 'T'));
+  const parsed  = new Date(ts.replace(' ', 'T') + 'Z');
   const ageSec  = (Date.now() - parsed.getTime()) / 1000;
 
   if (ageSec > STALE_SEC) {
