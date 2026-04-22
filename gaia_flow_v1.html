@@ -1,0 +1,842 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GAIA Flow — PivotAlphaDesk</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Barlow+Condensed:wght@300;400;600;700&display=swap');
+
+  :root {
+    --bg:        #060a0f;
+    --bg2:       #0a1018;
+    --bg3:       #0f1820;
+    --border:    rgba(0,180,255,0.08);
+    --call:      #00e5a0;
+    --call-dim:  rgba(0,229,160,0.15);
+    --put:       #ff4060;
+    --put-dim:   rgba(255,64,96,0.15);
+    --net:       #00cfff;
+    --net-dim:   rgba(0,207,255,0.12);
+    --gold:      #f0c040;
+    --text:      #8ba4b8;
+    --text2:     #c8dde8;
+    --white:     #e8f4ff;
+    --spot:      rgba(240,192,64,0.9);
+    --mono:      'Share Tech Mono', monospace;
+    --sans:      'Barlow Condensed', sans-serif;
+  }
+
+  * { margin:0; padding:0; box-sizing:border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--text2);
+    font-family: var(--sans);
+    height: 100vh;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* ── HEADER ── */
+  #header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 8px 16px;
+    background: var(--bg2);
+    border-bottom: 1px solid var(--border);
+    flex-shrink: 0;
+  }
+
+  #header-left {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+
+  .logo {
+    font-family: var(--sans);
+    font-weight: 700;
+    font-size: 13px;
+    letter-spacing: 2px;
+    color: var(--net);
+    text-transform: uppercase;
+  }
+
+  .logo span { color: var(--text); font-weight: 300; }
+
+  #live-dot {
+    width: 7px; height: 7px;
+    border-radius: 50%;
+    background: var(--call);
+    box-shadow: 0 0 6px var(--call);
+    animation: pulse 2s infinite;
+  }
+
+  @keyframes pulse {
+    0%,100% { opacity:1; } 50% { opacity:0.3; }
+  }
+
+  #spot-display {
+    font-family: var(--mono);
+    font-size: 22px;
+    color: var(--gold);
+    letter-spacing: 1px;
+  }
+
+  /* ── METRICS BAR ── */
+  #metrics {
+    display: flex;
+    gap: 0;
+    background: var(--bg2);
+    border-bottom: 1px solid var(--border);
+    flex-shrink: 0;
+  }
+
+  .metric {
+    flex: 1;
+    padding: 6px 14px;
+    border-right: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+  }
+
+  .metric:last-child { border-right: none; }
+
+  .metric-label {
+    font-size: 9px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--text);
+    font-family: var(--mono);
+  }
+
+  .metric-value {
+    font-family: var(--mono);
+    font-size: 16px;
+    font-weight: 600;
+  }
+
+  .call-color  { color: var(--call); }
+  .put-color   { color: var(--put); }
+  .net-color   { color: var(--net); }
+  .gold-color  { color: var(--gold); }
+
+  .momentum-badge {
+    display: inline-block;
+    font-family: var(--mono);
+    font-size: 11px;
+    padding: 2px 8px;
+    border-radius: 2px;
+    letter-spacing: 1px;
+    font-weight: 700;
+  }
+
+  .badge-bull     { background: rgba(0,229,160,0.15); color: var(--call); border: 1px solid rgba(0,229,160,0.3); }
+  .badge-bear     { background: rgba(255,64,96,0.15);  color: var(--put);  border: 1px solid rgba(255,64,96,0.3); }
+  .badge-neutral  { background: rgba(0,207,255,0.1);   color: var(--net);  border: 1px solid rgba(0,207,255,0.2); }
+  .badge-acc-bull { background: rgba(0,229,160,0.25); color: #00ff99; border: 1px solid rgba(0,255,153,0.5); }
+  .badge-acc-bear { background: rgba(255,64,96,0.25);  color: #ff2050; border: 1px solid rgba(255,32,80,0.5); }
+
+  /* ── MAIN LAYOUT ── */
+  #main {
+    flex: 1;
+    display: flex;
+    gap: 0;
+    overflow: hidden;
+    min-height: 0;
+  }
+
+  /* ── LEFT: GEX LADDER ── */
+  #gex-ladder {
+    width: 280px;
+    flex-shrink: 0;
+    background: var(--bg2);
+    border-right: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+
+  #ladder-title {
+    padding: 6px 12px;
+    font-size: 9px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--text);
+    font-family: var(--mono);
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    justify-content: space-between;
+  }
+
+  #ladder-body {
+    flex: 1;
+    overflow-y: auto;
+    padding: 4px 0;
+  }
+
+  #ladder-body::-webkit-scrollbar { width: 4px; }
+  #ladder-body::-webkit-scrollbar-track { background: var(--bg); }
+  #ladder-body::-webkit-scrollbar-thumb { background: var(--border); }
+
+  .ladder-row {
+    display: grid;
+    grid-template-columns: 52px 1fr 8px 1fr;
+    align-items: center;
+    height: 22px;
+    padding: 0 8px;
+    gap: 4px;
+    position: relative;
+    transition: background 0.15s;
+  }
+
+  .ladder-row:hover { background: rgba(0,207,255,0.04); }
+
+  .ladder-row.is-spot {
+    background: rgba(240,192,64,0.06);
+    border-top: 1px solid rgba(240,192,64,0.3);
+    border-bottom: 1px solid rgba(240,192,64,0.3);
+  }
+
+  .ladder-row.is-pin { background: rgba(0,207,255,0.06); }
+
+  .strike-label {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--text2);
+    text-align: right;
+  }
+
+  .ladder-row.is-spot .strike-label { color: var(--gold); font-weight: 700; }
+  .ladder-row.is-pin  .strike-label { color: var(--net); }
+
+  .call-bar-wrap { display: flex; justify-content: flex-end; align-items: center; }
+  .put-bar-wrap  { display: flex; justify-content: flex-start; align-items: center; }
+
+  .call-bar {
+    height: 10px;
+    background: var(--call);
+    opacity: 0.7;
+    border-radius: 1px 0 0 1px;
+    transition: width 0.3s ease;
+    min-width: 1px;
+  }
+
+  .put-bar {
+    height: 10px;
+    background: var(--put);
+    opacity: 0.7;
+    border-radius: 0 1px 1px 0;
+    transition: width 0.3s ease;
+    min-width: 1px;
+  }
+
+  .center-line {
+    width: 1px;
+    height: 14px;
+    background: rgba(255,255,255,0.1);
+  }
+
+  /* ── RIGHT: FLOW CHARTS ── */
+  #flow-panel {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    min-width: 0;
+  }
+
+  .chart-section {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    border-bottom: 1px solid var(--border);
+    min-height: 0;
+  }
+
+  .chart-section:last-child { border-bottom: none; }
+
+  .chart-title {
+    padding: 5px 12px;
+    font-size: 9px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--text);
+    font-family: var(--mono);
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-shrink: 0;
+  }
+
+  .chart-wrap {
+    flex: 1;
+    position: relative;
+    min-height: 0;
+  }
+
+  canvas {
+    display: block;
+    width: 100%;
+    height: 100%;
+  }
+
+  /* ── LEGEND ── */
+  .legend {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+  }
+
+  .legend-item {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 10px;
+    font-family: var(--mono);
+  }
+
+  .legend-dot {
+    width: 8px; height: 3px;
+    border-radius: 2px;
+  }
+
+  /* ── TIME AXIS ── */
+  #time-axis {
+    height: 18px;
+    flex-shrink: 0;
+    padding: 0 8px;
+    display: flex;
+    align-items: center;
+    border-top: 1px solid var(--border);
+    background: var(--bg2);
+  }
+
+  #time-canvas { width: 100%; height: 100%; display: block; }
+
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div id="header">
+  <div id="header-left">
+    <div class="logo">PAD <span>·</span> GAIA FLOW</div>
+    <div id="live-dot"></div>
+  </div>
+  <div id="spot-display">——.——</div>
+</div>
+
+<!-- METRICS -->
+<div id="metrics">
+  <div class="metric">
+    <div class="metric-label">Call DHP</div>
+    <div class="metric-value call-color" id="m-call">+0.00M</div>
+  </div>
+  <div class="metric">
+    <div class="metric-label">Put DHP</div>
+    <div class="metric-value put-color" id="m-put">0.00M</div>
+  </div>
+  <div class="metric">
+    <div class="metric-label">Net DHP</div>
+    <div class="metric-value net-color" id="m-net">+0.00M</div>
+  </div>
+  <div class="metric">
+    <div class="metric-label">Momentum</div>
+    <div id="m-momentum"><span class="momentum-badge badge-neutral">NEUTRAL</span></div>
+  </div>
+  <div class="metric">
+    <div class="metric-label">Call Wall</div>
+    <div class="metric-value gold-color" id="m-cw">——</div>
+  </div>
+  <div class="metric">
+    <div class="metric-label">Put Wall</div>
+    <div class="metric-value put-color" id="m-pw">——</div>
+  </div>
+  <div class="metric">
+    <div class="metric-label">Gamma Node</div>
+    <div class="metric-value net-color" id="m-node">——</div>
+  </div>
+  <div class="metric">
+    <div class="metric-label">Expiration</div>
+    <div class="metric-value" style="color:var(--text2);font-size:13px;" id="m-exp">——</div>
+  </div>
+</div>
+
+<!-- MAIN -->
+<div id="main">
+
+  <!-- GEX LADDER -->
+  <div id="gex-ladder">
+    <div id="ladder-title">
+      <span>GEX BY STRIKE</span>
+      <span style="display:flex;gap:10px;">
+        <span style="color:var(--call)">▶ CALL</span>
+        <span style="color:var(--put)">PUT ◀</span>
+      </span>
+    </div>
+    <div id="ladder-body"></div>
+  </div>
+
+  <!-- FLOW CHARTS -->
+  <div id="flow-panel">
+
+    <!-- Call DHP vs Put DHP over time -->
+    <div class="chart-section">
+      <div class="chart-title">
+        <span>CALL DHP vs PUT DHP — DEALER FLOW OVER TIME</span>
+        <div style="display:flex;align-items:center;gap:16px;">
+          <div class="legend">
+            <div class="legend-item">
+              <div class="legend-dot" style="background:var(--call)"></div>
+              <span style="color:var(--call)">CALL</span>
+            </div>
+            <div class="legend-item">
+              <div class="legend-dot" style="background:var(--put)"></div>
+              <span style="color:var(--put)">PUT</span>
+            </div>
+          </div>
+          <button onclick="clearHistory()" style="font-family:var(--mono);font-size:9px;letter-spacing:1px;color:var(--text);background:transparent;border:1px solid rgba(255,255,255,0.1);padding:2px 8px;cursor:pointer;text-transform:uppercase;">RESET</button>
+        </div>
+      </div>
+      <div class="chart-wrap">
+        <canvas id="flow-canvas"></canvas>
+      </div>
+    </div>
+
+    <!-- Net DHP over time -->
+    <div class="chart-section">
+      <div class="chart-title">
+        <span>NET DHP — DELTA HEDGING PRESSURE</span>
+        <div class="legend">
+          <div class="legend-item">
+            <div class="legend-dot" style="background:var(--net)"></div>
+            <span style="color:var(--net)">NET</span>
+          </div>
+        </div>
+      </div>
+      <div class="chart-wrap">
+        <canvas id="net-canvas"></canvas>
+      </div>
+      <div id="time-axis">
+        <canvas id="time-canvas"></canvas>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+// ── CONFIG ────────────────────────────────────────────────────────────────────
+const DATA_FILE = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' ? 'gaia_live.json' : '/gaia_live.json';
+const REFRESH_MS   = 5000;
+const MAX_HISTORY  = 120; // 60 minutos a 30s
+
+// ── STATE ─────────────────────────────────────────────────────────────────────
+const LS_KEY = 'gaia_flow_history';
+
+function loadHistory() {
+  try {
+    const saved = localStorage.getItem(LS_KEY);
+    if (!saved) return { call: [], put: [], net: [], time: [] };
+    return JSON.parse(saved);
+  } catch(e) { return { call: [], put: [], net: [], time: [] }; }
+}
+
+function saveHistory() {
+  try {
+    localStorage.setItem(LS_KEY, JSON.stringify({
+      call: callHistory, put: putHistory, net: netHistory, time: timeHistory
+    }));
+  } catch(e) {}
+}
+
+function clearHistory() {
+  callHistory.length = 0;
+  putHistory.length  = 0;
+  netHistory.length  = 0;
+  timeHistory.length = 0;
+  localStorage.removeItem(LS_KEY);
+  if (lastData) { renderFlow(); renderNet(); renderTimeAxis(); }
+}
+
+// Restore history from localStorage on load
+const _saved = loadHistory();
+const callHistory  = _saved.call.slice(-MAX_HISTORY);
+const putHistory   = _saved.put.slice(-MAX_HISTORY);
+const netHistory   = _saved.net.slice(-MAX_HISTORY);
+const timeHistory  = _saved.time.slice(-MAX_HISTORY);
+let lastData       = null;
+let _updating      = false;
+let _lastTimestamp = null;
+
+// ── FETCH ─────────────────────────────────────────────────────────────────────
+async function fetchData() {
+  try {
+    const ctrl = new AbortController();
+    const t = setTimeout(() => ctrl.abort(), 4000);
+    const r = await fetch(DATA_FILE + '?t=' + Date.now(), { signal: ctrl.signal });
+    clearTimeout(t);
+    if (!r.ok) return null;
+    return await r.json();
+  } catch(e) { return null; }
+}
+
+// ── METRICS ───────────────────────────────────────────────────────────────────
+function fmtM(v) {
+  const sign = v >= 0 ? '+' : '';
+  return sign + (v/1e6).toFixed(2) + 'M';
+}
+
+function updateMetrics(data, callSum, putSum) {
+  document.getElementById('spot-display').textContent =
+    data.spot_spx ? data.spot_spx.toFixed(2) : '——';
+
+  document.getElementById('m-call').textContent = fmtM(callSum * 1e6);
+  document.getElementById('m-put').textContent  = fmtM(putSum * 1e6);
+  document.getElementById('m-net').textContent  = fmtM(data.total_dhp * 1e6);
+
+  const lv = data.levels || {};
+  document.getElementById('m-cw').textContent   = lv.call_wall  || '——';
+  document.getElementById('m-pw').textContent   = lv.put_wall   || '——';
+  document.getElementById('m-node').textContent = lv.gamma_node || '——';
+  document.getElementById('m-exp').textContent  = data.expiration || '——';
+
+  // Momentum badge
+  const dir = (data.dhp_direction || 'NEUTRAL').toUpperCase();
+  const map = {
+    'ACCELERATING_BULL': ['ACC.BULL', 'badge-acc-bull'],
+    'ACCELERATING_BEAR': ['ACC.BEAR', 'badge-acc-bear'],
+    'BUILDING_BULL':     ['BLD.BULL', 'badge-bull'],
+    'BUILDING_BEAR':     ['BLD.BEAR', 'badge-bear'],
+    'NEUTRAL':           ['NEUTRAL',  'badge-neutral'],
+    'BULLISH':           ['BULLISH',  'badge-bull'],
+    'BEARISH':           ['BEARISH',  'badge-bear'],
+  };
+  const [label, cls] = map[dir] || ['——', 'badge-neutral'];
+  document.getElementById('m-momentum').innerHTML =
+    `<span class="momentum-badge ${cls}">${label}</span>`;
+}
+
+// ── GEX LADDER ────────────────────────────────────────────────────────────────
+function renderLadder(data) {
+  const body   = document.getElementById('ladder-body');
+  const strikes = [...(data.strikes || [])].sort((a,b) => b.strike - a.strike);
+  const spot   = data.spot_spx || 0;
+  const lv     = data.levels  || {};
+
+  const maxCall = strikes.reduce((m,s) => Math.max(m, s.call_dhp || 0), 0.001);
+  const maxPut  = strikes.reduce((m,s) => Math.max(m, Math.abs(s.put_dhp || 0)), 0.001);
+  const maxVal  = Math.max(maxCall, maxPut);
+  const BAR_MAX = 100; // px
+
+  body.innerHTML = strikes.map(s => {
+    const isSpot = Math.abs(s.strike - spot) < 3;
+    const isPin  = s.strike === lv.gamma_node || s.strike === lv.gravity_pin;
+    const callW  = Math.round((s.call_dhp / maxVal) * BAR_MAX);
+    const putW   = Math.round((Math.abs(s.put_dhp) / maxVal) * BAR_MAX);
+
+    let cls = '';
+    if (isSpot) cls = 'is-spot';
+    else if (isPin) cls = 'is-pin';
+
+    return `<div class="ladder-row ${cls}">
+      <div class="strike-label">${s.strike}</div>
+      <div class="call-bar-wrap">
+        <div class="call-bar" style="width:${callW}px"></div>
+      </div>
+      <div class="center-line"></div>
+      <div class="put-bar-wrap">
+        <div class="put-bar" style="width:${putW}px"></div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+// ── CANVAS HELPER ─────────────────────────────────────────────────────────────
+function resizeCanvas(canvas) {
+  const wrap = canvas.parentElement;
+  const W = wrap.clientWidth;
+  const H = wrap.clientHeight;
+  if (canvas.width !== W || canvas.height !== H) {
+    canvas.width  = W;
+    canvas.height = H;
+  }
+  return { W, H, ctx: canvas.getContext('2d') };
+}
+
+// ── FLOW CANVAS (Call vs Put) ─────────────────────────────────────────────────
+function renderFlow() {
+  const canvas = document.getElementById('flow-canvas');
+  const { W, H, ctx } = resizeCanvas(canvas);
+  ctx.clearRect(0, 0, W, H);
+
+  if (callHistory.length < 2) return;
+
+  const PAD = { t: 10, b: 10, l: 8, r: 8 };
+  const cW = W - PAD.l - PAD.r;
+  const cH = H - PAD.t - PAD.b;
+
+  // Scale
+  const allVals = [...callHistory, ...putHistory.map(Math.abs)];
+  const maxV = allVals.reduce((m,v) => Math.max(m, v), 1);
+  const midY = PAD.t + cH / 2;
+
+  const xOf = i => PAD.l + (i / (MAX_HISTORY - 1)) * cW;
+  const yCallOf = v => midY - (v / maxV) * (cH / 2) * 0.9;
+  const yPutOf  = v => midY + (Math.abs(v) / maxV) * (cH / 2) * 0.9;
+
+  const startIdx = Math.max(0, MAX_HISTORY - callHistory.length);
+
+  // Grid lines
+  ctx.strokeStyle = 'rgba(255,255,255,0.04)';
+  ctx.lineWidth = 1;
+  ctx.setLineDash([2, 6]);
+  [0.25, 0.5, 0.75].forEach(p => {
+    const y = PAD.t + p * cH;
+    ctx.beginPath(); ctx.moveTo(PAD.l, y); ctx.lineTo(W - PAD.r, y); ctx.stroke();
+  });
+  ctx.setLineDash([]);
+
+  // Zero line
+  ctx.strokeStyle = 'rgba(255,255,255,0.12)';
+  ctx.lineWidth = 1;
+  ctx.beginPath(); ctx.moveTo(PAD.l, midY); ctx.lineTo(W - PAD.r, midY); ctx.stroke();
+
+  // Call fill
+  ctx.beginPath();
+  callHistory.forEach((v, i) => {
+    const x = xOf(startIdx + i);
+    const y = yCallOf(v);
+    i === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
+  });
+  ctx.lineTo(xOf(startIdx + callHistory.length - 1), midY);
+  ctx.lineTo(xOf(startIdx), midY);
+  ctx.closePath();
+  ctx.fillStyle = 'rgba(0,229,160,0.12)';
+  ctx.fill();
+
+  // Put fill
+  ctx.beginPath();
+  putHistory.forEach((v, i) => {
+    const x = xOf(startIdx + i);
+    const y = yPutOf(v);
+    i === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
+  });
+  ctx.lineTo(xOf(startIdx + putHistory.length - 1), midY);
+  ctx.lineTo(xOf(startIdx), midY);
+  ctx.closePath();
+  ctx.fillStyle = 'rgba(255,64,96,0.12)';
+  ctx.fill();
+
+  // Call line
+  ctx.beginPath();
+  callHistory.forEach((v, i) => {
+    const x = xOf(startIdx + i);
+    const y = yCallOf(v);
+    i === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
+  });
+  ctx.strokeStyle = 'rgba(0,229,160,0.9)';
+  ctx.lineWidth = 1.5;
+  ctx.stroke();
+
+  // Put line
+  ctx.beginPath();
+  putHistory.forEach((v, i) => {
+    const x = xOf(startIdx + i);
+    const y = yPutOf(v);
+    i === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
+  });
+  ctx.strokeStyle = 'rgba(255,64,96,0.9)';
+  ctx.lineWidth = 1.5;
+  ctx.stroke();
+
+  // Current values
+  if (callHistory.length > 0) {
+    const lastCall = callHistory[callHistory.length - 1];
+    const lastPut  = putHistory[putHistory.length - 1];
+    const lx = xOf(startIdx + callHistory.length - 1);
+
+    ctx.font = '10px Share Tech Mono, monospace';
+    ctx.fillStyle = '#00e5a0';
+    ctx.fillText(fmtM(lastCall), lx - 48, yCallOf(lastCall) - 5);
+    ctx.fillStyle = '#ff4060';
+    ctx.fillText(fmtM(lastPut), lx - 48, yPutOf(lastPut) + 14);
+  }
+}
+
+// ── NET CANVAS ────────────────────────────────────────────────────────────────
+function renderNet() {
+  const canvas = document.getElementById('net-canvas');
+  const { W, H, ctx } = resizeCanvas(canvas);
+  ctx.clearRect(0, 0, W, H);
+
+  if (netHistory.length < 2) return;
+
+  const PAD = { t: 10, b: 10, l: 8, r: 8 };
+  const cW = W - PAD.l - PAD.r;
+  const cH = H - PAD.t - PAD.b;
+
+  const maxV = netHistory.reduce((m,v) => Math.max(m, Math.abs(v)), 1);
+  const minV = netHistory.reduce((m,v) => Math.min(m, v), 0);
+  const range = Math.max(maxV - minV, 1);
+
+  const startIdx = Math.max(0, MAX_HISTORY - netHistory.length);
+  const xOf = i => PAD.l + (i / (MAX_HISTORY - 1)) * cW;
+  const yOf  = v => PAD.t + cH - ((v - minV) / range) * cH * 0.9;
+  const baseY = PAD.t + cH;
+
+  // Grid
+  ctx.strokeStyle = 'rgba(255,255,255,0.04)';
+  ctx.lineWidth = 1;
+  ctx.setLineDash([2, 6]);
+  [0.25, 0.5, 0.75].forEach(p => {
+    const y = PAD.t + p * cH;
+    ctx.beginPath(); ctx.moveTo(PAD.l, y); ctx.lineTo(W - PAD.r, y); ctx.stroke();
+  });
+  ctx.setLineDash([]);
+
+  // Fill
+  ctx.beginPath();
+  netHistory.forEach((v, i) => {
+    const x = xOf(startIdx + i);
+    const y = yOf(v);
+    i === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
+  });
+  ctx.lineTo(xOf(startIdx + netHistory.length - 1), baseY);
+  ctx.lineTo(xOf(startIdx), baseY);
+  ctx.closePath();
+
+  const grad = ctx.createLinearGradient(0, PAD.t, 0, baseY);
+  grad.addColorStop(0,   'rgba(0,207,255,0.25)');
+  grad.addColorStop(1,   'rgba(0,207,255,0.02)');
+  ctx.fillStyle = grad;
+  ctx.fill();
+
+  // Line
+  ctx.beginPath();
+  netHistory.forEach((v, i) => {
+    const x = xOf(startIdx + i);
+    const y = yOf(v);
+    i === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
+  });
+  ctx.strokeStyle = 'rgba(0,207,255,0.9)';
+  ctx.lineWidth = 2;
+  ctx.stroke();
+
+  // Last value label
+  if (netHistory.length > 0) {
+    const last = netHistory[netHistory.length - 1];
+    const lx = xOf(startIdx + netHistory.length - 1);
+    const ly = yOf(last);
+    ctx.beginPath();
+    ctx.arc(lx, ly, 3, 0, Math.PI * 2);
+    ctx.fillStyle = '#00cfff';
+    ctx.fill();
+    ctx.font = '11px Share Tech Mono, monospace';
+    ctx.fillStyle = '#00cfff';
+    ctx.fillText(fmtM(last), lx - 52, ly - 7);
+  }
+}
+
+// ── TIME AXIS ─────────────────────────────────────────────────────────────────
+function renderTimeAxis() {
+  const canvas = document.getElementById('time-canvas');
+  const W = canvas.parentElement.clientWidth;
+  const H = 18;
+  if (canvas.width !== W || canvas.height !== H) {
+    canvas.width = W; canvas.height = H;
+  }
+  const ctx = canvas.getContext('2d');
+  ctx.clearRect(0, 0, W, H);
+
+  if (timeHistory.length < 2) return;
+
+  const PAD_L = 8, PAD_R = 8;
+  const cW = W - PAD_L - PAD_R;
+  const startIdx = Math.max(0, MAX_HISTORY - timeHistory.length);
+
+  ctx.font = '9px Share Tech Mono, monospace';
+  ctx.fillStyle = 'rgba(139,164,184,0.6)';
+  ctx.textAlign = 'center';
+
+  const step = Math.max(1, Math.floor(timeHistory.length / 6));
+  timeHistory.forEach((t, i) => {
+    if (i % step !== 0 && i !== timeHistory.length - 1) return;
+    const x = PAD_L + ((startIdx + i) / (MAX_HISTORY - 1)) * cW;
+    ctx.fillText(t, x, 12);
+  });
+}
+
+// ── MAIN UPDATE ───────────────────────────────────────────────────────────────
+async function update() {
+  if (_updating) return;
+  _updating = true;
+  try {
+    const data = await fetchData();
+    if (!data) return;
+
+    lastData = data;
+
+    // Sum call/put DHP across all strikes
+    let callSum = 0, putSum = 0;
+    (data.strikes || []).forEach(s => {
+      callSum += (s.call_dhp || 0);
+      putSum  += (s.put_dhp  || 0);
+    });
+
+    // Push to history — solo si el timestamp cambió
+    const ts = data.timestamp || '';
+    if (ts && ts === _lastTimestamp) return;
+    _lastTimestamp = ts;
+
+    callHistory.push(callSum * 1e6);
+    putHistory.push(putSum * 1e6);
+    netHistory.push(data.total_dhp * 1e6);
+
+    // Timestamp
+    const now = new Date();
+    const hh = String(now.getHours()).padStart(2,'0');
+    const mm = String(now.getMinutes()).padStart(2,'0');
+    timeHistory.push(`${hh}:${mm}`);
+
+    // Trim
+    if (callHistory.length > MAX_HISTORY) { callHistory.shift(); putHistory.shift(); netHistory.shift(); timeHistory.shift(); }
+
+    // Persist
+    saveHistory();
+
+    updateMetrics(data, callSum, putSum);
+    renderLadder(data);
+    renderFlow();
+    renderNet();
+    renderTimeAxis();
+
+  } finally {
+    _updating = false;
+  }
+}
+
+// ── RESIZE ────────────────────────────────────────────────────────────────────
+window.addEventListener('resize', () => {
+  if (lastData) { renderFlow(); renderNet(); renderTimeAxis(); }
+});
+
+// ── START ─────────────────────────────────────────────────────────────────────
+// Render inmediato si hay historia guardada (evita esperar 5s al volver a la tab)
+if (callHistory.length > 0) {
+  renderFlow();
+  renderNet();
+  renderTimeAxis();
+}
+
+update();
+setInterval(update, REFRESH_MS);
+</script>
+</body>
+</html>
