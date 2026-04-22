@@ -383,7 +383,7 @@ def save_gaia_json(strikes_data, total_dhp, spot, spot_es, expiration, levels, m
         levels_es = {k: round(v + basis, 2) for k, v in levels.items()} if basis != 0 else levels.copy()
 
         output = {
-            "timestamp":     datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+            "timestamp":     datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S"),
             "expiration":    expiration,
             "spot_spx":      spot,
             "spot_es":       spot_es if spot_es > 0 else spot,
@@ -575,7 +575,7 @@ def main():
                     basis    = round(spot_es - spot, 2) if spot_es > 0 else 0.0
                     levels_es = {k: round(v + basis, 2) for k, v in levels.items()} if basis != 0 else levels.copy()
                     push_to_railway({
-                        "timestamp":     datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+                        "timestamp":     datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S"),
                         "expiration":    expiration,
                         "spot_spx":      spot,
                         "spot_es":       spot_es if spot_es > 0 else spot,
