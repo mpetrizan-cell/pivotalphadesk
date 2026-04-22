@@ -1,0 +1,747 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GAIA CVD — PivotAlphaDesk</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Barlow+Condensed:wght@300;400;600;700&display=swap');
+
+  :root {
+    --bg:        #060a0f;
+    --bg2:       #0a1018;
+    --bg3:       #0f1820;
+    --border:    rgba(0,180,255,0.08);
+    --call:      #00e5a0;
+    --call-dim:  rgba(0,229,160,0.15);
+    --put:       #ff4060;
+    --put-dim:   rgba(255,64,96,0.15);
+    --net:       #00cfff;
+    --net-dim:   rgba(0,207,255,0.12);
+    --cvd:       #00d4ff;
+    --price:     rgba(255,255,255,0.9);
+    --gold:      #f0c040;
+    --text:      #8ba4b8;
+    --text2:     #c8dde8;
+    --white:     #e8f4ff;
+    --mono:      'Share Tech Mono', monospace;
+    --sans:      'Barlow Condensed', sans-serif;
+  }
+
+  * { margin:0; padding:0; box-sizing:border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--text2);
+    font-family: var(--sans);
+    height: 100vh;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+  }
+
+  #header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 8px 16px;
+    background: var(--bg2);
+    border-bottom: 1px solid var(--border);
+    flex-shrink: 0;
+  }
+
+  #header-left {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+
+  .logo {
+    font-family: var(--sans);
+    font-weight: 700;
+    font-size: 13px;
+    letter-spacing: 2px;
+    color: var(--net);
+    text-transform: uppercase;
+  }
+
+  .logo span { color: var(--text); font-weight: 300; }
+
+  #live-dot {
+    width: 7px; height: 7px;
+    border-radius: 50%;
+    background: var(--call);
+    box-shadow: 0 0 6px var(--call);
+    animation: pulse 2s infinite;
+  }
+
+  @keyframes pulse {
+    0%,100% { opacity:1; } 50% { opacity:0.3; }
+  }
+
+  #spot-display {
+    font-family: var(--mono);
+    font-size: 22px;
+    color: var(--white);
+    letter-spacing: 1px;
+  }
+
+  #metrics {
+    display: flex;
+    gap: 0;
+    background: var(--bg2);
+    border-bottom: 1px solid var(--border);
+    flex-shrink: 0;
+  }
+
+  .metric {
+    flex: 1;
+    padding: 6px 14px;
+    border-right: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+  }
+
+  .metric:last-child { border-right: none; }
+
+  .metric-label {
+    font-size: 9px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--text);
+    font-family: var(--mono);
+  }
+
+  .metric-value {
+    font-family: var(--mono);
+    font-size: 16px;
+    font-weight: 600;
+  }
+
+  .call-color  { color: var(--call); }
+  .put-color   { color: var(--put); }
+  .net-color   { color: var(--net); }
+  .gold-color  { color: var(--gold); }
+
+  .momentum-badge {
+    display: inline-block;
+    font-family: var(--mono);
+    font-size: 11px;
+    padding: 2px 8px;
+    border-radius: 2px;
+    letter-spacing: 1px;
+    font-weight: 700;
+  }
+
+  .badge-bull     { background: rgba(0,229,160,0.15); color: var(--call); border: 1px solid rgba(0,229,160,0.3); }
+  .badge-bear     { background: rgba(255,64,96,0.15);  color: var(--put);  border: 1px solid rgba(255,64,96,0.3); }
+  .badge-neutral  { background: rgba(0,207,255,0.1);   color: var(--net);  border: 1px solid rgba(0,207,255,0.2); }
+  .badge-acc-bull { background: rgba(0,229,160,0.25); color: #00ff99; border: 1px solid rgba(0,255,153,0.5); }
+  .badge-acc-bear { background: rgba(255,64,96,0.25);  color: #ff2050; border: 1px solid rgba(255,32,80,0.5); }
+
+  #main {
+    flex: 1;
+    display: flex;
+    gap: 0;
+    overflow: hidden;
+    min-height: 0;
+  }
+
+  #gex-ladder {
+    width: 280px;
+    flex-shrink: 0;
+    background: var(--bg2);
+    border-right: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+
+  #ladder-title {
+    padding: 6px 12px;
+    font-size: 9px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--text);
+    font-family: var(--mono);
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    justify-content: space-between;
+  }
+
+  #ladder-body {
+    flex: 1;
+    overflow-y: auto;
+    padding: 4px 0;
+  }
+
+  #ladder-body::-webkit-scrollbar { width: 4px; }
+  #ladder-body::-webkit-scrollbar-track { background: var(--bg); }
+  #ladder-body::-webkit-scrollbar-thumb { background: var(--border); }
+
+  .ladder-row {
+    display: grid;
+    grid-template-columns: 52px 1fr 8px 1fr;
+    align-items: center;
+    height: 22px;
+    padding: 0 8px;
+    gap: 4px;
+    position: relative;
+    transition: background 0.15s;
+  }
+
+  .ladder-row:hover { background: rgba(0,207,255,0.04); }
+
+  .ladder-row.is-spot {
+    background: rgba(240,192,64,0.06);
+    border-top: 1px solid rgba(240,192,64,0.3);
+    border-bottom: 1px solid rgba(240,192,64,0.3);
+  }
+
+  .ladder-row.is-pin { background: rgba(141,68,173,0.08); }
+
+  .strike-label {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--text2);
+    text-align: right;
+  }
+
+  .ladder-row.is-spot .strike-label { color: var(--gold); font-weight: 700; }
+  .ladder-row.is-pin  .strike-label { color: #c39bd3; }
+
+  .call-bar-wrap { display: flex; justify-content: flex-end; align-items: center; }
+  .put-bar-wrap  { display: flex; justify-content: flex-start; align-items: center; }
+
+  .call-bar {
+    height: 10px;
+    background: var(--call);
+    opacity: 0.7;
+    border-radius: 1px 0 0 1px;
+    transition: width 0.3s ease;
+    min-width: 1px;
+  }
+
+  .put-bar {
+    height: 10px;
+    background: var(--put);
+    opacity: 0.7;
+    border-radius: 0 1px 1px 0;
+    transition: width 0.3s ease;
+    min-width: 1px;
+  }
+
+  .center-line {
+    width: 1px;
+    height: 14px;
+    background: rgba(255,255,255,0.1);
+  }
+
+  #cvd-panel {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    min-width: 0;
+  }
+
+  .chart-title {
+    padding: 5px 12px;
+    font-size: 9px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--text);
+    font-family: var(--mono);
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-shrink: 0;
+    background: var(--bg2);
+  }
+
+  .legend {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+  }
+
+  .legend-item {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 10px;
+    font-family: var(--mono);
+  }
+
+  .legend-dot {
+    width: 20px; height: 2px;
+    border-radius: 2px;
+  }
+
+  .chart-wrap {
+    flex: 1;
+    position: relative;
+    min-height: 0;
+  }
+
+  canvas {
+    display: block;
+    width: 100%;
+    height: 100%;
+  }
+
+  #time-axis {
+    height: 18px;
+    flex-shrink: 0;
+    padding: 0 8px;
+    display: flex;
+    align-items: center;
+    border-top: 1px solid var(--border);
+    background: var(--bg2);
+  }
+
+  #time-canvas { width: 100%; height: 100%; display: block; }
+
+  .reset-btn {
+    font-family: var(--mono);
+    font-size: 9px;
+    letter-spacing: 1px;
+    color: var(--text);
+    background: transparent;
+    border: 1px solid rgba(255,255,255,0.1);
+    padding: 2px 8px;
+    cursor: pointer;
+    text-transform: uppercase;
+  }
+
+  .reset-btn:hover { color: var(--put); border-color: var(--put); }
+</style>
+</head>
+<body>
+
+<div id="header">
+  <div id="header-left">
+    <div class="logo">PAD <span>·</span> GAIA CVD</div>
+    <div id="live-dot"></div>
+  </div>
+  <div id="spot-display">——.——</div>
+</div>
+
+<div id="metrics">
+  <div class="metric">
+    <div class="metric-label">Call CVD</div>
+    <div class="metric-value call-color" id="m-call">+0.00M</div>
+  </div>
+  <div class="metric">
+    <div class="metric-label">Put CVD</div>
+    <div class="metric-value put-color" id="m-put">0.00M</div>
+  </div>
+  <div class="metric">
+    <div class="metric-label">CVD DHP</div>
+    <div class="metric-value net-color" id="m-net">+0.00M</div>
+  </div>
+  <div class="metric">
+    <div class="metric-label">Momentum</div>
+    <div id="m-momentum"><span class="momentum-badge badge-neutral">NEUTRAL</span></div>
+  </div>
+  <div class="metric">
+    <div class="metric-label">Call Wall</div>
+    <div class="metric-value gold-color" id="m-cw">——</div>
+  </div>
+  <div class="metric">
+    <div class="metric-label">Put Wall</div>
+    <div class="metric-value put-color" id="m-pw">——</div>
+  </div>
+  <div class="metric">
+    <div class="metric-label">Gamma Node</div>
+    <div class="metric-value" style="color:#c39bd3" id="m-node">——</div>
+  </div>
+  <div class="metric">
+    <div class="metric-label">Expiration</div>
+    <div class="metric-value" style="color:var(--text2);font-size:13px;" id="m-exp">——</div>
+  </div>
+</div>
+
+<div id="main">
+
+  <div id="gex-ladder">
+    <div id="ladder-title">
+      <span>GEX BY STRIKE</span>
+      <span style="display:flex;gap:10px;">
+        <span style="color:var(--call)">▶ CALL</span>
+        <span style="color:var(--put)">PUT ◀</span>
+      </span>
+    </div>
+    <div id="ladder-body"></div>
+  </div>
+
+  <div id="cvd-panel">
+    <div class="chart-title">
+      <span>CVD DHP vs PRICE — CUMULATIVE DEALER HEDGING PRESSURE</span>
+      <div style="display:flex;align-items:center;gap:16px;">
+        <div class="legend">
+          <div class="legend-item">
+            <div class="legend-dot" style="background:#00d4ff"></div>
+            <span style="color:#00d4ff">CVD DHP</span>
+          </div>
+          <div class="legend-item">
+            <div class="legend-dot" style="background:rgba(255,255,255,0.8)"></div>
+            <span style="color:rgba(255,255,255,0.8)">PRICE</span>
+          </div>
+        </div>
+        <button class="reset-btn" onclick="clearHistory()">RESET</button>
+      </div>
+    </div>
+
+    <div class="chart-wrap">
+      <canvas id="cvd-canvas"></canvas>
+    </div>
+
+    <div id="time-axis">
+      <canvas id="time-canvas"></canvas>
+    </div>
+  </div>
+
+</div>
+
+<script>
+const DATA_FILE = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' ? 'gaia_live.json' : '/gaia_live.json';
+const REFRESH_MS  = 5000;
+const MAX_HISTORY = 390;
+const LS_KEY      = 'gaia_cvd_history';
+
+function loadHistory() {
+  try {
+    const s = localStorage.getItem(LS_KEY);
+    if (!s) return { cvd: [], price: [], time: [] };
+    return JSON.parse(s);
+  } catch(e) { return { cvd: [], price: [], time: [] }; }
+}
+
+function saveHistory() {
+  try {
+    localStorage.setItem(LS_KEY, JSON.stringify({
+      cvd: cvdHistory, price: priceHistory, time: timeHistory
+    }));
+  } catch(e) {}
+}
+
+function clearHistory() {
+  cvdHistory.length = 0;
+  priceHistory.length = 0;
+  timeHistory.length = 0;
+  callAccum = 0;
+  putAccum  = 0;
+  localStorage.removeItem(LS_KEY);
+  renderCVD();
+  renderTimeAxis();
+}
+
+const _saved    = loadHistory();
+const cvdHistory   = _saved.cvd.slice(-MAX_HISTORY);
+const priceHistory = _saved.price.slice(-MAX_HISTORY);
+const timeHistory  = _saved.time.slice(-MAX_HISTORY);
+
+// Reconstruir acumulados desde historia guardada
+let callAccum = 0, putAccum = 0;
+if (cvdHistory.length > 0) {
+  // El ultimo valor ya es el acumulado
+  callAccum = 0;
+  putAccum  = 0;
+}
+
+let lastData      = null;
+let _updating     = false;
+let _lastTimestamp = null;
+
+async function fetchData() {
+  try {
+    const ctrl = new AbortController();
+    const t = setTimeout(() => ctrl.abort(), 4000);
+    const r = await fetch(DATA_FILE + '?t=' + Date.now(), { signal: ctrl.signal });
+    clearTimeout(t);
+    if (!r.ok) return null;
+    return await r.json();
+  } catch(e) { return null; }
+}
+
+function fmtM(v) {
+  const sign = v >= 0 ? '+' : '';
+  return sign + (v/1e6).toFixed(2) + 'M';
+}
+
+function updateMetrics(data, callSum, putSum) {
+  document.getElementById('spot-display').textContent =
+    data.spot_spx ? data.spot_spx.toFixed(2) : '——';
+
+  document.getElementById('m-call').textContent = fmtM(callAccum);
+  document.getElementById('m-put').textContent  = fmtM(putAccum);
+  document.getElementById('m-net').textContent  = fmtM(callAccum + putAccum);
+
+  const lv = data.levels || {};
+  document.getElementById('m-cw').textContent   = lv.call_wall  || '——';
+  document.getElementById('m-pw').textContent   = lv.put_wall   || '——';
+  document.getElementById('m-node').textContent = lv.gamma_node || '——';
+  document.getElementById('m-exp').textContent  = data.expiration || '——';
+
+  const dir = (data.dhp_direction || 'NEUTRAL').toUpperCase();
+  const map = {
+    'ACCELERATING_BULL': ['ACC.BULL', 'badge-acc-bull'],
+    'ACCELERATING_BEAR': ['ACC.BEAR', 'badge-acc-bear'],
+    'BUILDING_BULL':     ['BLD.BULL', 'badge-bull'],
+    'BUILDING_BEAR':     ['BLD.BEAR', 'badge-bear'],
+    'NEUTRAL':           ['NEUTRAL',  'badge-neutral'],
+    'BULLISH':           ['BULLISH',  'badge-bull'],
+    'BEARISH':           ['BEARISH',  'badge-bear'],
+  };
+  const [label, cls] = map[dir] || ['——', 'badge-neutral'];
+  document.getElementById('m-momentum').innerHTML =
+    `<span class="momentum-badge ${cls}">${label}</span>`;
+}
+
+function renderLadder(data) {
+  const body   = document.getElementById('ladder-body');
+  const strikes = [...(data.strikes || [])].sort((a,b) => b.strike - a.strike);
+  const spot   = data.spot_spx || 0;
+  const lv     = data.levels  || {};
+
+  const maxCall = strikes.reduce((m,s) => Math.max(m, s.call_dhp || 0), 0.001);
+  const maxPut  = strikes.reduce((m,s) => Math.max(m, Math.abs(s.put_dhp || 0)), 0.001);
+  const maxVal  = Math.max(maxCall, maxPut);
+  const BAR_MAX = 100;
+
+  body.innerHTML = strikes.map(s => {
+    const isSpot = Math.abs(s.strike - spot) < 3;
+    const isPin  = s.strike === lv.gamma_node || s.strike === lv.gravity_pin;
+    const callW  = Math.round((s.call_dhp / maxVal) * BAR_MAX);
+    const putW   = Math.round((Math.abs(s.put_dhp) / maxVal) * BAR_MAX);
+    let cls = '';
+    if (isSpot) cls = 'is-spot';
+    else if (isPin) cls = 'is-pin';
+
+    return `<div class="ladder-row ${cls}">
+      <div class="strike-label">${s.strike}</div>
+      <div class="call-bar-wrap"><div class="call-bar" style="width:${callW}px"></div></div>
+      <div class="center-line"></div>
+      <div class="put-bar-wrap"><div class="put-bar" style="width:${putW}px"></div></div>
+    </div>`;
+  }).join('');
+}
+
+function resizeCanvas(canvas) {
+  const wrap = canvas.parentElement;
+  const W = wrap.clientWidth;
+  const H = wrap.clientHeight;
+  if (canvas.width !== W || canvas.height !== H) {
+    canvas.width  = W;
+    canvas.height = H;
+  }
+  return { W, H, ctx: canvas.getContext('2d') };
+}
+
+function renderCVD() {
+  const canvas = document.getElementById('cvd-canvas');
+  const { W, H, ctx } = resizeCanvas(canvas);
+  ctx.clearRect(0, 0, W, H);
+
+  if (cvdHistory.length < 2) return;
+
+  const PAD = { t: 20, b: 10, l: 8, r: 80 };
+  const cW = W - PAD.l - PAD.r;
+  const cH = H - PAD.t - PAD.b;
+
+  const startIdx = Math.max(0, MAX_HISTORY - cvdHistory.length);
+  const xOf = i => PAD.l + (i / (MAX_HISTORY - 1)) * cW;
+
+  // ── CVD scale (left axis)
+  const maxCVD = cvdHistory.reduce((m,v) => Math.max(m, Math.abs(v)), 1);
+  const midY = PAD.t + cH / 2;
+  const yCVD = v => midY - (v / maxCVD) * (cH / 2) * 0.85;
+
+  // ── Price scale (right axis, normalized to same canvas)
+  const minPrice = priceHistory.reduce((m,v) => Math.min(m,v), Infinity);
+  const maxPrice = priceHistory.reduce((m,v) => Math.max(m,v), -Infinity);
+  const priceRange = Math.max(maxPrice - minPrice, 0.1);
+  const yPrice = v => PAD.t + cH - ((v - minPrice) / priceRange) * cH * 0.85;
+
+  // Grid
+  ctx.strokeStyle = 'rgba(255,255,255,0.04)';
+  ctx.lineWidth = 1;
+  ctx.setLineDash([2, 6]);
+  [0.25, 0.5, 0.75].forEach(p => {
+    const y = PAD.t + p * cH;
+    ctx.beginPath(); ctx.moveTo(PAD.l, y); ctx.lineTo(W - PAD.r + 10, y); ctx.stroke();
+  });
+  ctx.setLineDash([]);
+
+  // Zero line (CVD)
+  ctx.strokeStyle = 'rgba(255,255,255,0.1)';
+  ctx.lineWidth = 1;
+  ctx.beginPath(); ctx.moveTo(PAD.l, midY); ctx.lineTo(W - PAD.r + 10, midY); ctx.stroke();
+
+  // ── CVD fill
+  ctx.beginPath();
+  cvdHistory.forEach((v, i) => {
+    const x = xOf(startIdx + i);
+    const y = yCVD(v);
+    i === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
+  });
+  ctx.lineTo(xOf(startIdx + cvdHistory.length - 1), midY);
+  ctx.lineTo(xOf(startIdx), midY);
+  ctx.closePath();
+  const gradCVD = ctx.createLinearGradient(0, PAD.t, 0, PAD.t + cH);
+  gradCVD.addColorStop(0, 'rgba(0,212,255,0.15)');
+  gradCVD.addColorStop(1, 'rgba(0,212,255,0.02)');
+  ctx.fillStyle = gradCVD;
+  ctx.fill();
+
+  // ── CVD line
+  ctx.beginPath();
+  cvdHistory.forEach((v, i) => {
+    const x = xOf(startIdx + i);
+    const y = yCVD(v);
+    i === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
+  });
+  ctx.strokeStyle = '#00d4ff';
+  ctx.lineWidth = 2;
+  ctx.stroke();
+
+  // ── Price line
+  if (priceHistory.length >= 2) {
+    ctx.beginPath();
+    priceHistory.forEach((v, i) => {
+      const x = xOf(startIdx + i);
+      const y = yPrice(v);
+      i === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
+    });
+    ctx.strokeStyle = 'rgba(255,255,255,0.85)';
+    ctx.lineWidth = 1.5;
+    ctx.setLineDash([]);
+    ctx.stroke();
+  }
+
+  // ── Labels (last values)
+  ctx.font = '11px Share Tech Mono, monospace';
+  const lastCVD = cvdHistory[cvdHistory.length - 1];
+  const lxCVD   = xOf(startIdx + cvdHistory.length - 1);
+  const lyCVD   = yCVD(lastCVD);
+
+  // CVD dot + label
+  ctx.beginPath();
+  ctx.arc(lxCVD, lyCVD, 3, 0, Math.PI * 2);
+  ctx.fillStyle = '#00d4ff';
+  ctx.fill();
+  ctx.fillStyle = '#00d4ff';
+  ctx.textAlign = 'left';
+  ctx.fillText(fmtM(lastCVD), lxCVD + 6, lyCVD + 4);
+
+  // Price dot + label
+  if (priceHistory.length >= 2) {
+    const lastPrice = priceHistory[priceHistory.length - 1];
+    const lyPrice   = yPrice(lastPrice);
+    ctx.beginPath();
+    ctx.arc(lxCVD, lyPrice, 3, 0, Math.PI * 2);
+    ctx.fillStyle = 'rgba(255,255,255,0.9)';
+    ctx.fill();
+    ctx.fillStyle = 'rgba(255,255,255,0.9)';
+    ctx.fillText(lastPrice.toFixed(2), lxCVD + 6, lyPrice + 4);
+  }
+
+  ctx.textAlign = 'left';
+}
+
+function renderTimeAxis() {
+  const canvas = document.getElementById('time-canvas');
+  const W = canvas.parentElement.clientWidth;
+  const H = 18;
+  if (canvas.width !== W || canvas.height !== H) {
+    canvas.width = W; canvas.height = H;
+  }
+  const ctx = canvas.getContext('2d');
+  ctx.clearRect(0, 0, W, H);
+
+  if (timeHistory.length < 2) return;
+
+  const PAD_L = 8, PAD_R = 80;
+  const cW = W - PAD_L - PAD_R;
+  const startIdx = Math.max(0, MAX_HISTORY - timeHistory.length);
+
+  ctx.font = '9px Share Tech Mono, monospace';
+  ctx.fillStyle = 'rgba(139,164,184,0.6)';
+  ctx.textAlign = 'center';
+
+  const step = Math.max(1, Math.floor(timeHistory.length / 8));
+  timeHistory.forEach((t, i) => {
+    if (i % step !== 0 && i !== timeHistory.length - 1) return;
+    const x = PAD_L + ((startIdx + i) / (MAX_HISTORY - 1)) * cW;
+    ctx.fillText(t, x, 12);
+  });
+}
+
+async function update() {
+  if (_updating) return;
+  _updating = true;
+  try {
+    const data = await fetchData();
+    if (!data) return;
+
+    lastData = data;
+
+    // Deduplicar por timestamp
+    const ts = data.timestamp || '';
+    if (ts && ts === _lastTimestamp) return;
+    _lastTimestamp = ts;
+
+    // Sumar call/put por strikes
+    let callSum = 0, putSum = 0;
+    (data.strikes || []).forEach(s => {
+      callSum += (s.call_dhp || 0);
+      putSum  += (s.put_dhp  || 0);
+    });
+
+    // Acumular
+    callAccum += callSum * 1e6;
+    putAccum  += putSum  * 1e6;
+    const netCVD = callAccum + putAccum;
+
+    cvdHistory.push(netCVD);
+    priceHistory.push(data.spot_spx || 0);
+
+    const now = new Date();
+    const hh = String(now.getHours()).padStart(2,'0');
+    const mm = String(now.getMinutes()).padStart(2,'0');
+    const ss = String(now.getSeconds()).padStart(2,'0');
+    timeHistory.push(`${hh}:${mm}:${ss}`);
+
+    if (cvdHistory.length > MAX_HISTORY) {
+      cvdHistory.shift(); priceHistory.shift(); timeHistory.shift();
+    }
+
+    saveHistory();
+    updateMetrics(data, callSum, putSum);
+    renderLadder(data);
+    renderCVD();
+    renderTimeAxis();
+
+  } finally {
+    _updating = false;
+  }
+}
+
+window.addEventListener('resize', () => {
+  if (lastData) { renderCVD(); renderTimeAxis(); }
+});
+
+// Render inicial si hay historia guardada
+if (cvdHistory.length > 0) {
+  renderCVD();
+  renderTimeAxis();
+}
+
+update();
+setInterval(update, REFRESH_MS);
+</script>
+</body>
+</html>
