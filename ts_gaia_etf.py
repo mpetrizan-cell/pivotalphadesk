@@ -132,7 +132,7 @@ def api_get(endpoint, token, timeout=10):
 def get_price(symbol, token):
     try:
         sym_enc = urllib.parse.quote(symbol, safe="")
-        result  = api_get(f"/marketdata/quotes/{sym_enc}", token)
+        result  = api_get(f"/marketdata/quotes/{sym_enc}", token, timeout=20)
         quotes  = result.get("Quotes", [])
         if quotes:
             last = quotes[0].get("Last", 0)
