@@ -146,8 +146,11 @@ iframe{width:100%;height:100%;border:none;}
   <a href="/ndx" class="tab {% if active == 'ndx' %}active{% endif %}">
     GAIA NDX
   </a>
-  <a href="/etf" class="tab {% if active == 'etf' %}active{% endif %}">
-    SPY · QQQ
+  <a href="/spy" class="tab {% if active == 'spy' %}active{% endif %}">
+    GAIA SPY
+  </a>
+  <a href="/qqq" class="tab {% if active == 'qqq' %}active{% endif %}">
+    GAIA QQQ
   </a>
   <a href="/chart" class="tab {% if active == 'chart' %}active{% endif %}">
     GEX Structure
@@ -306,6 +309,20 @@ def etf():
         active='etf', page='gaia_etf_chart.html',
         spot=get_spot(), trial_days=get_trial_days())
 
+@app.route('/spy')
+@require_auth
+def spy():
+    return render_template_string(DASHBOARD_HTML,
+        active='spy', page='gaia_spy_chart.html',
+        spot=get_spot(), trial_days=get_trial_days())
+
+@app.route('/qqq')
+@require_auth
+def qqq():
+    return render_template_string(DASHBOARD_HTML,
+        active='qqq', page='gaia_qqq_chart.html',
+        spot=get_spot(), trial_days=get_trial_days())
+
 @app.route('/flow')
 @require_auth
 def flow():
@@ -341,6 +358,16 @@ def serve_ndx_chart():
 @require_auth
 def serve_etf_chart():
     return send_from_directory(BASE_DIR, 'gaia_etf_chart.html')
+
+@app.route('/gaia_spy_chart.html')
+@require_auth
+def serve_spy_chart():
+    return send_from_directory(BASE_DIR, 'gaia_spy_chart.html')
+
+@app.route('/gaia_qqq_chart.html')
+@require_auth
+def serve_qqq_chart():
+    return send_from_directory(BASE_DIR, 'gaia_qqq_chart.html')
 
 @app.route('/gaia_ndx_live.json')
 @require_auth
