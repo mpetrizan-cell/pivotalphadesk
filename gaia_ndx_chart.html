@@ -1,0 +1,882 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GAIA NDX · PivotAlphaDesk</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@300;400;500;600&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap');
+
+  :root {
+    --bg:         #0a0c0f;
+    --bg2:        #0f1217;
+    --bg3:        #141820;
+    --border:     #1e2530;
+    --border2:    #252d3a;
+    --text:       #c8d4e0;
+    --text2:      #6a7d90;
+    --text3:      #3a4a58;
+    --accent:     #00d4ff;
+    --bull:       #00e676;
+    --bear:       #ff4444;
+    --neutral:    #ffa726;
+    --call:       #00e676;
+    --put:        #ff4444;
+    --layer0:     #00d4ff;
+    --layerW:     #a78bfa;
+    --layerM:     #ffd54f;
+    --conf3x:     #ff6b35;
+    --conf2x:     #ffa726;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'IBM Plex Sans', sans-serif;
+    font-size: 13px;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* ── TERMINAL BAR ── */
+  .terminal-bar {
+    background: var(--bg3);
+    border-bottom: 1px solid var(--border);
+    padding: 6px 16px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    color: var(--text2);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+  .terminal-bar .brand { color: var(--accent); font-weight: 600; letter-spacing: 0.08em; }
+  .terminal-bar .ts { color: var(--text3); }
+  .terminal-bar .clock { color: var(--neutral); font-weight: 500; }
+  .status-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--bull); display: inline-block; margin-right: 6px; animation: pulse 2s infinite; }
+  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.4} }
+
+  /* ── LAYOUT ── */
+  .main-grid {
+    display: grid;
+    grid-template-columns: 340px 1fr 280px;
+    grid-template-rows: auto 1fr auto;
+    gap: 1px;
+    background: var(--border);
+    min-height: calc(100vh - 32px);
+  }
+
+  .panel {
+    background: var(--bg);
+    padding: 12px;
+    overflow: hidden;
+  }
+
+  .panel-header {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    color: var(--text3);
+    text-transform: uppercase;
+    margin-bottom: 10px;
+    padding-bottom: 6px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .panel-header .badge {
+    background: var(--border2);
+    color: var(--text2);
+    padding: 1px 6px;
+    border-radius: 2px;
+    font-size: 9px;
+  }
+
+  /* ── TOP ROW — SNAPSHOT ── */
+  .snapshot-row {
+    grid-column: 1 / -1;
+    background: var(--bg2);
+    border-bottom: 1px solid var(--border);
+    padding: 10px 16px;
+    display: flex;
+    align-items: center;
+    gap: 32px;
+    font-family: 'IBM Plex Mono', monospace;
+  }
+
+  .snap-item { display: flex; flex-direction: column; gap: 2px; }
+  .snap-label { font-size: 9px; color: var(--text3); letter-spacing: 0.1em; text-transform: uppercase; }
+  .snap-value { font-size: 18px; font-weight: 600; color: var(--text); }
+  .snap-value.big { font-size: 22px; color: var(--accent); }
+  .snap-value.bull { color: var(--bull); }
+  .snap-value.bear { color: var(--bear); }
+  .snap-value.neutral { color: var(--neutral); }
+  .snap-sub { font-size: 10px; color: var(--text2); }
+
+  .snap-divider { width: 1px; height: 40px; background: var(--border); }
+
+  .layer-badges { display: flex; gap: 6px; align-items: center; }
+  .layer-badge {
+    font-size: 9px; font-weight: 600;
+    padding: 2px 7px; border-radius: 2px;
+    letter-spacing: 0.08em;
+  }
+  .lb-0dte  { background: rgba(0,212,255,0.15); color: var(--layer0); border: 1px solid rgba(0,212,255,0.3); }
+  .lb-weekly { background: rgba(167,139,250,0.15); color: var(--layerW); border: 1px solid rgba(167,139,250,0.3); }
+  .lb-monthly { background: rgba(255,213,79,0.15); color: var(--layerM); border: 1px solid rgba(255,213,79,0.3); }
+
+  /* ── GEX CHART — LEFT PANEL ── */
+  .gex-panel { grid-column: 1; grid-row: 2; }
+
+  .strike-row {
+    display: grid;
+    grid-template-columns: 52px 1fr 14px 1fr 52px;
+    align-items: center;
+    gap: 2px;
+    margin-bottom: 2px;
+    min-height: 18px;
+    position: relative;
+  }
+  .strike-row:hover { background: rgba(255,255,255,0.02); border-radius: 2px; }
+
+  .strike-label {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    color: var(--text2);
+    text-align: center;
+    font-weight: 500;
+  }
+  .strike-label.spot-strike { color: var(--accent); font-weight: 600; }
+  .strike-label.confluence-3x { color: var(--conf3x); font-weight: 700; }
+  .strike-label.confluence-2x { color: var(--conf2x); font-weight: 600; }
+
+  /* GEX bars */
+  .bar-container { display: flex; align-items: center; height: 14px; }
+  .bar-call { height: 10px; border-radius: 1px; background: var(--call); opacity: 0.85; margin-left: auto; min-width: 1px; }
+  .bar-put  { height: 10px; border-radius: 1px; background: var(--put);  opacity: 0.85; margin-right: auto; min-width: 1px; }
+
+  /* Dominance indicator */
+  .dom-dot { width: 4px; height: 4px; border-radius: 50%; }
+  .dom-call { background: var(--call); }
+  .dom-put  { background: var(--put); }
+  .dom-neutral { background: var(--text3); }
+
+  /* PAD level markers */
+  .level-marker {
+    position: absolute;
+    left: 0; right: 0;
+    height: 1px;
+    pointer-events: none;
+  }
+  .level-cw  { background: rgba(0,230,118,0.5); }
+  .level-pw  { background: rgba(255,68,68,0.5); }
+  .level-gn  { background: rgba(0,212,255,0.5); }
+  .level-gf  { background: rgba(255,167,38,0.5); }
+
+  .level-tag {
+    position: absolute;
+    right: 0;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 8px;
+    padding: 0 3px;
+    border-radius: 1px;
+    font-weight: 600;
+  }
+  .tag-cw  { background: rgba(0,230,118,0.2); color: var(--call); }
+  .tag-pw  { background: rgba(255,68,68,0.2); color: var(--put); }
+  .tag-gn  { background: rgba(0,212,255,0.2); color: var(--accent); }
+  .tag-gf  { background: rgba(255,167,38,0.2); color: var(--neutral); }
+
+  /* spot line */
+  .spot-line {
+    grid-column: 1 / -1;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--accent), transparent);
+    margin: 2px 0;
+    position: relative;
+  }
+  .spot-line::after {
+    content: '◄ SPOT';
+    position: absolute;
+    right: 0;
+    top: -8px;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 8px;
+    color: var(--accent);
+    letter-spacing: 0.05em;
+  }
+
+  /* ── STRIKE BOOK — CENTER PANEL ── */
+  .book-panel { grid-column: 2; grid-row: 2; overflow-y: auto; }
+
+  .book-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+  }
+  .book-table th {
+    font-size: 9px;
+    letter-spacing: 0.1em;
+    color: var(--text3);
+    text-transform: uppercase;
+    padding: 4px 8px;
+    border-bottom: 1px solid var(--border);
+    text-align: right;
+    font-weight: 500;
+    position: sticky;
+    top: 0;
+    background: var(--bg);
+  }
+  .book-table th.strike-col { text-align: center; }
+  .book-table td {
+    padding: 3px 8px;
+    text-align: right;
+    color: var(--text2);
+    border-bottom: 1px solid rgba(30,37,48,0.5);
+  }
+  .book-table td.strike-col {
+    text-align: center;
+    font-weight: 600;
+    color: var(--text);
+  }
+  .book-table tr:hover td { background: rgba(255,255,255,0.02); }
+  .book-table tr.spot-row td { color: var(--accent); font-weight: 600; background: rgba(0,212,255,0.04); }
+  .book-table tr.conf-3x td.strike-col { color: var(--conf3x); }
+  .book-table tr.conf-2x td.strike-col { color: var(--conf2x); }
+
+  .call-val { color: var(--call); }
+  .put-val  { color: var(--put); }
+  .net-pos  { color: var(--call); }
+  .net-neg  { color: var(--put); }
+
+  /* IV skew indicator */
+  .iv-bar {
+    display: inline-block;
+    height: 6px;
+    border-radius: 1px;
+    vertical-align: middle;
+    margin-left: 4px;
+  }
+
+  /* Layer dots in book */
+  .layer-dot {
+    display: inline-block;
+    width: 5px; height: 5px;
+    border-radius: 50%;
+    margin: 0 1px;
+    vertical-align: middle;
+  }
+  .ld-0 { background: var(--layer0); }
+  .ld-w { background: var(--layerW); }
+  .ld-m { background: var(--layerM); }
+
+  /* ── DHP PANEL — RIGHT ── */
+  .dhp-panel { grid-column: 3; grid-row: 2; display: flex; flex-direction: column; gap: 1px; }
+
+  .dhp-gauge {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 3px;
+    padding: 12px;
+    margin-bottom: 8px;
+  }
+
+  .dhp-label {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.12em;
+    color: var(--text3);
+    text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+
+  .dhp-value-row {
+    display: flex;
+    align-items: baseline;
+    gap: 6px;
+    margin-bottom: 6px;
+  }
+  .dhp-num {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 26px;
+    font-weight: 600;
+    line-height: 1;
+  }
+  .dhp-unit { font-size: 11px; color: var(--text2); }
+  .dhp-dir {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    padding: 2px 8px;
+    border-radius: 2px;
+    margin-top: 4px;
+    display: inline-block;
+  }
+  .dir-acc-bull  { background: rgba(0,230,118,0.15); color: var(--bull); border: 1px solid rgba(0,230,118,0.3); }
+  .dir-bld-bull  { background: rgba(0,230,118,0.08); color: #4caf8a; border: 1px solid rgba(0,230,118,0.15); }
+  .dir-neutral   { background: rgba(255,167,38,0.1); color: var(--neutral); border: 1px solid rgba(255,167,38,0.2); }
+  .dir-bld-bear  { background: rgba(255,68,68,0.08); color: #cf7070; border: 1px solid rgba(255,68,68,0.15); }
+  .dir-acc-bear  { background: rgba(255,68,68,0.15); color: var(--bear); border: 1px solid rgba(255,68,68,0.3); }
+
+  /* DHP Sparkline */
+  .sparkline-wrap { margin-top: 8px; }
+  .sparkline-label { font-size: 9px; color: var(--text3); margin-bottom: 3px; font-family: 'IBM Plex Mono', monospace; }
+  canvas.sparkline { width: 100%; height: 40px; display: block; }
+
+  /* Call vs Put DHP bars */
+  .dhp-split {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 6px;
+    margin-top: 8px;
+  }
+  .dhp-side { background: var(--bg3); border-radius: 2px; padding: 8px; }
+  .dhp-side-label { font-size: 9px; letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 4px; font-family: 'IBM Plex Mono', monospace; }
+  .dhp-side-val { font-family: 'IBM Plex Mono', monospace; font-size: 14px; font-weight: 600; }
+
+  /* Levels summary */
+  .levels-table { width: 100%; font-family: 'IBM Plex Mono', monospace; font-size: 11px; }
+  .levels-table tr td { padding: 4px 0; border-bottom: 1px solid var(--border); }
+  .levels-table tr:last-child td { border-bottom: none; }
+  .lv-key { color: var(--text3); font-size: 9px; letter-spacing: 0.08em; text-transform: uppercase; }
+  .lv-val { text-align: right; font-weight: 600; }
+
+  /* Confluence box */
+  .confluence-box {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 3px;
+    padding: 10px;
+  }
+  .conf-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 4px 0;
+    border-bottom: 1px solid var(--border);
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+  }
+  .conf-item:last-child { border-bottom: none; }
+  .conf-strike { font-weight: 700; }
+  .conf-3x { color: var(--conf3x); }
+  .conf-2x { color: var(--conf2x); }
+  .conf-layers { display: flex; gap: 3px; }
+  .conf-strength {
+    font-size: 9px;
+    padding: 1px 5px;
+    border-radius: 10px;
+    font-weight: 700;
+  }
+  .cs-3 { background: rgba(255,107,53,0.2); color: var(--conf3x); }
+  .cs-2 { background: rgba(255,167,38,0.15); color: var(--conf2x); }
+
+  /* ── BOTTOM BAR ── */
+  .bottom-bar {
+    grid-column: 1 / -1;
+    background: var(--bg3);
+    border-top: 1px solid var(--border);
+    padding: 6px 16px;
+    display: flex;
+    align-items: center;
+    gap: 24px;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px;
+    color: var(--text3);
+  }
+  .bottom-bar .bitem { display: flex; gap: 6px; align-items: center; }
+  .bottom-bar .bval { color: var(--text2); }
+  .bottom-bar .bval.ok { color: var(--bull); }
+  .bottom-bar .bval.warn { color: var(--neutral); }
+
+  /* Scrollbar */
+  ::-webkit-scrollbar { width: 4px; }
+  ::-webkit-scrollbar-track { background: var(--bg); }
+  ::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 2px; }
+</style>
+</head>
+<body>
+
+<!-- ── TERMINAL BAR ── -->
+<div class="terminal-bar">
+  <span class="brand">GAIA NDX · PivotAlphaDesk</span>
+  <span>
+    <span class="status-dot"></span>
+    <span style="color:var(--bull)">LIVE</span>
+    &nbsp;·&nbsp; $NDXP.X · NQM26
+  </span>
+  <span class="clock" id="clock">--:-- ET</span>
+  <span class="ts">CME · CBOE · GAIA v1</span>
+</div>
+
+<!-- ── MAIN GRID ── -->
+<div class="main-grid">
+
+  <!-- ── SNAPSHOT ROW ── -->
+  <div class="snapshot-row">
+    <div class="snap-item">
+      <span class="snap-label">NDX Cash</span>
+      <span class="snap-value big" id="snap-ndx">26,782.62</span>
+      <span class="snap-sub" id="snap-ndx-chg">▲ +142.3 (+0.53%)</span>
+    </div>
+    <div class="snap-divider"></div>
+    <div class="snap-item">
+      <span class="snap-label">NQM26</span>
+      <span class="snap-value" id="snap-nq">26,956.50</span>
+      <span class="snap-sub" id="snap-basis">Basis: +173.88</span>
+    </div>
+    <div class="snap-divider"></div>
+    <div class="snap-item">
+      <span class="snap-label">Net DHP</span>
+      <span class="snap-value bear" id="snap-dhp">-113.02M</span>
+      <span class="snap-sub" id="snap-dir">NEUTRAL</span>
+    </div>
+    <div class="snap-divider"></div>
+    <div class="snap-item">
+      <span class="snap-label">Gamma Flip</span>
+      <span class="snap-value neutral" id="snap-gf">26,710</span>
+      <span class="snap-sub">Régimen actual: BAJO flip</span>
+    </div>
+    <div class="snap-divider"></div>
+    <div class="snap-item">
+      <span class="snap-label">Call Wall</span>
+      <span class="snap-value bull" id="snap-cw">26,800</span>
+    </div>
+    <div class="snap-item">
+      <span class="snap-label">Put Wall</span>
+      <span class="snap-value bear" id="snap-pw">26,600</span>
+    </div>
+    <div class="snap-divider"></div>
+    <div class="snap-item">
+      <span class="snap-label">Layers activas</span>
+      <div class="layer-badges" style="margin-top:4px">
+        <span class="layer-badge lb-0dte">0DTE 04-23</span>
+        <span class="layer-badge lb-weekly">Weekly 04-24</span>
+        <span class="layer-badge lb-monthly">Monthly 04-27</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── GEX CHART — LEFT ── -->
+  <div class="panel gex-panel">
+    <div class="panel-header">
+      GEX Structure · 0DTE
+      <span class="badge" id="gex-strikes">40 strikes</span>
+    </div>
+    <div id="gex-chart">
+      <!-- Generated by JS -->
+    </div>
+  </div>
+
+  <!-- ── STRIKE BOOK — CENTER ── -->
+  <div class="panel book-panel">
+    <div class="panel-header">
+      Strike Book · Tres Capas
+      <span class="badge">OI · GEX · IV · DHP</span>
+    </div>
+    <table class="book-table">
+      <thead>
+        <tr>
+          <th class="strike-col">Strike</th>
+          <th>Call OI</th>
+          <th>Put OI</th>
+          <th>Call GEX</th>
+          <th>Put GEX</th>
+          <th>Net GEX</th>
+          <th>Call IV</th>
+          <th>Put IV</th>
+          <th>Net DHP</th>
+          <th>Layers</th>
+        </tr>
+      </thead>
+      <tbody id="book-tbody">
+        <!-- Generated by JS -->
+      </tbody>
+    </table>
+  </div>
+
+  <!-- ── DHP PANEL — RIGHT ── -->
+  <div class="panel dhp-panel">
+
+    <!-- Net DHP Gauge -->
+    <div class="dhp-gauge">
+      <div class="dhp-label">Net DHP · 0DTE</div>
+      <div class="dhp-value-row">
+        <span class="dhp-num bear" id="dhp-num">-113.02</span>
+        <span class="dhp-unit">M delta</span>
+      </div>
+      <div class="dhp-dir dir-neutral" id="dhp-dir">NEUTRAL</div>
+      <div class="dhp-split">
+        <div class="dhp-side">
+          <div class="dhp-side-label" style="color:var(--call)">Call DHP</div>
+          <div class="dhp-side-val call-val" id="call-dhp">+48.3M</div>
+        </div>
+        <div class="dhp-side">
+          <div class="dhp-side-label" style="color:var(--put)">Put DHP</div>
+          <div class="dhp-side-val put-val" id="put-dhp">-161.3M</div>
+        </div>
+      </div>
+      <div class="sparkline-wrap">
+        <div class="sparkline-label">DHP History (últimos 10 ciclos)</div>
+        <canvas class="sparkline" id="dhp-spark" height="40"></canvas>
+      </div>
+    </div>
+
+    <!-- PAD Levels -->
+    <div class="dhp-gauge">
+      <div class="dhp-label">Niveles PAD · 0DTE</div>
+      <table class="levels-table">
+        <tr>
+          <td class="lv-key">Call Wall</td>
+          <td class="lv-val bull" id="lv-cw">26,800</td>
+        </tr>
+        <tr>
+          <td class="lv-key">Put Wall</td>
+          <td class="lv-val bear" id="lv-pw">26,600</td>
+        </tr>
+        <tr>
+          <td class="lv-key">Gamma Node</td>
+          <td class="lv-val" style="color:var(--accent)" id="lv-gn">26,700</td>
+        </tr>
+        <tr>
+          <td class="lv-key">Gamma Flip</td>
+          <td class="lv-val neutral" id="lv-gf">26,710</td>
+        </tr>
+        <tr>
+          <td class="lv-key">Gravity Pin</td>
+          <td class="lv-val" style="color:var(--layerW)" id="lv-gp">26,750</td>
+        </tr>
+      </table>
+    </div>
+
+    <!-- Confluencia -->
+    <div class="confluence-box">
+      <div class="panel-header" style="margin-bottom:8px">
+        Confluencia Multi-Capa
+        <span class="badge">3 layers</span>
+      </div>
+      <div id="confluence-list">
+        <!-- Generated by JS -->
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ── BOTTOM BAR ── -->
+  <div class="bottom-bar">
+    <div class="bitem">BACKEND <span class="bval ok" id="b-status">LIVE</span></div>
+    <div class="bitem">0DTE <span class="bval ok">5s</span></div>
+    <div class="bitem">WEEKLY <span class="bval ok">60s</span></div>
+    <div class="bitem">MONTHLY <span class="bval ok">300s</span></div>
+    <div class="bitem">LAST UPDATE <span class="bval" id="b-ts">16:24:18 UTC</span></div>
+    <div class="bitem">BASIS NQ/NDX <span class="bval" id="b-basis">+173.88</span></div>
+    <div class="bitem">CONFLUENCE <span class="bval warn" id="b-conf">26,590 (3x)</span></div>
+    <div class="bitem" style="margin-left:auto; color:var(--text3)">PAD2026PRO · CME · CBOE</div>
+  </div>
+
+</div>
+
+<script>
+// ── DATA SIMULATION (reemplazar con fetch gaia_ndx_live.json) ────────────────
+const SPOT = 26782.62;
+
+// Strikes simulados — representativos de snapshot PM
+const STRIKES_DATA = [
+  { strike: 27000, call_oi:12400, put_oi:3200,  call_gex:6.2, put_gex:-1.8, net_gex:4.4,  call_iv:0.148, put_iv:0.162, net_dhp:2.1,  layers:['weekly','monthly'] },
+  { strike: 26950, call_oi:8900,  put_oi:2800,  call_gex:4.8, put_gex:-1.2, net_gex:3.6,  call_iv:0.142, put_iv:0.155, net_dhp:1.4,  layers:['weekly'] },
+  { strike: 26900, call_oi:6200,  put_oi:4100,  call_gex:3.1, put_gex:-2.1, net_gex:1.0,  call_iv:0.138, put_iv:0.148, net_dhp:0.4,  layers:['0dte','weekly'] },
+  { strike: 26850, call_oi:4800,  put_oi:5200,  call_gex:2.2, put_gex:-2.8, net_gex:-0.6, call_iv:0.134, put_iv:0.144, net_dhp:-0.8, layers:['0dte'] },
+  { strike: 26800, call_oi:9200,  put_oi:3800,  call_gex:6.9, put_gex:-1.4, net_gex:5.5,  call_iv:0.131, put_iv:0.141, net_dhp:3.2,  layers:['0dte','weekly','monthly'], isCallWall:true },
+  { strike: 26750, call_oi:5400,  put_oi:7200,  call_gex:2.8, put_gex:-4.1, net_gex:-1.3, call_iv:0.128, put_iv:0.138, net_dhp:-2.1, layers:['0dte'] },
+  { strike: 26710, call_oi:3200,  put_oi:6100,  call_gex:1.4, put_gex:-3.2, net_gex:-1.8, call_iv:0.126, put_iv:0.136, net_dhp:-3.1, layers:['0dte'], isGammaFlip:true },
+  { strike: 26700, call_oi:4100,  put_oi:8900,  call_gex:1.8, put_gex:-5.2, net_gex:-3.4, call_iv:0.124, put_iv:0.134, net_dhp:-4.8, layers:['0dte','weekly','monthly'], isGammaNode:true },
+  // SPOT ~26782
+  { strike: 26650, call_oi:2800,  put_oi:6800,  call_gex:1.1, put_gex:-3.8, net_gex:-2.7, call_iv:0.122, put_iv:0.138, net_dhp:-3.9, layers:['0dte'] },
+  { strike: 26610, call_oi:1900,  put_oi:11200, call_gex:0.7, put_gex:-7.2, net_gex:-6.5, call_iv:0.120, put_iv:0.158, net_dhp:-8.1, layers:['0dte','monthly'] },
+  { strike: 26600, call_oi:2200,  put_oi:14800, call_gex:0.8, put_gex:-9.1, net_gex:-8.3, call_iv:0.118, put_iv:0.168, net_dhp:-9.8, layers:['0dte','weekly','monthly'], isPutWall:true },
+  { strike: 26550, call_oi:1400,  put_oi:8200,  call_gex:0.5, put_gex:-4.9, net_gex:-4.4, call_iv:0.116, put_iv:0.175, net_dhp:-5.2, layers:['0dte'] },
+  { strike: 26500, call_oi:1800,  put_oi:7600,  call_gex:0.6, put_gex:-4.2, net_gex:-3.6, call_iv:0.114, put_iv:0.180, net_dhp:-4.1, layers:['weekly','monthly'] },
+  { strike: 26450, call_oi:900,   put_oi:4800,  call_gex:0.3, put_gex:-2.4, net_gex:-2.1, call_iv:0.112, put_iv:0.185, net_dhp:-2.3, layers:['0dte'] },
+];
+
+const PAD_LEVELS = {
+  call_wall:   26800,
+  put_wall:    26600,
+  gamma_node:  26700,
+  gamma_flip:  26710,
+  gravity_pin: 26750,
+};
+
+const CONFLUENCE = [
+  { strike: 26800, strength: 3, layers: ['0dte','weekly','monthly'], types: ['call_wall','gamma_node'] },
+  { strike: 26700, strength: 3, layers: ['0dte','weekly','monthly'], types: ['gamma_node'] },
+  { strike: 26600, strength: 3, layers: ['0dte','weekly','monthly'], types: ['put_wall'] },
+  { strike: 26610, strength: 2, layers: ['0dte','monthly'], types: ['put_gex'] },
+  { strike: 26500, strength: 2, layers: ['weekly','monthly'], types: ['put_wall'] },
+];
+
+const DHP_HISTORY = [-88, -92, -97, -103, -108, -110, -113, -112, -114, -113];
+
+// ── CLOCK ───────────────────────────────────────────────────────────────────
+function updateClock() {
+  const now = new Date();
+  const et = new Date(now.toLocaleString('en-US', { timeZone: 'America/New_York' }));
+  const h = String(et.getHours()).padStart(2,'0');
+  const m = String(et.getMinutes()).padStart(2,'0');
+  const s = String(et.getSeconds()).padStart(2,'0');
+  document.getElementById('clock').textContent = `${h}:${m}:${s} ET`;
+}
+setInterval(updateClock, 1000);
+updateClock();
+
+// ── MAX GEX for bar scaling ──────────────────────────────────────────────────
+const maxCallGex = Math.max(...STRIKES_DATA.map(s => s.call_gex));
+const maxPutGex  = Math.max(...STRIKES_DATA.map(s => Math.abs(s.put_gex)));
+const maxGex     = Math.max(maxCallGex, maxPutGex);
+const BAR_MAX_PX = 100;
+
+// ── GEX CHART ───────────────────────────────────────────────────────────────
+function buildGexChart() {
+  const container = document.getElementById('gex-chart');
+  let html = '';
+
+  // Ordenar de mayor a menor strike (arriba = OTM calls, abajo = OTM puts)
+  const sorted = [...STRIKES_DATA].sort((a,b) => b.strike - a.strike);
+
+  sorted.forEach(s => {
+    const isSpot = s.strike <= SPOT && (sorted[sorted.indexOf(s)-1]?.strike > SPOT || sorted.indexOf(s) === 0);
+    const isAboveSpot = s.strike > SPOT;
+
+    // Insert spot line before first strike below spot
+    const prevIdx = sorted.indexOf(s);
+    const prevStrike = sorted[prevIdx - 1];
+    let spotLineHtml = '';
+    if (prevStrike && prevStrike.strike > SPOT && s.strike <= SPOT) {
+      spotLineHtml = `<div class="spot-line"></div>`;
+    }
+
+    const callBarW = Math.round((s.call_gex / maxGex) * BAR_MAX_PX);
+    const putBarW  = Math.round((Math.abs(s.put_gex) / maxGex) * BAR_MAX_PX);
+
+    let strikeClass = 'strike-label';
+    const conf = CONFLUENCE.find(c => c.strike === s.strike);
+    if (conf) {
+      strikeClass += conf.strength >= 3 ? ' confluence-3x' : ' confluence-2x';
+    }
+
+    let tagHtml = '';
+    if (s.isCallWall)   tagHtml += `<span class="level-tag tag-cw" style="top:-8px;right:auto;left:0">CW</span>`;
+    if (s.isPutWall)    tagHtml += `<span class="level-tag tag-pw" style="top:-8px;right:auto;left:0">PW</span>`;
+    if (s.isGammaFlip)  tagHtml += `<span class="level-tag tag-gf" style="top:-8px;right:auto;left:0">GF</span>`;
+    if (s.isGammaNode)  tagHtml += `<span class="level-tag tag-gn" style="top:-8px;right:auto;left:0">GN</span>`;
+
+    const domClass = s.call_gex > Math.abs(s.put_gex) ? 'dom-call' : s.put_gex < -s.call_gex ? 'dom-put' : 'dom-neutral';
+
+    html += `
+      ${spotLineHtml}
+      <div class="strike-row" style="position:relative">
+        ${tagHtml}
+        <span class="${strikeClass}" style="font-size:10px">${s.strike.toLocaleString()}</span>
+        <div class="bar-container" style="justify-content:flex-end">
+          <div class="bar-call" style="width:${callBarW}px" title="Call GEX: ${s.call_gex}M"></div>
+        </div>
+        <div class="dom-dot ${domClass}"></div>
+        <div class="bar-container" style="justify-content:flex-start">
+          <div class="bar-put" style="width:${putBarW}px" title="Put GEX: ${s.put_gex}M"></div>
+        </div>
+        <span class="strike-label" style="font-size:9px;color:var(--text3)">${s.net_gex > 0 ? '+' : ''}${s.net_gex}M</span>
+      </div>`;
+  });
+
+  container.innerHTML = html;
+}
+
+// ── STRIKE BOOK ──────────────────────────────────────────────────────────────
+function buildBook() {
+  const tbody = document.getElementById('book-tbody');
+  const sorted = [...STRIKES_DATA].sort((a,b) => b.strike - a.strike);
+  let html = '';
+
+  sorted.forEach(s => {
+    const conf = CONFLUENCE.find(c => c.strike === s.strike);
+    let rowClass = '';
+    if (s.strike === Math.round(SPOT / 50) * 50) rowClass = 'spot-row';
+    else if (conf?.strength >= 3) rowClass = 'conf-3x';
+    else if (conf?.strength >= 2) rowClass = 'conf-2x';
+
+    const layerDots = s.layers.map(l => {
+      if (l === '0dte')    return `<span class="layer-dot ld-0" title="0DTE"></span>`;
+      if (l === 'weekly')  return `<span class="layer-dot ld-w" title="Weekly"></span>`;
+      if (l === 'monthly') return `<span class="layer-dot ld-m" title="Monthly"></span>`;
+    }).join('');
+
+    const netGexClass = s.net_gex >= 0 ? 'net-pos' : 'net-neg';
+    const netDhpClass = s.net_dhp >= 0 ? 'net-pos' : 'net-neg';
+
+    html += `<tr class="${rowClass}">
+      <td class="strike-col">${s.strike.toLocaleString()}</td>
+      <td class="call-val">${(s.call_oi/1000).toFixed(1)}k</td>
+      <td class="put-val">${(s.put_oi/1000).toFixed(1)}k</td>
+      <td class="call-val">${s.call_gex}M</td>
+      <td class="put-val">${s.put_gex}M</td>
+      <td class="${netGexClass}">${s.net_gex > 0 ? '+' : ''}${s.net_gex}M</td>
+      <td style="color:var(--text2)">${(s.call_iv*100).toFixed(1)}%</td>
+      <td style="color:var(--text2)">${(s.put_iv*100).toFixed(1)}%</td>
+      <td class="${netDhpClass}">${s.net_dhp > 0 ? '+' : ''}${s.net_dhp}M</td>
+      <td>${layerDots}</td>
+    </tr>`;
+  });
+
+  tbody.innerHTML = html;
+}
+
+// ── CONFLUENCE LIST ──────────────────────────────────────────────────────────
+function buildConfluence() {
+  const list = document.getElementById('confluence-list');
+  let html = '';
+
+  CONFLUENCE.forEach(c => {
+    const cls = c.strength >= 3 ? 'conf-3x' : 'conf-2x';
+    const csCls = c.strength >= 3 ? 'cs-3' : 'cs-2';
+    const layerDots = c.layers.map(l => {
+      if (l === '0dte')    return `<span class="layer-badge lb-0dte" style="font-size:8px;padding:1px 4px">0DTE</span>`;
+      if (l === 'weekly')  return `<span class="layer-badge lb-weekly" style="font-size:8px;padding:1px 4px">W</span>`;
+      if (l === 'monthly') return `<span class="layer-badge lb-monthly" style="font-size:8px;padding:1px 4px">M</span>`;
+    }).join('');
+
+    html += `<div class="conf-item">
+      <span class="conf-strike ${cls}">${c.strike.toLocaleString()}</span>
+      <div class="conf-layers">${layerDots}</div>
+      <span class="conf-strength ${csCls}">${c.strength}x</span>
+    </div>`;
+  });
+
+  list.innerHTML = html;
+}
+
+// ── DHP SPARKLINE ────────────────────────────────────────────────────────────
+function drawSparkline() {
+  const canvas = document.getElementById('dhp-spark');
+  const ctx = canvas.getContext('2d');
+  const w = canvas.offsetWidth || 220;
+  const h = 40;
+  canvas.width = w;
+  canvas.height = h;
+
+  const data = DHP_HISTORY;
+  const min = Math.min(...data);
+  const max = Math.max(...data);
+  const range = max - min || 1;
+  const pad = 4;
+
+  ctx.clearRect(0, 0, w, h);
+
+  // Zero line
+  const zeroY = h - pad - ((0 - min) / range) * (h - pad*2);
+  ctx.beginPath();
+  ctx.strokeStyle = 'rgba(100,120,140,0.3)';
+  ctx.lineWidth = 1;
+  ctx.setLineDash([2,3]);
+  ctx.moveTo(0, zeroY);
+  ctx.lineTo(w, zeroY);
+  ctx.stroke();
+  ctx.setLineDash([]);
+
+  // Line
+  ctx.beginPath();
+  data.forEach((v, i) => {
+    const x = (i / (data.length - 1)) * w;
+    const y = h - pad - ((v - min) / range) * (h - pad*2);
+    i === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
+  });
+  ctx.strokeStyle = data[data.length-1] < 0 ? '#ff4444' : '#00e676';
+  ctx.lineWidth = 1.5;
+  ctx.stroke();
+
+  // Last dot
+  const lastX = w;
+  const lastY = h - pad - ((data[data.length-1] - min) / range) * (h - pad*2);
+  ctx.beginPath();
+  ctx.arc(lastX - 2, lastY, 3, 0, Math.PI*2);
+  ctx.fillStyle = data[data.length-1] < 0 ? '#ff4444' : '#00e676';
+  ctx.fill();
+}
+
+// ── INIT ─────────────────────────────────────────────────────────────────────
+buildGexChart();
+buildBook();
+buildConfluence();
+drawSparkline();
+
+// ── LIVE FETCH — conectar a gaia_ndx_live.json ───────────────────────────────
+async function fetchLive() {
+  try {
+    const r = await fetch('gaia_ndx_live.json?t=' + Date.now());
+    if (!r.ok) return;
+    const d = await r.json();
+
+    // Snapshot
+    if (d.spot_ndx) document.getElementById('snap-ndx').textContent = d.spot_ndx.toLocaleString('en-US', {minimumFractionDigits:2});
+    if (d.spot_nq)  document.getElementById('snap-nq').textContent  = d.spot_nq.toLocaleString('en-US', {minimumFractionDigits:2});
+    if (d.basis !== undefined) {
+      document.getElementById('snap-basis').textContent = `Basis: +${d.basis}`;
+      document.getElementById('b-basis').textContent    = `+${d.basis}`;
+    }
+
+    // DHP
+    if (d.total_dhp !== undefined) {
+      const dhp = d.total_dhp;
+      const dhpEl = document.getElementById('snap-dhp');
+      dhpEl.textContent = `${dhp > 0 ? '+' : ''}${dhp}M`;
+      dhpEl.className = `snap-value ${dhp > 0 ? 'bull' : dhp < 0 ? 'bear' : 'neutral'}`;
+      document.getElementById('dhp-num').textContent = `${dhp > 0 ? '+' : ''}${dhp}`;
+    }
+
+    // Direction
+    if (d.dhp_direction) {
+      const dir = d.dhp_direction;
+      const dirEl = document.getElementById('dhp-dir');
+      dirEl.textContent = dir.replace('_', ' ');
+      dirEl.className = 'dhp-dir ' + {
+        'ACCELERATING_BULL': 'dir-acc-bull',
+        'BUILDING_BULL':     'dir-bld-bull',
+        'NEUTRAL':           'dir-neutral',
+        'BUILDING_BEAR':     'dir-bld-bear',
+        'ACCELERATING_BEAR': 'dir-acc-bear',
+      }[dir] || 'dir-neutral';
+      document.getElementById('snap-dir').textContent = dir.replace('_',' ');
+    }
+
+    // Levels
+    if (d.layers?.['0dte']?.levels) {
+      const lv = d.layers['0dte'].levels;
+      if (lv.call_wall)   { document.getElementById('snap-cw').textContent = lv.call_wall.toLocaleString(); document.getElementById('lv-cw').textContent = lv.call_wall.toLocaleString(); }
+      if (lv.put_wall)    { document.getElementById('snap-pw').textContent = lv.put_wall.toLocaleString();  document.getElementById('lv-pw').textContent = lv.put_wall.toLocaleString();  }
+      if (lv.gamma_flip)  { document.getElementById('snap-gf').textContent = lv.gamma_flip.toLocaleString(); document.getElementById('lv-gf').textContent = lv.gamma_flip.toLocaleString(); }
+      if (lv.gamma_node)  document.getElementById('lv-gn').textContent = lv.gamma_node.toLocaleString();
+      if (lv.gravity_pin) document.getElementById('lv-gp').textContent = lv.gravity_pin.toLocaleString();
+    }
+
+    // Timestamp
+    if (d.timestamp) document.getElementById('b-ts').textContent = d.timestamp + ' UTC';
+    document.getElementById('b-status').textContent = 'LIVE';
+
+  } catch(e) {
+    document.getElementById('b-status').textContent = 'LOCAL';
+  }
+}
+
+// Fetch cada 5 segundos
+setInterval(fetchLive, 5000);
+fetchLive();
+</script>
+</body>
+</html>
