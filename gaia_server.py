@@ -1,9 +1,11 @@
 """
 PivotAlphaDesk — GAIA DHP Server (Railway Edition)
-Flask app que sirve gaia_chart_v3.html y gaia_flow_v1.html
+Flask app que sirve gaia_chart_v3.html, gaia_flow_v1.html y gaia_ndx_chart.html
 con autenticación y acceso desde cualquier dispositivo.
 
-RAILWAY: gaia_live.json se recibe via POST /push desde ts_gaia_chart.py local
+RAILWAY: 
+  gaia_live.json     se recibe via POST /push     desde ts_gaia_chart.py local
+  gaia_ndx_live.json se recibe via POST /push_ndx desde ts_gaia_ndx.py local
 """
 
 from flask import Flask, jsonify, request, send_from_directory, redirect, session, render_template_string
@@ -23,8 +25,10 @@ ACCESS_CODES = {
 SESSION_HOURS = 12
 
 # Datos en memoria (Railway no tiene filesystem persistente)
-_live_data = {}
-_last_push = 0
+_live_data     = {}
+_last_push     = 0
+_live_data_ndx = {}
+_last_push_ndx = 0
 
 logging.basicConfig(level=logging.INFO,
     format='%(asctime)s [%(levelname)s] %(message)s')
@@ -137,6 +141,9 @@ iframe{width:100%;height:100%;border:none;}
 </div>
 {% endif %}
 <div class="tabs">
+  <a href="/ndx" class="tab {% if active == 'ndx' %}active{% endif %}">
+    GAIA NDX
+  </a>
   <a href="/chart" class="tab {% if active == 'chart' %}active{% endif %}">
     GEX Structure
   </a>
@@ -207,6 +214,23 @@ def push_data():
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
+# ── PUSH NDX (llamado desde ts_gaia_ndx.py local) ─────────────────────────────
+@app.route('/push_ndx', methods=['POST'])
+def push_ndx_data():
+    global _live_data_ndx, _last_push_ndx
+    token = request.headers.get('X-Push-Token', '')
+    if token != PUSH_TOKEN:
+        return jsonify({'error': 'unauthorized'}), 401
+    try:
+        data = request.get_json(force=True)
+        if not data:
+            return jsonify({'error': 'no data'}), 400
+        _live_data_ndx = data
+        _last_push_ndx = time.time()
+        return jsonify({'status': 'ok', 'timestamp': _last_push_ndx})
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
 # ── ROUTES ─────────────────────────────────────────────────────────────────────
 @app.route('/')
 def index():
@@ -246,6 +270,13 @@ def chart():
         active='chart', page='gaia_chart_v3.html',
         spot=get_spot(), trial_days=get_trial_days())
 
+@app.route('/ndx')
+@require_auth
+def ndx():
+    return render_template_string(DASHBOARD_HTML,
+        active='ndx', page='gaia_ndx_chart.html',
+        spot=get_spot(), trial_days=get_trial_days())
+
 @app.route('/flow')
 @require_auth
 def flow():
@@ -271,6 +302,20 @@ def alerts():
 @require_auth
 def serve_alerts():
     return send_from_directory(BASE_DIR, 'gaia_alerts_v1.html')
+
+@app.route('/gaia_ndx_chart.html')
+@require_auth
+def serve_ndx_chart():
+    return send_from_directory(BASE_DIR, 'gaia_ndx_chart.html')
+
+@app.route('/gaia_ndx_live.json')
+@require_auth
+def serve_ndx_json():
+    if not _live_data_ndx:
+        return jsonify({'error': 'no NDX data yet', 'status': 'waiting'}), 503
+    resp = jsonify(_live_data_ndx)
+    resp.headers['Cache-Control'] = 'no-cache, no-store, must-revalidate'
+    return resp
 
 @app.route('/gaia_cvd_v1.html')
 @require_auth
@@ -298,12 +343,16 @@ def serve_json():
 
 @app.route('/health')
 def health():
-    age = time.time() - _last_push if _last_push else None
+    age     = time.time() - _last_push     if _last_push     else None
+    age_ndx = time.time() - _last_push_ndx if _last_push_ndx else None
     return jsonify({
-        'status': 'ok' if _live_data else 'waiting',
-        'spot': _live_data.get('spot_es') if _live_data else None,
-        'last_push_seconds_ago': round(age, 1) if age else None,
-        'dhp': _live_data.get('total_dhp') if _live_data else None
+        'status':     'ok' if _live_data else 'waiting',
+        'spot_es':    _live_data.get('spot_es')    if _live_data     else None,
+        'spot_ndx':   _live_data_ndx.get('spot_ndx') if _live_data_ndx else None,
+        'spx_push_seconds_ago': round(age, 1)     if age     else None,
+        'ndx_push_seconds_ago': round(age_ndx, 1) if age_ndx else None,
+        'dhp_spx':  _live_data.get('total_dhp')     if _live_data     else None,
+        'dhp_ndx':  _live_data_ndx.get('total_dhp') if _live_data_ndx else None,
     })
 
 # ── MAIN ───────────────────────────────────────────────────────────────────────
