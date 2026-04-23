@@ -29,6 +29,8 @@ _live_data     = {}
 _last_push     = 0
 _live_data_ndx = {}
 _last_push_ndx = 0
+_live_data_etf = {}
+_last_push_etf = 0
 
 logging.basicConfig(level=logging.INFO,
     format='%(asctime)s [%(levelname)s] %(message)s')
@@ -144,6 +146,9 @@ iframe{width:100%;height:100%;border:none;}
   <a href="/ndx" class="tab {% if active == 'ndx' %}active{% endif %}">
     GAIA NDX
   </a>
+  <a href="/etf" class="tab {% if active == 'etf' %}active{% endif %}">
+    SPY · QQQ
+  </a>
   <a href="/chart" class="tab {% if active == 'chart' %}active{% endif %}">
     GEX Structure
   </a>
@@ -231,6 +236,23 @@ def push_ndx_data():
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
+# ── PUSH ETF (llamado desde ts_gaia_etf.py local) ─────────────────────────────
+@app.route('/push_etf', methods=['POST'])
+def push_etf_data():
+    global _live_data_etf, _last_push_etf
+    token = request.headers.get('X-Push-Token', '')
+    if token != PUSH_TOKEN:
+        return jsonify({'error': 'unauthorized'}), 401
+    try:
+        data = request.get_json(force=True)
+        if not data:
+            return jsonify({'error': 'no data'}), 400
+        _live_data_etf = data
+        _last_push_etf = time.time()
+        return jsonify({'status': 'ok', 'timestamp': _last_push_etf})
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
 # ── ROUTES ─────────────────────────────────────────────────────────────────────
 @app.route('/')
 def index():
@@ -277,6 +299,13 @@ def ndx():
         active='ndx', page='gaia_ndx_chart.html',
         spot=get_spot(), trial_days=get_trial_days())
 
+@app.route('/etf')
+@require_auth
+def etf():
+    return render_template_string(DASHBOARD_HTML,
+        active='etf', page='gaia_etf_chart.html',
+        spot=get_spot(), trial_days=get_trial_days())
+
 @app.route('/flow')
 @require_auth
 def flow():
@@ -308,12 +337,26 @@ def serve_alerts():
 def serve_ndx_chart():
     return send_from_directory(BASE_DIR, 'gaia_ndx_chart.html')
 
+@app.route('/gaia_etf_chart.html')
+@require_auth
+def serve_etf_chart():
+    return send_from_directory(BASE_DIR, 'gaia_etf_chart.html')
+
 @app.route('/gaia_ndx_live.json')
 @require_auth
 def serve_ndx_json():
     if not _live_data_ndx:
         return jsonify({'error': 'no NDX data yet', 'status': 'waiting'}), 503
     resp = jsonify(_live_data_ndx)
+    resp.headers['Cache-Control'] = 'no-cache, no-store, must-revalidate'
+    return resp
+
+@app.route('/gaia_etf_live.json')
+@require_auth
+def serve_etf_json():
+    if not _live_data_etf:
+        return jsonify({'error': 'no ETF data yet', 'status': 'waiting'}), 503
+    resp = jsonify(_live_data_etf)
     resp.headers['Cache-Control'] = 'no-cache, no-store, must-revalidate'
     return resp
 
@@ -345,14 +388,20 @@ def serve_json():
 def health():
     age     = time.time() - _last_push     if _last_push     else None
     age_ndx = time.time() - _last_push_ndx if _last_push_ndx else None
+    age_etf = time.time() - _last_push_etf if _last_push_etf else None
     return jsonify({
         'status':     'ok' if _live_data else 'waiting',
-        'spot_es':    _live_data.get('spot_es')    if _live_data     else None,
-        'spot_ndx':   _live_data_ndx.get('spot_ndx') if _live_data_ndx else None,
+        'spot_es':    _live_data.get('spot_es')          if _live_data     else None,
+        'spot_ndx':   _live_data_ndx.get('spot_ndx')     if _live_data_ndx else None,
+        'spot_spy':   _live_data_etf.get('spy',{}).get('spot') if _live_data_etf else None,
+        'spot_qqq':   _live_data_etf.get('qqq',{}).get('spot') if _live_data_etf else None,
         'spx_push_seconds_ago': round(age, 1)     if age     else None,
         'ndx_push_seconds_ago': round(age_ndx, 1) if age_ndx else None,
-        'dhp_spx':  _live_data.get('total_dhp')     if _live_data     else None,
-        'dhp_ndx':  _live_data_ndx.get('total_dhp') if _live_data_ndx else None,
+        'etf_push_seconds_ago': round(age_etf, 1) if age_etf else None,
+        'dhp_spx':  _live_data.get('total_dhp')               if _live_data     else None,
+        'dhp_ndx':  _live_data_ndx.get('total_dhp')           if _live_data_ndx else None,
+        'dhp_spy':  _live_data_etf.get('spy',{}).get('total_dhp') if _live_data_etf else None,
+        'dhp_qqq':  _live_data_etf.get('qqq',{}).get('total_dhp') if _live_data_etf else None,
     })
 
 # ── MAIN ───────────────────────────────────────────────────────────────────────
