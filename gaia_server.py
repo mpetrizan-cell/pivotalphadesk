@@ -205,6 +205,24 @@ def get_spot():
     except:
         return str(_live_data.get('spot_es', '——'))
 
+def get_spot_ndx():
+    try:
+        return f"{_live_data_ndx.get('spot_ndx', '——'):.3f}"
+    except:
+        return str(_live_data_ndx.get('spot_ndx', '——'))
+
+def get_spot_spy():
+    try:
+        return f"{_live_data_etf.get('spy', {}).get('spot', '——'):.2f}"
+    except:
+        return str(_live_data_etf.get('spy', {}).get('spot', '——'))
+
+def get_spot_qqq():
+    try:
+        return f"{_live_data_etf.get('qqq', {}).get('spot', '——'):.2f}"
+    except:
+        return str(_live_data_etf.get('qqq', {}).get('spot', '——'))
+
 # ── PUSH ENDPOINT (llamado desde ts_gaia_chart.py local) ──────────────────────
 @app.route('/push', methods=['POST'])
 def push_data():
@@ -300,7 +318,7 @@ def chart():
 def ndx():
     return render_template_string(DASHBOARD_HTML,
         active='ndx', page='gaia_ndx_chart.html',
-        spot=get_spot(), trial_days=get_trial_days())
+        spot=get_spot_ndx(), trial_days=get_trial_days())
 
 @app.route('/etf')
 @require_auth
@@ -314,14 +332,14 @@ def etf():
 def spy():
     return render_template_string(DASHBOARD_HTML,
         active='spy', page='gaia_spy_chart.html',
-        spot=get_spot(), trial_days=get_trial_days())
+        spot=get_spot_spy(), trial_days=get_trial_days())
 
 @app.route('/qqq')
 @require_auth
 def qqq():
     return render_template_string(DASHBOARD_HTML,
         active='qqq', page='gaia_qqq_chart.html',
-        spot=get_spot(), trial_days=get_trial_days())
+        spot=get_spot_qqq(), trial_days=get_trial_days())
 
 @app.route('/flow')
 @require_auth
