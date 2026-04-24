@@ -315,8 +315,10 @@ def calculate_gaia(strikes, spot):
             "put_iv":   s["put_iv"],
         })
 
-    total_dhp = round((total_call_dhp + total_put_dhp) / 1e6, 4)
-    return results, total_dhp
+    total_dhp      = round((total_call_dhp + total_put_dhp) / 1e6, 4)
+    total_call_dhp = round(total_call_dhp / 1e6, 4)
+    total_put_dhp  = round(total_put_dhp  / 1e6, 4)
+    return results, total_dhp, total_call_dhp, total_put_dhp
 
 # ── NIVELES PAD ───────────────────────────────────────────────────────────────
 def calculate_levels(strikes_data, spot):
@@ -369,19 +371,19 @@ def calculate_cross_confluence(levels_spy, levels_qqq, spot_spy, spot_qqq):
 
     if spy_above_flip and qqq_above_flip:
         conviction += 2
-        signal["notes"].append("Ambos sobre Gamma Flip — régimen BULL")
+        signal["notes"].append("Both above Gamma Flip — BULL regime")
     elif not spy_above_flip and not qqq_above_flip:
         conviction -= 2
-        signal["notes"].append("Ambos bajo Gamma Flip — régimen BEAR")
+        signal["notes"].append("Both below Gamma Flip — BEAR regime")
     else:
-        signal["notes"].append("Divergencia SPY/QQQ en Gamma Flip")
+        signal["notes"].append("SPY/QQQ divergence at Gamma Flip")
 
     if spy_above_node and qqq_above_node:
         conviction += 1
-        signal["notes"].append("Ambos sobre Gamma Node")
+        signal["notes"].append("Both above Gamma Node")
     elif not spy_above_node and not qqq_above_node:
         conviction -= 1
-        signal["notes"].append("Ambos bajo Gamma Node")
+        signal["notes"].append("Both below Gamma Node")
 
     signal["conviction"] = conviction
     if conviction >= 2:
@@ -487,12 +489,14 @@ def process_instrument(symbol, expirations, spot, token, dhp_history, cache):
     try:
         raw = read_stream(symbol, expirations["0dte"], spot, token)
         if raw:
-            strikes_data, total_dhp = calculate_gaia(raw, spot)
+            strikes_data, total_dhp, call_dhp, put_dhp = calculate_gaia(raw, spot)
             levels = calculate_levels(strikes_data, spot)
             cache["0dte"] = {"strikes_data": strikes_data, "levels": levels}
             momentum, direction = calculate_dhp_momentum(total_dhp, dhp_history)
             result.update({
                 "total_dhp":     total_dhp,
+                "call_dhp":      call_dhp,
+                "put_dhp":       put_dhp,
                 "dhp_direction": direction,
                 "dhp_momentum":  momentum,
                 "levels":        levels,
@@ -607,7 +611,18 @@ def main():
                 dhp_history_qqq, cache_qqq
             )
             qqq_data["spot_nq"]  = spot_nq
-            qqq_data["basis_nq"] = round(spot_nq - spot_qqq * QQQ_MULTIPLIER, 2) if spot_nq > 0 and spot_qqq > 0 else 0.0
+            # Ratio dinamico NDX/QQQ — calculado en tiempo real
+            ndx_spot = spot_nq - 150 if spot_nq > 0 else 0  # NDX cash approx
+            ndx_ratio = round(ndx_spot / spot_qqq, 4) if spot_qqq > 0 and ndx_spot > 0 else 41.0
+            qqq_data["ndx_ratio"]   = ndx_ratio
+            qqq_data["basis_nq"]    = round(spot_nq - spot_qqq * ndx_ratio, 2) if spot_nq > 0 and spot_qqq > 0 else 0.0
+            # Proxy strikes — NDX PAD levels translated to QQQ strikes
+            lv = qqq_data.get("levels", {})
+            qqq_data["proxy_strikes"] = {
+                "call_wall": round(lv.get("call_wall", 0) * ndx_ratio, 0) if lv.get("call_wall") else 0,
+                "put_wall":  round(lv.get("put_wall",  0) * ndx_ratio, 0) if lv.get("put_wall")  else 0,
+                "gamma_flip":round(lv.get("gamma_flip",0) * ndx_ratio, 0) if lv.get("gamma_flip") else 0,
+            }
 
             # ── Confluencia cruzada SPY vs QQQ
             cross_signal = calculate_cross_confluence(
