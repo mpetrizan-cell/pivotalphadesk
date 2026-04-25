@@ -39,6 +39,18 @@
   .cross-bull{background:rgba(0,230,118,.15);color:var(--bull);border:1px solid rgba(0,230,118,.3);}
   .cross-bear{background:rgba(255,68,68,.15);color:var(--bear);border:1px solid rgba(255,68,68,.3);}
   .cross-neutral{background:rgba(255,167,38,.1);color:var(--neutral);border:1px solid rgba(255,167,38,.2);}
+  .ndx-zone-box{background:rgba(255,107,53,.08);border:1px solid rgba(255,107,53,.3);border-radius:3px;padding:4px 9px;display:flex;flex-direction:column;gap:2px;}
+  .ndx-zone-label{font-size:8px;color:var(--conf3x);letter-spacing:.1em;text-transform:uppercase;}
+  .ndx-zone-row{display:flex;gap:8px;font-family:'IBM Plex Mono',monospace;font-size:10px;}
+  .ndx-zone-key{color:var(--text3);}.ndx-zone-val{color:var(--conf3x);font-weight:700;}
+  .qqq-strike-box{background:rgba(0,212,255,.08);border:1px solid rgba(0,212,255,.3);border-radius:3px;padding:4px 9px;display:flex;flex-direction:column;gap:2px;}
+  .qqq-strike-label{font-size:8px;color:var(--spy);letter-spacing:.1em;text-transform:uppercase;}
+  .qqq-strike-row{display:flex;gap:8px;font-family:'IBM Plex Mono',monospace;font-size:10px;}
+  .qqq-strike-key{color:var(--text3);}.qqq-strike-val{color:var(--spy);font-weight:700;}
+  .ndx-equiv{background:var(--bg3);border-radius:2px;padding:5px;margin-top:4px;}
+  .ndx-equiv-label{font-size:8px;color:var(--conf3x);letter-spacing:.1em;text-transform:uppercase;margin-bottom:3px;font-family:'IBM Plex Mono',monospace;font-weight:700;}
+  .ndx-equiv-row{display:flex;justify-content:space-between;font-family:'IBM Plex Mono',monospace;font-size:9px;padding:1px 0;border-bottom:1px solid var(--border);}
+  .ndx-equiv-row:last-child{border-bottom:none;}
   .main-grid{flex:1;display:grid;grid-template-columns:300px 1fr 255px;gap:1px;background:var(--border);overflow:hidden;min-height:0;}
   .panel{background:var(--bg);padding:7px;overflow:hidden;display:flex;flex-direction:column;min-height:0;}
   .panel-header{font-family:'IBM Plex Mono',monospace;font-size:9px;letter-spacing:.12em;color:var(--text3);text-transform:uppercase;margin-bottom:7px;padding-bottom:5px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;flex-shrink:0;}
@@ -112,7 +124,7 @@
 
 <div class="terminal-bar">
   <span class="brand">GAIA SPY · PivotAlphaDesk</span>
-  <span><span class="status-dot"></span><span style="color:var(--bull)">LIVE</span> · SPY · ESM26 · Ratio: <span id="tb-ratio" style="color:var(--spy);font-weight:600">--</span></span>
+  <span><span class="status-dot"></span><span style="color:var(--bull)">LIVE</span> · SPY · SPX</span>
   <span class="clock" id="clock">--:-- ET</span>
   <span style="color:var(--text3)">CME · CBOE · GAIA v1</span>
 </div>
@@ -124,11 +136,10 @@
       <span class="snap-value big" id="snap-spy">--</span>
       <span class="snap-sub">ETF S&amp;P 500</span>
     </div>
-    <div class="snap-divider"></div>
     <div class="snap-item">
-      <span class="snap-label">ESM26</span>
-      <span class="snap-value" id="snap-es">--</span>
-      <span class="snap-sub" id="snap-basis">Basis: --</span>
+      <span class="snap-label">SPX Cash</span>
+      <span class="snap-value" style="color:var(--spy);font-size:14px" id="snap-spx">--</span>
+      <span class="snap-sub" id="snap-basis">Basis ES: --</span>
     </div>
     <div class="snap-divider"></div>
     <div class="snap-item">
@@ -150,22 +161,27 @@
       <span class="snap-value bear" id="snap-pw">--</span>
     </div>
     <div class="snap-divider"></div>
-    <div class="ratio-box">
-      <span class="ratio-label">SPX/SPY Ratio</span>
-      <span class="ratio-val" id="ratio-val">--</span>
+    <div class="ndx-zone-box">
+      <span class="ndx-zone-label">SPX Equivalent Zone</span>
+      <div class="ndx-zone-row">
+        <span class="ndx-zone-key">CW</span><span class="ndx-zone-val" id="spx-zone-cw">--</span>
+        <span class="ndx-zone-key">PW</span><span class="ndx-zone-val" id="spx-zone-pw">--</span>
+        <span class="ndx-zone-key">GF</span><span class="ndx-zone-val" id="spx-zone-gf">--</span>
+      </div>
     </div>
-    <div class="proxy-box">
-      <span class="proxy-label">Proxy Strike (SPX → SPY)</span>
-      <div class="proxy-row">
-        <span class="proxy-key">CW</span><span class="proxy-val" id="px-cw">--</span>
-        <span class="proxy-key">PW</span><span class="proxy-val" id="px-pw">--</span>
-        <span class="proxy-key">GF</span><span class="proxy-val" id="px-gf">--</span>
+    <div class="qqq-strike-box">
+      <span class="qqq-strike-label">SPY Strike</span>
+      <div class="qqq-strike-row">
+        <span class="qqq-strike-key">CW</span><span class="qqq-strike-val" id="spy-sk-cw">--</span>
+        <span class="qqq-strike-key">PW</span><span class="qqq-strike-val" id="spy-sk-pw">--</span>
+        <span class="qqq-strike-key">GF</span><span class="qqq-strike-val" id="spy-sk-gf">--</span>
       </div>
     </div>
     <div class="snap-divider"></div>
     <div class="snap-item">
       <span class="snap-label">Cross Signal</span>
-      <span class="cross-badge cross-neutral" id="snap-cross" style="margin-top:3px">NEUTRAL</span>
+      <span class="cross-badge cross-neutral" id="snap-cross" style="margin-top:2px">NEUTRAL</span>
+      <span style="font-size:8px;color:var(--text3);margin-top:1px;font-family:'IBM Plex Mono',monospace" id="snap-cross-note">--</span>
     </div>
   </div>
 
@@ -193,7 +209,7 @@
     <div class="panel dhp-panel">
       <div class="dhp-gauge">
         <div class="dhp-label">Net DHP · SPY 0DTE</div>
-        <div style="display:flex;align-items:baseline;gap:5px;margin-bottom:5px">
+        <div style="display:flex;align-items:baseline;gap:5px;margin-bottom:4px">
           <span class="dhp-num" id="dhp-num">--</span>
           <span class="dhp-unit">M delta</span>
         </div>
@@ -210,7 +226,7 @@
         </div>
         <div class="sparkline-wrap">
           <div class="sparkline-label">DHP History</div>
-          <canvas class="sparkline" id="dhp-spark" height="34"></canvas>
+          <canvas class="sparkline" id="dhp-spark" height="24"></canvas>
         </div>
       </div>
 
@@ -223,23 +239,17 @@
           <tr><td class="lv-key">Gamma Flip</td><td class="lv-val neutral" id="lv-gf">--</td></tr>
           <tr><td class="lv-key">Gravity Pin</td><td class="lv-val" style="color:var(--conf2x)" id="lv-gp">--</td></tr>
         </table>
-        <div class="spx-equiv">
-          <div class="spx-equiv-label">SPX Equiv (Strike × Ratio)</div>
-          <div class="spx-equiv-row"><span style="color:var(--text3)">Call Wall</span><span class="call-val" id="eq-cw">--</span></div>
-          <div class="spx-equiv-row"><span style="color:var(--text3)">Put Wall</span><span class="put-val" id="eq-pw">--</span></div>
-          <div class="spx-equiv-row"><span style="color:var(--text3)">Gamma Flip</span><span style="color:var(--neutral)" id="eq-gf">--</span></div>
+        <div class="ndx-equiv">
+          <div class="ndx-equiv-label">SPX Equivalent Zone (÷ Ratio · nearest 5)</div>
+          <div class="ndx-equiv-row"><span style="color:var(--text3)">Call Wall</span><span class="call-val" id="eq-cw">--</span></div>
+          <div class="ndx-equiv-row"><span style="color:var(--text3)">Put Wall</span><span class="put-val" id="eq-pw">--</span></div>
+          <div class="ndx-equiv-row"><span style="color:var(--text3)">Gamma Flip</span><span style="color:var(--neutral)" id="eq-gf">--</span></div>
         </div>
       </div>
 
       <div class="iv-alert">
         <div class="iv-alert-label">⚡ IV Scanner · OTM Puts</div>
         <div id="iv-items"><div class="iv-empty">Waiting for data...</div></div>
-      </div>
-
-      <div class="dhp-gauge">
-        <div class="dhp-label">Cross Signal SPY · QQQ</div>
-        <div class="cross-badge cross-neutral" id="cross-signal" style="margin-bottom:6px;display:block;text-align:center">NEUTRAL</div>
-        <div id="cross-notes" style="font-size:9px;color:var(--text2);line-height:1.6;font-family:'IBM Plex Mono',monospace"></div>
       </div>
     </div>
   </div>
@@ -248,13 +258,16 @@
     <div class="bitem">SPY <span class="bval ok" id="b-status">LIVE</span></div>
     <div class="bitem">0DTE <span class="bval ok">5s</span></div>
     <div class="bitem">LAST <span class="bval" id="b-ts">--</span></div>
-    <div class="bitem">RATIO <span class="bval" id="b-ratio">--</span></div>
+    <div class="bitem">SPX <span class="bval" id="b-spx">--</span></div>
     <div class="bitem">CROSS <span class="bval" id="b-cross">--</span></div>
     <div class="bitem" style="margin-left:auto;color:var(--text3)">app.pivotalphadesk.com · CME · CBOE</div>
   </div>
 </div>
 
 <script>
+const r5 = v => Math.round(v / 5) * 5;   // SPX → nearest 5
+const r1 = v => Math.round(v);            // SPY → nearest 1
+
 function updateClock(){const et=new Date(new Date().toLocaleString('en-US',{timeZone:'America/New_York'}));const p=n=>String(n).padStart(2,'0');document.getElementById('clock').textContent=`${p(et.getHours())}:${p(et.getMinutes())}:${p(et.getSeconds())} ET`;}
 setInterval(updateClock,1000);updateClock();
 let DHP_HISTORY=[];
@@ -295,9 +308,9 @@ function buildBook(strikes,spot){
 
 function drawSparkline(data){
   const canvas=document.getElementById('dhp-spark');const ctx=canvas.getContext('2d');
-  const w=canvas.offsetWidth||200;const h=34;canvas.width=w;canvas.height=h;
+  const w=canvas.offsetWidth||200;const h=24;canvas.width=w;canvas.height=h;
   if(!data||data.length<2)return;
-  const min=Math.min(...data);const max=Math.max(...data);const range=max-min||1;const pad=3;
+  const min=Math.min(...data);const max=Math.max(...data);const range=max-min||1;const pad=2;
   ctx.clearRect(0,0,w,h);
   ctx.beginPath();ctx.strokeStyle='rgba(100,120,140,.3)';ctx.lineWidth=1;ctx.setLineDash([2,3]);
   const zy=h-pad-((0-min)/range)*(h-pad*2);ctx.moveTo(0,zy);ctx.lineTo(w,zy);ctx.stroke();ctx.setLineDash([]);
@@ -320,13 +333,17 @@ function updateUI(spy,cross){
   if(!spy)return;
   const spot=spy.spot||0;const lv=spy.levels||{};const dhp=spy.total_dhp||0;
   const dir=spy.dhp_direction||'NEUTRAL';
-  // SPX/SPY ratio dynamic
-  const spxSpot=spy.spot_es?spy.spot_es-19:spot*10;
-  const r=spot>0?parseFloat((spxSpot/spot).toFixed(4)):10.0;
+  // SPX cash = ES - basis (~19pts)
+  const spxCash = spy.spot_es ? spy.spot_es - (spy.basis_es||19) : spot*10;
+  const rat = spot>0 ? parseFloat((spxCash/spot).toFixed(4)) : 10.0;
 
+  // Snapshot
   document.getElementById('snap-spy').textContent=spot.toFixed(2);
-  if(spy.spot_es){document.getElementById('snap-es').textContent=spy.spot_es.toLocaleString('en-US',{minimumFractionDigits:2});document.getElementById('snap-basis').textContent=`Basis: ${spy.basis_es>0?'+':''}${spy.basis_es}`;}
+  document.getElementById('snap-spx').textContent=spxCash.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2});
+  if(spy.spot_es) document.getElementById('snap-basis').textContent=`Basis ES: +${(spy.basis_es||0).toFixed(2)}`;
+  document.getElementById('b-spx').textContent=spxCash.toLocaleString('en-US',{minimumFractionDigits:0,maximumFractionDigits:0});
 
+  // DHP
   const dhpEl=document.getElementById('snap-dhp');
   dhpEl.textContent=`${dhp>0?'+':''}${dhp.toFixed(2)}M`;
   dhpEl.className=`snap-value ${dhp>0?'bull':dhp<0?'bear':'neutral'}`;
@@ -334,7 +351,6 @@ function updateUI(spy,cross){
   const numEl=document.getElementById('dhp-num');
   numEl.textContent=`${dhp>0?'+':''}${dhp.toFixed(2)}`;
   numEl.className=`dhp-num ${dhp>0?'bull':dhp<0?'bear':'neutral'}`;
-
   const dirMap={'ACCELERATING_BULL':'dir-acc-bull','BUILDING_BULL':'dir-bld-bull','NEUTRAL':'dir-neutral','BUILDING_BEAR':'dir-bld-bear','ACCELERATING_BEAR':'dir-acc-bear'};
   const dirEl=document.getElementById('dhp-dir');
   dirEl.textContent=dir.replace(/_/g,' ');dirEl.className='dhp-dir '+(dirMap[dir]||'dir-neutral');
@@ -344,27 +360,42 @@ function updateUI(spy,cross){
     document.getElementById('put-dhp').textContent=`${parseFloat(spy.put_dhp).toFixed(2)}M`;
   }
 
-  if(lv.call_wall){document.getElementById('snap-cw').textContent=lv.call_wall;document.getElementById('lv-cw').textContent=lv.call_wall;document.getElementById('eq-cw').textContent=Math.round(lv.call_wall*r).toLocaleString();document.getElementById('px-cw').textContent=Math.round(spxSpot/r*100)/100||'--';}
-  if(lv.put_wall){document.getElementById('snap-pw').textContent=lv.put_wall;document.getElementById('lv-pw').textContent=lv.put_wall;document.getElementById('eq-pw').textContent=Math.round(lv.put_wall*r).toLocaleString();}
-  if(lv.gamma_flip){document.getElementById('snap-gf').textContent=lv.gamma_flip;document.getElementById('lv-gf').textContent=lv.gamma_flip;document.getElementById('eq-gf').textContent=Math.round(lv.gamma_flip*r).toLocaleString();}
-  if(lv.gamma_node)document.getElementById('lv-gn').textContent=lv.gamma_node;
-  if(lv.gravity_pin)document.getElementById('lv-gp').textContent=lv.gravity_pin;
+  // PAD Levels + SPX Equivalent Zone (nearest 5) + SPY Strike (nearest 1)
+  if(lv.call_wall){
+    document.getElementById('snap-cw').textContent=lv.call_wall;
+    document.getElementById('lv-cw').textContent=lv.call_wall;
+    const spxCW=r5(lv.call_wall*rat);
+    document.getElementById('eq-cw').textContent=spxCW.toLocaleString();
+    document.getElementById('spx-zone-cw').textContent=spxCW.toLocaleString();
+    document.getElementById('spy-sk-cw').textContent=r1(lv.call_wall);
+  }
+  if(lv.put_wall){
+    document.getElementById('snap-pw').textContent=lv.put_wall;
+    document.getElementById('lv-pw').textContent=lv.put_wall;
+    const spxPW=r5(lv.put_wall*rat);
+    document.getElementById('eq-pw').textContent=spxPW.toLocaleString();
+    document.getElementById('spx-zone-pw').textContent=spxPW.toLocaleString();
+    document.getElementById('spy-sk-pw').textContent=r1(lv.put_wall);
+  }
+  if(lv.gamma_flip){
+    document.getElementById('snap-gf').textContent=lv.gamma_flip;
+    document.getElementById('lv-gf').textContent=lv.gamma_flip;
+    const spxGF=r5(lv.gamma_flip*rat);
+    document.getElementById('eq-gf').textContent=spxGF.toLocaleString();
+    document.getElementById('spx-zone-gf').textContent=spxGF.toLocaleString();
+    document.getElementById('spy-sk-gf').textContent=r1(lv.gamma_flip);
+  }
+  if(lv.gamma_node)  document.getElementById('lv-gn').textContent=lv.gamma_node;
+  if(lv.gravity_pin) document.getElementById('lv-gp').textContent=lv.gravity_pin;
 
-  // Proxy strikes SPX→SPY
-  if(lv.call_wall)document.getElementById('px-cw').textContent=(Math.round(lv.call_wall*r)).toLocaleString();
-  if(lv.put_wall) document.getElementById('px-pw').textContent=(Math.round(lv.put_wall*r)).toLocaleString();
-  if(lv.gamma_flip)document.getElementById('px-gf').textContent=(Math.round(lv.gamma_flip*r)).toLocaleString();
-
-  document.getElementById('ratio-val').textContent=r.toFixed(4);
-  document.getElementById('tb-ratio').textContent=r.toFixed(2);
-  document.getElementById('b-ratio').textContent=r.toFixed(2);
-
+  // Cross Signal — snapshot row only
   if(cross){
     const cd=cross.direction||'NEUTRAL';
     const cls=cd.includes('BULL')?'cross-bull':cd.includes('BEAR')?'cross-bear':'cross-neutral';
-    ['snap-cross','cross-signal'].forEach(id=>{const el=document.getElementById(id);el.textContent=cd.replace(/_/g,' ');el.className=`cross-badge ${cls}`;});
+    const el=document.getElementById('snap-cross');
+    el.textContent=cd.replace(/_/g,' ');el.className=`cross-badge ${cls}`;
     document.getElementById('b-cross').textContent=cd.replace(/_/g,' ');
-    if(cross.notes)document.getElementById('cross-notes').innerHTML=cross.notes.map(n=>`· ${n}`).join('<br>');
+    if(cross.notes&&cross.notes.length>0) document.getElementById('snap-cross-note').textContent=cross.notes[0];
   }
 
   buildGexChart(spy.strikes||[],spot,lv);
