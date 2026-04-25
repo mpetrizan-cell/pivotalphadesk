@@ -1,0 +1,926 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GAIA Surface · PivotAlphaDesk</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@300;400;500;600&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap');
+
+  :root {
+    --bg:      #07090c;
+    --bg2:     #0d1017;
+    --bg3:     #12161e;
+    --border:  #1a2230;
+    --text:    #c8d4e0;
+    --text2:   #5a7080;
+    --text3:   #2a3a48;
+    --accent:  #00d4ff;
+    --bull:    #00e676;
+    --bear:    #ff4444;
+    --neutral: #ffa726;
+    /* GEX zone colors */
+    --gex-strong-bull: rgba(0, 180, 140, 0.55);
+    --gex-bull:        rgba(0, 150, 110, 0.35);
+    --gex-weak-bull:   rgba(0, 120, 90, 0.18);
+    --gex-weak-bear:   rgba(160, 40, 40, 0.18);
+    --gex-bear:        rgba(180, 40, 40, 0.32);
+    --gex-strong-bear: rgba(200, 40, 40, 0.52);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body {
+    background: var(--bg); color: var(--text);
+    font-family: 'IBM Plex Sans', sans-serif;
+    height: 100%; width: 100%; overflow: hidden;
+  }
+
+  .terminal-bar {
+    background: var(--bg3); border-bottom: 1px solid var(--border);
+    padding: 5px 16px; display: flex; align-items: center; justify-content: space-between;
+    font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: var(--text2);
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100; height: 28px;
+  }
+  .brand { color: var(--accent); font-weight: 600; letter-spacing: .08em; }
+  .status-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--bull);
+    display: inline-block; margin-right: 5px; animation: pulse 2s infinite; }
+  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.3} }
+  .clock { color: var(--neutral); font-weight: 500; }
+
+  .page-wrap {
+    position: fixed; top: 28px; left: 0; right: 0; bottom: 0;
+    display: flex; flex-direction: column;
+  }
+
+  /* SNAPSHOT */
+  .snapshot-row {
+    background: var(--bg2); border-bottom: 1px solid var(--border);
+    padding: 5px 14px; display: flex; align-items: center; gap: 16px;
+    font-family: 'IBM Plex Mono', monospace; flex-shrink: 0;
+  }
+  .snap-item { display: flex; flex-direction: column; gap: 1px; }
+  .snap-label { font-size: 8px; color: var(--text3); letter-spacing: .1em; text-transform: uppercase; }
+  .snap-value { font-size: 15px; font-weight: 600; color: var(--text); line-height: 1.1; }
+  .snap-value.accent { color: var(--accent); font-size: 18px; }
+  .snap-value.bull { color: var(--bull); }
+  .snap-value.bear { color: var(--bear); }
+  .snap-value.neutral { color: var(--neutral); }
+  .snap-sub { font-size: 9px; color: var(--text2); }
+  .snap-div { width: 1px; height: 30px; background: var(--border); }
+
+  /* INSTRUMENT TABS */
+  .instrument-tabs {
+    background: var(--bg3); border-bottom: 1px solid var(--border);
+    padding: 0 14px; display: flex; gap: 0; flex-shrink: 0;
+  }
+  .itab {
+    font-family: 'IBM Plex Mono', monospace; font-size: 10px; letter-spacing: .08em;
+    padding: 7px 16px; cursor: pointer; color: var(--text2);
+    border-bottom: 2px solid transparent; transition: all .15s;
+    text-transform: uppercase; font-weight: 500;
+  }
+  .itab:hover { color: var(--text); }
+  .itab.active { color: var(--accent); border-bottom-color: var(--accent); }
+
+  /* MAIN LAYOUT */
+  .charts-wrap {
+    flex: 1; display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1px; background: var(--border);
+    overflow: hidden; min-height: 0;
+  }
+
+  .chart-panel {
+    background: var(--bg); display: flex; flex-direction: column;
+    overflow: hidden; position: relative;
+  }
+
+  .chart-header {
+    padding: 8px 12px 6px; display: flex; align-items: center;
+    justify-content: space-between; flex-shrink: 0;
+    border-bottom: 1px solid var(--border);
+  }
+  .chart-title {
+    font-family: 'IBM Plex Mono', monospace; font-size: 10px;
+    letter-spacing: .12em; color: var(--text2); text-transform: uppercase;
+  }
+  .chart-controls { display: flex; gap: 6px; }
+  .ctrl-btn {
+    font-family: 'IBM Plex Mono', monospace; font-size: 9px;
+    padding: 2px 7px; border: 1px solid var(--border);
+    background: var(--bg3); color: var(--text2); cursor: pointer;
+    border-radius: 2px; transition: all .1s; letter-spacing: .06em;
+  }
+  .ctrl-btn:hover { color: var(--text); border-color: var(--text2); }
+  .ctrl-btn.active { background: rgba(0,212,255,.1); color: var(--accent); border-color: rgba(0,212,255,.3); }
+
+  canvas.chart-canvas {
+    flex: 1; width: 100%; min-height: 0; display: block; cursor: crosshair;
+  }
+
+  /* LEGEND */
+  .legend {
+    padding: 4px 12px; display: flex; align-items: center; gap: 12px;
+    font-family: 'IBM Plex Mono', monospace; font-size: 9px; color: var(--text2);
+    border-top: 1px solid var(--border); flex-shrink: 0; flex-wrap: wrap;
+  }
+  .legend-item { display: flex; align-items: center; gap: 4px; }
+  .legend-dot { width: 10px; height: 10px; border-radius: 1px; }
+
+  /* CROSSHAIR INFO */
+  .crosshair-info {
+    position: absolute; bottom: 32px; left: 12px;
+    background: rgba(13,16,23,.92); border: 1px solid var(--border);
+    padding: 5px 10px; font-family: 'IBM Plex Mono', monospace;
+    font-size: 9px; color: var(--text2); pointer-events: none;
+    display: none; z-index: 10;
+  }
+  .crosshair-info.visible { display: block; }
+
+  /* BOTTOM STATUS */
+  .status-bar {
+    background: var(--bg3); border-top: 1px solid var(--border);
+    padding: 3px 14px; display: flex; align-items: center; gap: 20px;
+    font-family: 'IBM Plex Mono', monospace; font-size: 9px; color: var(--text3);
+    flex-shrink: 0;
+  }
+  .sb-item { display: flex; gap: 5px; }
+  .sb-val { color: var(--text2); }
+  .sb-val.ok { color: var(--bull); }
+
+  ::-webkit-scrollbar { width: 3px; }
+  ::-webkit-scrollbar-track { background: var(--bg); }
+  ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+</style>
+</head>
+<body>
+
+<div class="terminal-bar">
+  <span class="brand">GAIA Surface · PivotAlphaDesk</span>
+  <span><span class="status-dot"></span><span style="color:var(--bull)">LIVE</span> · Price/Gamma · Gamma Surface</span>
+  <span class="clock" id="clock">--:-- ET</span>
+  <span style="color:var(--text3)">CME · CBOE · GAIA v1</span>
+</div>
+
+<div class="page-wrap">
+
+  <!-- SNAPSHOT -->
+  <div class="snapshot-row">
+    <div class="snap-item">
+      <span class="snap-label">Instrument</span>
+      <span class="snap-value accent" id="snap-instrument">SPX</span>
+    </div>
+    <div class="snap-div"></div>
+    <div class="snap-item">
+      <span class="snap-label">Futures / ETF</span>
+      <span class="snap-value accent" id="snap-spot">--</span>
+    </div>
+    <div class="snap-item">
+      <span class="snap-label">Cash Index</span>
+      <span class="snap-value" style="color:#ffd54f;font-size:14px" id="snap-cash">--</span>
+      <span class="snap-sub" id="snap-basis">Basis: --</span>
+    </div>
+    <div class="snap-item">
+      <span class="snap-label">Session Range</span>
+      <span class="snap-value" id="snap-range" style="font-size:12px">-- / --</span>
+    </div>
+    <div class="snap-div"></div>
+    <div class="snap-item">
+      <span class="snap-label">Call Wall</span>
+      <span class="snap-value bull" id="snap-cw">--</span>
+    </div>
+    <div class="snap-item">
+      <span class="snap-label">Put Wall</span>
+      <span class="snap-value bear" id="snap-pw">--</span>
+    </div>
+    <div class="snap-item">
+      <span class="snap-label">Gamma Flip</span>
+      <span class="snap-value neutral" id="snap-gf">--</span>
+    </div>
+    <div class="snap-item">
+      <span class="snap-label">Gamma Node</span>
+      <span class="snap-value" style="color:var(--accent)" id="snap-gn">--</span>
+    </div>
+    <div class="snap-div"></div>
+    <div class="snap-item">
+      <span class="snap-label">Net DHP</span>
+      <span class="snap-value" id="snap-dhp">--</span>
+      <span class="snap-sub" id="snap-dir">--</span>
+    </div>
+    <div class="snap-item">
+      <span class="snap-label">Regime</span>
+      <span class="snap-value" id="snap-regime" style="font-size:11px">--</span>
+    </div>
+    <div class="snap-div"></div>
+    <div class="snap-item">
+      <span class="snap-label">Snapshots</span>
+      <span class="snap-value" id="snap-count" style="font-size:12px;color:var(--text2)">0</span>
+    </div>
+    <div class="snap-item">
+      <span class="snap-label">Session</span>
+      <span class="snap-value" id="snap-session" style="font-size:11px;color:var(--text2)">--</span>
+    </div>
+  </div>
+
+  <!-- INSTRUMENT TABS -->
+  <div class="instrument-tabs">
+    <div class="itab active" onclick="switchInstrument('spx')">SPX</div>
+    <div class="itab" onclick="switchInstrument('ndx')">NDX</div>
+    <div class="itab" onclick="switchInstrument('spy')">SPY</div>
+    <div class="itab" onclick="switchInstrument('qqq')">QQQ</div>
+  </div>
+
+  <!-- CHARTS -->
+  <div class="charts-wrap">
+
+    <!-- LEFT: Price / Gamma Bands -->
+    <div class="chart-panel">
+      <div class="chart-header">
+        <span class="chart-title">Price · Gamma Exposure Zones</span>
+        <div class="chart-controls">
+          <button class="ctrl-btn active" onclick="setPriceMode('candles')">Candles</button>
+          <button class="ctrl-btn" onclick="setPriceMode('line')">Line</button>
+          <button class="ctrl-btn active" id="btn-bands" onclick="toggleBands()">Bands</button>
+          <button class="ctrl-btn active" id="btn-levels" onclick="toggleLevels()">Levels</button>
+        </div>
+      </div>
+      <canvas class="chart-canvas" id="price-canvas"></canvas>
+      <div class="crosshair-info" id="price-info"></div>
+      <div class="legend">
+        <div class="legend-item">
+          <div class="legend-dot" style="background:rgba(0,180,140,.6)"></div>
+          <span>Strong Bull GEX</span>
+        </div>
+        <div class="legend-item">
+          <div class="legend-dot" style="background:rgba(0,150,110,.35)"></div>
+          <span>Bull GEX</span>
+        </div>
+        <div class="legend-item">
+          <div class="legend-dot" style="background:rgba(180,40,40,.35)"></div>
+          <span>Bear GEX</span>
+        </div>
+        <div class="legend-item">
+          <div class="legend-dot" style="background:rgba(200,40,40,.55)"></div>
+          <span>Strong Bear GEX</span>
+        </div>
+        <div class="legend-item" style="margin-left:auto">
+          <div class="legend-dot" style="background:#00d4ff;border-radius:50%"></div>
+          <span style="color:var(--accent)">Gamma Flip</span>
+        </div>
+        <div class="legend-item">
+          <div class="legend-dot" style="background:#00e676;border-radius:50%"></div>
+          <span style="color:var(--bull)">Call Wall</span>
+        </div>
+        <div class="legend-item">
+          <div class="legend-dot" style="background:#ff4444;border-radius:50%"></div>
+          <span style="color:var(--bear)">Put Wall</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- RIGHT: Gamma Surface Heatmap -->
+    <div class="chart-panel">
+      <div class="chart-header">
+        <span class="chart-title">Gamma Surface · Strikes × Time</span>
+        <div class="chart-controls">
+          <button class="ctrl-btn active" id="btn-gex-s" onclick="setSurfaceMode('gex')">GEX</button>
+          <button class="ctrl-btn" id="btn-dhp-s" onclick="setSurfaceMode('dhp')">DHP</button>
+          <button class="ctrl-btn active" id="btn-price-overlay" onclick="togglePriceOverlay()">Price</button>
+        </div>
+      </div>
+      <canvas class="chart-canvas" id="surface-canvas"></canvas>
+      <div class="crosshair-info" id="surface-info"></div>
+      <div class="legend">
+        <div class="legend-item">
+          <div style="width:80px;height:10px;border-radius:1px;background:linear-gradient(90deg,#c82828,#1a1a1a,#00b48c)"></div>
+          <span>Bear ← 0 → Bull GEX</span>
+        </div>
+        <div class="legend-item" style="margin-left:auto">
+          <div class="legend-dot" style="background:rgba(255,255,255,.8);border-radius:50%"></div>
+          <span style="color:var(--text)">Price path</span>
+        </div>
+        <span id="surface-time-range" style="color:var(--text3);font-size:8px">--</span>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- STATUS BAR -->
+  <div class="status-bar">
+    <div class="sb-item">SURFACE <span class="sb-val ok" id="sb-status">LIVE</span></div>
+    <div class="sb-item">REFRESH <span class="sb-val ok">5s</span></div>
+    <div class="sb-item">SNAPSHOTS <span class="sb-val" id="sb-snaps">0</span></div>
+    <div class="sb-item">LAST <span class="sb-val" id="sb-ts">--</span></div>
+    <div class="sb-item">RANGE <span class="sb-val" id="sb-range">--</span></div>
+    <div class="sb-item" style="margin-left:auto;color:var(--text3)">app.pivotalphadesk.com · CME · CBOE</div>
+  </div>
+
+</div>
+
+<script>
+// ── CLOCK ─────────────────────────────────────────────────────────────────────
+function updateClock(){
+  const et=new Date(new Date().toLocaleString('en-US',{timeZone:'America/New_York'}));
+  const p=n=>String(n).padStart(2,'0');
+  document.getElementById('clock').textContent=`${p(et.getHours())}:${p(et.getMinutes())}:${p(et.getSeconds())} ET`;
+}
+setInterval(updateClock,1000);updateClock();
+
+// ── STATE ─────────────────────────────────────────────────────────────────────
+let currentInstrument = 'spx';
+let priceMode   = 'candles';
+let showBands   = true;
+let showLevels  = true;
+let surfaceMode = 'gex';
+let showPriceOverlay = true;
+
+// Session history — accumulates snapshots
+const MAX_SNAPS = 480; // ~40 min at 5s
+let history = [];      // [{ts, spot, strikes, levels, dhp, dir}]
+let sessionHigh = 0, sessionLow = Infinity;
+
+// GEX color scale — maps net_gex to color
+function gexColor(netGex, maxGex, alpha=1){
+  const norm = Math.max(-1, Math.min(1, netGex / (maxGex||1)));
+  if(norm > 0.6)  return `rgba(0,180,140,${0.55*alpha})`;
+  if(norm > 0.2)  return `rgba(0,150,110,${0.35*alpha})`;
+  if(norm > 0)    return `rgba(0,120,90,${0.18*alpha})`;
+  if(norm > -0.2) return `rgba(160,40,40,${0.18*alpha})`;
+  if(norm > -0.6) return `rgba(180,40,40,${0.32*alpha})`;
+  return `rgba(200,40,40,${0.52*alpha})`;
+}
+
+function gexHeatColor(netGex, maxGex){
+  const norm = Math.max(-1, Math.min(1, netGex / (maxGex||1)));
+  // Red (bear) → black (zero) → teal (bull)
+  if(norm >= 0){
+    const t = norm;
+    const r = Math.round(0   + (0-0)*t);
+    const g = Math.round(0   + (180-0)*t);
+    const b = Math.round(0   + (140-0)*t);
+    return [r,g,b];
+  } else {
+    const t = -norm;
+    const r = Math.round(0 + (200-0)*t);
+    const g = Math.round(0);
+    const b = Math.round(0);
+    return [r,g,b];
+  }
+}
+
+// ── INSTRUMENT CONFIG ─────────────────────────────────────────────────────────
+const INSTRUMENTS = {
+  spx: { label:'SPX', json:'gaia_live.json',     etf:null },
+  ndx: { label:'NDX', json:'gaia_ndx_live.json', etf:null },
+  spy: { label:'SPY', json:'gaia_etf_live.json', etf:'spy' },
+  qqq: { label:'QQQ', json:'gaia_etf_live.json', etf:'qqq' },
+};
+
+function switchInstrument(inst){
+  currentInstrument = inst;
+  history = [];
+  sessionHigh = 0; sessionLow = Infinity;
+  document.querySelectorAll('.itab').forEach((t,i)=>{
+    t.classList.toggle('active', ['spx','ndx','spy','qqq'][i]===inst);
+  });
+  document.getElementById('snap-instrument').textContent = INSTRUMENTS[inst].label;
+}
+
+// ── FETCH LIVE DATA ───────────────────────────────────────────────────────────
+async function fetchData(){
+  const cfg = INSTRUMENTS[currentInstrument];
+  try {
+    const r = await fetch(cfg.json+'?t='+Date.now());
+    if(!r.ok) return null;
+    const d = await r.json();
+
+    let spot=0, strikes=[], levels={}, dhp=0, dir='NEUTRAL', cashPrice=0, basis=0;
+
+    if(currentInstrument==='spx'){
+      spot       = d.spot_es    || 0;
+      cashPrice  = d.spot_spx   || 0;   // SPX cash if available
+      strikes    = d.strikes    || [];
+      levels     = d.levels     || {};
+      dhp        = d.total_dhp  || 0;
+      dir        = d.dhp_direction || 'NEUTRAL';
+      basis      = d.basis_es   || 0;
+    } else if(currentInstrument==='ndx'){
+      spot       = d.spot_ndx   || 0;
+      cashPrice  = d.spot_ndx   || 0;
+      const l0   = d.layers?.['0dte'];
+      strikes    = l0?.strikes  || [];
+      levels     = l0?.levels   || {};
+      dhp        = d.total_dhp  || 0;
+      dir        = d.dhp_direction || 'NEUTRAL';
+      basis      = d.basis      || 0;
+    } else {
+      const etf  = d[cfg.etf]   || {};
+      spot       = etf.spot     || 0;
+      cashPrice  = cfg.etf==='spy' ? (etf.spot_spx||0) : (etf.spot_ndx||0);
+      strikes    = etf.strikes  || [];
+      levels     = etf.levels   || {};
+      dhp        = etf.total_dhp|| 0;
+      dir        = etf.dhp_direction || 'NEUTRAL';
+      basis      = cfg.etf==='spy' ? (etf.basis_es||0) : (etf.basis_nq||0);
+    }
+
+    return { spot, cashPrice, strikes, levels, dhp, dir, basis, timestamp: d.timestamp };
+  } catch(e) { return null; }
+}
+
+// ── UPDATE SNAPSHOT ───────────────────────────────────────────────────────────
+function updateSnapshot(data){
+  if(!data || !data.spot) return;
+  const { spot, cashPrice, levels, dhp, dir, basis } = data;
+
+  document.getElementById('snap-spot').textContent = spot.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2});
+
+  if(cashPrice > 0){
+    document.getElementById('snap-cash').textContent = cashPrice.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2});
+  }
+  if(basis){
+    document.getElementById('snap-basis').textContent = `Basis: +${parseFloat(basis).toFixed(2)}`;
+  }
+
+  if(levels.call_wall) document.getElementById('snap-cw').textContent = levels.call_wall.toLocaleString();
+  if(levels.put_wall)  document.getElementById('snap-pw').textContent = levels.put_wall.toLocaleString();
+  if(levels.gamma_flip){
+    document.getElementById('snap-gf').textContent = levels.gamma_flip.toLocaleString();
+    const above = spot > levels.gamma_flip;
+    document.getElementById('snap-regime').textContent = above ? '▲ ABOVE FLIP' : '▼ BELOW FLIP';
+    document.getElementById('snap-regime').style.color = above ? '#00e676' : '#ff4444';
+  }
+  if(levels.gamma_node) document.getElementById('snap-gn').textContent = levels.gamma_node.toLocaleString();
+
+  const dhpEl = document.getElementById('snap-dhp');
+  dhpEl.textContent = `${dhp>0?'+':''}${dhp.toFixed(2)}M`;
+  dhpEl.className = `snap-value ${dhp>0?'bull':dhp<0?'bear':'neutral'}`;
+  document.getElementById('snap-dir').textContent = dir.replace(/_/g,' ');
+
+  if(data.timestamp) document.getElementById('sb-ts').textContent = data.timestamp+' UTC';
+}
+
+// ── PRICE / GAMMA CHART ───────────────────────────────────────────────────────
+function drawPriceGamma(){
+  const canvas = document.getElementById('price-canvas');
+  const ctx = canvas.getContext('2d');
+  const W = canvas.width  = canvas.offsetWidth;
+  const H = canvas.height = canvas.offsetHeight;
+  if(!W||!H) return;
+
+  ctx.clearRect(0,0,W,H);
+  ctx.fillStyle = '#07090c';
+  ctx.fillRect(0,0,W,H);
+
+  if(history.length === 0) {
+    ctx.fillStyle = '#2a3a48';
+    ctx.font = '11px IBM Plex Mono';
+    ctx.textAlign = 'center';
+    ctx.fillText('Waiting for data...', W/2, H/2);
+    return;
+  }
+
+  const latest = history[history.length-1];
+  const { strikes, levels } = latest;
+  if(!strikes || strikes.length===0) return;
+
+  // Price range across all history + padding
+  let minP = sessionLow,  maxP = sessionHigh;
+  const pad = (maxP - minP) * 0.08 || 10;
+  minP -= pad; maxP += pad;
+
+  const toY = p => H - ((p - minP) / (maxP - minP)) * H;
+  const PRICE_RIGHT = W * 0.88;
+
+  // ── GAMMA BANDS (background zones) ──────────────────────────────────────
+  if(showBands && strikes.length > 0){
+    const maxGex = Math.max(...strikes.map(s => Math.abs(s.net_gex||0)), 0.001);
+    const sortedS = [...strikes].sort((a,b)=>a.strike-b.strike);
+
+    for(let i=0; i<sortedS.length-1; i++){
+      const s0 = sortedS[i];
+      const s1 = sortedS[i+1];
+      const avgGex = ((s0.net_gex||0) + (s1.net_gex||0)) / 2;
+      const y0 = toY(s1.strike);
+      const y1 = toY(s0.strike);
+      if(y1 <= y0 || y1-y0 < 0.5) continue;
+      ctx.fillStyle = gexColor(avgGex, maxGex);
+      ctx.fillRect(0, y0, PRICE_RIGHT, y1-y0);
+    }
+  }
+
+  // ── LEVEL LINES ──────────────────────────────────────────────────────────
+  if(showLevels){
+    const drawLevel = (price, color, label, dashed=false) => {
+      if(!price || price < minP || price > maxP) return;
+      const y = toY(price);
+      ctx.beginPath();
+      if(dashed) ctx.setLineDash([4,4]); else ctx.setLineDash([]);
+      ctx.strokeStyle = color;
+      ctx.lineWidth = 1;
+      ctx.moveTo(0, y); ctx.lineTo(PRICE_RIGHT, y);
+      ctx.stroke();
+      ctx.setLineDash([]);
+      ctx.fillStyle = color;
+      ctx.font = '9px IBM Plex Mono';
+      ctx.textAlign = 'right';
+      ctx.fillText(label + ' ' + price.toLocaleString(), PRICE_RIGHT - 4, y - 3);
+    };
+
+    if(levels.call_wall)  drawLevel(levels.call_wall,  '#00e676', 'CW');
+    if(levels.put_wall)   drawLevel(levels.put_wall,   '#ff4444', 'PW');
+    if(levels.gamma_flip) drawLevel(levels.gamma_flip, '#00d4ff', 'GF', true);
+    if(levels.gamma_node) drawLevel(levels.gamma_node, '#a78bfa', 'GN', true);
+  }
+
+  // ── PRICE PATH ───────────────────────────────────────────────────────────
+  if(history.length > 1){
+    // Line
+    ctx.beginPath();
+    ctx.strokeStyle = 'rgba(200,220,240,0.6)';
+    ctx.lineWidth = 1;
+    history.forEach((h,i) => {
+      if(!h.spot) return;
+      const x = (i / (history.length-1)) * PRICE_RIGHT * 0.95 + PRICE_RIGHT*0.025;
+      const y = toY(h.spot);
+      i===0 ? ctx.moveTo(x,y) : ctx.lineTo(x,y);
+    });
+    ctx.stroke();
+
+    // Current price dot
+    const lastX = PRICE_RIGHT * 0.975;
+    const lastY = toY(latest.spot);
+    ctx.beginPath();
+    ctx.arc(lastX, lastY, 4, 0, Math.PI*2);
+    ctx.fillStyle = '#00d4ff';
+    ctx.fill();
+
+    // Current price label
+    ctx.fillStyle = '#07090c';
+    ctx.fillRect(PRICE_RIGHT+2, lastY-9, W-PRICE_RIGHT-4, 18);
+    ctx.fillStyle = '#00d4ff';
+    ctx.font = 'bold 10px IBM Plex Mono';
+    ctx.textAlign = 'left';
+    ctx.fillText(latest.spot.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2}), PRICE_RIGHT+5, lastY+4);
+  }
+
+  // ── Y AXIS ───────────────────────────────────────────────────────────────
+  ctx.fillStyle = '#2a3a48';
+  ctx.font = '9px IBM Plex Mono';
+  ctx.textAlign = 'right';
+  const steps = 8;
+  for(let i=0; i<=steps; i++){
+    const p = minP + (maxP-minP)*(i/steps);
+    const y = toY(p);
+    ctx.fillText(p.toFixed(0), W-4, y+3);
+  }
+
+  // Range display
+  if(sessionHigh > 0 && sessionLow < Infinity){
+    document.getElementById('snap-range').textContent =
+      `L: ${sessionLow.toFixed(2)} / H: ${sessionHigh.toFixed(2)}`;
+    document.getElementById('sb-range').textContent =
+      `${(sessionHigh-sessionLow).toFixed(2)} pts`;
+  }
+}
+
+// ── GAMMA SURFACE HEATMAP ─────────────────────────────────────────────────────
+function drawSurface(){
+  const canvas = document.getElementById('surface-canvas');
+  const ctx = canvas.getContext('2d');
+  const W = canvas.width  = canvas.offsetWidth;
+  const H = canvas.height = canvas.offsetHeight;
+  if(!W||!H||history.length===0) return;
+
+  ctx.clearRect(0,0,W,H);
+  ctx.fillStyle = '#07090c';
+  ctx.fillRect(0,0,W,H);
+
+  if(history.length < 2){
+    ctx.fillStyle = '#2a3a48';
+    ctx.font = '11px IBM Plex Mono';
+    ctx.textAlign = 'center';
+    ctx.fillText('Accumulating data...', W/2, H/2);
+    return;
+  }
+
+  // Collect all unique strikes across history
+  const allStrikes = new Set();
+  history.forEach(h => (h.strikes||[]).forEach(s => allStrikes.add(s.strike)));
+  const sortedStrikes = [...allStrikes].sort((a,b)=>b-a); // high to low
+  if(sortedStrikes.length===0) return;
+
+  const sMin = sortedStrikes[sortedStrikes.length-1];
+  const sMax = sortedStrikes[0];
+  const nStrikes = sortedStrikes.length;
+  const nTimes   = history.length;
+
+  const LABEL_W = 52;
+  const LABEL_H = 20;
+  const chartW  = W - LABEL_W;
+  const chartH  = H - LABEL_H;
+
+  // Max GEX for normalization
+  let maxGex = 0.001;
+  history.forEach(h => (h.strikes||[]).forEach(s => {
+    maxGex = Math.max(maxGex, Math.abs(s.net_gex||0), Math.abs(s.net_dhp||0));
+  }));
+
+  // Draw heatmap cells
+  const cellW = chartW / nTimes;
+  const cellH = chartH / nStrikes;
+
+  history.forEach((snap, ti) => {
+    const strikeMap = {};
+    (snap.strikes||[]).forEach(s => { strikeMap[s.strike] = s; });
+
+    sortedStrikes.forEach((strike, si) => {
+      const s = strikeMap[strike];
+      const val = s ? (surfaceMode==='gex' ? (s.net_gex||0) : (s.net_dhp||0)) : 0;
+      const [r,g,b] = gexHeatColor(val, maxGex);
+      const intensity = Math.min(1, Math.abs(val)/maxGex * 1.5);
+      ctx.fillStyle = `rgba(${r},${g},${b},${0.15 + intensity*0.85})`;
+      ctx.fillRect(
+        LABEL_W + ti*cellW, si*cellH,
+        Math.ceil(cellW)+1, Math.ceil(cellH)+1
+      );
+    });
+  });
+
+  // Level lines on surface
+  if(showLevels){
+    const drawSurfaceLevel = (price, color) => {
+      if(!price) return;
+      // Find closest strike index
+      let closestIdx = 0, closestDist = Infinity;
+      sortedStrikes.forEach((s,i) => {
+        const d = Math.abs(s - price);
+        if(d < closestDist){ closestDist=d; closestIdx=i; }
+      });
+      const y = closestIdx * cellH + cellH/2;
+      ctx.beginPath();
+      ctx.strokeStyle = color;
+      ctx.lineWidth = 1;
+      ctx.setLineDash([3,3]);
+      ctx.moveTo(LABEL_W, y);
+      ctx.lineTo(W, y);
+      ctx.stroke();
+      ctx.setLineDash([]);
+    };
+    const lv = history[history.length-1].levels||{};
+    drawSurfaceLevel(lv.call_wall,  'rgba(0,230,118,.7)');
+    drawSurfaceLevel(lv.put_wall,   'rgba(255,68,68,.7)');
+    drawSurfaceLevel(lv.gamma_flip, 'rgba(0,212,255,.7)');
+  }
+
+  // Price path overlay
+  if(showPriceOverlay && history.length > 1){
+    ctx.beginPath();
+    ctx.strokeStyle = 'rgba(255,255,255,0.75)';
+    ctx.lineWidth = 1.5;
+    history.forEach((snap, ti) => {
+      if(!snap.spot) return;
+      const x = LABEL_W + (ti+0.5)*cellW;
+      // Map price to y position
+      const norm = (sMax - snap.spot) / (sMax - sMin || 1);
+      const y = norm * chartH;
+      ti===0 ? ctx.moveTo(x,y) : ctx.lineTo(x,y);
+    });
+    ctx.stroke();
+
+    // Current price dot on surface
+    const lastSnap = history[history.length-1];
+    if(lastSnap.spot){
+      const lx = LABEL_W + (nTimes-0.5)*cellW;
+      const norm = (sMax - lastSnap.spot) / (sMax - sMin || 1);
+      const ly = norm * chartH;
+      ctx.beginPath();
+      ctx.arc(lx, ly, 4, 0, Math.PI*2);
+      ctx.fillStyle = '#ffffff';
+      ctx.fill();
+    }
+  }
+
+  // Y axis labels (strikes)
+  ctx.fillStyle = '#3a4a58';
+  ctx.font = '8px IBM Plex Mono';
+  ctx.textAlign = 'right';
+  const labelEvery = Math.max(1, Math.floor(nStrikes/10));
+  sortedStrikes.forEach((strike, si) => {
+    if(si % labelEvery === 0){
+      const y = si*cellH + cellH/2 + 3;
+      ctx.fillText(strike.toLocaleString(), LABEL_W-2, y);
+    }
+  });
+
+  // X axis labels (time)
+  ctx.fillStyle = '#3a4a58';
+  ctx.font = '8px IBM Plex Mono';
+  ctx.textAlign = 'center';
+  const timeEvery = Math.max(1, Math.floor(nTimes/6));
+  history.forEach((snap, ti) => {
+    if(ti % timeEvery === 0 && snap.timestamp){
+      const x = LABEL_W + ti*cellW;
+      const time = snap.timestamp.split(' ')[1]?.slice(0,5) || '';
+      ctx.fillText(time, x, H-4);
+    }
+  });
+
+  // Time range in legend
+  if(history.length > 0){
+    const first = history[0].timestamp?.split(' ')[1]?.slice(0,5) || '';
+    const last  = history[history.length-1].timestamp?.split(' ')[1]?.slice(0,5) || '';
+    document.getElementById('surface-time-range').textContent = `${first} → ${last} UTC`;
+  }
+
+  // Update counts
+  document.getElementById('snap-count').textContent = history.length;
+  document.getElementById('sb-snaps').textContent   = history.length;
+  document.getElementById('snap-session').textContent =
+    `${(history.length * 5 / 60).toFixed(0)}m`;
+}
+
+// ── DEMO DATA GENERATOR ───────────────────────────────────────────────────────
+const DEMO_STRIKES_BASE = [
+  {strike:7250,call_gex:8.2,put_gex:-1.1,net_gex:7.1,net_dhp:2.8,call_oi:12400,put_oi:2100,call_iv:.142,put_iv:.158},
+  {strike:7225,call_gex:5.9,put_gex:-1.4,net_gex:4.5,net_dhp:1.6,call_oi:9800,put_oi:2800,call_iv:.138,put_iv:.152},
+  {strike:7200,call_gex:9.4,put_gex:-2.1,net_gex:7.3,net_dhp:3.2,call_oi:15200,put_oi:3900,call_iv:.134,put_iv:.148},
+  {strike:7175,call_gex:4.2,put_gex:-2.8,net_gex:1.4,net_dhp:0.6,call_oi:7100,put_oi:5200,call_iv:.131,put_iv:.145},
+  {strike:7150,call_gex:3.1,put_gex:-3.4,net_gex:-0.3,net_dhp:-0.8,call_oi:5400,put_oi:6800,call_iv:.128,put_iv:.142},
+  {strike:7125,call_gex:2.2,put_gex:-4.1,net_gex:-1.9,net_dhp:-2.1,call_oi:4200,put_oi:8100,call_iv:.125,put_iv:.139},
+  {strike:7100,call_gex:1.8,put_gex:-5.8,net_gex:-4.0,net_dhp:-3.8,call_oi:3800,put_oi:11200,call_iv:.122,put_iv:.145},
+  {strike:7075,call_gex:1.1,put_gex:-6.9,net_gex:-5.8,net_dhp:-5.1,call_oi:2900,put_oi:13400,call_iv:.119,put_iv:.152},
+  {strike:7050,call_gex:0.8,put_gex:-8.2,net_gex:-7.4,net_dhp:-6.4,call_oi:2100,put_oi:16800,call_iv:.116,put_iv:.162},
+  {strike:7025,call_gex:0.5,put_gex:-5.1,net_gex:-4.6,net_dhp:-3.9,call_oi:1800,put_oi:10200,call_iv:.114,put_iv:.170},
+  {strike:7000,call_gex:0.3,put_gex:-9.8,net_gex:-9.5,net_dhp:-8.2,call_oi:1400,put_oi:19600,call_iv:.112,put_iv:.182},
+];
+
+const DEMO_LEVELS = {call_wall:7200, put_wall:7100, gamma_flip:7150, gamma_node:7175, gravity_pin:7150};
+
+function generateDemoHistory(){
+  // Simulate ~60 minutes of session data (720 snapshots at 5s)
+  const SNAPS = 120;
+  const baseSpot = 7148;
+  let spot = baseSpot;
+  let dhp = -42;
+  const now = new Date();
+
+  for(let i=0; i<SNAPS; i++){
+    // Simulate price movement — trending up with noise
+    const trend = i < 40 ? -0.3 : i < 70 ? 0.8 : i < 100 ? 0.2 : -0.4;
+    spot += trend + (Math.random()-0.5)*2.5;
+    spot = Math.max(7060, Math.min(7230, spot));
+
+    // DHP evolution
+    dhp += (Math.random()-0.48)*8;
+    dhp = Math.max(-180, Math.min(180, dhp));
+
+    // Vary strikes slightly
+    const strikes = DEMO_STRIKES_BASE.map(s=>({
+      ...s,
+      net_gex: s.net_gex + (Math.random()-0.5)*0.4,
+      net_dhp: s.net_dhp + (Math.random()-0.5)*0.3,
+      call_iv: s.call_iv + (Math.random()-0.5)*0.01,
+      put_iv:  s.put_iv  + (Math.random()-0.5)*0.01,
+    }));
+
+    // Timestamp
+    const ts = new Date(now.getTime() - (SNAPS-i)*5000);
+    const pad = n=>String(n).padStart(2,'0');
+    const timestamp = `2026-04-25 ${pad(ts.getUTCHours())}:${pad(ts.getUTCMinutes())}:${pad(ts.getUTCSeconds())}`;
+
+    history.push({
+      ts: ts.getTime(), spot, strikes,
+      levels: DEMO_LEVELS, dhp,
+      dir: dhp > 50 ? 'ACCELERATING_BULL' : dhp > 10 ? 'BUILDING_BULL' :
+           dhp < -50 ? 'ACCELERATING_BEAR' : dhp < -10 ? 'BUILDING_BEAR' : 'NEUTRAL',
+      timestamp,
+    });
+
+    if(spot > sessionHigh) sessionHigh = spot;
+    if(spot < sessionLow)  sessionLow  = spot;
+  }
+
+  // Update snapshot with latest
+  const latest = history[history.length-1];
+  updateSnapshot({
+    spot: latest.spot, levels: latest.levels,
+    dhp: latest.dhp, dir: latest.dir,
+    timestamp: latest.timestamp,
+  });
+  document.getElementById('snap-count').textContent = history.length;
+  document.getElementById('sb-snaps').textContent   = history.length;
+  document.getElementById('snap-session').textContent = `${(history.length*5/60).toFixed(0)}m`;
+  document.getElementById('sb-status').textContent  = 'DEMO';
+  document.getElementById('sb-ts').textContent      = latest.timestamp+' UTC';
+}
+
+// ── MAIN LOOP ─────────────────────────────────────────────────────────────────
+async function tick(){
+  const data = await fetchData();
+  if(data && data.spot > 0){
+    history.push({
+      ts:        Date.now(),
+      spot:      data.spot,
+      cashPrice: data.cashPrice,
+      strikes:   data.strikes,
+      levels:    data.levels,
+      dhp:       data.dhp,
+      dir:       data.dir,
+      basis:     data.basis,
+      timestamp: data.timestamp,
+    });
+    if(history.length > MAX_SNAPS) history.shift();
+    if(data.spot > sessionHigh) sessionHigh = data.spot;
+    if(data.spot < sessionLow)  sessionLow  = data.spot;
+    updateSnapshot(data);
+    document.getElementById('sb-status').textContent = 'LIVE';
+  } else {
+    document.getElementById('sb-status').textContent = 'WAITING';
+  }
+  drawPriceGamma();
+  drawSurface();
+}
+
+// ── CONTROLS ──────────────────────────────────────────────────────────────────
+function setPriceMode(m){
+  priceMode = m;
+  document.querySelectorAll('.chart-controls .ctrl-btn').forEach(b=>{
+    if(b.textContent==='Candles'||b.textContent==='Line')
+      b.classList.toggle('active', b.textContent.toLowerCase()===m);
+  });
+  drawPriceGamma();
+}
+
+function toggleBands(){
+  showBands = !showBands;
+  document.getElementById('btn-bands').classList.toggle('active', showBands);
+  drawPriceGamma();
+}
+
+function toggleLevels(){
+  showLevels = !showLevels;
+  document.getElementById('btn-levels').classList.toggle('active', showLevels);
+  drawPriceGamma();
+  drawSurface();
+}
+
+function setSurfaceMode(m){
+  surfaceMode = m;
+  document.getElementById('btn-gex-s').classList.toggle('active', m==='gex');
+  document.getElementById('btn-dhp-s').classList.toggle('active', m==='dhp');
+  drawSurface();
+}
+
+function togglePriceOverlay(){
+  showPriceOverlay = !showPriceOverlay;
+  document.getElementById('btn-price-overlay').classList.toggle('active', showPriceOverlay);
+  drawSurface();
+}
+
+// ── RESIZE HANDLER ────────────────────────────────────────────────────────────
+window.addEventListener('resize', ()=>{
+  drawPriceGamma();
+  drawSurface();
+});
+
+// ── START — try live first, demo if no data after 3s ─────────────────────────
+let demoLoaded = false;
+
+async function start(){
+  const data = await fetchData();
+  if(data && data.spot > 0){
+    // Live data available
+    document.getElementById('sb-status').textContent = 'LIVE';
+    tick();
+  } else {
+    // No live data — load demo
+    if(!demoLoaded){
+      generateDemoHistory();
+      demoLoaded = true;
+      document.getElementById('sb-status').textContent = 'DEMO';
+      drawPriceGamma();
+      drawSurface();
+    }
+  }
+  setInterval(async ()=>{
+    const d = await fetchData();
+    if(d && d.spot > 0){
+      // Live data arrived — clear demo and switch to live
+      if(demoLoaded){
+        history = [];
+        sessionHigh = 0; sessionLow = Infinity;
+        demoLoaded = false;
+      }
+      tick();
+    } else if(!demoLoaded) {
+      drawPriceGamma();
+      drawSurface();
+    }
+  }, 5000);
+}
+
+start();
+</script>
+</body>
+</html>
