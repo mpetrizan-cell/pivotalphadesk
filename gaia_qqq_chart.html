@@ -352,14 +352,29 @@ function drawSparkline(data){
   ctx.strokeStyle=data[data.length-1]>=0?'#00e676':'#ff4444';ctx.lineWidth=1.5;ctx.stroke();
 }
 
-function scanIV(strikes,spot){
+function scanIV(strikes,spot,dir){
   const c=document.getElementById('iv-items');
   if(!strikes||strikes.length===0){c.innerHTML=`<div class="iv-empty">No data available</div>`;return;}
+
   const putOTM=strikes.filter(s=>s.strike<spot&&s.strike>spot*.97&&s.put_oi>0&&s.put_iv>0)
     .map(s=>({...s,iv_pct:s.put_iv*100,otm_pct:((spot-s.strike)/spot)*100}))
-    .sort((a,b)=>a.put_iv-b.put_iv).slice(0,4);
-  if(putOTM.length===0){c.innerHTML=`<div class="iv-empty">No OTM puts in range</div>`;return;}
-  c.innerHTML=putOTM.map(s=>`<div class="iv-alert-item">Put <span>${s.strike}</span> · IV <span>${s.iv_pct.toFixed(1)}%</span> · OI <span>${(s.put_oi/1000).toFixed(1)}k</span> · OTM <span>${s.otm_pct.toFixed(1)}%</span></div>`).join('');
+    .sort((a,b)=>a.put_iv-b.put_iv).slice(0,3);
+
+  const callOTM=strikes.filter(s=>s.strike>spot&&s.strike<spot*1.03&&s.call_oi>0&&s.call_iv>0)
+    .map(s=>({...s,iv_pct:s.call_iv*100,otm_pct:((s.strike-spot)/spot)*100}))
+    .sort((a,b)=>a.call_iv-b.call_iv).slice(0,3);
+
+  let html='';
+  if(callOTM.length>0){
+    html+=`<div style="font-size:8px;color:var(--call);letter-spacing:.1em;text-transform:uppercase;margin-bottom:2px;font-family:'IBM Plex Mono',monospace">▲ OTM Calls</div>`;
+    html+=callOTM.map(s=>`<div class="iv-alert-item">Call <span style="color:var(--call)">${s.strike}</span> · IV <span style="color:var(--call)">${s.iv_pct.toFixed(1)}%</span> · OI <span>${(s.call_oi/1000).toFixed(1)}k</span> · OTM <span>${s.otm_pct.toFixed(1)}%</span></div>`).join('');
+  }
+  if(putOTM.length>0){
+    html+=`<div style="font-size:8px;color:var(--put);letter-spacing:.1em;text-transform:uppercase;margin:4px 0 2px;font-family:'IBM Plex Mono',monospace">▼ OTM Puts</div>`;
+    html+=putOTM.map(s=>`<div class="iv-alert-item">Put <span style="color:var(--put)">${s.strike}</span> · IV <span style="color:var(--put)">${s.iv_pct.toFixed(1)}%</span> · OI <span>${(s.put_oi/1000).toFixed(1)}k</span> · OTM <span>${s.otm_pct.toFixed(1)}%</span></div>`).join('');
+  }
+  if(!html) html=`<div class="iv-empty">No OTM options in range</div>`;
+  c.innerHTML=html;
 }
 
 function updateUI(qqq,cross){
@@ -369,14 +384,16 @@ function updateUI(qqq,cross){
   const dhp  = qqq.total_dhp||0;
   const dir  = qqq.dhp_direction||'NEUTRAL';
   const rat  = qqq.ndx_ratio||41.0;
-  // NDX cash = NQ - basis (~150)
-  const ndxCash = qqq.spot_nq ? qqq.spot_nq - (qqq.basis_nq||150) : spot * rat;
 
   // Snapshot
   document.getElementById('snap-qqq').textContent = spot.toFixed(2);
-  document.getElementById('snap-ndx').textContent = ndxCash.toLocaleString('en-US',{minimumFractionDigits:3,maximumFractionDigits:3});
+  // NDX cash — directo del JSON
+  const ndxCash = qqq.spot_ndx || 0;
+  if(ndxCash>0){
+    document.getElementById('snap-ndx').textContent = ndxCash.toLocaleString('en-US',{minimumFractionDigits:3,maximumFractionDigits:3});
+    document.getElementById('b-ndx').textContent = ndxCash.toLocaleString('en-US',{minimumFractionDigits:0,maximumFractionDigits:0});
+  }
   if(qqq.spot_nq) document.getElementById('snap-basis').textContent = `Basis NQ: +${(qqq.basis_nq||0).toFixed(2)}`;
-  document.getElementById('b-ndx').textContent = ndxCash.toLocaleString('en-US',{minimumFractionDigits:0,maximumFractionDigits:0});
 
   // DHP
   const dhpEl=document.getElementById('snap-dhp');
@@ -440,7 +457,7 @@ function updateUI(qqq,cross){
 
   buildGexChart(qqq.strikes||[],spot,lv);
   buildBook(qqq.strikes||[],spot);
-  scanIV(qqq.strikes||[],spot);
+  scanIV(qqq.strikes||[],spot,dir);
   DHP_HISTORY.push(dhp);if(DHP_HISTORY.length>20)DHP_HISTORY.shift();
   drawSparkline(DHP_HISTORY);
 }
