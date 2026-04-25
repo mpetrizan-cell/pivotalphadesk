@@ -6,7 +6,7 @@
 <title>GAIA QQQ · PivotAlphaDesk</title>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@300;400;500;600&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap');
-  :root {
+  :root{
     --bg:#0a0c0f;--bg2:#0f1217;--bg3:#141820;--border:#1e2530;--border2:#252d3a;
     --text:#c8d4e0;--text2:#6a7d90;--text3:#3a4a58;--accent:#a78bfa;
     --bull:#00e676;--bear:#ff4444;--neutral:#ffa726;--call:#00e676;--put:#ff4444;
@@ -20,7 +20,9 @@
   @keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
   .clock{color:var(--neutral);font-weight:500;}
   .page-wrap{position:fixed;top:28px;left:0;right:0;bottom:0;display:flex;flex-direction:column;}
-  .snapshot-row{background:var(--bg2);border-bottom:1px solid var(--border);padding:4px 12px;display:flex;align-items:center;gap:10px;font-family:'IBM Plex Mono',monospace;flex-shrink:0;flex-wrap:wrap;}
+
+  /* SNAPSHOT */
+  .snapshot-row{background:var(--bg2);border-bottom:1px solid var(--border);padding:4px 12px;display:flex;align-items:center;gap:10px;font-family:'IBM Plex Mono',monospace;flex-shrink:0;}
   .snap-item{display:flex;flex-direction:column;gap:1px;}
   .snap-label{font-size:8px;color:var(--text3);letter-spacing:.1em;text-transform:uppercase;}
   .snap-value{font-size:12px;font-weight:600;color:var(--text);line-height:1.1;}
@@ -28,21 +30,32 @@
   .snap-value.bull{color:var(--bull);}.snap-value.bear{color:var(--bear);}.snap-value.neutral{color:var(--neutral);}
   .snap-sub{font-size:9px;color:var(--text2);}
   .snap-divider{width:1px;height:28px;background:var(--border);flex-shrink:0;}
-  .ratio-box{background:var(--bg3);border:1px solid var(--border2);border-radius:3px;padding:4px 9px;display:flex;flex-direction:column;gap:1px;}
-  .ratio-label{font-size:8px;color:var(--text3);letter-spacing:.1em;text-transform:uppercase;}
-  .ratio-val{font-family:'IBM Plex Mono',monospace;font-size:13px;font-weight:600;color:var(--qqq);}
-  .proxy-box{background:rgba(255,107,53,.08);border:1px solid rgba(255,107,53,.3);border-radius:3px;padding:4px 9px;display:flex;flex-direction:column;gap:2px;}
-  .proxy-label{font-size:8px;color:var(--conf3x);letter-spacing:.1em;text-transform:uppercase;}
-  .proxy-row{display:flex;gap:8px;font-family:'IBM Plex Mono',monospace;font-size:10px;}
-  .proxy-key{color:var(--text3);}.proxy-val{color:var(--conf3x);font-weight:600;}
+
+  /* NDX EQUIVALENT ZONE box in snapshot */
+  .ndx-zone-box{background:rgba(255,107,53,.08);border:1px solid rgba(255,107,53,.3);border-radius:3px;padding:4px 9px;display:flex;flex-direction:column;gap:2px;}
+  .ndx-zone-label{font-size:8px;color:var(--conf3x);letter-spacing:.1em;text-transform:uppercase;}
+  .ndx-zone-row{display:flex;gap:8px;font-family:'IBM Plex Mono',monospace;font-size:10px;}
+  .ndx-zone-key{color:var(--text3);}.ndx-zone-val{color:var(--conf3x);font-weight:700;}
+
+  /* QQQ STRIKE box in snapshot */
+  .qqq-strike-box{background:rgba(167,139,250,.08);border:1px solid rgba(167,139,250,.3);border-radius:3px;padding:4px 9px;display:flex;flex-direction:column;gap:2px;}
+  .qqq-strike-label{font-size:8px;color:var(--qqq);letter-spacing:.1em;text-transform:uppercase;}
+  .qqq-strike-row{display:flex;gap:8px;font-family:'IBM Plex Mono',monospace;font-size:10px;}
+  .qqq-strike-key{color:var(--text3);}.qqq-strike-val{color:var(--qqq);font-weight:700;}
+
+  /* CROSS BADGE */
   .cross-badge{font-family:'IBM Plex Mono',monospace;font-size:10px;font-weight:700;padding:3px 10px;border-radius:2px;letter-spacing:.08em;white-space:nowrap;}
   .cross-bull{background:rgba(0,230,118,.15);color:var(--bull);border:1px solid rgba(0,230,118,.3);}
   .cross-bear{background:rgba(255,68,68,.15);color:var(--bear);border:1px solid rgba(255,68,68,.3);}
   .cross-neutral{background:rgba(255,167,38,.1);color:var(--neutral);border:1px solid rgba(255,167,38,.2);}
+
+  /* MAIN GRID */
   .main-grid{flex:1;display:grid;grid-template-columns:300px 1fr 255px;gap:1px;background:var(--border);overflow:hidden;min-height:0;}
   .panel{background:var(--bg);padding:7px;overflow:hidden;display:flex;flex-direction:column;min-height:0;}
-  .panel-header{font-family:'IBM Plex Mono',monospace;font-size:9px;letter-spacing:.12em;color:var(--text3);text-transform:uppercase;margin-bottom:7px;padding-bottom:5px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;flex-shrink:0;}
+  .panel-header{font-family:'IBM Plex Mono',monospace;font-size:9px;letter-spacing:.12em;color:var(--text3);text-transform:uppercase;margin-bottom:6px;padding-bottom:4px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;flex-shrink:0;}
   .badge{background:var(--border2);color:var(--text2);padding:1px 5px;border-radius:2px;font-size:8px;}
+
+  /* GEX */
   .gex-scroll{flex:1;overflow-y:auto;min-height:0;}
   .strike-row{display:grid;grid-template-columns:48px 1fr 8px 1fr 46px;align-items:center;gap:2px;margin-bottom:2px;min-height:15px;position:relative;}
   .strike-row:hover{background:rgba(255,255,255,.02);border-radius:2px;}
@@ -59,6 +72,8 @@
   .level-tag{position:absolute;left:0;font-family:'IBM Plex Mono',monospace;font-size:7px;padding:0 2px;border-radius:1px;font-weight:600;top:-8px;}
   .tag-cw{background:rgba(0,230,118,.2);color:var(--call);}.tag-pw{background:rgba(255,68,68,.2);color:var(--put);}
   .tag-gn{background:rgba(167,139,250,.2);color:var(--qqq);}.tag-gf{background:rgba(255,167,38,.2);color:var(--neutral);}
+
+  /* BOOK */
   .book-scroll{flex:1;overflow-y:auto;min-height:0;}
   .book-table{width:100%;border-collapse:collapse;font-family:'IBM Plex Mono',monospace;font-size:10px;}
   .book-table th{font-size:8px;letter-spacing:.1em;color:var(--text3);text-transform:uppercase;padding:3px 5px;border-bottom:1px solid var(--border);text-align:right;font-weight:500;position:sticky;top:0;background:var(--bg);}
@@ -69,12 +84,14 @@
   .book-table tr.spot-row td{color:var(--qqq);font-weight:600;background:rgba(167,139,250,.04);}
   .call-val{color:var(--call);}.put-val{color:var(--put);}
   .net-pos{color:var(--call);}.net-neg{color:var(--bear);}
-  .dhp-panel{overflow-y:auto;gap:6px;display:flex;flex-direction:column;min-height:0;}
+
+  /* DHP PANEL — right column, scrollable */
+  .dhp-panel{overflow-y:auto;gap:5px;display:flex;flex-direction:column;min-height:0;}
   .dhp-gauge{background:var(--bg2);border:1px solid var(--border);border-radius:3px;padding:6px;flex-shrink:0;}
-  .dhp-label{font-family:'IBM Plex Mono',monospace;font-size:8px;letter-spacing:.12em;color:var(--text3);text-transform:uppercase;margin-bottom:5px;}
+  .dhp-label{font-family:'IBM Plex Mono',monospace;font-size:8px;letter-spacing:.12em;color:var(--text3);text-transform:uppercase;margin-bottom:4px;}
   .dhp-num{font-family:'IBM Plex Mono',monospace;font-size:19px;font-weight:600;line-height:1;}
   .dhp-unit{font-size:10px;color:var(--text2);}
-  .dhp-dir{font-family:'IBM Plex Mono',monospace;font-size:9px;font-weight:600;letter-spacing:.06em;padding:2px 7px;border-radius:2px;margin-top:5px;display:inline-block;}
+  .dhp-dir{font-family:'IBM Plex Mono',monospace;font-size:9px;font-weight:600;letter-spacing:.06em;padding:2px 7px;border-radius:2px;margin-top:4px;display:inline-block;}
   .dir-acc-bull{background:rgba(0,230,118,.15);color:var(--bull);border:1px solid rgba(0,230,118,.3);}
   .dir-bld-bull{background:rgba(0,230,118,.08);color:#4caf8a;border:1px solid rgba(0,230,118,.15);}
   .dir-neutral{background:rgba(255,167,38,.1);color:var(--neutral);border:1px solid rgba(255,167,38,.2);}
@@ -82,26 +99,34 @@
   .dir-acc-bear{background:rgba(255,68,68,.15);color:var(--bear);border:1px solid rgba(255,68,68,.3);}
   .dhp-split{display:grid;grid-template-columns:1fr 1fr;gap:3px;margin-top:4px;}
   .dhp-side{background:var(--bg3);border-radius:2px;padding:4px;}
-  .dhp-side-label{font-size:8px;letter-spacing:.08em;text-transform:uppercase;margin-bottom:3px;font-family:'IBM Plex Mono',monospace;}
-  .dhp-side-val{font-family:'IBM Plex Mono',monospace;font-size:12px;font-weight:600;}
-  .sparkline-wrap{margin-top:6px;}
+  .dhp-side-label{font-size:8px;letter-spacing:.08em;text-transform:uppercase;margin-bottom:2px;font-family:'IBM Plex Mono',monospace;}
+  .dhp-side-val{font-family:'IBM Plex Mono',monospace;font-size:11px;font-weight:600;}
+  .sparkline-wrap{margin-top:5px;}
   .sparkline-label{font-size:8px;color:var(--text3);margin-bottom:2px;font-family:'IBM Plex Mono',monospace;}
-  canvas.sparkline{width:100%;height:28px;display:block;}
+  canvas.sparkline{width:100%;height:24px;display:block;}
+
+  /* PAD LEVELS */
   .levels-table{width:100%;font-family:'IBM Plex Mono',monospace;font-size:10px;}
   .levels-table tr td{padding:2px 0;border-bottom:1px solid var(--border);}
   .levels-table tr:last-child td{border-bottom:none;}
   .lv-key{color:var(--text3);font-size:8px;letter-spacing:.08em;text-transform:uppercase;}
   .lv-val{text-align:right;font-weight:600;}
-  .ndx-equiv{background:var(--bg3);border-radius:2px;padding:6px;margin-top:5px;}
-  .ndx-equiv-label{font-size:8px;color:var(--text3);letter-spacing:.1em;text-transform:uppercase;margin-bottom:4px;font-family:'IBM Plex Mono',monospace;}
+
+  /* NDX EQUIVALENT ZONE — right panel */
+  .ndx-equiv{background:var(--bg3);border-radius:2px;padding:5px;margin-top:4px;}
+  .ndx-equiv-label{font-size:8px;color:var(--conf3x);letter-spacing:.1em;text-transform:uppercase;margin-bottom:3px;font-family:'IBM Plex Mono',monospace;font-weight:700;}
   .ndx-equiv-row{display:flex;justify-content:space-between;font-family:'IBM Plex Mono',monospace;font-size:9px;padding:1px 0;border-bottom:1px solid var(--border);}
   .ndx-equiv-row:last-child{border-bottom:none;}
+
+  /* IV SCANNER */
   .iv-alert{background:rgba(255,107,53,.08);border:1px solid rgba(255,107,53,.25);border-radius:3px;padding:6px;}
-  .iv-alert-label{font-size:8px;color:var(--conf3x);letter-spacing:.1em;text-transform:uppercase;margin-bottom:5px;font-family:'IBM Plex Mono',monospace;}
+  .iv-alert-label{font-size:8px;color:var(--conf3x);letter-spacing:.1em;text-transform:uppercase;margin-bottom:4px;font-family:'IBM Plex Mono',monospace;}
   .iv-alert-item{font-family:'IBM Plex Mono',monospace;font-size:9px;padding:1px 0;border-bottom:1px solid rgba(255,107,53,.12);color:var(--text2);}
   .iv-alert-item:last-child{border-bottom:none;}
   .iv-alert-item span{color:var(--conf3x);font-weight:600;}
   .iv-empty{font-size:9px;color:var(--text3);font-family:'IBM Plex Mono',monospace;font-style:italic;}
+
+  /* BOTTOM BAR */
   .bottom-bar{background:var(--bg3);border-top:1px solid var(--border);padding:3px 12px;display:flex;align-items:center;gap:18px;font-family:'IBM Plex Mono',monospace;font-size:9px;color:var(--text3);flex-shrink:0;}
   .bitem{display:flex;gap:5px;align-items:center;}
   .bval{color:var(--text2);}.bval.ok{color:var(--bull);}.bval.warn{color:var(--neutral);}
@@ -112,23 +137,24 @@
 
 <div class="terminal-bar">
   <span class="brand">GAIA QQQ · PivotAlphaDesk</span>
-  <span><span class="status-dot"></span><span style="color:var(--bull)">LIVE</span> · QQQ · NQM26 · Ratio: <span id="tb-ratio" style="color:var(--qqq);font-weight:600">--</span></span>
+  <span><span class="status-dot"></span><span style="color:var(--bull)">LIVE</span> · QQQ · NDX</span>
   <span class="clock" id="clock">--:-- ET</span>
   <span style="color:var(--text3)">CME · CBOE · GAIA v1</span>
 </div>
 
 <div class="page-wrap">
   <div class="snapshot-row">
+    <!-- QQQ price -->
     <div class="snap-item">
       <span class="snap-label">QQQ</span>
       <span class="snap-value big" id="snap-qqq">--</span>
       <span class="snap-sub">ETF Nasdaq 100</span>
     </div>
-    <div class="snap-divider"></div>
+    <!-- NDX cash — replaces ratio box -->
     <div class="snap-item">
-      <span class="snap-label">NQM26</span>
-      <span class="snap-value" id="snap-nq">--</span>
-      <span class="snap-sub" id="snap-basis">Basis: --</span>
+      <span class="snap-label">NDX Cash</span>
+      <span class="snap-value" style="color:var(--accent);font-size:14px" id="snap-ndx">--</span>
+      <span class="snap-sub" id="snap-basis">Basis NQ: --</span>
     </div>
     <div class="snap-divider"></div>
     <div class="snap-item">
@@ -150,31 +176,41 @@
       <span class="snap-value bear" id="snap-pw">--</span>
     </div>
     <div class="snap-divider"></div>
-    <div class="ratio-box">
-      <span class="ratio-label">NDX/QQQ Ratio</span>
-      <span class="ratio-val" id="ratio-val">--</span>
+    <!-- NDX Equivalent Zone — rounded to nearest 10 -->
+    <div class="ndx-zone-box">
+      <span class="ndx-zone-label">NDX Equivalent Zone</span>
+      <div class="ndx-zone-row">
+        <span class="ndx-zone-key">CW</span><span class="ndx-zone-val" id="ndx-zone-cw">--</span>
+        <span class="ndx-zone-key">PW</span><span class="ndx-zone-val" id="ndx-zone-pw">--</span>
+        <span class="ndx-zone-key">GF</span><span class="ndx-zone-val" id="ndx-zone-gf">--</span>
+      </div>
     </div>
-    <div class="proxy-box">
-      <span class="proxy-label">Proxy Strike (NDX → QQQ)</span>
-      <div class="proxy-row">
-        <span class="proxy-key">CW</span><span class="proxy-val" id="px-cw">--</span>
-        <span class="proxy-key">PW</span><span class="proxy-val" id="px-pw">--</span>
-        <span class="proxy-key">GF</span><span class="proxy-val" id="px-gf">--</span>
+    <!-- QQQ Strike — rounded to nearest 1 -->
+    <div class="qqq-strike-box">
+      <span class="qqq-strike-label">QQQ Strike</span>
+      <div class="qqq-strike-row">
+        <span class="qqq-strike-key">CW</span><span class="qqq-strike-val" id="qqq-sk-cw">--</span>
+        <span class="qqq-strike-key">PW</span><span class="qqq-strike-val" id="qqq-sk-pw">--</span>
+        <span class="qqq-strike-key">GF</span><span class="qqq-strike-val" id="qqq-sk-gf">--</span>
       </div>
     </div>
     <div class="snap-divider"></div>
+    <!-- Cross Signal — moved to snapshot row (Option B) -->
     <div class="snap-item">
       <span class="snap-label">Cross Signal</span>
-      <span class="cross-badge cross-neutral" id="snap-cross" style="margin-top:3px">NEUTRAL</span>
+      <span class="cross-badge cross-neutral" id="snap-cross" style="margin-top:2px">NEUTRAL</span>
+      <span style="font-size:8px;color:var(--text3);margin-top:1px;font-family:'IBM Plex Mono',monospace" id="snap-cross-note">--</span>
     </div>
   </div>
 
   <div class="main-grid">
+    <!-- GEX CHART -->
     <div class="panel">
       <div class="panel-header">GEX Structure · QQQ 0DTE <span class="badge" id="gex-count">-- strikes</span></div>
       <div class="gex-scroll" id="gex-chart"></div>
     </div>
 
+    <!-- STRIKE BOOK -->
     <div class="panel">
       <div class="panel-header">Strike Book · QQQ <span class="badge">OI · GEX · IV · DHP</span></div>
       <div class="book-scroll">
@@ -190,10 +226,12 @@
       </div>
     </div>
 
+    <!-- DHP PANEL — right, scrollable internally -->
     <div class="panel dhp-panel">
+      <!-- Net DHP gauge -->
       <div class="dhp-gauge">
         <div class="dhp-label">Net DHP · QQQ 0DTE</div>
-        <div style="display:flex;align-items:baseline;gap:5px;margin-bottom:5px">
+        <div style="display:flex;align-items:baseline;gap:5px;margin-bottom:4px">
           <span class="dhp-num" id="dhp-num">--</span>
           <span class="dhp-unit">M delta</span>
         </div>
@@ -210,10 +248,11 @@
         </div>
         <div class="sparkline-wrap">
           <div class="sparkline-label">DHP History</div>
-          <canvas class="sparkline" id="dhp-spark" height="34"></canvas>
+          <canvas class="sparkline" id="dhp-spark" height="24"></canvas>
         </div>
       </div>
 
+      <!-- PAD Levels -->
       <div class="dhp-gauge">
         <div class="dhp-label">PAD Levels · QQQ</div>
         <table class="levels-table">
@@ -223,23 +262,19 @@
           <tr><td class="lv-key">Gamma Flip</td><td class="lv-val neutral" id="lv-gf">--</td></tr>
           <tr><td class="lv-key">Gravity Pin</td><td class="lv-val" style="color:var(--conf2x)" id="lv-gp">--</td></tr>
         </table>
+        <!-- NDX Equivalent Zone — rounded to nearest 10 -->
         <div class="ndx-equiv">
-          <div class="ndx-equiv-label">NDX Equiv (Strike × Ratio)</div>
+          <div class="ndx-equiv-label">NDX Equivalent Zone (÷ Ratio · nearest 10)</div>
           <div class="ndx-equiv-row"><span style="color:var(--text3)">Call Wall</span><span class="call-val" id="eq-cw">--</span></div>
           <div class="ndx-equiv-row"><span style="color:var(--text3)">Put Wall</span><span class="put-val" id="eq-pw">--</span></div>
           <div class="ndx-equiv-row"><span style="color:var(--text3)">Gamma Flip</span><span style="color:var(--neutral)" id="eq-gf">--</span></div>
         </div>
       </div>
 
+      <!-- IV Scanner -->
       <div class="iv-alert">
         <div class="iv-alert-label">⚡ IV Scanner · OTM Puts</div>
         <div id="iv-items"><div class="iv-empty">Waiting for data...</div></div>
-      </div>
-
-      <div class="dhp-gauge">
-        <div class="dhp-label">Cross Signal SPY · QQQ</div>
-        <div class="cross-badge cross-neutral" id="cross-signal" style="margin-bottom:6px;display:block;text-align:center">NEUTRAL</div>
-        <div id="cross-notes" style="font-size:9px;color:var(--text2);line-height:1.6;font-family:'IBM Plex Mono',monospace"></div>
       </div>
     </div>
   </div>
@@ -248,14 +283,22 @@
     <div class="bitem">QQQ <span class="bval ok" id="b-status">LIVE</span></div>
     <div class="bitem">0DTE <span class="bval ok">5s</span></div>
     <div class="bitem">LAST <span class="bval" id="b-ts">--</span></div>
-    <div class="bitem">RATIO <span class="bval" id="b-ratio">--</span></div>
+    <div class="bitem">NDX <span class="bval" id="b-ndx">--</span></div>
     <div class="bitem">CROSS <span class="bval" id="b-cross">--</span></div>
     <div class="bitem" style="margin-left:auto;color:var(--text3)">app.pivotalphadesk.com · CME · CBOE</div>
   </div>
 </div>
 
 <script>
-function updateClock(){const et=new Date(new Date().toLocaleString('en-US',{timeZone:'America/New_York'}));const p=n=>String(n).padStart(2,'0');document.getElementById('clock').textContent=`${p(et.getHours())}:${p(et.getMinutes())}:${p(et.getSeconds())} ET`;}
+// ── HELPERS ───────────────────────────────────────────────────────────────────
+const r10 = v => Math.round(v / 10) * 10;   // NDX → nearest 10
+const r1  = v => Math.round(v);              // QQQ → nearest 1
+
+function updateClock(){
+  const et=new Date(new Date().toLocaleString('en-US',{timeZone:'America/New_York'}));
+  const p=n=>String(n).padStart(2,'0');
+  document.getElementById('clock').textContent=`${p(et.getHours())}:${p(et.getMinutes())}:${p(et.getSeconds())} ET`;
+}
 setInterval(updateClock,1000);updateClock();
 
 let DHP_HISTORY=[];
@@ -298,9 +341,9 @@ function buildBook(strikes,spot){
 
 function drawSparkline(data){
   const canvas=document.getElementById('dhp-spark');const ctx=canvas.getContext('2d');
-  const w=canvas.offsetWidth||200;const h=34;canvas.width=w;canvas.height=h;
+  const w=canvas.offsetWidth||200;const h=24;canvas.width=w;canvas.height=h;
   if(!data||data.length<2)return;
-  const min=Math.min(...data);const max=Math.max(...data);const range=max-min||1;const pad=3;
+  const min=Math.min(...data);const max=Math.max(...data);const range=max-min||1;const pad=2;
   ctx.clearRect(0,0,w,h);
   ctx.beginPath();ctx.strokeStyle='rgba(100,120,140,.3)';ctx.lineWidth=1;ctx.setLineDash([2,3]);
   const zy=h-pad-((0-min)/range)*(h-pad*2);ctx.moveTo(0,zy);ctx.lineTo(w,zy);ctx.stroke();ctx.setLineDash([]);
@@ -321,12 +364,21 @@ function scanIV(strikes,spot){
 
 function updateUI(qqq,cross){
   if(!qqq)return;
-  const spot=qqq.spot||0;const lv=qqq.levels||{};const dhp=qqq.total_dhp||0;
-  const dir=qqq.dhp_direction||'NEUTRAL';const r=qqq.ndx_ratio||41.0;
+  const spot = qqq.spot||0;
+  const lv   = qqq.levels||{};
+  const dhp  = qqq.total_dhp||0;
+  const dir  = qqq.dhp_direction||'NEUTRAL';
+  const rat  = qqq.ndx_ratio||41.0;
+  // NDX cash = NQ - basis (~150)
+  const ndxCash = qqq.spot_nq ? qqq.spot_nq - (qqq.basis_nq||150) : spot * rat;
 
-  document.getElementById('snap-qqq').textContent=spot.toFixed(2);
-  if(qqq.spot_nq){document.getElementById('snap-nq').textContent=qqq.spot_nq.toLocaleString('en-US',{minimumFractionDigits:2});document.getElementById('snap-basis').textContent=`Basis: ${qqq.basis_nq>0?'+':''}${qqq.basis_nq}`;}
+  // Snapshot
+  document.getElementById('snap-qqq').textContent = spot.toFixed(2);
+  document.getElementById('snap-ndx').textContent = ndxCash.toLocaleString('en-US',{minimumFractionDigits:3,maximumFractionDigits:3});
+  if(qqq.spot_nq) document.getElementById('snap-basis').textContent = `Basis NQ: +${(qqq.basis_nq||0).toFixed(2)}`;
+  document.getElementById('b-ndx').textContent = ndxCash.toLocaleString('en-US',{minimumFractionDigits:0,maximumFractionDigits:0});
 
+  // DHP
   const dhpEl=document.getElementById('snap-dhp');
   dhpEl.textContent=`${dhp>0?'+':''}${dhp.toFixed(2)}M`;
   dhpEl.className=`snap-value ${dhp>0?'bull':dhp<0?'bear':'neutral'}`;
@@ -334,38 +386,56 @@ function updateUI(qqq,cross){
   const numEl=document.getElementById('dhp-num');
   numEl.textContent=`${dhp>0?'+':''}${dhp.toFixed(2)}`;
   numEl.className=`dhp-num ${dhp>0?'bull':dhp<0?'bear':'neutral'}`;
-
   const dirMap={'ACCELERATING_BULL':'dir-acc-bull','BUILDING_BULL':'dir-bld-bull','NEUTRAL':'dir-neutral','BUILDING_BEAR':'dir-bld-bear','ACCELERATING_BEAR':'dir-acc-bear'};
   const dirEl=document.getElementById('dhp-dir');
   dirEl.textContent=dir.replace(/_/g,' ');dirEl.className='dhp-dir '+(dirMap[dir]||'dir-neutral');
 
+  // Call/Put DHP
   if(qqq.call_dhp!==undefined){
     document.getElementById('call-dhp').textContent=`${qqq.call_dhp>0?'+':''}${parseFloat(qqq.call_dhp).toFixed(2)}M`;
     document.getElementById('put-dhp').textContent=`${parseFloat(qqq.put_dhp).toFixed(2)}M`;
   }
 
-  if(lv.call_wall){document.getElementById('snap-cw').textContent=lv.call_wall;document.getElementById('lv-cw').textContent=lv.call_wall;document.getElementById('eq-cw').textContent=Math.round(lv.call_wall*r).toLocaleString();}
-  if(lv.put_wall){document.getElementById('snap-pw').textContent=lv.put_wall;document.getElementById('lv-pw').textContent=lv.put_wall;document.getElementById('eq-pw').textContent=Math.round(lv.put_wall*r).toLocaleString();}
-  if(lv.gamma_flip){document.getElementById('snap-gf').textContent=lv.gamma_flip;document.getElementById('lv-gf').textContent=lv.gamma_flip;document.getElementById('eq-gf').textContent=Math.round(lv.gamma_flip*r).toLocaleString();}
-  if(lv.gamma_node)document.getElementById('lv-gn').textContent=lv.gamma_node;
-  if(lv.gravity_pin)document.getElementById('lv-gp').textContent=lv.gravity_pin;
-
-  document.getElementById('ratio-val').textContent=r.toFixed(4);
-  document.getElementById('tb-ratio').textContent=r.toFixed(2);
-  document.getElementById('b-ratio').textContent=r.toFixed(2);
-
-  if(qqq.proxy_strikes){
-    document.getElementById('px-cw').textContent=qqq.proxy_strikes.call_wall||'--';
-    document.getElementById('px-pw').textContent=qqq.proxy_strikes.put_wall||'--';
-    document.getElementById('px-gf').textContent=qqq.proxy_strikes.gamma_flip||'--';
+  // PAD Levels
+  if(lv.call_wall){
+    document.getElementById('snap-cw').textContent=lv.call_wall;
+    document.getElementById('lv-cw').textContent=lv.call_wall;
+    // NDX Equivalent Zone — rounded to nearest 10
+    const ndxCW = r10(lv.call_wall * rat);
+    document.getElementById('eq-cw').textContent=ndxCW.toLocaleString();
+    document.getElementById('ndx-zone-cw').textContent=ndxCW.toLocaleString();
+    // QQQ Strike — rounded to nearest 1
+    document.getElementById('qqq-sk-cw').textContent=r1(lv.call_wall);
   }
+  if(lv.put_wall){
+    document.getElementById('snap-pw').textContent=lv.put_wall;
+    document.getElementById('lv-pw').textContent=lv.put_wall;
+    const ndxPW = r10(lv.put_wall * rat);
+    document.getElementById('eq-pw').textContent=ndxPW.toLocaleString();
+    document.getElementById('ndx-zone-pw').textContent=ndxPW.toLocaleString();
+    document.getElementById('qqq-sk-pw').textContent=r1(lv.put_wall);
+  }
+  if(lv.gamma_flip){
+    document.getElementById('snap-gf').textContent=lv.gamma_flip;
+    document.getElementById('lv-gf').textContent=lv.gamma_flip;
+    const ndxGF = r10(lv.gamma_flip * rat);
+    document.getElementById('eq-gf').textContent=ndxGF.toLocaleString();
+    document.getElementById('ndx-zone-gf').textContent=ndxGF.toLocaleString();
+    document.getElementById('qqq-sk-gf').textContent=r1(lv.gamma_flip);
+  }
+  if(lv.gamma_node)  document.getElementById('lv-gn').textContent=lv.gamma_node;
+  if(lv.gravity_pin) document.getElementById('lv-gp').textContent=lv.gravity_pin;
 
+  // Cross Signal — snapshot row (Option B, no right panel gauge)
   if(cross){
     const cd=cross.direction||'NEUTRAL';
     const cls=cd.includes('BULL')?'cross-bull':cd.includes('BEAR')?'cross-bear':'cross-neutral';
-    ['snap-cross','cross-signal'].forEach(id=>{const el=document.getElementById(id);el.textContent=cd.replace(/_/g,' ');el.className=`cross-badge ${cls}`;});
+    const el=document.getElementById('snap-cross');
+    el.textContent=cd.replace(/_/g,' ');el.className=`cross-badge ${cls}`;
     document.getElementById('b-cross').textContent=cd.replace(/_/g,' ');
-    if(cross.notes)document.getElementById('cross-notes').innerHTML=cross.notes.map(n=>`· ${n}`).join('<br>');
+    if(cross.notes&&cross.notes.length>0){
+      document.getElementById('snap-cross-note').textContent=cross.notes[0];
+    }
   }
 
   buildGexChart(qqq.strikes||[],spot,lv);
