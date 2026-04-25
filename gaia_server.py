@@ -152,6 +152,9 @@ iframe{width:100%;height:100%;border:none;}
   <a href="/qqq" class="tab {% if active == 'qqq' %}active{% endif %}">
     GAIA QQQ
   </a>
+  <a href="/surface" class="tab {% if active == 'surface' %}active{% endif %}">
+    GAIA Surface
+  </a>
   <a href="/chart" class="tab {% if active == 'chart' %}active{% endif %}">
     GEX Structure
   </a>
@@ -341,6 +344,13 @@ def qqq():
         active='qqq', page='gaia_qqq_chart.html',
         spot=get_spot_qqq(), trial_days=get_trial_days())
 
+@app.route('/surface')
+@require_auth
+def surface():
+    return render_template_string(DASHBOARD_HTML,
+        active='surface', page='gaia_surface.html',
+        spot=get_spot(), trial_days=get_trial_days())
+
 @app.route('/flow')
 @require_auth
 def flow():
@@ -386,6 +396,11 @@ def serve_spy_chart():
 @require_auth
 def serve_qqq_chart():
     return send_from_directory(BASE_DIR, 'gaia_qqq_chart.html')
+
+@app.route('/gaia_surface.html')
+@require_auth
+def serve_surface():
+    return send_from_directory(BASE_DIR, 'gaia_surface.html')
 
 @app.route('/gaia_ndx_live.json')
 @require_auth
