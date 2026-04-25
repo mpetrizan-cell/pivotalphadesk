@@ -32,6 +32,8 @@ SPY_SYMBOL       = "SPY"
 QQQ_SYMBOL       = "QQQ"
 ES_SYMBOL        = "ESM26"
 NQ_SYMBOL        = "NQM26"
+SPX_SYMBOL       = "%24SPX.X"    # SPX cash index — precio real CBOE
+NDX_SYMBOL_CASH  = "%24NDX.X"    # NDX cash index — precio real CBOE
 
 STRIKE_PROXIMITY = 10    # ETFs tienen strikes más juntos
 REFRESH_0DTE     = 5     # segundos por instrumento → ~10s ciclo total
@@ -596,6 +598,8 @@ def main():
             spot_qqq = get_price(QQQ_SYMBOL, token)
             spot_es  = get_price(ES_SYMBOL, token)
             spot_nq  = get_price(NQ_SYMBOL, token)
+            spot_spx = get_price(SPX_SYMBOL, token)   # SPX cash directo
+            spot_ndx = get_price(NDX_SYMBOL_CASH, token)  # NDX cash directo
 
             # ── Procesar SPY
             spy_data = process_instrument(
@@ -603,6 +607,7 @@ def main():
                 dhp_history_spy, cache_spy
             )
             spy_data["spot_es"]  = spot_es
+            spy_data["spot_spx"] = spot_spx  # SPX cash — precio real
             spy_data["basis_es"] = round(spot_es - spot_spy * SPY_MULTIPLIER, 2) if spot_es > 0 and spot_spy > 0 else 0.0
 
             # ── Procesar QQQ (secuencial — después de SPY)
@@ -611,9 +616,10 @@ def main():
                 dhp_history_qqq, cache_qqq
             )
             qqq_data["spot_nq"]  = spot_nq
-            # Ratio dinamico NDX/QQQ — calculado en tiempo real
-            ndx_spot = spot_nq - 150 if spot_nq > 0 else 0  # NDX cash approx
-            ndx_ratio = round(ndx_spot / spot_qqq, 4) if spot_qqq > 0 and ndx_spot > 0 else 41.0
+            qqq_data["spot_ndx"] = spot_ndx  # NDX cash — precio real
+            # Ratio dinamico NDX/QQQ — usando NDX cash real
+            ndx_cash  = spot_ndx if spot_ndx > 0 else (spot_nq - 150 if spot_nq > 0 else 0)
+            ndx_ratio = round(ndx_cash / spot_qqq, 4) if spot_qqq > 0 and ndx_cash > 0 else 41.0
             qqq_data["ndx_ratio"]   = ndx_ratio
             qqq_data["basis_nq"]    = round(spot_nq - spot_qqq * ndx_ratio, 2) if spot_nq > 0 and spot_qqq > 0 else 0.0
             # Proxy strikes — NDX PAD levels translated to QQQ strikes
