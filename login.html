@@ -186,41 +186,36 @@ input[type=text]::placeholder{color:#2a3a48;letter-spacing:.1em;}
 
   <div class="card">
     <div class="card-title">Enter Access Code</div>
-    <div class="card-sub">Enter your Pro access code below to unlock<br>daily briefings and gamma intelligence.</div>
+    <div class="card-sub" id="card-sub">Enter your Pro access code below to unlock<br>daily briefings and gamma intelligence.</div>
 
-    <div class="input-wrap">
+    <div class="input-wrap" id="input-wrap">
       <input type="text" id="code-input" placeholder="YOUR CODE HERE" maxlength="20" autocomplete="off" />
     </div>
     <div class="error" id="error-msg"></div>
     <button class="btn" id="access-btn">ACCESS BRIEFINGS →</button>
 
-    <hr class="divider">
+    <hr class="divider" id="divider" style="display:none;">
 
-    <div class="access-list">
+    <div class="access-list" id="access-list" style="display:none;">
       <p>Latest Briefings</p>
-      <a class="access-item" href="briefing_16abr2026.html">
+      <a class="access-item" href="briefing_17abr2026.html">
         <div class="access-dot red"></div>
-        <span class="access-label">Pre-Open Briefing · 16 Abr 2026</span>
-        <span class="access-date">HOY</span>
+        <span class="access-label">Pre-Open Briefing · Apr 17, 2026</span>
+        <span class="access-date">LATEST</span>
+      </a>
+      <a class="access-item" href="briefing_16abr2026.html">
+        <div class="access-dot"></div>
+        <span class="access-label">Pre-Open Briefing · Apr 16, 2026</span>
+        <span class="access-date">APR 16</span>
       </a>
       <a class="access-item" href="briefing_15abr2026.html">
         <div class="access-dot"></div>
-        <span class="access-label">Pre-Open Briefing · 15 Abr 2026</span>
-        <span class="access-date">AYER</span>
-      </a>
-      <a class="access-item" href="briefing_13abr2026.html">
-        <div class="access-dot"></div>
-        <span class="access-label">Pre-Open Briefing · 13 Abr 2026</span>
-        <span class="access-date">LUN</span>
-      </a>
-      <a class="access-item" href="briefing_10abr2026.html">
-        <div class="access-dot gold"></div>
-        <span class="access-label">Pre-Open Briefing · 10 Abr 2026</span>
-        <span class="access-date">VIE</span>
+        <span class="access-label">Pre-Open Briefing · Apr 15, 2026</span>
+        <span class="access-date">APR 15</span>
       </a>
     </div>
 
-    <div class="trial-note">Free trial available · use code PADTRIAL</div>
+    <div class="trial-note">Free trial available · <a href="contact.html" style="color:#f0b429;text-decoration:none;">contact us to request access</a></div>
   </div>
 
   <br>
@@ -249,34 +244,27 @@ function grant(code){
   localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
 }
 
-function hasAccess(){
-  try{
-    var d = JSON.parse(localStorage.getItem(STORAGE_KEY));
-    if(!d) return false;
-    if(Date.now() > d.session_expiry) return false;
-    var code = (d.code||'').toUpperCase();
-    if(TRIAL_CODES[code] !== undefined && Date.now() > (d.trial_expiry||0)){
-      localStorage.removeItem(STORAGE_KEY); return false;
-    }
-    return true;
-  }catch(e){ return false; }
+function showBriefings(){
+  document.getElementById('input-wrap').style.display = 'none';
+  document.getElementById('error-msg').style.display = 'none';
+  document.getElementById('card-sub').textContent = 'Access granted. Select a briefing below.';
+  document.getElementById('access-btn').textContent = '✓ ACCESS ACTIVE';
+  document.getElementById('access-btn').style.background = '#00c06a';
+  document.getElementById('access-btn').style.cursor = 'default';
+  document.getElementById('divider').style.display = 'block';
+  document.getElementById('access-list').style.display = 'block';
 }
 
-// If already has access — show welcome
-if(hasAccess()){
-  document.getElementById('access-btn').textContent = '✓ ACCESS ACTIVE — VIEW BRIEFINGS';
-  document.getElementById('access-btn').style.background = '#00c06a';
-  document.getElementById('code-input').style.display = 'none';
-  document.querySelector('.card-sub').textContent = 'Your access is active. Click a briefing below to open it.';
-}
+// IMPORTANT: never auto-show briefings on load — always require code entry
+// Clear any stale session so user must always enter code on login page
+localStorage.removeItem(STORAGE_KEY);
 
 document.getElementById('access-btn').addEventListener('click', function(){
-  if(hasAccess()){ window.location.href = 'briefing_16abr2026.html'; return; }
   var code = document.getElementById('code-input').value;
   if(!code){ document.getElementById('error-msg').textContent = 'Enter your access code.'; return; }
   if(isValid(code)){
     grant(code);
-    window.location.href = 'briefing_16abr2026.html';
+    showBriefings();
   } else {
     document.getElementById('error-msg').textContent = 'Invalid code. Try again.';
     document.getElementById('code-input').value = '';
