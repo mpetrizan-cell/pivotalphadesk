@@ -172,12 +172,12 @@
     </div>
     <div class="snap-div"></div>
     <div class="snap-item">
-      <span class="snap-label">Futures / ETF</span>
+      <span class="snap-label">Cash / ETF</span>
       <span class="snap-value accent" id="snap-spot">--</span>
     </div>
     <div class="snap-item">
-      <span class="snap-label">Cash Index</span>
-      <span class="snap-value" style="color:#ffd54f;font-size:14px" id="snap-cash">--</span>
+      <span class="snap-label">Futures Ref</span>
+      <span class="snap-value" style="color:#6a7d90;font-size:13px" id="snap-cash">--</span>
       <span class="snap-sub" id="snap-basis">Basis: --</span>
     </div>
     <div class="snap-item">
@@ -378,68 +378,82 @@ const INSTRUMENTS = {
 
 function switchInstrument(inst){
   currentInstrument = inst;
-  history = [];
-  sessionHigh = 0; sessionLow = Infinity;
+  // Try to restore history from sessionStorage
+  const restored = loadSessionHistory(inst);
+  if(!restored){
+    history = [];
+    sessionHigh = 0; sessionLow = Infinity;
+  }
   document.querySelectorAll('.itab').forEach((t,i)=>{
     t.classList.toggle('active', ['spx','ndx','spy','qqq'][i]===inst);
   });
   document.getElementById('snap-instrument').textContent = INSTRUMENTS[inst].label;
+  drawPriceGamma();
+  drawSurface();
 }
 
 // ── FETCH LIVE DATA ───────────────────────────────────────────────────────────
 async function fetchData(){
   const cfg = INSTRUMENTS[currentInstrument];
   try {
-    const r = await fetch(cfg.json+'?t='+Date.now());
+    const base = window.location.protocol==='file:'||window.location.hostname==='localhost' ? '' : '';
+    const r = await fetch(base+cfg.json+'?t='+Date.now());
     if(!r.ok) return null;
     const d = await r.json();
 
-    let spot=0, strikes=[], levels={}, dhp=0, dir='NEUTRAL', cashPrice=0, basis=0;
+    let spot=0, futuresPrice=0, strikes=[], levels={}, dhp=0, dir='NEUTRAL', basis=0;
 
     if(currentInstrument==='spx'){
-      spot       = d.spot_es    || 0;
-      cashPrice  = d.spot_spx   || 0;   // SPX cash if available
-      strikes    = d.strikes    || [];
-      levels     = d.levels     || {};
-      dhp        = d.total_dhp  || 0;
-      dir        = d.dhp_direction || 'NEUTRAL';
-      basis      = d.basis_es   || 0;
+      spot         = d.spot_spx  || d.spot_es || 0;  // SPX cash is main price
+      futuresPrice = d.spot_es   || 0;                // ES is reference only
+      strikes      = d.strikes   || [];
+      levels       = d.levels    || {};
+      dhp          = d.total_dhp || 0;
+      dir          = d.dhp_direction || 'NEUTRAL';
+      basis        = d.basis     || (d.spot_es - d.spot_spx) || 0;
     } else if(currentInstrument==='ndx'){
-      spot       = d.spot_ndx   || 0;
-      cashPrice  = d.spot_ndx   || 0;
-      const l0   = d.layers?.['0dte'];
-      strikes    = l0?.strikes  || [];
-      levels     = l0?.levels   || {};
-      dhp        = d.total_dhp  || 0;
-      dir        = d.dhp_direction || 'NEUTRAL';
-      basis      = d.basis      || 0;
+      spot         = d.spot_ndx  || 0;                // NDX cash is main price
+      futuresPrice = d.spot_nq   || 0;                // NQ is reference only
+      const l0     = d.layers?.['0dte'];
+      strikes      = l0?.strikes || [];
+      levels       = l0?.levels  || {};
+      dhp          = d.total_dhp || 0;
+      dir          = d.dhp_direction || 'NEUTRAL';
+      basis        = d.basis     || 0;
     } else {
-      const etf  = d[cfg.etf]   || {};
-      spot       = etf.spot     || 0;
-      cashPrice  = cfg.etf==='spy' ? (etf.spot_spx||0) : (etf.spot_ndx||0);
-      strikes    = etf.strikes  || [];
-      levels     = etf.levels   || {};
-      dhp        = etf.total_dhp|| 0;
-      dir        = etf.dhp_direction || 'NEUTRAL';
-      basis      = cfg.etf==='spy' ? (etf.basis_es||0) : (etf.basis_nq||0);
+      const etf    = d[cfg.etf]  || {};
+      spot         = etf.spot    || 0;                // ETF price IS the main price
+      futuresPrice = cfg.etf==='spy' ? (etf.spot_es||0) : (etf.spot_nq||0);
+      strikes      = etf.strikes || [];
+      levels       = etf.levels  || {};
+      dhp          = etf.total_dhp || 0;
+      dir          = etf.dhp_direction || 'NEUTRAL';
+      basis        = cfg.etf==='spy' ? (etf.basis_es||0) : (etf.basis_nq||0);
     }
 
-    return { spot, cashPrice, strikes, levels, dhp, dir, basis, timestamp: d.timestamp };
+    return { spot, futuresPrice, strikes, levels, dhp, dir, basis, timestamp: d.timestamp };
   } catch(e) { return null; }
 }
 
 // ── UPDATE SNAPSHOT ───────────────────────────────────────────────────────────
 function updateSnapshot(data){
   if(!data || !data.spot) return;
-  const { spot, cashPrice, levels, dhp, dir, basis } = data;
+  const { spot, futuresPrice, levels, dhp, dir, basis } = data;
 
+  // Main price = cash index / ETF
   document.getElementById('snap-spot').textContent = spot.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2});
 
-  if(cashPrice > 0){
-    document.getElementById('snap-cash').textContent = cashPrice.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2});
-  }
-  if(basis){
+  // Futures as reference
+  if(futuresPrice>0){
+    document.getElementById('snap-cash').textContent = futuresPrice.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2});
     document.getElementById('snap-basis').textContent = `Basis: +${parseFloat(basis).toFixed(2)}`;
+  }
+
+  // Session H/L from cash price
+  if(sessionHigh>0 && sessionLow<Infinity){
+    document.getElementById('snap-range').textContent =
+      `L: ${sessionLow.toFixed(2)}  H: ${sessionHigh.toFixed(2)}`;
+    document.getElementById('sb-range').textContent = `${(sessionHigh-sessionLow).toFixed(2)} pts`;
   }
 
   if(levels.call_wall) document.getElementById('snap-cw').textContent = levels.call_wall.toLocaleString();
@@ -564,14 +578,20 @@ function drawPriceGamma(){
     ctx.fillText(latest.spot.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2}), PRICE_RIGHT+5, lastY+4);
   }
 
-  // ── Y AXIS ───────────────────────────────────────────────────────────────
-  ctx.fillStyle = '#2a3a48';
+  // ── Y AXIS — white labels ─────────────────────────────────────────────────
+  ctx.fillStyle = '#c8d4e0';
   ctx.font = '9px IBM Plex Mono';
   ctx.textAlign = 'right';
   const steps = 8;
   for(let i=0; i<=steps; i++){
     const p = minP + (maxP-minP)*(i/steps);
     const y = toY(p);
+    // tick line
+    ctx.beginPath();
+    ctx.strokeStyle = 'rgba(200,212,224,0.15)';
+    ctx.lineWidth = 0.5;
+    ctx.moveTo(0, y); ctx.lineTo(PRICE_RIGHT, y);
+    ctx.stroke();
     ctx.fillText(p.toFixed(0), W-4, y+3);
   }
 
@@ -701,8 +721,8 @@ function drawSurface(){
     }
   }
 
-  // Y axis labels (strikes)
-  ctx.fillStyle = '#3a4a58';
+  // Y axis labels — white
+  ctx.fillStyle = '#c8d4e0';
   ctx.font = '8px IBM Plex Mono';
   ctx.textAlign = 'right';
   const labelEvery = Math.max(1, Math.floor(nStrikes/10));
@@ -713,8 +733,8 @@ function drawSurface(){
     }
   });
 
-  // X axis labels (time)
-  ctx.fillStyle = '#3a4a58';
+  // X axis labels — white
+  ctx.fillStyle = '#c8d4e0';
   ctx.font = '8px IBM Plex Mono';
   ctx.textAlign = 'center';
   const timeEvery = Math.max(1, Math.floor(nTimes/6));
@@ -819,20 +839,29 @@ function generateDemoHistory(){
 async function tick(){
   const data = await fetchData();
   if(data && data.spot > 0){
-    history.push({
-      ts:        Date.now(),
-      spot:      data.spot,
-      cashPrice: data.cashPrice,
-      strikes:   data.strikes,
-      levels:    data.levels,
-      dhp:       data.dhp,
-      dir:       data.dir,
-      basis:     data.basis,
-      timestamp: data.timestamp,
-    });
+    const snap = {
+      ts:           Date.now(),
+      spot:         data.spot,
+      futuresPrice: data.futuresPrice,
+      strikes:      data.strikes,
+      levels:       data.levels,
+      dhp:          data.dhp,
+      dir:          data.dir,
+      basis:        data.basis,
+      timestamp:    data.timestamp,
+    };
+    history.push(snap);
     if(history.length > MAX_SNAPS) history.shift();
     if(data.spot > sessionHigh) sessionHigh = data.spot;
     if(data.spot < sessionLow)  sessionLow  = data.spot;
+
+    // Persist to sessionStorage — survives tab switches, not page reload
+    try {
+      const key = 'gaia_surface_'+currentInstrument;
+      const save = { history: history.slice(-MAX_SNAPS), sessionHigh, sessionLow };
+      sessionStorage.setItem(key, JSON.stringify(save));
+    } catch(e){}
+
     updateSnapshot(data);
     document.getElementById('sb-status').textContent = 'LIVE';
   } else {
@@ -840,6 +869,33 @@ async function tick(){
   }
   drawPriceGamma();
   drawSurface();
+}
+
+// ── LOAD FROM SESSION STORAGE ─────────────────────────────────────────────────
+function loadSessionHistory(inst){
+  try {
+    const key = 'gaia_surface_'+inst;
+    const saved = sessionStorage.getItem(key);
+    if(saved){
+      const s = JSON.parse(saved);
+      history = s.history || [];
+      sessionHigh = s.sessionHigh || 0;
+      sessionLow  = s.sessionLow  || Infinity;
+      document.getElementById('snap-count').textContent = history.length;
+      document.getElementById('sb-snaps').textContent   = history.length;
+      if(history.length > 0){
+        const latest = history[history.length-1];
+        updateSnapshot({
+          spot: latest.spot, futuresPrice: latest.futuresPrice,
+          levels: latest.levels, dhp: latest.dhp,
+          dir: latest.dir, basis: latest.basis,
+          timestamp: latest.timestamp
+        });
+      }
+      return true;
+    }
+  } catch(e){}
+  return false;
 }
 
 // ── CONTROLS ──────────────────────────────────────────────────────────────────
@@ -888,14 +944,17 @@ window.addEventListener('resize', ()=>{
 let demoLoaded = false;
 
 async function start(){
+  // Try to restore history first
+  loadSessionHistory(currentInstrument);
+  drawPriceGamma();
+  drawSurface();
+
   const data = await fetchData();
   if(data && data.spot > 0){
-    // Live data available
     document.getElementById('sb-status').textContent = 'LIVE';
     tick();
   } else {
-    // No live data — load demo
-    if(!demoLoaded){
+    if(history.length === 0){
       generateDemoHistory();
       demoLoaded = true;
       document.getElementById('sb-status').textContent = 'DEMO';
@@ -906,14 +965,13 @@ async function start(){
   setInterval(async ()=>{
     const d = await fetchData();
     if(d && d.spot > 0){
-      // Live data arrived — clear demo and switch to live
       if(demoLoaded){
         history = [];
         sessionHigh = 0; sessionLow = Infinity;
         demoLoaded = false;
       }
       tick();
-    } else if(!demoLoaded) {
+    } else if(!demoLoaded){
       drawPriceGamma();
       drawSurface();
     }
