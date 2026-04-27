@@ -423,9 +423,13 @@ function updateUI(spy,cross){
 
 async function fetchLive(){
   try{
-    const r=await fetch('gaia_etf_live.json?t='+Date.now());if(!r.ok)return;
+    // Works both locally and on Railway
+    const url = window.location.hostname === 'localhost' || window.location.protocol === 'file:'
+      ? 'gaia_etf_live.json?t='+Date.now()
+      : '/gaia_etf_live.json?t='+Date.now();
+    const r=await fetch(url);if(!r.ok)return;
     const d=await r.json();
-    if(d.spy)updateUI(d.spy,d.cross);
+    if(d.spy&&d.spy.strikes&&d.spy.strikes.length>0)updateUI(d.spy,d.cross);
     if(d.timestamp)document.getElementById('b-ts').textContent=d.timestamp+' UTC';
     document.getElementById('b-status').textContent='LIVE';
   }catch(e){document.getElementById('b-status').textContent='LOCAL';}
