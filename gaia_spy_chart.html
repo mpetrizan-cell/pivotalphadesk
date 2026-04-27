@@ -347,10 +347,12 @@ function scanIV(strikes,spot,dir){
 }
 
 function updateUI(spy,cross){
-  if(!spy)return;
+  if(!spy||!spy.spot)return;
   const spot=spy.spot||0;const lv=spy.levels||{};const dhp=spy.total_dhp||0;
   const dir=spy.dhp_direction||'NEUTRAL';
-  // SPX cash — directo del JSON
+  const dirMap={'ACCELERATING_BULL':'dir-acc-bull','BUILDING_BULL':'dir-bld-bull','NEUTRAL':'dir-neutral','BUILDING_BEAR':'dir-bld-bear','ACCELERATING_BEAR':'dir-acc-bear'};
+
+  // SPX cash
   document.getElementById('snap-spy').textContent=spot.toFixed(2);
   const spxCash = spy.spot_spx || 0;
   if(spxCash>0){
