@@ -464,9 +464,12 @@ function updateUI(qqq,cross){
 
 async function fetchLive(){
   try{
-    const r=await fetch('gaia_etf_live.json?t='+Date.now());if(!r.ok)return;
+    const url = window.location.hostname==='localhost'||window.location.protocol==='file:'
+      ? 'gaia_etf_live.json?t='+Date.now()
+      : '/gaia_etf_live.json?t='+Date.now();
+    const r=await fetch(url);if(!r.ok)return;
     const d=await r.json();
-    if(d.qqq)updateUI(d.qqq,d.cross);
+    if(d.qqq&&d.qqq.strikes&&d.qqq.strikes.length>0)updateUI(d.qqq,d.cross);
     if(d.timestamp)document.getElementById('b-ts').textContent=d.timestamp+' UTC';
     document.getElementById('b-status').textContent='LIVE';
   }catch(e){document.getElementById('b-status').textContent='LOCAL';}
