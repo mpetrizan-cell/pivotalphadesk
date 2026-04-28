@@ -1,0 +1,738 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PivotAlphaDesk · GAIA Briefing · 28 Apr 2026</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700&family=Share+Tech+Mono&display=swap');
+  :root {
+    --bg:#0a0c10;--bg2:#0d1117;--bg3:#111820;--border:#1e2d3d;--border2:#243447;
+    --text:#c9d1d9;--text2:#8b949e;--text3:#6e7681;
+    --green:#3fb950;--green2:#26a641;--green-dim:#1a3a22;
+    --orange:#f0883e;--orange-dim:#3d2200;--red:#f85149;--red-dim:#3d0f0d;
+    --blue:#58a6ff;--blue-dim:#0d2040;--yellow:#e3b341;--yellow-dim:#2d2000;
+    --cyan:#39c5cf;--purple:#bc8cff;--white:#f0f6fc;--pad-orange:#ff8c42;
+    --warn:#ff4466;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  body{background:var(--bg);color:var(--text);font-family:'JetBrains Mono',monospace;font-size:12px;line-height:1.5;}
+
+  .terminal-bar{background:#0d1117;border-bottom:1px solid var(--border);padding:6px 16px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;}
+  .terminal-bar .logo{color:var(--white);font-weight:700;font-size:13px;letter-spacing:.05em;}
+  .terminal-bar .logo span{color:var(--pad-orange);}
+  .terminal-bar .ts{color:var(--text3);font-size:11px;}
+  .terminal-bar .ts .date{color:var(--orange);font-weight:600;}
+  .terminal-bar .ts .time{color:var(--cyan);}
+  .terminal-bar .live-dot{display:flex;align-items:center;gap:6px;color:var(--green);font-size:11px;}
+  .dot{width:7px;height:7px;border-radius:50%;background:var(--green);animation:pulse 2s infinite;}
+  @keyframes pulse{0%,100%{opacity:1;}50%{opacity:.3;}}
+
+  /* CATALYST BANNER */
+  .catalyst-banner{background:linear-gradient(90deg,#1a0008,#2d0010,#1a0008);border-bottom:2px solid var(--warn);border-top:1px solid rgba(255,68,102,0.3);padding:8px 16px;text-align:center;color:var(--warn);font-weight:700;font-size:11px;letter-spacing:.1em;}
+  .catalyst-banner span{color:var(--white);}
+  .catalyst-banner .crude{color:#f0a050;}
+
+  .main{max-width:1400px;margin:0 auto;padding:16px;}
+
+  .section-header{display:flex;align-items:center;gap:10px;padding:8px 12px;background:var(--bg3);border-left:3px solid var(--pad-orange);border-bottom:1px solid var(--border);margin-bottom:12px;margin-top:20px;}
+  .section-header .num{color:var(--pad-orange);font-weight:700;font-size:10px;}
+  .section-header .title{color:var(--white);font-weight:700;font-size:13px;letter-spacing:.08em;text-transform:uppercase;}
+  .section-header .sub{color:var(--text3);font-size:10px;margin-left:auto;}
+
+  /* SNAPSHOT */
+  .snapshot-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:12px;}
+  .snap-card{background:var(--bg3);border:1px solid var(--border);border-radius:4px;padding:12px;position:relative;overflow:hidden;}
+  .snap-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;}
+  .snap-card.es::before{background:var(--blue);}
+  .snap-card.nq::before{background:var(--purple);}
+  .snap-card.cl::before{background:var(--yellow);}
+  .snap-card.spx::before{background:var(--green);}
+  .snap-card .instrument{font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:.1em;margin-bottom:4px;}
+  .snap-card .spot{font-size:22px;font-weight:700;color:var(--white);margin-bottom:8px;}
+  .snap-card .spot.down{color:var(--red);}
+  .snap-card .spot.up{color:var(--green);}
+  .snap-card .rows{display:flex;flex-direction:column;gap:3px;}
+  .snap-card .row{display:flex;justify-content:space-between;font-size:10px;}
+  .snap-card .row .lbl{color:var(--text3);}
+  .snap-card .row .val{color:var(--text2);}
+  .snap-card .row .val.above{color:var(--green);}
+  .snap-card .row .val.below{color:var(--red);}
+  .snap-card .row .val.near{color:var(--yellow);}
+  .rf-badge{display:inline-block;padding:1px 6px;border-radius:2px;font-size:10px;font-weight:700;margin-top:6px;}
+  .rf-pos{background:var(--green-dim);color:var(--green);}
+  .rf-neg{background:var(--red-dim);color:var(--red);}
+  .rf-warn{background:var(--orange-dim);color:var(--orange);}
+
+  /* CONTEXT ALERT */
+  .context-alert{background:rgba(248,81,73,0.07);border:1px solid rgba(248,81,73,0.3);border-radius:4px;padding:12px 14px;margin-bottom:14px;font-size:11px;color:var(--text2);line-height:1.8;}
+  .context-alert .ctx-title{color:var(--red);font-weight:700;font-size:12px;margin-bottom:6px;text-transform:uppercase;letter-spacing:.08em;}
+  .context-alert strong{color:var(--white);}
+
+  /* GAIA PANEL */
+  .gaia-panel{background:var(--bg3);border:1px solid var(--border);border-left:3px solid var(--cyan);border-radius:4px;padding:14px;margin-bottom:14px;}
+  .gaia-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:12px;margin-bottom:12px;}
+  .gaia-metric{text-align:center;}
+  .gaia-metric .lbl{font-size:9px;color:var(--text3);text-transform:uppercase;letter-spacing:.1em;margin-bottom:4px;}
+  .gaia-metric .val{font-size:16px;font-weight:700;color:var(--white);}
+  .gaia-metric .val.neutral{color:var(--yellow);}
+  .gaia-metric .val.call{color:var(--red);}
+  .gaia-metric .val.put{color:var(--green);}
+  .gaia-metric .val.node{color:var(--purple);}
+  .gaia-metric .val.flip{color:var(--orange);}
+  .gaia-note{background:rgba(57,197,207,0.06);border:1px solid rgba(57,197,207,0.15);border-radius:3px;padding:8px 12px;font-size:11px;color:var(--text2);}
+  .gaia-note strong{color:var(--cyan);}
+
+  /* INSTRUMENTS */
+  .instrument-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px;}
+  .inst-card{background:var(--bg3);border:1px solid var(--border);border-radius:4px;padding:14px;}
+  .inst-card .inst-header{display:flex;align-items:center;gap:8px;margin-bottom:10px;padding-bottom:8px;border-bottom:1px solid var(--border);}
+  .inst-tag{padding:2px 8px;border-radius:3px;font-weight:700;font-size:11px;text-transform:uppercase;}
+  .tag-es{background:var(--blue-dim);color:var(--blue);}
+  .tag-nq{background:rgba(188,140,255,.15);color:var(--purple);}
+  .tag-cl{background:var(--yellow-dim);color:var(--yellow);}
+  .tag-spx{background:var(--green-dim);color:var(--green);}
+  .inst-spot{font-size:18px;font-weight:700;color:var(--white);margin-left:auto;}
+  .inst-spot.down{color:var(--red);}
+  .inst-spot.up{color:var(--green);}
+
+  .pad-table{width:100%;border-collapse:collapse;margin-bottom:10px;}
+  .pad-table th{text-align:left;color:var(--text3);font-size:9px;text-transform:uppercase;letter-spacing:.1em;padding:3px 6px;border-bottom:1px solid var(--border);}
+  .pad-table td{padding:4px 6px;font-size:11px;border-bottom:1px solid rgba(30,45,61,.5);}
+  .pad-table tr:last-child td{border-bottom:none;}
+  .zone-call{color:var(--red);}
+  .zone-flip{color:var(--orange);font-weight:700;}
+  .zone-put{color:var(--green);}
+
+  .tpo-row{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:8px;}
+  .tpo-chip{padding:2px 8px;border-radius:2px;font-size:10px;background:var(--bg2);border:1px solid var(--border);}
+  .tpo-chip .lbl{color:var(--text3);}
+  .tpo-chip .val{color:var(--text2);}
+
+  .plan-box{background:var(--bg2);border:1px solid var(--border2);border-radius:3px;padding:10px;font-size:11px;color:var(--text2);line-height:1.7;}
+  .plan-box .plan-title{color:var(--white);font-weight:700;font-size:11px;margin-bottom:6px;text-transform:uppercase;letter-spacing:.05em;}
+  .plan-box ul{list-style:none;}
+  .plan-box ul li::before{content:'▸ ';color:var(--pad-orange);}
+  .plan-box ul li.bull::before{content:'🟢 ';}
+  .plan-box ul li.bear::before{content:'🔴 ';}
+  .plan-box ul li.key::before{content:'📍 ';}
+  .plan-box ul li.warn::before{content:'⚠️ ';}
+  .plan-box ul li.crude::before{content:'🛢️ ';}
+
+  /* EDGE */
+  .edge-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:12px;}
+  .scenario-card{border-radius:4px;padding:12px;border:1px solid;}
+  .scenario-card.base{background:rgba(57,197,207,.05);border-color:rgba(57,197,207,.25);}
+  .scenario-card.bull{background:rgba(63,185,80,.05);border-color:rgba(63,185,80,.25);}
+  .scenario-card.bear{background:rgba(248,81,73,.05);border-color:rgba(248,81,73,.25);}
+  .sc-header{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;margin-bottom:6px;}
+  .sc-base{color:var(--cyan);}
+  .sc-bull{color:var(--green);}
+  .sc-bear{color:var(--red);}
+  .scenario-card .pct{font-size:24px;font-weight:700;margin-bottom:6px;}
+  .scenario-card .desc{font-size:10px;color:var(--text2);line-height:1.6;}
+  .scenario-card .levels{margin-top:8px;font-size:10px;color:var(--text3);}
+
+  /* CALENDAR */
+  .cal-table{width:100%;border-collapse:collapse;}
+  .cal-table th{text-align:left;color:var(--text3);font-size:9px;text-transform:uppercase;letter-spacing:.1em;padding:5px 10px;background:var(--bg2);border-bottom:1px solid var(--border);}
+  .cal-table td{padding:6px 10px;font-size:11px;border-bottom:1px solid rgba(30,45,61,.4);color:var(--text2);}
+  .cal-table tr:last-child td{border-bottom:none;}
+  .cal-table tr:hover td{background:rgba(255,255,255,.02);}
+  .imp-high{color:var(--red);font-weight:700;}
+  .imp-med{color:var(--yellow);}
+  .imp-low{color:var(--text3);}
+  .pad-note{color:var(--cyan);font-size:10px;}
+  .today-row td{background:rgba(248,81,73,.04);}
+
+  /* EARNINGS */
+  .earnings-table{width:100%;border-collapse:collapse;}
+  .earnings-table th{text-align:left;color:var(--text3);font-size:9px;text-transform:uppercase;letter-spacing:.1em;padding:5px 10px;background:var(--bg2);border-bottom:1px solid var(--border);}
+  .earnings-table td{padding:6px 10px;font-size:11px;border-bottom:1px solid rgba(30,45,61,.4);color:var(--text2);}
+  .bmo{color:var(--yellow);}
+  .amc{color:var(--purple);}
+  .mega{color:var(--orange);font-weight:700;}
+  .today-earn td{background:rgba(240,136,62,.06);}
+
+  /* TWITTER */
+  .tweet-box{background:#050d14;border:1px solid #1d9bf0;border-radius:8px;padding:16px;margin-bottom:12px;}
+  .tweet-header{display:flex;align-items:center;gap:10px;margin-bottom:12px;}
+  .tweet-avatar{width:36px;height:36px;background:var(--pad-orange);border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:14px;color:var(--bg);}
+  .tweet-name{color:var(--white);font-weight:700;font-size:13px;}
+  .tweet-handle{color:var(--text3);font-size:11px;}
+  .tweet-label{margin-left:auto;padding:2px 8px;background:rgba(29,155,240,.15);border:1px solid rgba(29,155,240,.3);border-radius:10px;font-size:10px;color:#1d9bf0;}
+  .tweet-content{font-family:'Share Tech Mono',monospace;font-size:12px;color:var(--text);line-height:1.8;white-space:pre-wrap;background:rgba(255,255,255,.02);border:1px solid var(--border);border-radius:4px;padding:12px;}
+  .tweet-content .hashtag{color:#1d9bf0;}
+  .tweet-time{margin-top:10px;font-size:10px;color:var(--text3);}
+
+  .synth-box{background:var(--bg3);border:1px solid var(--border2);border-left:3px solid var(--pad-orange);border-radius:4px;padding:14px;margin-bottom:12px;font-size:11px;color:var(--text2);line-height:1.8;}
+  .synth-box strong{color:var(--white);}
+
+  .divider{height:1px;background:linear-gradient(90deg,transparent,var(--border),transparent);margin:16px 0;}
+
+  .footer{text-align:center;padding:16px;border-top:1px solid var(--border);color:var(--text3);font-size:10px;margin-top:24px;}
+  .footer span{color:var(--pad-orange);}
+</style>
+</head>
+<body>
+
+<!-- TERMINAL BAR -->
+<div class="terminal-bar">
+  <div class="logo">Pivot<span>Alpha</span>Desk · GAIA Framework</div>
+  <div class="ts">
+    <span class="date">MARTES · 28 APR 2026</span>
+    &nbsp;|&nbsp;
+    <span class="time">08:08 ET</span>
+    &nbsp;|&nbsp;
+    PRE-MARKET SESSION
+  </div>
+  <div class="live-dot"><div class="dot"></div>LIVE</div>
+</div>
+
+<!-- CATALYST BANNER -->
+<div class="catalyst-banner">
+  ⚠️ &nbsp;<span>RISK-OFF · IRAN TALKS COLAPSAN</span>&nbsp; — Trump cancela negociaciones · &nbsp;<span class="crude">WTI +2% · CL 100.86</span>&nbsp; · ES -0.14% · NQ -0.33% · <span>Sesgo BAJISTA pre-apertura</span>&nbsp; ⚠️
+</div>
+
+<div class="main">
+
+  <!-- SECTION 1: SNAPSHOT -->
+  <div class="section-header">
+    <span class="num">01</span>
+    <span class="title">Market Snapshot — Pre-Market 08:08 ET</span>
+    <span class="sub">ESM26 · NQM26 · CLK26 · SPX CBOE</span>
+  </div>
+
+  <!-- CATALYST CONTEXT -->
+  <div class="context-alert">
+    <div class="ctx-title">🛢️ CATALIZADOR DEL DÍA — Iran Risk-Off + Crude Oil Spike</div>
+    <strong>Trump canceló el fin de semana</strong> las negociaciones con Irán, declarando que Irán "ofreció mucho, pero no fue suficiente". 
+    Irán respondió que no entrará en "negociaciones impuestas bajo amenazas". 
+    Resultado: <strong>WTI crude +2%</strong> en pre-market — presión directa a la baja en ES/NQ vía inflación y geopolítica. 
+    ES cae a <strong>7158.25</strong> (bajo EMA200 en 7170) · NQ cae a <strong>27087</strong> (bajo EMA200 en 27200). 
+    CL sube a <strong>100.86</strong> — exactamente en Gamma Flip/Pin PAD · RF +24 = momentum alcista en crude. 
+    <strong>Contexto añadido hoy:</strong> CB Consumer Confidence 10:00 ET + ADP 08:15 ET — datos clave para confirmar o revertir el sesgo.
+  </div>
+
+  <div class="snapshot-grid">
+    <!-- ES -->
+    <div class="snap-card es">
+      <div class="instrument">ES · ESM26 · Jun 2026</div>
+      <div class="spot down">7158.25</div>
+      <div class="rows">
+        <div class="row"><span class="lbl">EMA200</span><span class="val below">7170.00 · BAJO -11.75 pts</span></div>
+        <div class="row"><span class="lbl">VWAP</span><span class="val below">7190.00 · BAJO</span></div>
+        <div class="row"><span class="lbl">VAH</span><span class="val">7220.00</span></div>
+        <div class="row"><span class="lbl">POC</span><span class="val">7205.25</span></div>
+        <div class="row"><span class="lbl">VAL</span><span class="val">7180.00</span></div>
+        <div class="row"><span class="lbl">RF</span><span class="val below">-13 (Negativo)</span></div>
+      </div>
+      <span class="rf-badge rf-neg">⚠ BAJO EMA200</span>
+    </div>
+    <!-- NQ -->
+    <div class="snap-card nq">
+      <div class="instrument">NQ · NQM26 · Jun 2026</div>
+      <div class="spot down">27087.00</div>
+      <div class="rows">
+        <div class="row"><span class="lbl">EMA200</span><span class="val below">27200.00 · BAJO -113 pts</span></div>
+        <div class="row"><span class="lbl">VWAP</span><span class="val below">27300.00 · BAJO</span></div>
+        <div class="row"><span class="lbl">VAH</span><span class="val">27500.00</span></div>
+        <div class="row"><span class="lbl">POC</span><span class="val">27418.50</span></div>
+        <div class="row"><span class="lbl">VAL</span><span class="val">27300.00</span></div>
+        <div class="row"><span class="lbl">RF</span><span class="val below">-22 (Muy Negativo)</span></div>
+      </div>
+      <span class="rf-badge rf-neg">⚠ BAJO EMA200</span>
+    </div>
+    <!-- CL -->
+    <div class="snap-card cl">
+      <div class="instrument">CL · CLK26 · May 2026</div>
+      <div class="spot up">100.86</div>
+      <div class="rows">
+        <div class="row"><span class="lbl">EMA200</span><span class="val above">95.00 · +5.86 pts</span></div>
+        <div class="row"><span class="lbl">VWAP</span><span class="val above">99.00 · SOBRE</span></div>
+        <div class="row"><span class="lbl">VAH</span><span class="val above">102.00 · (GP/Flip)</span></div>
+        <div class="row"><span class="lbl">POC</span><span class="val">100.95</span></div>
+        <div class="row"><span class="lbl">VAL</span><span class="val">99.40</span></div>
+        <div class="row"><span class="lbl">RF</span><span class="val above">+24 (Muy Positivo)</span></div>
+      </div>
+      <span class="rf-badge rf-pos">🛢️ IRAN SPIKE</span>
+    </div>
+    <!-- SPX -->
+    <div class="snap-card spx">
+      <div class="instrument">SPX · CBOE · Cash</div>
+      <div class="spot down">7174.01</div>
+      <div class="rows">
+        <div class="row"><span class="lbl">EMA200</span><span class="val near">N/D · ~7075</span></div>
+        <div class="row"><span class="lbl">VAH/POC/VAL</span><span class="val near">N/D hoy</span></div>
+        <div class="row"><span class="lbl">Call Wall dom.</span><span class="val">7275</span></div>
+        <div class="row"><span class="lbl">Gamma Flip</span><span class="val near">7000</span></div>
+        <div class="row"><span class="lbl">Tactical Anchor</span><span class="val">7150</span></div>
+        <div class="row"><span class="lbl">RF</span><span class="val near">N/D</span></div>
+      </div>
+      <span class="rf-badge rf-warn">ZONA CRÍTICA</span>
+    </div>
+  </div>
+
+  <!-- SECTION 2: GAIA DHP -->
+  <div class="section-header">
+    <span class="num">02</span>
+    <span class="title">GAIA DHP — Estado Pre-Open</span>
+    <span class="sub">GEX Structure · 08:08 ET · NEUTRAL correcto</span>
+  </div>
+
+  <div class="gaia-panel">
+    <div class="gaia-grid">
+      <div class="gaia-metric"><div class="lbl">DHP Total</div><div class="val neutral">0M</div></div>
+      <div class="gaia-metric"><div class="lbl">Regime</div><div class="val neutral">NEUTRAL</div></div>
+      <div class="gaia-metric"><div class="lbl">Momentum</div><div class="val neutral">NEUTRAL</div></div>
+      <div class="gaia-metric"><div class="lbl">Call Wall (ES)</div><div class="val call">7200</div></div>
+      <div class="gaia-metric"><div class="lbl">Put Wall (ES)</div><div class="val put">7000</div></div>
+      <div class="gaia-metric"><div class="lbl">Gamma Flip (ES)</div><div class="val flip">7250</div></div>
+    </div>
+    <div class="gaia-grid" style="margin-top:8px">
+      <div class="gaia-metric"><div class="lbl">ES Spot</div><div class="val" style="color:var(--red)">7158.25</div></div>
+      <div class="gaia-metric"><div class="lbl">vs EMA200</div><div class="val" style="color:var(--red)">-11.75 BAJO</div></div>
+      <div class="gaia-metric"><div class="lbl">vs Put Wall</div><div class="val" style="color:var(--yellow)">+158 sobre</div></div>
+      <div class="gaia-metric"><div class="lbl">CL Spot</div><div class="val" style="color:var(--yellow)">100.86</div></div>
+      <div class="gaia-metric"><div class="lbl">CL vs GP/Flip</div><div class="val" style="color:var(--yellow)">EN 102 · bajo</div></div>
+      <div class="gaia-metric"><div class="lbl">Catalizador</div><div class="val" style="color:var(--red);font-size:11px">IRAN RISK</div></div>
+    </div>
+    <div class="gaia-note">
+      <strong>PRE-OPEN NEUTRAL ✓ correcto.</strong> La caída de ES/NQ es exógena — catalizador geopolítico (Iran), no cambio de estructura gamma. 
+      ES ahora <strong>bajo EMA200 (7170)</strong> por primera vez en varios días — nivel crítico para el sesgo del día. 
+      GAIA mostrará si dealers acumulan BLD.BEAR en apertura o si el precio se recupera al zone 7170–7190. 
+      Nivel clave a vigilar en apertura: ¿puede ES <strong>recapturar EMA200 (7170)</strong> o confirma breakdown?
+    </div>
+  </div>
+
+  <!-- SECTION 3: INSTRUMENTS -->
+  <div class="section-header">
+    <span class="num">03</span>
+    <span class="title">Análisis por Instrumento — TPO + PAD</span>
+    <span class="sub">Risk-Off Day · Iran + Crude Oil Catalyst</span>
+  </div>
+
+  <div class="instrument-grid">
+    <!-- ES -->
+    <div class="inst-card">
+      <div class="inst-header">
+        <span class="inst-tag tag-es">ES · ESM26</span>
+        <span style="color:var(--red);font-size:10px;">DAMPENED · BAJO EMA200 ⚠</span>
+        <span class="inst-spot down">7158.25</span>
+      </div>
+      <div class="tpo-row">
+        <div class="tpo-chip"><span class="lbl">VAH </span><span class="val">7220.00</span></div>
+        <div class="tpo-chip"><span class="lbl">POC </span><span class="val">7205.25</span></div>
+        <div class="tpo-chip"><span class="lbl">VAL </span><span class="val">7180.00</span></div>
+        <div class="tpo-chip"><span class="lbl">EMA200 </span><span class="val" style="color:var(--red)">7170.00</span></div>
+        <div class="tpo-chip"><span class="lbl">VWAP </span><span class="val">7190.00</span></div>
+        <div class="tpo-chip"><span class="lbl">RF </span><span class="val" style="color:var(--red)">-13</span></div>
+      </div>
+      <table class="pad-table">
+        <tr><th>Zona</th><th>Strike</th><th>Label</th><th>Tipo</th></tr>
+        <tr><td class="zone-call">▲ GC3</td><td>7300</td><td>Gamma Ceiling</td><td style="color:var(--green)">Contención</td></tr>
+        <tr><td class="zone-call">▲ GC2</td><td>7250</td><td>Call Wall / Flip</td><td style="color:var(--yellow)">Mixto · NÚCLEO</td></tr>
+        <tr><td class="zone-call">▲ GC1</td><td>7200</td><td>Call Wall</td><td style="color:var(--yellow)">Mixto</td></tr>
+        <tr><td style="color:var(--cyan)">📍 HOY</td><td>7170</td><td>EMA200 · Pivote</td><td style="color:var(--cyan)">NIVEL CRÍTICO</td></tr>
+        <tr><td class="zone-put">▼ GF1</td><td>7150</td><td>Tactical Anchor</td><td style="color:var(--text3)">Aceleración</td></tr>
+        <tr><td class="zone-put">▼ GF2</td><td>7100</td><td>Gamma Floor</td><td style="color:var(--text3)">Aceleración</td></tr>
+        <tr><td class="zone-put">▼ GF3</td><td>7000</td><td>Put Wall</td><td style="color:var(--green)">Contención fuerte</td></tr>
+        <tr><td class="zone-put">▼ EA</td><td>7050</td><td>Tactical Floor</td><td style="color:var(--green)">Contención</td></tr>
+      </table>
+      <div class="plan-box">
+        <div class="plan-title">📋 Plan de Trading ES</div>
+        <ul>
+          <li class="warn">SPOT 7158 BAJO EMA200 (7170) — sesgo BAJISTA de apertura</li>
+          <li class="key">Nivel de reversión clave: <strong>recaptura de 7170 (EMA200)</strong></li>
+          <li class="bull">Bull: cierre 5min sobre 7170 → test 7180 (VAL) → 7190 (VWAP) → 7205 (POC)</li>
+          <li class="bear">Bear: fallo en 7170 + DHP BLD.BEAR → 7150 (TA) → 7100 (GF2) → 7050</li>
+          <li class="warn">Breakdown confirmado: cierre bajo 7150 con DHP ACC.BEAR</li>
+          <li class="key">Put Wall 7000 = soporte estructural último — lejos pero vigile si macro empeora</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- NQ -->
+    <div class="inst-card">
+      <div class="inst-header">
+        <span class="inst-tag tag-nq">NQ · NQM26</span>
+        <span style="color:var(--red);font-size:10px;">BAJO EMA200 · RF -22 ⚠</span>
+        <span class="inst-spot down">27087.00</span>
+      </div>
+      <div class="tpo-row">
+        <div class="tpo-chip"><span class="lbl">VAH </span><span class="val">27500.00</span></div>
+        <div class="tpo-chip"><span class="lbl">POC </span><span class="val">27418.50</span></div>
+        <div class="tpo-chip"><span class="lbl">VAL </span><span class="val">27300.00</span></div>
+        <div class="tpo-chip"><span class="lbl">EMA200 </span><span class="val" style="color:var(--red)">27200.00</span></div>
+        <div class="tpo-chip"><span class="lbl">VWAP </span><span class="val" style="color:var(--red)">27300.00</span></div>
+        <div class="tpo-chip"><span class="lbl">RF </span><span class="val" style="color:var(--red)">-22</span></div>
+      </div>
+      <table class="pad-table">
+        <tr><th>Zona</th><th>Strike</th><th>Label</th><th>Tipo</th></tr>
+        <tr><td class="zone-call">▲ GC3</td><td>27700</td><td>Call Wall máx.</td><td style="color:var(--green)">Contención</td></tr>
+        <tr><td class="zone-call">▲ GC2</td><td>27500</td><td>Call Wall 2</td><td style="color:var(--green)">Contención</td></tr>
+        <tr><td class="zone-call">▲ GC1</td><td>27400</td><td>Call Wall / TA</td><td style="color:var(--yellow)">Mixto</td></tr>
+        <tr><td style="color:var(--red)">⚠ EMA200</td><td>27200</td><td>EMA200 · Roto</td><td style="color:var(--red)">BREAKDOWN</td></tr>
+        <tr><td class="zone-flip">◆ GP/Flip</td><td>27100</td><td>Put Wall / Flip</td><td style="color:var(--yellow)">Zona control</td></tr>
+        <tr><td class="zone-put">▼ GF2</td><td>27050</td><td>Gamma Floor 2</td><td style="color:var(--text3)">Aceleración</td></tr>
+        <tr><td class="zone-put">▼ GF3/EA</td><td>27025</td><td>Emergency Anchor</td><td style="color:var(--green)">Soporte</td></tr>
+      </table>
+      <div class="plan-box">
+        <div class="plan-title">📋 Plan de Trading NQ</div>
+        <ul>
+          <li class="warn">SPOT 27087 — BAJO EMA200 (27200) Y BAJO VAL (27300) — estructura rota</li>
+          <li class="warn">RF -22 = momentum bajista fuerte · No operar long sin confirmación</li>
+          <li class="key">NQ en zona GP/Flip (27040–27100) — soporte critico actual</li>
+          <li class="bull">Bull (solo si): recaptura DHP BLD.BULL + hold sobre 27100 → 27200 (EMA200)</li>
+          <li class="bear">Bear: perder 27040 (GP/Flip) con DHP ACC.BEAR → 27025 → expansión rápida</li>
+          <li class="warn">NQ más vulnerable que ES hoy — evitar longs agresivos sin data macro</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="instrument-grid">
+    <!-- CL -->
+    <div class="inst-card">
+      <div class="inst-header">
+        <span class="inst-tag tag-cl">CL · CLK26</span>
+        <span style="color:var(--yellow);font-size:10px;">🛢️ IRAN SPIKE · RF +24</span>
+        <span class="inst-spot up">100.86</span>
+      </div>
+      <div class="tpo-row">
+        <div class="tpo-chip"><span class="lbl">VAH </span><span class="val">102.00</span></div>
+        <div class="tpo-chip"><span class="lbl">POC </span><span class="val">100.95</span></div>
+        <div class="tpo-chip"><span class="lbl">VAL </span><span class="val">99.40</span></div>
+        <div class="tpo-chip"><span class="lbl">EMA200 </span><span class="val" style="color:var(--green)">95.00</span></div>
+        <div class="tpo-chip"><span class="lbl">VWAP </span><span class="val" style="color:var(--green)">99.00</span></div>
+        <div class="tpo-chip"><span class="lbl">RF </span><span class="val" style="color:var(--green)">+24</span></div>
+      </div>
+      <table class="pad-table">
+        <tr><th>Zona</th><th>Strike</th><th>Label</th><th>Tipo</th></tr>
+        <tr><td class="zone-call">▲ GP/Flip</td><td>102.00</td><td>Gamma Flip / VAH</td><td style="color:var(--yellow)">NÚCLEO · Contención</td></tr>
+        <tr><td class="zone-call">▲ GC2</td><td>101.00</td><td>Call Wall 2</td><td style="color:var(--green)">Contención</td></tr>
+        <tr><td class="zone-call">▲ GC1</td><td>100.50</td><td>Tactical Anchor</td><td style="color:var(--yellow)">Mixto</td></tr>
+        <tr><td style="color:var(--yellow)">📍 HOY</td><td>100.86</td><td>SPOT · POC zona</td><td style="color:var(--yellow)">En zona</td></tr>
+        <tr><td class="zone-put">▼ GF1</td><td>100.00</td><td>Put Wall redondo</td><td style="color:var(--text3)">Aceleración</td></tr>
+        <tr><td class="zone-put">▼ GF2</td><td>99.00</td><td>Gamma Floor 2</td><td style="color:var(--text3)">Aceleración</td></tr>
+        <tr><td class="zone-put">▼ EA</td><td>95.00</td><td>Emergency Anchor</td><td style="color:var(--green)">EMA200 · Soporte</td></tr>
+      </table>
+      <div class="plan-box">
+        <div class="plan-title">📋 Plan de Trading CL</div>
+        <ul>
+          <li class="crude">IRAN SPIKE: CL abre en zona 100.86 · justo bajo Gamma Flip (102)</li>
+          <li class="key">RF +24 = momentum alcista muy fuerte — estructura invertida vs ayer</li>
+          <li class="bull">Bull: hold sobre 100.50 (TA) → test 101 (GC2) → 102 (GP/Flip = VAH)</li>
+          <li class="warn">Rechazo probable en 102 (Gamma Flip + VAH) — zona de contención máxima dealers</li>
+          <li class="bear">Bear: pérdida de 100 (Put Wall psicológico) → 99 (VAL) → 98</li>
+          <li class="crude">CL lidera hoy — movimientos de CL anticipan presión en ES/NQ</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- SPX -->
+    <div class="inst-card">
+      <div class="inst-header">
+        <span class="inst-tag tag-spx">SPX · CBOE</span>
+        <span style="color:var(--orange);font-size:10px;">7275 CALL WALL DOM. · FLIP 7000</span>
+        <span class="inst-spot down">7174.01</span>
+      </div>
+      <div class="tpo-row">
+        <div class="tpo-chip"><span class="lbl">Call Wall dom. </span><span class="val" style="color:var(--red)">7275</span></div>
+        <div class="tpo-chip"><span class="lbl">Gamma Flip </span><span class="val" style="color:var(--orange)">7000</span></div>
+        <div class="tpo-chip"><span class="lbl">Tact. Anchor </span><span class="val" style="color:var(--cyan)">7150</span></div>
+        <div class="tpo-chip"><span class="lbl">Pin </span><span class="val">7100</span></div>
+        <div class="tpo-chip"><span class="lbl">Put Wall </span><span class="val" style="color:var(--green)">7000</span></div>
+      </div>
+      <table class="pad-table">
+        <tr><th>Zona PAD</th><th>Strike</th><th>Label</th><th>OI</th></tr>
+        <tr><td class="zone-call">▲ GC3</td><td>7340</td><td>Gamma Ceiling</td><td style="color:var(--text3)">14,549</td></tr>
+        <tr><td class="zone-call">▲ GC2</td><td>7300</td><td>Call Wall</td><td style="color:var(--text3)">13,975</td></tr>
+        <tr><td class="zone-call">▲ GC1</td><td>7275</td><td>Call Wall DOM.</td><td style="color:var(--red)">24,025 MAX</td></tr>
+        <tr><td style="color:var(--cyan)">📍 TA</td><td>7150</td><td>Tactical Anchor</td><td style="color:var(--cyan)">~12K</td></tr>
+        <tr><td class="zone-put">▼ GF1</td><td>7100</td><td>Gamma Floor / Pin</td><td style="color:var(--text3)">8,037</td></tr>
+        <tr><td class="zone-flip">◆ GP/Flip</td><td>7000</td><td>Gamma Flip + Put Wall</td><td style="color:var(--yellow)">15,160</td></tr>
+      </table>
+      <div class="plan-box">
+        <div class="plan-title">📋 SPX — Iran Risk-Off Analysis</div>
+        <ul>
+          <li class="key">SPOT 7174 — entre Tactical Anchor (7150) y zona VAH previa (7220)</li>
+          <li class="warn">Call Wall dominante 7275 (OI 24K) = techo estructural inalcanzable hoy</li>
+          <li class="key">Tactical Anchor 7150 = soporte PAD más cercano hacia abajo</li>
+          <li class="bear">Bear: perder 7150 (TA) → 7100 (Pin/GF1) → 7000 (Flip + Put Wall dual)</li>
+          <li class="bull">Bull: recuperar 7200 (Call Wall GAIA de ayer) + datos macro positivos</li>
+          <li class="crude">CL sobre 102 = señal de mayor presión bajista en SPX/ES</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- SECTION 4: EDGE -->
+  <div class="section-header">
+    <span class="num">04</span>
+    <span class="title">EDGE — Síntesis Operativa</span>
+    <span class="sub">Iran Risk-Off · ADP 08:15 · Consumer Confidence 10:00</span>
+  </div>
+
+  <div class="synth-box">
+    <strong>SÍNTESIS:</strong> Día de risk-off geopolítico. Iran-Trump rompe negociaciones → WTI +2% → presión inflacionaria → ES/NQ bajan pre-market.
+    <strong>La clave del día:</strong> ES bajo EMA200 (7170) por primera vez en días — necesita recapturar esa zona para invalidar el breakdown.
+    NQ más débil, RF -22, bajo EMA200 (27200) y bajo VAL (27300) — estructura técnica rota.
+    CL es el instrumento con mayor convicción alcista hoy: RF +24, sobre VWAP, apuntando a Gamma Flip (102).
+    <strong>Datos clave hoy:</strong> ADP 08:15 ET (ya publicado: 39.25K vs prev 40.25K — débil, pero sin sorpresa) · 
+    CB Consumer Confidence 10:00 ET (consensus 88.9, prev 91.8) — si decepciona, presión adicional en ES.
+    <strong>Sesgo dominante:</strong> BAJISTA hasta que ES recapture EMA200 con volumen.
+  </div>
+
+  <div class="edge-grid">
+    <div class="scenario-card base">
+      <div class="sc-header sc-base">⚡ BASE CASE</div>
+      <div class="pct sc-base">50%</div>
+      <div class="desc">ES oscila bajo EMA200 (7158–7170). Dato Consumer Confidence en línea o débil. No hay catalizador para recuperación. Range 7140–7185 todo el día. DHP NEUTRAL → BLD.BEAR sin ACC.</div>
+      <div class="levels">Range: ES 7140–7185 · NQ 27040–27200</div>
+    </div>
+    <div class="scenario-card bull">
+      <div class="sc-header sc-bull">🟢 BULL CASE</div>
+      <div class="pct sc-bull">20%</div>
+      <div class="desc">Recaptura de EMA200 (7170) en apertura + Consumer Conf. mejor de esperado (sobre 91). DHP BLD.BULL. ES recupera VAL (7180) → VWAP (7190) → POC (7205). Iran noticias positivas.</div>
+      <div class="levels">Target: ES 7205–7220 · NQ 27300–27418</div>
+    </div>
+    <div class="scenario-card bear">
+      <div class="sc-header sc-bear">🔴 BEAR CASE</div>
+      <div class="pct sc-bear">30%</div>
+      <div class="desc">Consumer Conf. decepciona bajo 85. CL supera 102. ES pierde 7150 (Tactical Anchor PAD) con DHP ACC.BEAR. NQ pierde GP/Flip (27040) → expansión. ES hacia 7100 → 7050.</div>
+      <div class="levels">Target: ES 7100–7050 · NQ 27025–26900</div>
+    </div>
+  </div>
+
+  <!-- SECTION 5: CALENDAR -->
+  <div class="section-header">
+    <span class="num">05</span>
+    <span class="title">Calendario Económico — 28 Apr 2026</span>
+    <span class="sub">Trading Economics · Días críticos marcados</span>
+  </div>
+
+  <table class="cal-table">
+    <thead>
+      <tr><th>Hora ET</th><th>Evento</th><th>Actual</th><th>Prev</th><th>Cons.</th><th>Impacto</th><th>Nota PAD</th></tr>
+    </thead>
+    <tbody>
+      <tr class="today-row">
+        <td style="color:var(--green)">08:15 ✓</td>
+        <td>ADP Employment Change</td>
+        <td style="color:var(--yellow)">39.25K</td>
+        <td>40.25K</td>
+        <td>—</td>
+        <td class="imp-med">MEDIO</td>
+        <td class="pad-note">Débil pero sin sorpresa — neutral para ES</td>
+      </tr>
+      <tr class="today-row">
+        <td>09:00</td>
+        <td>S&P Case-Shiller HPI YoY</td>
+        <td>—</td>
+        <td>1.2%</td>
+        <td>1.1%</td>
+        <td class="imp-low">BAJO</td>
+        <td class="pad-note">Impacto mínimo en futuros</td>
+      </tr>
+      <tr class="today-row">
+        <td>10:00 ⚠</td>
+        <td style="color:var(--yellow);font-weight:700">CB Consumer Confidence APR</td>
+        <td>—</td>
+        <td>91.8</td>
+        <td>88.9</td>
+        <td class="imp-high">ALTO</td>
+        <td class="pad-note">Dato clave — sobre 91 = bull reversal</td>
+      </tr>
+      <tr class="today-row">
+        <td>10:00</td>
+        <td>Richmond Fed Manufacturing</td>
+        <td>—</td>
+        <td>0</td>
+        <td>2</td>
+        <td class="imp-med">MEDIO</td>
+        <td class="pad-note">Simultáneo con Consumer Conf.</td>
+      </tr>
+      <tr class="today-row">
+        <td>01:00 PM</td>
+        <td>7-Year Note Auction</td>
+        <td>—</td>
+        <td>4.255%</td>
+        <td>—</td>
+        <td class="imp-med">MEDIO</td>
+        <td class="pad-note">Vigilar yield — si sube presión en NQ</td>
+      </tr>
+      <tr class="today-row">
+        <td>04:30 PM</td>
+        <td>API Crude Oil Stock Change</td>
+        <td>—</td>
+        <td>-4.4M</td>
+        <td>—</td>
+        <td class="imp-med">MEDIO</td>
+        <td class="pad-note">Amplifica o revierte move de CL</td>
+      </tr>
+      <tr>
+        <td style="color:var(--yellow)">MIE 29 08:30</td>
+        <td style="color:var(--red);font-weight:700">GDP Q1 Advance 🔥</td>
+        <td>—</td>
+        <td>—</td>
+        <td>—</td>
+        <td class="imp-high" style="font-size:13px">CRÍTICO</td>
+        <td class="pad-note">Mayor evento semana — breakout/breakdown</td>
+      </tr>
+      <tr>
+        <td style="color:var(--yellow)">MIE 29 10:00</td>
+        <td style="color:var(--red);font-weight:700">PCE Price Index 🔥</td>
+        <td>—</td>
+        <td>—</td>
+        <td>—</td>
+        <td class="imp-high">ALTO</td>
+        <td class="pad-note">Doble impacto con GDP</td>
+      </tr>
+      <tr>
+        <td style="color:var(--yellow)">VIE 1 08:30</td>
+        <td style="color:var(--red);font-weight:700">NFP + Unemployment 🔥</td>
+        <td>—</td>
+        <td>—</td>
+        <td>—</td>
+        <td class="imp-high" style="font-size:13px">CRÍTICO</td>
+        <td class="pad-note">Cierre semana — nuevo GEX post dato</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- SECTION 6: EARNINGS -->
+  <div class="section-header">
+    <span class="num">06</span>
+    <span class="title">Earnings — Hoy y Semana</span>
+    <span class="sub">Megacap Week · GOOGL + AMD esta noche</span>
+  </div>
+
+  <table class="earnings-table">
+    <thead>
+      <tr><th>Día</th><th>Ticker</th><th>Empresa</th><th>Timing</th><th>Relevancia PAD</th></tr>
+    </thead>
+    <tbody>
+      <tr class="today-earn">
+        <td style="color:var(--orange)">HOY 28</td>
+        <td class="mega">GOOGL</td>
+        <td>Alphabet</td>
+        <td class="amc">AMC</td>
+        <td class="pad-note">🔥 Alto impacto NQ mañana — gap probable</td>
+      </tr>
+      <tr class="today-earn">
+        <td style="color:var(--orange)">HOY 28</td>
+        <td class="mega">AMD</td>
+        <td>Advanced Micro Devices</td>
+        <td class="amc">AMC</td>
+        <td class="pad-note">Semiconduc. — gap NQ apertura Mie</td>
+      </tr>
+      <tr>
+        <td>MIE 29</td>
+        <td class="mega">META</td>
+        <td>Meta Platforms</td>
+        <td class="amc">AMC</td>
+        <td class="pad-note">Doble impacto NQ con MSFT</td>
+      </tr>
+      <tr>
+        <td>MIE 29</td>
+        <td class="mega">MSFT</td>
+        <td>Microsoft</td>
+        <td class="amc">AMC</td>
+        <td class="pad-note">Doble megacap miércoles AMC</td>
+      </tr>
+      <tr>
+        <td>JUE 30</td>
+        <td class="mega">AAPL</td>
+        <td>Apple</td>
+        <td class="amc">AMC</td>
+        <td class="pad-note">Mayor market cap — cierre semana NQ</td>
+      </tr>
+      <tr>
+        <td>JUE 30</td>
+        <td class="mega">AMZN</td>
+        <td>Amazon</td>
+        <td class="amc">AMC</td>
+        <td class="pad-note">Consumer + Cloud</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div style="margin-top:10px;padding:10px 12px;background:rgba(240,136,62,.07);border:1px solid rgba(240,136,62,.25);border-radius:4px;font-size:11px;color:var(--text2);">
+    ⚠️ <strong style="color:var(--orange)">GOOGL + AMD ESTA NOCHE AMC:</strong> NQ podría gap significativo en apertura del Miércoles. 
+    Con NQ ya bajo EMA200 hoy, un resultado positivo de GOOGL/AMD podría ser el catalizador de recuperación. 
+    Un resultado negativo en contexto de Iran risk-off = potencial breakdown fuerte en NQ el Miércoles.
+  </div>
+
+  <!-- SECTION 7: TWITTER -->
+  <div class="section-header">
+    <span class="num">07</span>
+    <span class="title">Twitter del Día — @PivotAlphaDesk</span>
+    <span class="sub">Publicar ahora · Risk-Off day narrative</span>
+  </div>
+
+  <div class="tweet-box">
+    <div class="tweet-header">
+      <div class="tweet-avatar">PAD</div>
+      <div>
+        <div class="tweet-name">PivotAlphaDesk</div>
+        <div class="tweet-handle">@PivotAlphaDesk</div>
+      </div>
+      <span class="tweet-label">TWEET 1 · OPERATIVO</span>
+    </div>
+    <div class="tweet-content">Pre-Market | Mar 28 Apr · ES Gamma + Iran Risk
+
+Trump-Iran talks collapse. WTI +2%. Futures under pressure.
+
+🟢 Support: 7150 (Tactical Anchor · PAD)
+🔴 Flip:    7170 (EMA200 · broken pre-mkt)
+📍 ES:      7158 · -12 pts under EMA200
+⚡ Regime:  NEUTRAL → watch BLD.BEAR open
+
+Dealers: 0M delta pre-open.
+But structure shifted overnight.
+
+Key level: Can ES reclaim 7170 at open?
+If not → 7150 → 7100 next.
+
+<span class="hashtag">#ES_F #GammaLevels #SPX #OptionsFlow #IranRisk</span></div>
+    <div class="tweet-time">⏰ Publicar: AHORA · 08:08 AM ET · Martes 28 Apr 2026</div>
+  </div>
+
+  <div class="tweet-box" style="border-color:var(--purple)">
+    <div class="tweet-header">
+      <div class="tweet-avatar" style="background:var(--purple)">PAD</div>
+      <div>
+        <div class="tweet-name">PivotAlphaDesk</div>
+        <div class="tweet-handle">@PivotAlphaDesk</div>
+      </div>
+      <span class="tweet-label" style="color:var(--purple);border-color:rgba(188,140,255,.3);background:rgba(188,140,255,.1)">TWEET 2 · EDUCATIVO</span>
+    </div>
+    <div class="tweet-content">When geopolitics moves the market, structure still matters. 🧵
+
+ES dropped overnight on Iran news.
+But GAIA still shows Put Wall at 7000.
+
+That's 150+ points of dealer protection below.
+
+Dealers don't react to headlines.
+They react to gamma exposure.
+
+Until 7000 breaks → structure holds.
+That's the edge.
+
+<span class="hashtag">#GammaExposure #OptionsFlow #SPX #DealerHedging #GAIA</span></div>
+    <div class="tweet-time">⏰ Publicar: después del operativo · misma mañana</div>
+  </div>
+
+  <div class="divider"></div>
+
+  <div class="footer">
+    <span>PivotAlphaDesk</span> · GAIA Framework · Briefing 28 Apr 2026 · 08:08 ET &nbsp;|&nbsp;
+    Fuente: CME · CBOE · Trading Economics · GAIA Live &nbsp;|&nbsp;
+    <span>No constituye recomendación de inversión</span>
+  </div>
+
+</div>
+</body>
+</html>
