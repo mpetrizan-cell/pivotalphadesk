@@ -1,0 +1,885 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GAIA Library | PivotAlphaDesk</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@700;800&family=Barlow+Condensed:wght@300;400;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:#070a0e;
+  --bg2:#0c1118;
+  --bg3:#111820;
+  --border:#1a2535;
+  --border2:#1e2d40;
+  --text:#c0d0dc;
+  --dim:#4a6070;
+  --bright:#e8f4f8;
+  --cyan:#00d4ff;
+  --green:#3ecf6a;
+  --orange:#ff8c42;
+  --purple:#bc8cff;
+  --red:#e84040;
+  --yellow:#f0c040;
+  --teal:#2ec4b6;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+body {
+  background:var(--bg);
+  color:var(--text);
+  font-family:'Barlow Condensed',sans-serif;
+  min-height:100vh;
+  overflow-x:hidden;
+}
+
+/* GRID BACKGROUND */
+body::before {
+  content:'';
+  position:fixed;
+  inset:0;
+  background-image:
+    linear-gradient(rgba(0,212,255,0.015) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(0,212,255,0.015) 1px,transparent 1px);
+  background-size:48px 48px;
+  pointer-events:none;
+  z-index:0;
+}
+
+/* NAV */
+nav {
+  position:sticky;
+  top:0;
+  z-index:100;
+  background:rgba(7,10,14,0.95);
+  backdrop-filter:blur(12px);
+  border-bottom:1px solid var(--border);
+  padding:0 40px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  height:56px;
+}
+.nav-logo {
+  font-family:'Syne',sans-serif;
+  font-weight:800;
+  font-size:18px;
+  color:var(--bright);
+  text-decoration:none;
+  letter-spacing:-.02em;
+}
+.nav-logo span { color:var(--cyan); }
+.nav-links {
+  display:flex;
+  align-items:center;
+  gap:32px;
+  list-style:none;
+}
+.nav-links a {
+  font-family:'Space Mono',monospace;
+  font-size:10px;
+  letter-spacing:.12em;
+  text-transform:uppercase;
+  color:var(--dim);
+  text-decoration:none;
+  transition:color .2s;
+}
+.nav-links a:hover, .nav-links a.active { color:var(--cyan); }
+.nav-cta {
+  font-family:'Space Mono',monospace;
+  font-size:10px;
+  letter-spacing:.12em;
+  text-transform:uppercase;
+  color:var(--bg);
+  background:var(--cyan);
+  border:none;
+  padding:8px 18px;
+  cursor:pointer;
+  text-decoration:none;
+  font-weight:700;
+}
+
+/* HERO */
+.hero {
+  position:relative;
+  z-index:1;
+  padding:80px 40px 60px;
+  max-width:1300px;
+  margin:0 auto;
+}
+.hero-tag {
+  font-family:'Space Mono',monospace;
+  font-size:10px;
+  letter-spacing:.2em;
+  text-transform:uppercase;
+  color:var(--cyan);
+  margin-bottom:16px;
+  display:flex;
+  align-items:center;
+  gap:8px;
+}
+.hero-tag::before {
+  content:'';
+  width:24px;
+  height:1px;
+  background:var(--cyan);
+}
+.hero h1 {
+  font-family:'Syne',sans-serif;
+  font-weight:800;
+  font-size:clamp(36px,5vw,64px);
+  color:var(--bright);
+  line-height:1;
+  letter-spacing:-.03em;
+  margin-bottom:16px;
+}
+.hero h1 span { color:var(--cyan); }
+.hero-sub {
+  font-size:16px;
+  color:var(--dim);
+  max-width:580px;
+  line-height:1.6;
+  margin-bottom:40px;
+  font-weight:300;
+}
+
+/* SEARCH + FILTER */
+.controls {
+  position:relative;
+  z-index:1;
+  max-width:1300px;
+  margin:0 auto;
+  padding:0 40px 40px;
+  display:flex;
+  align-items:center;
+  gap:16px;
+  flex-wrap:wrap;
+}
+.search-wrap {
+  position:relative;
+  flex:1;
+  min-width:240px;
+  max-width:400px;
+}
+.search-wrap input {
+  width:100%;
+  background:var(--bg2);
+  border:1px solid var(--border2);
+  color:var(--text);
+  font-family:'Space Mono',monospace;
+  font-size:11px;
+  padding:10px 16px 10px 36px;
+  outline:none;
+  letter-spacing:.06em;
+  transition:border-color .2s;
+}
+.search-wrap input:focus { border-color:var(--cyan); }
+.search-wrap input::placeholder { color:var(--dim); }
+.search-icon {
+  position:absolute;
+  left:12px;
+  top:50%;
+  transform:translateY(-50%);
+  color:var(--dim);
+  font-size:13px;
+}
+.filters {
+  display:flex;
+  gap:8px;
+  flex-wrap:wrap;
+}
+.filter-btn {
+  font-family:'Space Mono',monospace;
+  font-size:9px;
+  letter-spacing:.1em;
+  text-transform:uppercase;
+  padding:7px 14px;
+  border:1px solid var(--border2);
+  background:transparent;
+  color:var(--dim);
+  cursor:pointer;
+  transition:all .2s;
+}
+.filter-btn:hover { border-color:var(--cyan); color:var(--cyan); }
+.filter-btn.active { background:var(--cyan); color:var(--bg); border-color:var(--cyan); font-weight:700; }
+
+/* FEATURED ARTICLE */
+.featured-wrap {
+  position:relative;
+  z-index:1;
+  max-width:1300px;
+  margin:0 auto;
+  padding:0 40px 48px;
+}
+.section-label {
+  font-family:'Space Mono',monospace;
+  font-size:9px;
+  letter-spacing:.2em;
+  text-transform:uppercase;
+  color:var(--dim);
+  margin-bottom:16px;
+  display:flex;
+  align-items:center;
+  gap:10px;
+}
+.section-label::after {
+  content:'';
+  flex:1;
+  height:1px;
+  background:var(--border);
+}
+.featured-card {
+  background:var(--bg2);
+  border:1px solid var(--border2);
+  border-top:3px solid var(--cyan);
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  overflow:hidden;
+  transition:border-color .2s;
+  cursor:pointer;
+  text-decoration:none;
+}
+.featured-card:hover { border-color:var(--cyan); }
+.featured-card:hover .fc-arrow { transform:translateX(4px); }
+.fc-content {
+  padding:40px;
+  display:flex;
+  flex-direction:column;
+  justify-content:space-between;
+}
+.fc-tag {
+  font-family:'Space Mono',monospace;
+  font-size:9px;
+  letter-spacing:.15em;
+  text-transform:uppercase;
+  color:var(--cyan);
+  margin-bottom:12px;
+}
+.fc-title {
+  font-family:'Syne',sans-serif;
+  font-weight:800;
+  font-size:28px;
+  color:var(--bright);
+  line-height:1.2;
+  letter-spacing:-.02em;
+  margin-bottom:16px;
+}
+.fc-desc {
+  font-size:14px;
+  color:var(--dim);
+  line-height:1.7;
+  font-weight:300;
+  margin-bottom:24px;
+  flex:1;
+}
+.fc-meta {
+  display:flex;
+  align-items:center;
+  gap:16px;
+  font-family:'Space Mono',monospace;
+  font-size:9px;
+  color:var(--dim);
+  letter-spacing:.08em;
+}
+.fc-read-time {
+  color:var(--cyan);
+}
+.fc-arrow {
+  font-size:18px;
+  color:var(--cyan);
+  transition:transform .2s;
+  margin-left:auto;
+}
+.fc-visual {
+  background:linear-gradient(135deg,#0c1a2e,#0d1f35);
+  border-left:1px solid var(--border2);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:40px;
+  position:relative;
+  overflow:hidden;
+}
+.fc-visual::before {
+  content:'';
+  position:absolute;
+  inset:0;
+  background:
+    radial-gradient(circle at 30% 50%, rgba(0,212,255,0.08) 0%, transparent 60%),
+    radial-gradient(circle at 70% 50%, rgba(188,140,255,0.06) 0%, transparent 60%);
+}
+.fc-diagram {
+  position:relative;
+  z-index:1;
+  width:100%;
+  max-width:280px;
+}
+.fd-level {
+  display:flex;
+  align-items:center;
+  gap:12px;
+  padding:8px 0;
+  border-bottom:1px solid rgba(255,255,255,0.04);
+  font-family:'Space Mono',monospace;
+  font-size:11px;
+}
+.fd-dot {
+  width:8px;
+  height:8px;
+  border-radius:50%;
+  flex-shrink:0;
+}
+.fd-label { color:var(--dim); flex:1; letter-spacing:.06em; }
+.fd-value { font-weight:700; }
+.fd-bar {
+  height:2px;
+  border-radius:1px;
+  margin-top:4px;
+}
+
+/* ARTICLE GRID */
+.grid-wrap {
+  position:relative;
+  z-index:1;
+  max-width:1300px;
+  margin:0 auto;
+  padding:0 40px 80px;
+}
+.article-grid {
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:16px;
+}
+.article-card {
+  background:var(--bg2);
+  border:1px solid var(--border);
+  padding:28px;
+  cursor:pointer;
+  text-decoration:none;
+  display:block;
+  transition:all .2s;
+  position:relative;
+  overflow:hidden;
+}
+.article-card::before {
+  content:'';
+  position:absolute;
+  top:0;left:0;right:0;
+  height:2px;
+  transform:scaleX(0);
+  transform-origin:left;
+  transition:transform .3s;
+}
+.article-card:hover { border-color:var(--border2); transform:translateY(-2px); }
+.article-card:hover::before { transform:scaleX(1); }
+.ac-beginner::before { background:var(--green); }
+.ac-intermediate::before { background:var(--yellow); }
+.ac-advanced::before { background:var(--orange); }
+.ac-concept::before { background:var(--purple); }
+.ac-system::before { background:var(--cyan); }
+.ac-live::before { background:var(--teal); }
+
+.ac-header {
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  margin-bottom:16px;
+}
+.ac-badge {
+  font-family:'Space Mono',monospace;
+  font-size:8px;
+  letter-spacing:.12em;
+  text-transform:uppercase;
+  padding:3px 8px;
+  border:1px solid;
+}
+.badge-beginner { color:var(--green); border-color:rgba(62,207,106,.3); background:rgba(62,207,106,.06); }
+.badge-intermediate { color:var(--yellow); border-color:rgba(240,192,64,.3); background:rgba(240,192,64,.06); }
+.badge-advanced { color:var(--orange); border-color:rgba(255,140,66,.3); background:rgba(255,140,66,.06); }
+.badge-concept { color:var(--purple); border-color:rgba(188,140,255,.3); background:rgba(188,140,255,.06); }
+.badge-system { color:var(--cyan); border-color:rgba(0,212,255,.3); background:rgba(0,212,255,.06); }
+.badge-live { color:var(--teal); border-color:rgba(46,196,182,.3); background:rgba(46,196,182,.06); }
+
+.ac-num {
+  font-family:'Space Mono',monospace;
+  font-size:10px;
+  color:var(--border2);
+  letter-spacing:.06em;
+}
+.ac-title {
+  font-family:'Syne',sans-serif;
+  font-weight:700;
+  font-size:17px;
+  color:var(--bright);
+  line-height:1.3;
+  letter-spacing:-.01em;
+  margin-bottom:10px;
+}
+.ac-desc {
+  font-size:13px;
+  color:var(--dim);
+  line-height:1.6;
+  font-weight:300;
+  margin-bottom:20px;
+}
+.ac-footer {
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  font-family:'Space Mono',monospace;
+  font-size:9px;
+  color:var(--dim);
+  letter-spacing:.08em;
+  padding-top:16px;
+  border-top:1px solid var(--border);
+}
+.ac-tags { display:flex; gap:6px; flex-wrap:wrap; }
+.ac-tag {
+  font-size:8px;
+  padding:2px 6px;
+  background:rgba(255,255,255,.03);
+  border:1px solid var(--border);
+  color:var(--dim);
+  letter-spacing:.06em;
+}
+.ac-arrow { color:var(--dim); transition:color .2s; font-size:14px; }
+.article-card:hover .ac-arrow { color:var(--cyan); }
+
+/* COMING SOON CARD */
+.card-soon {
+  background:rgba(255,255,255,.01);
+  border:1px dashed var(--border);
+  padding:28px;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  text-align:center;
+  min-height:200px;
+  gap:12px;
+}
+.card-soon .cs-icon { font-size:24px; opacity:.3; }
+.card-soon .cs-text {
+  font-family:'Space Mono',monospace;
+  font-size:9px;
+  letter-spacing:.15em;
+  text-transform:uppercase;
+  color:var(--dim);
+}
+
+/* NEWSLETTER STRIP */
+.newsletter {
+  position:relative;
+  z-index:1;
+  background:var(--bg2);
+  border-top:1px solid var(--border);
+  border-bottom:1px solid var(--border);
+  padding:48px 40px;
+  text-align:center;
+}
+.nl-title {
+  font-family:'Syne',sans-serif;
+  font-weight:800;
+  font-size:24px;
+  color:var(--bright);
+  margin-bottom:8px;
+  letter-spacing:-.02em;
+}
+.nl-sub {
+  font-size:13px;
+  color:var(--dim);
+  margin-bottom:24px;
+  font-weight:300;
+}
+.nl-form {
+  display:flex;
+  gap:0;
+  max-width:400px;
+  margin:0 auto;
+}
+.nl-form input {
+  flex:1;
+  background:var(--bg3);
+  border:1px solid var(--border2);
+  border-right:none;
+  color:var(--text);
+  font-family:'Space Mono',monospace;
+  font-size:11px;
+  padding:12px 16px;
+  outline:none;
+}
+.nl-form button {
+  background:var(--cyan);
+  color:var(--bg);
+  border:none;
+  padding:12px 20px;
+  font-family:'Space Mono',monospace;
+  font-size:10px;
+  letter-spacing:.1em;
+  text-transform:uppercase;
+  font-weight:700;
+  cursor:pointer;
+  white-space:nowrap;
+}
+
+/* FOOTER */
+footer {
+  position:relative;
+  z-index:1;
+  padding:32px 40px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  border-top:1px solid var(--border);
+}
+.footer-logo {
+  font-family:'Syne',sans-serif;
+  font-weight:800;
+  font-size:14px;
+  color:var(--bright);
+}
+.footer-logo span { color:var(--cyan); }
+.footer-copy {
+  font-family:'Space Mono',monospace;
+  font-size:9px;
+  color:var(--dim);
+  letter-spacing:.08em;
+}
+
+/* ANIMATIONS */
+@keyframes fadeUp {
+  from { opacity:0; transform:translateY(16px); }
+  to { opacity:1; transform:translateY(0); }
+}
+.hero { animation:fadeUp .6s ease both; }
+.controls { animation:fadeUp .6s ease .1s both; }
+.featured-wrap { animation:fadeUp .6s ease .15s both; }
+.grid-wrap { animation:fadeUp .6s ease .2s both; }
+
+/* RESPONSIVE */
+@media(max-width:900px){
+  .featured-card { grid-template-columns:1fr; }
+  .fc-visual { display:none; }
+  .article-grid { grid-template-columns:1fr 1fr; }
+  nav { padding:0 20px; }
+  .hero, .controls, .featured-wrap, .grid-wrap { padding-left:20px; padding-right:20px; }
+}
+@media(max-width:600px){
+  .article-grid { grid-template-columns:1fr; }
+  .nav-links { display:none; }
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="index.html" class="nav-logo">Pivot<span>Alpha</span>Desk</a>
+  <ul class="nav-links">
+    <li><a href="index.html">Home</a></li>
+    <li><a href="index.html#features">Features</a></li>
+    <li><a href="education.html" class="active">Library</a></li>
+    <li><a href="index.html#pricing">Pricing</a></li>
+  </ul>
+  <a href="login.html" class="nav-cta">Login →</a>
+</nav>
+
+<section class="hero">
+  <div class="hero-tag">GAIA Knowledge Base</div>
+  <h1>The <span>Library</span>.</h1>
+  <p class="hero-sub">Everything you need to understand gamma structure, dealer mechanics, and how GAIA reads the market in real time.</p>
+</section>
+
+<div class="controls">
+  <div class="search-wrap">
+    <span class="search-icon">⌕</span>
+    <input type="text" id="searchInput" placeholder="Search articles..." oninput="filterArticles()">
+  </div>
+  <div class="filters">
+    <button class="filter-btn active" onclick="setFilter('all',this)">All</button>
+    <button class="filter-btn" onclick="setFilter('beginner',this)">Beginner</button>
+    <button class="filter-btn" onclick="setFilter('intermediate',this)">Intermediate</button>
+    <button class="filter-btn" onclick="setFilter('advanced',this)">Advanced</button>
+    <button class="filter-btn" onclick="setFilter('system',this)">GAIA System</button>
+    <button class="filter-btn" onclick="setFilter('live',this)">Live Examples</button>
+  </div>
+</div>
+
+<!-- FEATURED -->
+<div class="featured-wrap">
+  <div class="section-label">Featured Article</div>
+  <a href="#" class="featured-card">
+    <div class="fc-content">
+      <div>
+        <div class="fc-tag">◆ Gamma Mechanics · Beginner</div>
+        <div class="fc-title">Why Gamma Flip is not just another support level</div>
+        <div class="fc-desc">Most traders draw lines on charts based on past price reactions. A Gamma Flip is different — it's the exact strike where dealer net gamma changes sign. Below it, dealers sell into rallies. Above it, they buy dips. The mechanics are non-discretionary.</div>
+      </div>
+      <div class="fc-meta">
+        <span>May 1, 2026</span>
+        <span class="fc-read-time">5 min read</span>
+        <span class="fc-arrow">→</span>
+      </div>
+    </div>
+    <div class="fc-visual">
+      <div class="fc-diagram">
+        <div class="fd-level" style="opacity:.5">
+          <div class="fd-dot" style="background:#e84040"></div>
+          <div class="fd-label">CALL WALL</div>
+          <div class="fd-value" style="color:#e84040">7,340</div>
+        </div>
+        <div class="fd-level">
+          <div class="fd-dot" style="background:#e040fb"></div>
+          <div class="fd-label">GAMMA FLIP ←</div>
+          <div class="fd-value" style="color:#e040fb">7,280</div>
+        </div>
+        <div style="padding:8px 0;font-family:'Space Mono',monospace;font-size:9px;color:#00d4ff;letter-spacing:.1em;">▶ SPOT 7,237</div>
+        <div class="fd-level" style="opacity:.7">
+          <div class="fd-dot" style="background:#2ec4b6"></div>
+          <div class="fd-label">TACTICAL ANCHOR</div>
+          <div class="fd-value" style="color:#2ec4b6">7,200</div>
+        </div>
+        <div class="fd-level">
+          <div class="fd-dot" style="background:#3a8ef0"></div>
+          <div class="fd-label">PUT WALL</div>
+          <div class="fd-value" style="color:#3a8ef0">7,050</div>
+        </div>
+        <div style="margin-top:16px;font-family:'Space Mono',monospace;font-size:9px;color:#4a6070;letter-spacing:.06em;line-height:1.6;">
+          Below flip → dealers sell rallies<br>
+          Above flip → dealers buy dips
+        </div>
+      </div>
+    </div>
+  </a>
+</div>
+
+<!-- ARTICLE GRID -->
+<div class="grid-wrap">
+  <div class="section-label">All Articles</div>
+  <div class="article-grid" id="articleGrid">
+
+    <!-- 1 -->
+    <a href="#" class="article-card ac-beginner" data-category="beginner" data-title="What is GEX Gamma Exposure">
+      <div class="ac-header">
+        <span class="ac-badge badge-beginner">Beginner</span>
+        <span class="ac-num">001</span>
+      </div>
+      <div class="ac-title">What is GEX? Gamma Exposure explained for futures traders</div>
+      <div class="ac-desc">Gamma exposure tells you how much dealers need to buy or sell futures as price moves. The bigger the GEX at a strike, the more mechanical the price reaction.</div>
+      <div class="ac-footer">
+        <div class="ac-tags">
+          <span class="ac-tag">GEX</span>
+          <span class="ac-tag">Dealers</span>
+          <span class="ac-tag">Basics</span>
+        </div>
+        <span class="ac-arrow">→</span>
+      </div>
+    </a>
+
+    <!-- 2 -->
+    <a href="#" class="article-card ac-beginner" data-category="beginner" data-title="Call Wall Put Wall difference">
+      <div class="ac-header">
+        <span class="ac-badge badge-beginner">Beginner</span>
+        <span class="ac-num">002</span>
+      </div>
+      <div class="ac-title">Call Wall vs Put Wall — structural ceiling and floor</div>
+      <div class="ac-desc">A Call Wall is where dealers sell into rallies. A Put Wall is where they buy dips. Neither is guaranteed to hold — but both are mechanically enforced on first touch.</div>
+      <div class="ac-footer">
+        <div class="ac-tags">
+          <span class="ac-tag">Call Wall</span>
+          <span class="ac-tag">Put Wall</span>
+          <span class="ac-tag">PAD Zones</span>
+        </div>
+        <span class="ac-arrow">→</span>
+      </div>
+    </a>
+
+    <!-- 3 -->
+    <a href="#" class="article-card ac-concept" data-category="concept" data-title="DAMPENED vs AMPLIFIED regime">
+      <div class="ac-header">
+        <span class="ac-badge badge-concept">Concept</span>
+        <span class="ac-num">003</span>
+      </div>
+      <div class="ac-title">DAMPENED vs AMPLIFIED — the two market regimes</div>
+      <div class="ac-desc">DAMPENED means dealers absorb volatility — price moves are cushioned. AMPLIFIED means dealers have no cushion — moves extend fast in both directions. The regime changes everything about how you trade.</div>
+      <div class="ac-footer">
+        <div class="ac-tags">
+          <span class="ac-tag">Regime</span>
+          <span class="ac-tag">Volatility</span>
+          <span class="ac-tag">GAIA</span>
+        </div>
+        <span class="ac-arrow">→</span>
+      </div>
+    </a>
+
+    <!-- 4 -->
+    <a href="#" class="article-card ac-intermediate" data-category="intermediate" data-title="DHP Dealer Hedging Pressure real time">
+      <div class="ac-header">
+        <span class="ac-badge badge-intermediate">Intermediate</span>
+        <span class="ac-num">004</span>
+      </div>
+      <div class="ac-title">DHP — reading dealer hedging pressure in real time</div>
+      <div class="ac-desc">DHP measures the net delta dealers need to hedge every 5 seconds. BLD.BULL means momentum is building. ACC.BULL means dealers are actively buying ES. The difference matters.</div>
+      <div class="ac-footer">
+        <div class="ac-tags">
+          <span class="ac-tag">DHP</span>
+          <span class="ac-tag">Real Time</span>
+          <span class="ac-tag">Momentum</span>
+        </div>
+        <span class="ac-arrow">→</span>
+      </div>
+    </a>
+
+    <!-- 5 -->
+    <a href="#" class="article-card ac-intermediate" data-category="intermediate" data-title="Who trades SPX 0DTE market makers customers">
+      <div class="ac-header">
+        <span class="ac-badge badge-intermediate">Intermediate</span>
+        <span class="ac-num">005</span>
+      </div>
+      <div class="ac-title">Who's actually on the other side of your 0DTE trade</div>
+      <div class="ac-desc">Market makers don't gamble on direction — they quote both sides and immediately hedge. The real directional view comes from customers. GAIA measures the mechanical response of dealers to that customer flow.</div>
+      <div class="ac-footer">
+        <div class="ac-tags">
+          <span class="ac-tag">0DTE</span>
+          <span class="ac-tag">Market Makers</span>
+          <span class="ac-tag">Flow</span>
+        </div>
+        <span class="ac-arrow">→</span>
+      </div>
+    </a>
+
+    <!-- 6 -->
+    <a href="#" class="article-card ac-system" data-category="system" data-title="GAIA Gamma Node Gravity Pin magnetic levels">
+      <div class="ac-header">
+        <span class="ac-badge badge-system">GAIA System</span>
+        <span class="ac-num">006</span>
+      </div>
+      <div class="ac-title">Gamma Node and Gravity Pin — why price orbits certain levels</div>
+      <div class="ac-desc">The Gamma Node is the strike with the highest gamma concentration. Price doesn't choose to stay there — it gets pulled by dealer hedging activity. It updates dynamically every 5 seconds as OI shifts.</div>
+      <div class="ac-footer">
+        <div class="ac-tags">
+          <span class="ac-tag">Gamma Node</span>
+          <span class="ac-tag">Gravity Pin</span>
+          <span class="ac-tag">Dynamic</span>
+        </div>
+        <span class="ac-arrow">→</span>
+      </div>
+    </a>
+
+    <!-- 7 -->
+    <a href="#" class="article-card ac-advanced" data-category="advanced" data-title="AM vs PM XLS intraday flow comparison">
+      <div class="ac-header">
+        <span class="ac-badge badge-advanced">Advanced</span>
+        <span class="ac-num">007</span>
+      </div>
+      <div class="ac-title">AM vs PM XLS — reading intraday institutional flow</div>
+      <div class="ac-desc">Comparing the morning OI snapshot to a midday snapshot reveals what institutions bought or sold during the session. New put volume at support = real bearish pressure. When it exhausts — that's the setup.</div>
+      <div class="ac-footer">
+        <div class="ac-tags">
+          <span class="ac-tag">OI Analysis</span>
+          <span class="ac-tag">Institutional</span>
+          <span class="ac-tag">Intraday</span>
+        </div>
+        <span class="ac-arrow">→</span>
+      </div>
+    </a>
+
+    <!-- 8 -->
+    <a href="#" class="article-card ac-live" data-category="live" data-title="FOMC day Net DHP flip case study April 29 2026">
+      <div class="ac-header">
+        <span class="ac-badge badge-live">Live Example</span>
+        <span class="ac-num">008</span>
+      </div>
+      <div class="ac-title">FOMC April 29, 2026 — Net DHP -1,917M to +1,041M in 40 minutes</div>
+      <div class="ac-desc">Powell held rates. The market sold first and bought second. Net DHP flipped +2,958M in 40 minutes while price barely moved 22 pts. That's gamma absorption — and the Put Wall at 7,100 never broke.</div>
+      <div class="ac-footer">
+        <div class="ac-tags">
+          <span class="ac-tag">FOMC</span>
+          <span class="ac-tag">Case Study</span>
+          <span class="ac-tag">DHP Flip</span>
+        </div>
+        <span class="ac-arrow">→</span>
+      </div>
+    </a>
+
+    <!-- 9 -->
+    <a href="#" class="article-card ac-live" data-category="live" data-title="Gamma Flip double bottom April 30 2026 stagflation">
+      <div class="ac-header">
+        <span class="ac-badge badge-live">Live Example</span>
+        <span class="ac-num">009</span>
+      </div>
+      <div class="ac-title">Gamma Flip double bottom — April 30, 2026</div>
+      <div class="ac-desc">GDP missed. PCE came in hot. SPX dropped to Gamma Flip 7,130 twice. Bounced twice. The level was mapped pre-market. Dealers were mechanically obligated to buy. Structure absorbed the stagflation shock.</div>
+      <div class="ac-footer">
+        <div class="ac-tags">
+          <span class="ac-tag">Gamma Flip</span>
+          <span class="ac-tag">Double Bottom</span>
+          <span class="ac-tag">Stagflation</span>
+        </div>
+        <span class="ac-arrow">→</span>
+      </div>
+    </a>
+
+    <!-- COMING SOON -->
+    <div class="card-soon" data-category="soon">
+      <div class="cs-icon">◈</div>
+      <div class="cs-text">Coming Soon</div>
+      <div style="font-family:'Space Mono',monospace;font-size:9px;color:var(--dim);letter-spacing:.06em;margin-top:4px;">Static OI vs Real-Time Gamma</div>
+    </div>
+
+    <div class="card-soon" data-category="soon">
+      <div class="cs-icon">◈</div>
+      <div class="cs-text">Coming Soon</div>
+      <div style="font-family:'Space Mono',monospace;font-size:9px;color:var(--dim);letter-spacing:.06em;margin-top:4px;">GAIA Execution — Entry, TP, SL with ATR</div>
+    </div>
+
+    <div class="card-soon" data-category="soon">
+      <div class="cs-icon">◈</div>
+      <div class="cs-text">Coming Soon</div>
+      <div style="font-family:'Space Mono',monospace;font-size:9px;color:var(--dim);letter-spacing:.06em;margin-top:4px;">Weekly Expiration Pinning Mechanics</div>
+    </div>
+
+  </div>
+</div>
+
+<!-- NEWSLETTER -->
+<div class="newsletter">
+  <div class="nl-title">New articles every week.</div>
+  <div class="nl-sub">Get notified when we publish new gamma education content.</div>
+  <div class="nl-form">
+    <input type="email" placeholder="your@email.com">
+    <button>Notify me →</button>
+  </div>
+</div>
+
+<footer>
+  <div class="footer-logo">Pivot<span>Alpha</span>Desk</div>
+  <div class="footer-copy">© 2026 PivotAlphaDesk · Not investment advice</div>
+</footer>
+
+<script>
+let activeFilter = 'all';
+
+function setFilter(cat, btn) {
+  activeFilter = cat;
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  filterArticles();
+}
+
+function filterArticles() {
+  const query = document.getElementById('searchInput').value.toLowerCase();
+  const cards = document.querySelectorAll('#articleGrid > *');
+
+  cards.forEach(card => {
+    const cat = card.dataset.category || 'soon';
+    const title = (card.dataset.title || '').toLowerCase();
+    const text = card.innerText.toLowerCase();
+
+    const matchFilter = activeFilter === 'all' || cat === activeFilter;
+    const matchSearch = !query || title.includes(query) || text.includes(query);
+
+    card.style.display = (matchFilter && matchSearch) ? '' : 'none';
+  });
+}
+</script>
+</body>
+</html>
