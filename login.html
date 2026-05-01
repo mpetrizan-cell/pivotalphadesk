@@ -198,20 +198,20 @@ input[type=text]::placeholder{color:#2a3a48;letter-spacing:.1em;}
 
     <div class="access-list" id="access-list" style="display:none;">
       <p>Latest Briefings</p>
-      <a class="access-item" href="briefing_30abr2026.html">
+      <a class="access-item" href="briefing_17abr2026.html">
         <div class="access-dot red"></div>
-        <span class="access-label">Pre-Open Briefing · Apr 30, 2026</span>
+        <span class="access-label">Pre-Open Briefing · Apr 17, 2026</span>
         <span class="access-date">LATEST</span>
       </a>
-      <a class="access-item" href="briefing_29abr2026.html">
+      <a class="access-item" href="briefing_16abr2026.html">
         <div class="access-dot"></div>
-        <span class="access-label">Pre-Open Briefing · Apr 29, 2026</span>
-        <span class="access-date">APR 29</span>
+        <span class="access-label">Pre-Open Briefing · Apr 16, 2026</span>
+        <span class="access-date">APR 16</span>
       </a>
-      <a class="access-item" href="briefing_28abr2026.html">
+      <a class="access-item" href="briefing_15abr2026.html">
         <div class="access-dot"></div>
-        <span class="access-label">Pre-Open Briefing · Apr 28, 2026</span>
-        <span class="access-date">APR 28</span>
+        <span class="access-label">Pre-Open Briefing · Apr 15, 2026</span>
+        <span class="access-date">APR 15</span>
       </a>
     </div>
 
@@ -224,56 +224,141 @@ input[type=text]::placeholder{color:#2a3a48;letter-spacing:.1em;}
 
 <script>
 var ACCESS_CODES = ['PAD2026PRO', 'PADTRIAL'];
-var TRIAL_CODES  = { 'PADTRIAL': 7 };
-var SESSION_HOURS = 12;
-var STORAGE_KEY   = 'pad_access_v1';
+var TRIAL_DAYS   = { 'PADTRIAL': 7 };
+var STORAGE_KEY  = 'pad_access_v2';
 
-function isValid(code){ return ACCESS_CODES.indexOf(code.toUpperCase().trim()) !== -1; }
-
-function grant(code){
-  code = code.toUpperCase().trim();
-  var now = Date.now();
-  var data = { code: code, session_expiry: now + SESSION_HOURS*3600*1000 };
-  if(TRIAL_CODES[code] !== undefined){
-    var existing = null;
-    try{ existing = JSON.parse(localStorage.getItem(STORAGE_KEY)); }catch(e){}
-    var ts = (existing && existing.trial_start) ? existing.trial_start : now;
-    data.trial_start  = ts;
-    data.trial_expiry = ts + TRIAL_CODES[code]*24*3600*1000;
-  }
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+// ── HELPERS ─────────────────────────────────────────────────
+function getStored() {
+  try { return JSON.parse(localStorage.getItem(STORAGE_KEY)) || null; } catch(e) { return null; }
+}
+function isValid(code) {
+  return ACCESS_CODES.indexOf(code.toUpperCase().trim()) !== -1;
+}
+function isPro(code) {
+  return code === 'PAD2026PRO';
+}
+function daysLeft(stored) {
+  if (!stored || !stored.trial_expiry) return null;
+  var ms = stored.trial_expiry - Date.now();
+  return Math.max(0, Math.ceil(ms / (24 * 3600 * 1000)));
+}
+function isExpired(stored) {
+  if (!stored) return false;
+  if (isPro(stored.code)) return false;
+  if (stored.trial_expiry && Date.now() > stored.trial_expiry) return true;
+  return false;
 }
 
-function showBriefings(){
+// ── GRANT ACCESS ─────────────────────────────────────────────
+function grant(code) {
+  code = code.toUpperCase().trim();
+  var now = Date.now();
+  var existing = getStored();
+
+  // For PRO — no expiry
+  if (isPro(code)) {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify({ code: code, granted: now }));
+    return;
+  }
+
+  // For TRIAL — preserve original start date if already started
+  var trialStart = (existing && existing.code === code && existing.trial_start)
+    ? existing.trial_start
+    : now;
+  var trialDays = TRIAL_DAYS[code] || 7;
+
+  localStorage.setItem(STORAGE_KEY, JSON.stringify({
+    code: code,
+    granted: now,
+    trial_start: trialStart,
+    trial_expiry: trialStart + trialDays * 24 * 3600 * 1000
+  }));
+}
+
+// ── SHOW BRIEFINGS ───────────────────────────────────────────
+function showBriefings(stored) {
   document.getElementById('input-wrap').style.display = 'none';
   document.getElementById('error-msg').style.display = 'none';
-  document.getElementById('card-sub').textContent = 'Access granted. Select a briefing below.';
-  document.getElementById('access-btn').textContent = '✓ ACCESS ACTIVE';
-  document.getElementById('access-btn').style.background = '#00c06a';
+
+  var isPROCode = stored && isPro(stored.code);
+  var days = daysLeft(stored);
+
+  if (isPROCode) {
+    document.getElementById('card-sub').textContent = 'Pro access active. Select a briefing below.';
+    document.getElementById('access-btn').textContent = '✓ PRO ACCESS ACTIVE';
+    document.getElementById('access-btn').style.background = '#00d4ff';
+  } else {
+    var label = days !== null ? days + ' day' + (days !== 1 ? 's' : '') + ' remaining' : '';
+    document.getElementById('card-sub').textContent = 'Trial access active · ' + label;
+    document.getElementById('access-btn').textContent = '✓ TRIAL ACTIVE · ' + label;
+    document.getElementById('access-btn').style.background = '#00c06a';
+  }
+
   document.getElementById('access-btn').style.cursor = 'default';
+  document.getElementById('access-btn').disabled = true;
   document.getElementById('divider').style.display = 'block';
   document.getElementById('access-list').style.display = 'block';
 }
 
-// IMPORTANT: never auto-show briefings on load — always require code entry
-// Clear any stale session so user must always enter code on login page
-localStorage.removeItem(STORAGE_KEY);
+// ── SHOW EXPIRED ─────────────────────────────────────────────
+function showExpired() {
+  document.getElementById('input-wrap').style.display = 'none';
+  document.getElementById('card-sub').textContent = 'Your trial has expired.';
+  document.getElementById('access-btn').textContent = 'REQUEST ACCESS →';
+  document.getElementById('access-btn').style.background = '#f0b429';
+  document.getElementById('access-btn').style.color = '#070a0e';
+  document.getElementById('access-btn').style.cursor = 'pointer';
+  document.getElementById('error-msg').style.display = 'none';
+  document.getElementById('access-btn').onclick = function() {
+    window.location.href = 'index.html#contact';
+  };
+}
 
+// ── ON LOAD — check existing session ────────────────────────
+(function() {
+  var stored = getStored();
+  if (!stored) return; // no session — show login form normally
+
+  if (isExpired(stored)) {
+    // Trial expired — clear and show expired message
+    localStorage.removeItem(STORAGE_KEY);
+    showExpired();
+    return;
+  }
+
+  // Valid session exists — show briefings directly (no code needed)
+  showBriefings(stored);
+})();
+
+// ── LOGIN BUTTON ─────────────────────────────────────────────
 document.getElementById('access-btn').addEventListener('click', function(){
   var code = document.getElementById('code-input').value;
-  if(!code){ document.getElementById('error-msg').textContent = 'Enter your access code.'; return; }
-  if(isValid(code)){
-    grant(code);
-    showBriefings();
-  } else {
+  if (!code) {
+    document.getElementById('error-msg').textContent = 'Enter your access code.';
+    return;
+  }
+  code = code.toUpperCase().trim();
+  if (!isValid(code)) {
     document.getElementById('error-msg').textContent = 'Invalid code. Try again.';
     document.getElementById('code-input').value = '';
     document.getElementById('code-input').focus();
+    return;
   }
+
+  // Check if trial already expired for this code
+  var existing = getStored();
+  if (existing && existing.code === code && isExpired(existing)) {
+    localStorage.removeItem(STORAGE_KEY);
+    showExpired();
+    return;
+  }
+
+  grant(code);
+  showBriefings(getStored());
 });
 
 document.getElementById('code-input').addEventListener('keydown', function(e){
-  if(e.key === 'Enter') document.getElementById('access-btn').click();
+  if (e.key === 'Enter') document.getElementById('access-btn').click();
 });
 </script>
 </body>
