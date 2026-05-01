@@ -1,0 +1,760 @@
+<!DOCTYPE html>
+<!-- saved from url=(0050)https://pivotalphadesk.com/briefing_30abr2026.html -->
+<html lang="en" class="translated-ltr"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PivotAlphaDesk · GAIA Briefing · 30 Apr 2026</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700&family=Share+Tech+Mono&display=swap');
+  :root {
+    --bg:#0a0c10;--bg2:#0d1117;--bg3:#111820;--border:#1e2d3d;--border2:#243447;
+    --text:#c9d1d9;--text2:#8b949e;--text3:#6e7681;
+    --green:#3fb950;--green-dim:#1a3a22;
+    --orange:#f0883e;--orange-dim:#3d2200;--red:#f85149;--red-dim:#3d0f0d;
+    --blue:#58a6ff;--blue-dim:#0d2040;--yellow:#e3b341;--yellow-dim:#2d2000;
+    --cyan:#39c5cf;--purple:#bc8cff;--white:#f0f6fc;--pad-orange:#ff8c42;
+    --warn:#ff4466;--hot:#ff6b35;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  body{background:var(--bg);color:var(--text);font-family:'JetBrains Mono',monospace;font-size:12px;line-height:1.5;}
+
+  .terminal-bar{background:#0d1117;border-bottom:1px solid var(--border);padding:6px 16px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;}
+  .terminal-bar .logo{color:var(--white);font-weight:700;font-size:13px;letter-spacing:.05em;}
+  .terminal-bar .logo span{color:var(--pad-orange);}
+  .terminal-bar .ts .date{color:var(--orange);font-weight:600;}
+  .terminal-bar .ts .time{color:var(--cyan);}
+  .terminal-bar .live-dot{display:flex;align-items:center;gap:6px;color:var(--green);font-size:11px;}
+  .dot{width:7px;height:7px;border-radius:50%;background:var(--green);animation:pulse 2s infinite;}
+  @keyframes pulse{0%,100%{opacity:1;}50%{opacity:.3;}}
+
+  /* DATA BANNER */
+  .data-banner{background:linear-gradient(90deg,#1a0a00,#2d1500,#1a0a00);border-bottom:2px solid var(--hot);padding:8px 16px;text-align:center;color:var(--hot);font-weight:700;font-size:11px;letter-spacing:.1em;}
+  .data-banner span{color:var(--white);}
+  .data-banner .bull{color:var(--green);}
+  .data-banner .bear{color:var(--red);}
+
+  .main{max-width:1400px;margin:0 auto;padding:16px;}
+
+  .section-header{display:flex;align-items:center;gap:10px;padding:8px 12px;background:var(--bg3);border-left:3px solid var(--pad-orange);border-bottom:1px solid var(--border);margin-bottom:12px;margin-top:20px;}
+  .section-header .num{color:var(--pad-orange);font-weight:700;font-size:10px;}
+  .section-header .title{color:var(--white);font-weight:700;font-size:13px;letter-spacing:.08em;text-transform:uppercase;}
+  .section-header .sub{color:var(--text3);font-size:10px;margin-left:auto;}
+
+  .snapshot-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:12px;}
+  .snap-card{background:var(--bg3);border:1px solid var(--border);border-radius:4px;padding:12px;position:relative;overflow:hidden;}
+  .snap-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;}
+  .snap-card.es::before{background:var(--blue);}
+  .snap-card.nq::before{background:var(--purple);}
+  .snap-card.cl::before{background:var(--yellow);}
+  .snap-card.spx::before{background:var(--green);}
+  .snap-card .instrument{font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:.1em;margin-bottom:4px;}
+  .snap-card .spot{font-size:22px;font-weight:700;margin-bottom:8px;}
+  .snap-card .spot.up{color:var(--green);}
+  .snap-card .spot.down{color:var(--red);}
+  .snap-card .spot.neutral{color:var(--yellow);}
+  .snap-card .rows{display:flex;flex-direction:column;gap:3px;}
+  .snap-card .row{display:flex;justify-content:space-between;font-size:10px;}
+  .snap-card .row .lbl{color:var(--text3);}
+  .snap-card .row .val.above{color:var(--green);}
+  .snap-card .row .val.below{color:var(--red);}
+  .snap-card .row .val.near{color:var(--yellow);}
+  .rf-badge{display:inline-block;padding:1px 6px;border-radius:2px;font-size:10px;font-weight:700;margin-top:6px;}
+  .rf-pos{background:var(--green-dim);color:var(--green);}
+  .rf-neg{background:var(--red-dim);color:var(--red);}
+  .rf-warn{background:var(--orange-dim);color:var(--orange);}
+
+  .context-alert{border:1px solid;border-radius:4px;padding:12px 14px;margin-bottom:14px;font-size:11px;line-height:1.8;}
+  .context-alert.macro{background:rgba(255,107,53,.05);border-color:rgba(255,107,53,.3);}
+  .context-alert.macro .ctx-title{color:var(--hot);font-weight:700;font-size:12px;margin-bottom:6px;text-transform:uppercase;letter-spacing:.08em;}
+  .context-alert strong{color:var(--white);}
+  .hot{color:var(--hot);}
+  .cool{color:var(--green);}
+
+  .gaia-panel{background:var(--bg3);border:1px solid var(--border);border-left:3px solid var(--cyan);border-radius:4px;padding:14px;margin-bottom:14px;}
+  .gaia-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:12px;margin-bottom:12px;}
+  .gaia-metric{text-align:center;}
+  .gaia-metric .lbl{font-size:9px;color:var(--text3);text-transform:uppercase;letter-spacing:.1em;margin-bottom:4px;}
+  .gaia-metric .val{font-size:16px;font-weight:700;color:var(--white);}
+  .gaia-metric .val.neutral{color:var(--yellow);}
+  .gaia-metric .val.call{color:var(--red);}
+  .gaia-metric .val.put{color:var(--green);}
+  .gaia-metric .val.node{color:var(--purple);}
+  .gaia-metric .val.flip{color:var(--orange);}
+  .gaia-note{background:rgba(57,197,207,.06);border:1px solid rgba(57,197,207,.15);border-radius:3px;padding:8px 12px;font-size:11px;color:var(--text2);}
+  .gaia-note strong{color:var(--cyan);}
+
+  /* NDX CONFLUENCE */
+  .confluence-box{background:var(--bg3);border:1px solid rgba(188,140,255,.2);border-radius:4px;padding:12px;margin-bottom:12px;font-size:11px;color:var(--text2);}
+  .confluence-box .ct{color:var(--purple);font-weight:700;margin-bottom:8px;font-size:11px;text-transform:uppercase;}
+  .conf-row{display:flex;gap:8px;flex-wrap:wrap;}
+  .conf-chip{padding:3px 10px;border-radius:3px;font-size:11px;font-weight:700;}
+  .conf-2x{background:rgba(188,140,255,.1);color:var(--purple);border:1px solid rgba(188,140,255,.3);}
+  .conf-3x{background:rgba(57,197,207,.1);color:var(--cyan);border:1px solid rgba(57,197,207,.3);}
+
+  .instrument-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px;}
+  .inst-card{background:var(--bg3);border:1px solid var(--border);border-radius:4px;padding:14px;}
+  .inst-card .inst-header{display:flex;align-items:center;gap:8px;margin-bottom:10px;padding-bottom:8px;border-bottom:1px solid var(--border);}
+  .inst-tag{padding:2px 8px;border-radius:3px;font-weight:700;font-size:11px;text-transform:uppercase;}
+  .tag-es{background:var(--blue-dim);color:var(--blue);}
+  .tag-nq{background:rgba(188,140,255,.15);color:var(--purple);}
+  .tag-cl{background:var(--yellow-dim);color:var(--yellow);}
+  .tag-spx{background:var(--green-dim);color:var(--green);}
+  .inst-spot{font-size:18px;font-weight:700;margin-left:auto;}
+  .inst-spot.up{color:var(--green);}
+  .inst-spot.down{color:var(--red);}
+
+  .pad-table{width:100%;border-collapse:collapse;margin-bottom:10px;}
+  .pad-table th{text-align:left;color:var(--text3);font-size:9px;text-transform:uppercase;letter-spacing:.1em;padding:3px 6px;border-bottom:1px solid var(--border);}
+  .pad-table td{padding:4px 6px;font-size:11px;border-bottom:1px solid rgba(30,45,61,.5);}
+  .pad-table tr:last-child td{border-bottom:none;}
+  .zone-call{color:var(--red);}
+  .zone-flip{color:var(--orange);font-weight:700;}
+  .zone-put{color:var(--green);}
+
+  .tpo-row{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:8px;}
+  .tpo-chip{padding:2px 8px;border-radius:2px;font-size:10px;background:var(--bg2);border:1px solid var(--border);}
+  .tpo-chip .lbl{color:var(--text3);}
+
+  .plan-box{background:var(--bg2);border:1px solid var(--border2);border-radius:3px;padding:10px;font-size:11px;color:var(--text2);line-height:1.7;}
+  .plan-box .plan-title{color:var(--white);font-weight:700;font-size:11px;margin-bottom:6px;text-transform:uppercase;}
+  .plan-box ul{list-style:none;}
+  .plan-box ul li::before{content:'▸ ';color:var(--pad-orange);}
+  .plan-box ul li.bull::before{content:'🟢 ';}
+  .plan-box ul li.bear::before{content:'🔴 ';}
+  .plan-box ul li.key::before{content:'📍 ';}
+  .plan-box ul li.warn::before{content:'⚠️ ';}
+  .plan-box ul li.hot::before{content:'🔥 ';}
+
+  .edge-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:12px;}
+  .scenario-card{border-radius:4px;padding:12px;border:1px solid;}
+  .scenario-card.base{background:rgba(57,197,207,.05);border-color:rgba(57,197,207,.25);}
+  .scenario-card.bull{background:rgba(63,185,80,.05);border-color:rgba(63,185,80,.25);}
+  .scenario-card.bear{background:rgba(248,81,73,.05);border-color:rgba(248,81,73,.25);}
+  .sc-header{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;margin-bottom:6px;}
+  .sc-base{color:var(--cyan);}
+  .sc-bull{color:var(--green);}
+  .sc-bear{color:var(--red);}
+  .scenario-card .pct{font-size:24px;font-weight:700;margin-bottom:6px;}
+  .scenario-card .desc{font-size:10px;color:var(--text2);line-height:1.6;}
+  .scenario-card .levels{margin-top:8px;font-size:10px;color:var(--text3);}
+
+  /* MACRO TABLE */
+  .macro-table{width:100%;border-collapse:collapse;margin-bottom:12px;}
+  .macro-table th{text-align:left;color:var(--text3);font-size:9px;text-transform:uppercase;letter-spacing:.1em;padding:5px 10px;background:var(--bg2);border-bottom:1px solid var(--border);}
+  .macro-table td{padding:6px 10px;font-size:11px;border-bottom:1px solid rgba(30,45,61,.4);color:var(--text2);}
+  .macro-table tr:last-child td{border-bottom:none;}
+  .actual-hot{color:var(--hot);font-weight:700;}
+  .actual-cool{color:var(--green);font-weight:700;}
+  .actual-inline{color:var(--yellow);}
+  .miss{color:var(--red);}
+
+  .cal-table{width:100%;border-collapse:collapse;}
+  .cal-table th{text-align:left;color:var(--text3);font-size:9px;text-transform:uppercase;letter-spacing:.1em;padding:5px 10px;background:var(--bg2);border-bottom:1px solid var(--border);}
+  .cal-table td{padding:6px 10px;font-size:11px;border-bottom:1px solid rgba(30,45,61,.4);color:var(--text2);}
+  .imp-high{color:var(--red);font-weight:700;}
+  .imp-med{color:var(--yellow);}
+  .imp-low{color:var(--text3);}
+  .pad-note{color:var(--cyan);font-size:10px;}
+  .today-row td{background:rgba(255,107,53,.04);}
+
+  .earnings-table{width:100%;border-collapse:collapse;}
+  .earnings-table th{text-align:left;color:var(--text3);font-size:9px;text-transform:uppercase;letter-spacing:.1em;padding:5px 10px;background:var(--bg2);border-bottom:1px solid var(--border);}
+  .earnings-table td{padding:6px 10px;font-size:11px;border-bottom:1px solid rgba(30,45,61,.4);color:var(--text2);}
+  .beat{color:var(--green);font-weight:700;}
+  .amc{color:var(--purple);}
+  .bmo{color:var(--yellow);}
+  .mega{color:var(--orange);font-weight:700;}
+  .last-night td{background:rgba(63,185,80,.05);}
+
+  .tweet-box{background:#050d14;border:1px solid #1d9bf0;border-radius:8px;padding:16px;margin-bottom:12px;}
+  .tweet-header{display:flex;align-items:center;gap:10px;margin-bottom:12px;}
+  .tweet-avatar{width:36px;height:36px;background:var(--pad-orange);border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:14px;color:var(--bg);}
+  .tweet-name{color:var(--white);font-weight:700;font-size:13px;}
+  .tweet-handle{color:var(--text3);font-size:11px;}
+  .tweet-label{margin-left:auto;padding:2px 8px;background:rgba(29,155,240,.15);border:1px solid rgba(29,155,240,.3);border-radius:10px;font-size:10px;color:#1d9bf0;}
+  .tweet-content{font-family:'Share Tech Mono',monospace;font-size:12px;color:var(--text);line-height:1.8;white-space:pre-wrap;background:rgba(255,255,255,.02);border:1px solid var(--border);border-radius:4px;padding:12px;}
+  .tweet-time{margin-top:10px;font-size:10px;color:var(--text3);}
+
+  .synth-box{background:var(--bg3);border:1px solid var(--border2);border-left:3px solid var(--pad-orange);border-radius:4px;padding:14px;margin-bottom:12px;font-size:11px;color:var(--text2);line-height:1.8;}
+  .synth-box strong{color:var(--white);}
+
+  /* POWELL SECTION */
+  .powell-box{background:rgba(255,107,53,.05);border:1px solid rgba(255,107,53,.2);border-radius:4px;padding:14px;margin-bottom:14px;font-size:11px;color:var(--text2);line-height:1.8;}
+  .powell-box .pt{color:var(--hot);font-weight:700;font-size:12px;margin-bottom:8px;text-transform:uppercase;letter-spacing:.08em;}
+  .powell-box strong{color:var(--white);}
+
+  .divider{height:1px;background:linear-gradient(90deg,transparent,var(--border),transparent);margin:16px 0;}
+  .footer{text-align:center;padding:16px;border-top:1px solid var(--border);color:var(--text3);font-size:10px;margin-top:24px;}
+  .footer span{color:var(--pad-orange);}
+</style>
+<link type="text/css" rel="stylesheet" charset="UTF-8" href="./PivotAlphaDesk · GAIA Briefing · 30 Apr 2026_files/m=el_main_css"></head>
+<body>
+
+<div class="terminal-bar">
+  <div class="logo"><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">Pivot </font></font><span><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">Alpha</font></font></span><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;"> Desk GAIA Framework</font></font></div>
+  <div class="ts" style="color:var(--text3);font-size:11px;">
+    <span class="date"><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">THURSDAY · 30 APR 2026</font></font></span><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;"> 
+    &nbsp;|&nbsp; </font></font><span class="time"><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">08:37 ET</font></font></span><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;"> 
+    &nbsp;| PRE-MARKET SESSION
+  </font></font></div>
+  <div class="live-dot"><div class="dot"></div><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">LIVE</font></font></div>
+</div>
+
+<div class="data-banner"><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">
+  🔥 &nbsp; </font></font><span><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">DATA 08:30 ET: </font></font></span>&nbsp;
+  <span class="bull"><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">GDP 2.0%</font></font></span><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;"> · 
+   </font></font><span class="bear"><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">Core PCE Q 4.3% HOT</font></font></span><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;"> · 
+   </font></font><span class="bear"><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">Employment Cost 0.9% HOT</font></font></span><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;"> · 
+   </font></font><span class="bull"><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">Claims 189K STRONG</font></font></span><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;"> · 
+   </font></font><span><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">STAGFLATION SIGNAL · APPLE AMC TODAY</font></font></span>
+</div>
+
+<div class="main">
+
+  <!-- SECTION 1: MACRO DATA -->
+  <div class="section-header">
+    <span class="num"><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">00</font></font></span>
+    <span class="title"><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">Macro Data 08:30 ET — Immediate Read</font></font></span>
+    <span class="sub"><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">CME QuikStrike Trading Economics</font></font></span>
+  </div>
+
+  <table class="macro-table">
+    <thead>
+      <tr><th><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">Fact</font></font></th><th><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">Current</font></font></th><th><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">Consensus</font></font></th><th><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">Prev</font></font></th><th><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">Reading</font></font></th></tr>
+    </thead>
+    <tbody>
+      <tr><td><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">GDP Q1 Adv QoQ</font></font></td><td class="miss"><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">2.0%</font></font></td><td><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">23%</font></font></td><td><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">0.5%</font></font></td><td class="pad-note"><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">Mild miss · economy slowing down</font></font></td></tr>
+      <tr><td><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">Core PCE MoM Mar</font></font></td><td class="actual-inline"><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">0.3%</font></font></td><td><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">0.3%</font></font></td><td><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">0.4%</font></font></td><td class="pad-note"><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">In line · moderate relief</font></font></td></tr>
+      <tr><td style="color:var(--hot)"><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">Core PC Prices Q ⚠️</font></font></td><td class="actual-hot"><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">4.3%</font></font></td><td><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">4.1%</font></font></td><td><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">2.7%</font></font></td><td class="pad-note" style="color:var(--hot)"><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">HOT — inflation accelerating</font></font></td></tr>
+      <tr><td><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">PCE YoY Mar</font></font></td><td class="actual-inline"><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">3.5%</font></font></td><td><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">3.5%</font></font></td><td><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">2.8%</font></font></td><td class="pad-note"><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">In line · but rising YoY</font></font></td></tr>
+      <tr><td><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">PCE MoM Mar</font></font></td><td class="actual-inline"><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">0.7%</font></font></td><td><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">0.7%</font></font></td><td><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">0.4%</font></font></td><td class="pad-note"><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">In line · accelerating MoM</font></font></td></tr>
+      <tr><td style="color:var(--hot)"><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">Employment Cost Q1 ⚠️</font></font></td><td class="actual-hot"><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">0.9%</font></font></td><td><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">0.8%</font></font></td><td><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">0.7%</font></font></td><td class="pad-note" style="color:var(--hot)"><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">HOT — wages accelerating</font></font></td></tr>
+      <tr><td style="color:var(--green)"><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">Initial Jobless Claims ✓</font></font></td><td class="actual-cool"><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">189K</font></font></td><td><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">215K</font></font></td><td><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">214K</font></font></td><td class="pad-note" style="color:var(--green)"><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">STRONG — very solid work</font></font></td></tr>
+      <tr><td><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">GDP Price Index Q</font></font></td><td class="actual-hot"><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">4.5%</font></font></td><td><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">3.8%</font></font></td><td><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">3.7%</font></font></td><td class="pad-note" style="color:var(--hot)"><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">HOT — GDP inflation</font></font></td></tr>
+      <tr><td><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">Personal Spending Mar</font></font></td><td class="actual-cool"><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">0.9%</font></font></td><td><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">0.9%</font></font></td><td><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">0.6%</font></font></td><td class="pad-note"><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">In line · solid consumer</font></font></td></tr>
+      <tr><td><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">Personal Income Mar</font></font></td><td class="actual-cool"><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">0.6%</font></font></td><td><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">0.3%</font></font></td><td><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">0.0%</font></font></td><td class="pad-note" style="color:var(--green)"><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">BEAT · Accelerating revenue</font></font></td></tr>
+    </tbody>
+  </table>
+
+  <div class="context-alert macro">
+    <div class="ctx-title"><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">🔥 MACRO SUMMARY — STAGFLATION SIGNAL CONFIRMED</font></font></div><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">
+    Today's data package is the most challenging for the Fed: </font></font><strong><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">a slowing economy (GDP 2.0% miss)</font></font></strong><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;"> but </font></font><strong><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">accelerating inflation (Core PCE Q 4.3%, GDP Price 4.5%)</font></font></strong><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;"> . The labor market is ultra-strong (Claims 189K vs. 215K consensus). Consumer spending is in line.
+     </font></font><strong><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">Translation:</font></font></strong><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;"> The Fed can't cut rates—inflation is too hot. It can't raise rates—the economy is slowing. Powell was right to be hawkish yesterday. </font></font><strong><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">June cuts are impossible with these numbers.</font></font></strong><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;"> 
+    The market opens with last night's positive earnings as support versus this hawkish data as pressure.
+     </font></font><strong><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">Maximum tension at the Call Wall 7,150 (GAIA) / 7,200 (Nexa).</font></font></strong>
+  </div>
+
+  <!-- POWELL LEGACY SECTION -->
+  <div class="powell-box">
+    <div class="pt"><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">🏦 Powell Context — The Institutional Signal the Market Is Processing</font></font></div><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">
+    Beyond the numbers, the market is digesting Powell's message from yesterday:
+     </font></font><strong><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">"Fed independence is at risk."</font></font></strong><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;"> Powell didn't stay on the Board because he likes the job. He stayed because he believes the institution is under threat. With </font></font><strong><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">four dissenters</font></font></strong><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;"> (a record since 1992),
+     </font></font><strong><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">Warsh's incoming hawkishness</font></font></strong><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;"> , and the Department of Justice investigating—there's an institutional risk premium that the market is beginning to price in. Today's data (stagflation) complicates matters further: the Fed needs independence precisely when it's most difficult to use.
+     </font></font><strong><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">Operational implication:</font></font></strong><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;"> greater structural volatility in the coming months.
+  </font></font></div>
+
+  <!-- SECTION 2: SNAPSHOT -->
+  <div class="section-header">
+    <span class="num"><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">01</font></font></span>
+    <span class="title"><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">Market Snapshot — Pre-Market 08:37 ET</font></font></span>
+    <span class="sub"><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">ESM26 NQM26 CLM26 SPX CBOE</font></font></span>
+  </div>
+
+  <div class="snapshot-grid">
+    <div class="snap-card es">
+      <div class="instrument"><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">ES · ESM26 · Jun 2026</font></font></div>
+      <div class="spot up"><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">7,193.00</font></font></div>
+      <div class="rows">
+        <div class="row"><span class="lbl"><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">EMA200</font></font></span><span class="val above"><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">7,170.67 · +22.33 pts</font></font></span></div>
+        <div class="row"><span class="lbl"><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">VWAP</font></font></span><span class="val above"><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">7,173.42</font></font></span></div>
+        <div class="row"><span class="lbl"><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">VAH</font></font></span><span class="val"><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">7,200.00</font></font></span></div>
+        <div class="row"><span class="lbl"><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">POC</font></font></span><span class="val"><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">7,172.00</font></font></span></div>
+        <div class="row"><span class="lbl"><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">VAL</font></font></span><span class="val"><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">7,153.75</font></font></span></div>
+        <div class="row"><span class="lbl"><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">RF</font></font></span><span class="val above"><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">+7</font></font></span></div>
+      </div>
+      <span class="rf-badge rf-pos"><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">EARNINGS BOUNCE ✓</font></font></span>
+    </div>
+    <div class="snap-card nq">
+      <div class="instrument"><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">NQ · NQM26 · Jun 2026</font></font></div>
+      <div class="spot up"><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">27,478.50</font></font></div>
+      <div class="rows">
+        <div class="row"><span class="lbl"><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">EMA200</font></font></span><span class="val above"><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">27,253.80 · +224 pts</font></font></span></div>
+        <div class="row"><span class="lbl"><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">VWAP</font></font></span><span class="val above"><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">27,406.32</font></font></span></div>
+        <div class="row"><span class="lbl"><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">VAH</font></font></span><span class="val"><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">27,495.00</font></font></span></div>
+        <div class="row"><span class="lbl"><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">POC</font></font></span><span class="val"><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">27,399.50</font></font></span></div>
+        <div class="row"><span class="lbl"><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">VAL</font></font></span><span class="val"><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">27,270.00</font></font></span></div>
+        <div class="row"><span class="lbl"><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">RF</font></font></span><span class="val above"><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">+3</font></font></span></div>
+      </div>
+      <span class="rf-badge rf-pos"><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">ABOVE FLIP · BULL ✓</font></font></span>
+    </div>
+    <div class="snap-card cl">
+      <div class="instrument"><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">CL · CLM26 · Jun 2026</font></font></div>
+      <div class="spot down"><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">104.17</font></font></div>
+      <div class="rows">
+        <div class="row"><span class="lbl"><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">EMA200</font></font></span><span class="val above"><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">100.91 · +3.26 pts</font></font></span></div>
+        <div class="row"><span class="lbl"><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">VWAP</font></font></span><span class="val above"><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">107.39 · LOW</font></font></span></div>
+        <div class="row"><span class="lbl"><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">VAH</font></font></span><span class="val above"><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">109.80</font></font></span></div>
+        <div class="row"><span class="lbl"><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">POC</font></font></span><span class="val"><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">108.15</font></font></span></div>
+        <div class="row"><span class="lbl"><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">VAL</font></font></span><span class="val"><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">107.10</font></font></span></div>
+        <div class="row"><span class="lbl"><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">RF</font></font></span><span class="val below"><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">-10 · VAH rejection</font></font></span></div>
+      </div>
+      <span class="rf-badge rf-neg"><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">VAH REJECTION ⚠</font></font></span>
+    </div>
+    <div class="snap-card spx">
+      <div class="instrument"><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">SPX · CBOE · Cash</font></font></div>
+      <div class="spot up"><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">7,135.95</font></font></div>
+      <div class="rows">
+        <div class="row"><span class="lbl"><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">EMA200</font></font></span><span class="val above"><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">7,033.67 · +102 pts</font></font></span></div>
+        <div class="row"><span class="lbl"><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">VAH</font></font></span><span class="val"><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">7,140.00</font></font></span></div>
+        <div class="row"><span class="lbl"><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">POC</font></font></span><span class="val"><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">7,125.00</font></font></span></div>
+        <div class="row"><span class="lbl"><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">VAL</font></font></span><span class="val"><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">7,120.00</font></font></span></div>
+        <div class="row"><span class="lbl"><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">GF Intraday</font></font></span><span class="val near"><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">7,135</font></font></span></div>
+        <div class="row"><span class="lbl"><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">RF</font></font></span><span class="val above"><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">+4</font></font></span></div>
+      </div>
+      <span class="rf-badge rf-warn"><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">🍎 AAPL AMC TODAY</font></font></span>
+    </div>
+  </div>
+
+  <!-- SECTION 3: GAIA DHP -->
+  <div class="section-header">
+    <span class="num"><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">02</font></font></span>
+    <span class="title"><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">GAIA DHP — Pre-Open Status</font></font></span>
+    <span class="sub"><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">GEX Structure · SPX · NDX · 08:37 ET</font></font></span>
+  </div>
+
+  <div class="gaia-panel">
+    <div class="gaia-grid">
+      <div class="gaia-metric"><div class="lbl"><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">DHP Total</font></font></div><div class="val neutral"><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">0M</font></font></div></div>
+      <div class="gaia-metric"><div class="lbl"><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">Regime</font></font></div><div class="val neutral"><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">NEUTRAL</font></font></div></div>
+      <div class="gaia-metric"><div class="lbl"><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">Momentum</font></font></div><div class="val neutral"><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">NEUTRAL</font></font></div></div>
+      <div class="gaia-metric"><div class="lbl"><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">Call Wall</font></font></div><div class="val call"><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">7,150</font></font></div></div>
+      <div class="gaia-metric"><div class="lbl"><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">Put Wall</font></font></div><div class="val put"><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">7,100</font></font></div></div>
+      <div class="gaia-metric"><div class="lbl"><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">Gamma Node</font></font></div><div class="val node"><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">7,100</font></font></div></div>
+    </div>
+    <div class="gaia-grid" style="margin-top:8px">
+      <div class="gaia-metric"><div class="lbl"><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">Gravity Pin</font></font></div><div class="val flip"><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">7,100</font></font></div></div>
+      <div class="gaia-metric"><div class="lbl"><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">Gamma Flip</font></font></div><div class="val flip"><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">7,100</font></font></div></div>
+      <div class="gaia-metric"><div class="lbl"><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">SPX Spot</font></font></div><div class="val" style="color:var(--white)"><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">7,135.95</font></font></div></div>
+      <div class="gaia-metric"><div class="lbl"><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">vs Flip</font></font></div><div class="val" style="color:var(--green)"><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">+35 OVER</font></font></div></div>
+      <div class="gaia-metric"><div class="lbl"><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">vs Call Wall</font></font></div><div class="val" style="color:var(--orange)"><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">-14 BELOW</font></font></div></div>
+      <div class="gaia-metric"><div class="lbl"><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">Nexa Regime</font></font></div><div class="val" style="color:var(--hot);font-size:11px"><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">AMPLIFIED</font></font></div></div>
+    </div>
+    <div class="gaia-note">
+      <strong><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">PRE-OPEN NEUTRAL ✓</font></font></strong><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;"> — correct before 9:30 ET. SPX above Gamma Flip (7,100) — short-term bullish technical bias.
+       </font></font><strong><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">ATTENTION:</font></font></strong><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;"> Nexa marks AMPLIFIED — low gamma across the curve. Fast, directional moves expected. Dealers do NOT control the market today. GAIA Call Wall at </font></font><strong><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">7,150</font></font></strong><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;"> — immediate resistance. SPX only 14 points away. If today's hawkish data pushes higher, Gamma Flip 7,100 is key support.
+    </font></font></div>
+  </div>
+
+  <!-- NDX CONFLUENCE -->
+  <div class="confluence-box">
+    <div class="ct"><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">🔵 GAIA NDX — 08:37 ET · Above Flip · BULL</font></font></div>
+    <div style="font-size:11px;color:var(--text2);margin-bottom:8px;"><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">
+      NQ 27,512 · Basis +325.76 · Call Wall 27,350 · Put Wall 27,000 · Gamma Flip 27,030 · Gravity Pin 27,160
+    </font></font></div>
+    <div class="conf-row">
+      <span class="conf-2x"><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">27,030 (2x)</font></font></span>
+      <span class="conf-2x"><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">27,050 (2x)</font></font></span>
+      <span class="conf-2x"><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">27,070 (2x)</font></font></span>
+      <span class="conf-2x"><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">27,160 (2x)</font></font></span>
+      <span class="conf-3x"><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">27,230 (3x) ← STRONG SUPPORT</font></font></span>
+      <span class="conf-2x"><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">27,300 (2x)</font></font></span>
+    </div>
+    <div style="margin-top:8px;font-size:10px;color:var(--text3);"><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">
+      NQ on Gamma Flip (27,030) · BULL pre-open signal · Call Wall 27,350 = immediate ceiling
+    </font></font></div>
+  </div>
+
+  <!-- SECTION 4: INSTRUMENTS -->
+  <div class="section-header">
+    <span class="num"><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">03</font></font></span>
+    <span class="title"><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">Analysis by Instrument — TPO + PAD</font></font></span>
+    <span class="sub"><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">Earnings Bounce vs Macro Hawkish Low Gamma Day</font></font></span>
+  </div>
+
+  <div class="instrument-grid">
+    <!-- ES -->
+    <div class="inst-card">
+      <div class="inst-header">
+        <span class="inst-tag tag-es"><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">ES · ESM26</font></font></span>
+        <span style="color:var(--yellow);font-size:10px;"><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">AMPLIFIED · LOW GAMMA</font></font></span>
+        <span class="inst-spot up"><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">7,193.00</font></font></span>
+      </div>
+      <div class="tpo-row">
+        <div class="tpo-chip"><span class="lbl"><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">VAH </font></font></span><span style="color:var(--text2)"><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">7,200.00</font></font></span></div>
+        <div class="tpo-chip"><span class="lbl"><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">POC </font></font></span><span style="color:var(--text2)"><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">7,172.00</font></font></span></div>
+        <div class="tpo-chip"><span class="lbl"><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">VAL </font></font></span><span style="color:var(--text2)"><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">7,153.75</font></font></span></div>
+        <div class="tpo-chip"><span class="lbl"><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">EMA200 </font></font></span><span style="color:var(--green)"><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">7,170.67</font></font></span></div>
+        <div class="tpo-chip"><span class="lbl"><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">VWAP </font></font></span><span style="color:var(--text2)"><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">7,173.42</font></font></span></div>
+        <div class="tpo-chip"><span class="lbl"><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">RF </font></font></span><span style="color:var(--green)"><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">+7</font></font></span></div>
+      </div>
+      <table class="pad-table">
+        <tbody><tr><th><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">Area</font></font></th><th><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">Strike</font></font></th><th><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">Label</font></font></th><th><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">Guy</font></font></th></tr>
+        <tr><td class="zone-call"><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">▲ GC1</font></font></td><td><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">7,400</font></font></td><td><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">Gamma Ceiling</font></font></td><td style="color:var(--text3)"><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">Acceleration</font></font></td></tr>
+        <tr><td class="zone-call"><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">▲ GC2</font></font></td><td><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">7,250</font></font></td><td><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">Call Wall 2</font></font></td><td style="color:var(--text3)"><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">Acceleration</font></font></td></tr>
+        <tr><td class="zone-call"><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">▲GC3</font></font></td><td><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">7,200</font></font></td><td><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">Call Wall / VAH</font></font></td><td style="color:var(--yellow)"><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">Mixed · ROOF</font></font></td></tr>
+        <tr><td style="color:var(--cyan)"><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">📍 GAIA CW</font></font></td><td><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">7,150</font></font></td><td><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">Call Wall GAIA</font></font></td><td style="color:var(--cyan)"><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">RTH resistance</font></font></td></tr>
+        <tr><td style="color:var(--cyan)"><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">📍 TA</font></font></td><td><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">7,150</font></font></td><td><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">Tactical Anchor</font></font></td><td style="color:var(--cyan)"><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">Dynamic support</font></font></td></tr>
+        <tr><td class="zone-put"><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">▼ EA</font></font></td><td><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">7,050</font></font></td><td><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">Emergency Anchor</font></font></td><td style="color:var(--green)"><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">Medium</font></font></td></tr>
+        <tr><td class="zone-put"><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">▼ GF1/GF2</font></font></td><td><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">7,000</font></font></td><td><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">Put Wall</font></font></td><td style="color:var(--green)"><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">Containment</font></font></td></tr>
+      </tbody></table>
+      <div class="plan-box">
+        <div class="plan-title"><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">📋 Trading Plan ES</font></font></div>
+        <ul>
+          <li class="key"><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">SPOT 7,193 — between VWAP (7,173) and VAH (7,200) — pre-opening balance</font></font></li>
+          <li class="hot"><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">AMPLIFIED + low gamma = fast movements without damping</font></font></li>
+          <li class="warn"><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">Call Wall GAIA 7,150 acts as support/resistance RTH · hawkish data puts pressure</font></font></li>
+          <li class="bull"><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">Bull: hold over 7,200 (VAH) with DHP BLD.BULL → 7,250 → 7,300</font></font></li>
+          <li class="bear"><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">Bear: loss 7,150 (GAIA CW/TA) → 7,100 (Flip) → 7,050 (EA)</font></font></li>
+          <li class="key"><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">EMA200 (7,170) = daily bias level · above = bullish · below = bearish</font></font></li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- NQ -->
+    <div class="inst-card">
+      <div class="inst-header">
+        <span class="inst-tag tag-nq"><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">NQ · NQM26</font></font></span>
+        <span style="color:var(--green);font-size:10px;"><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">ABOVE FLIP · BULL · 🍎 AAPL AMC</font></font></span>
+        <span class="inst-spot up"><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">27,478.50</font></font></span>
+      </div>
+      <div class="tpo-row">
+        <div class="tpo-chip"><span class="lbl"><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">VAH </font></font></span><span style="color:var(--text2)"><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">27,495.00</font></font></span></div>
+        <div class="tpo-chip"><span class="lbl"><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">POC </font></font></span><span style="color:var(--text2)"><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">27,399.50</font></font></span></div>
+        <div class="tpo-chip"><span class="lbl"><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">VAL </font></font></span><span style="color:var(--text2)"><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">27,270.00</font></font></span></div>
+        <div class="tpo-chip"><span class="lbl"><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">EMA200 </font></font></span><span style="color:var(--green)"><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">27,253.80</font></font></span></div>
+        <div class="tpo-chip"><span class="lbl"><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">VWAP </font></font></span><span style="color:var(--green)"><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">27,406.32</font></font></span></div>
+        <div class="tpo-chip"><span class="lbl"><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">RF </font></font></span><span style="color:var(--green)"><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">+3</font></font></span></div>
+      </div>
+      <table class="pad-table">
+        <tbody><tr><th><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">Area</font></font></th><th><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">Strike</font></font></th><th><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">Label</font></font></th><th><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">Guy</font></font></th></tr>
+        <tr><td class="zone-call"><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">▲ GC1</font></font></td><td><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">27,600</font></font></td><td><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">Call Ceiling</font></font></td><td style="color:var(--text3)"><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">Acceleration</font></font></td></tr>
+        <tr><td class="zone-call"><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">▲ GC2</font></font></td><td><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">27,500</font></font></td><td><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">Call Wall 2</font></font></td><td style="color:var(--yellow)"><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">Mixed · VAH zone</font></font></td></tr>
+        <tr><td class="zone-call"><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">▲ GC3/CW</font></font></td><td><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">27,350</font></font></td><td><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">Call Wall GAIA</font></font></td><td style="color:var(--yellow)"><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">RTH roof</font></font></td></tr>
+        <tr><td class="zone-flip"><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">◆ GP/Flip</font></font></td><td><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">27,030</font></font></td><td><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">Gamma Flip GAIA</font></font></td><td style="color:var(--green)"><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">BULL about this</font></font></td></tr>
+        <tr><td class="zone-put"><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">▼ GF1</font></font></td><td><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">27,200</font></font></td><td><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">Gamma Floor 1</font></font></td><td style="color:var(--text3)"><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">Acceleration</font></font></td></tr>
+        <tr><td class="zone-put"><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">▼ GF2/PW</font></font></td><td><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">27,000</font></font></td><td><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">Put Wall</font></font></td><td style="color:var(--green)"><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">Strong support</font></font></td></tr>
+      </tbody></table>
+      <div class="plan-box">
+        <div class="plan-title"><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">📋 NQ Trading Plan</font></font></div>
+        <ul>
+          <li class="key"><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">SPOT 27,478 — below VAH (27,495) · immediate ceiling</font></font></li>
+          <li class="key"><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">Above Gamma Flip (27,030) = BULL bias confirmed pre-opening</font></font></li>
+          <li class="bull"><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">Bull: Break above 27,500 (VAH) → 27,600 · AAPL earnings as catalyst</font></font></li>
+          <li class="bear"><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">Bear: Lose 27,350 (Call Wall GAIA) → 27,230 (3x confluence) → 27,160</font></font></li>
+          <li class="warn">⚠️ AAPL reporta AMC — NO mantener NQ overnight</li>
+          <li class="hot">Gamma cero en NQ = movimientos explosivos en ambas direcciones</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="instrument-grid">
+    <!-- CL -->
+    <div class="inst-card">
+      <div class="inst-header">
+        <span class="inst-tag tag-cl">CL · CLM26</span>
+        <span style="color:var(--red);font-size:10px;">RECHAZO VAH · RF -10</span>
+        <span class="inst-spot down">104.17</span>
+      </div>
+      <div class="tpo-row">
+        <div class="tpo-chip"><span class="lbl">VAH </span><span style="color:var(--text2)">109.80</span></div>
+        <div class="tpo-chip"><span class="lbl">POC </span><span style="color:var(--text2)">108.15</span></div>
+        <div class="tpo-chip"><span class="lbl">VAL </span><span style="color:var(--text2)">107.10</span></div>
+        <div class="tpo-chip"><span class="lbl">EMA200 </span><span style="color:var(--green)">100.91</span></div>
+        <div class="tpo-chip"><span class="lbl">VWAP </span><span style="color:var(--red)">107.39 · BAJO</span></div>
+        <div class="tpo-chip"><span class="lbl">RF </span><span style="color:var(--red)">-10</span></div>
+      </div>
+      <table class="pad-table">
+        <tbody><tr><th>Zona</th><th>Strike</th><th>Label</th><th>Tipo</th></tr>
+        <tr><td class="zone-call">▲ GC1</td><td>115</td><td>Gamma Ceiling</td><td style="color:var(--text3)">Aceleración</td></tr>
+        <tr><td class="zone-flip">◆ GP/Flip</td><td>111</td><td>Gamma Flip · Pivot</td><td style="color:var(--yellow)">Nodo clave</td></tr>
+        <tr><td class="zone-call">▲ GC2</td><td>109.5</td><td>Near Call</td><td style="color:var(--text3)">Aceleración</td></tr>
+        <tr><td style="color:var(--yellow)">📍 TA</td><td>103–104</td><td>Tactical Anchor</td><td style="color:var(--yellow)">SPOT AQUÍ</td></tr>
+        <tr><td class="zone-put">▼ GF1</td><td>105</td><td>Gamma Floor</td><td style="color:var(--text3)">Aceleración</td></tr>
+        <tr><td class="zone-put">▼ GF2/PW</td><td>100</td><td>Put Wall MASIVO</td><td style="color:var(--green)">54,304 OI · Contención fuerte</td></tr>
+      </tbody></table>
+      <div class="plan-box">
+        <div class="plan-title">📋 Plan de Trading CL</div>
+        <ul>
+          <li class="key">SPOT 104.17 — en Tactical Anchor (103–104) — rechazo desde VAH (109.80)</li>
+          <li class="key">RF -10 + bajo VWAP (107.39) = sesgo bajista intraday</li>
+          <li class="bear">Bear: pérdida de 103 (TA) → 100 (Put Wall masivo 54K OI)</li>
+          <li class="bull">Bull: recuperar 105 (GF1) → 107 (VAL) → 108 (POC)</li>
+          <li class="hot">Put Wall 100 = soporte institucional extremo · muy difícil de romper</li>
+          <li class="key">CL bajando = presión inflacionaria cede = moderadamente bullish para ES</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- SPX -->
+    <div class="inst-card">
+      <div class="inst-header">
+        <span class="inst-tag tag-spx">SPX · CBOE</span>
+        <span style="color:var(--hot);font-size:10px;">AMPLIFIED · GF INTRA 7,135</span>
+        <span class="inst-spot up">7,135.95</span>
+      </div>
+      <div class="tpo-row">
+        <div class="tpo-chip"><span class="lbl">VAH </span><span style="color:var(--text2)">7,140.00</span></div>
+        <div class="tpo-chip"><span class="lbl">POC </span><span style="color:var(--text2)">7,125.00</span></div>
+        <div class="tpo-chip"><span class="lbl">VAL </span><span style="color:var(--text2)">7,120.00</span></div>
+        <div class="tpo-chip"><span class="lbl">GF Intraday </span><span style="color:var(--orange)">7,135</span></div>
+        <div class="tpo-chip"><span class="lbl">GF Struct. </span><span style="color:var(--yellow)">7,300</span></div>
+      </div>
+      <table class="pad-table">
+        <tbody><tr><th>Zona PAD</th><th>Strike</th><th>Label</th><th>OI</th></tr>
+        <tr><td class="zone-call">▲ GC1</td><td>7,300</td><td>Call Wall DOM.</td><td style="color:var(--red)">34,101 MAX</td></tr>
+        <tr><td class="zone-call">▲ GC2</td><td>7,200</td><td>Call Wall 2</td><td style="color:var(--text3)">20,984</td></tr>
+        <tr><td class="zone-call">▲ GC3</td><td>7,245</td><td>Gamma Ceiling</td><td style="color:var(--text3)">13,201</td></tr>
+        <tr><td style="color:var(--orange)">◆ GF Intraday</td><td>7,135</td><td>Flip 0DTE</td><td style="color:var(--orange)">SPOT AQUÍ</td></tr>
+        <tr><td class="zone-put">▼ GF1</td><td>7,100</td><td>Gamma Floor 1</td><td style="color:var(--text3)">10,411</td></tr>
+        <tr><td class="zone-put">▼ GF3/PW</td><td>7,000</td><td>Put Wall</td><td style="color:var(--green)">21,197</td></tr>
+        <tr><td class="zone-put">▼ EA</td><td>6,950</td><td>Emergency Anchor</td><td style="color:var(--green)">15,662</td></tr>
+      </tbody></table>
+      <div class="plan-box">
+        <div class="plan-title">📋 SPX — Stagflation + Earnings Tension</div>
+        <ul>
+          <li class="key">SPOT 7,135 = exactamente EN GF Intraday (7,135) — zona de decisión</li>
+          <li class="hot">AMPLIFIED = gamma bajo · movimientos rápidos sin dealers amortiguando</li>
+          <li class="bull">Bull: sobre 7,150 (GAIA CW) → 7,200 → 7,245 → 7,300 (Call Wall dominante)</li>
+          <li class="bear">Bear: bajo 7,135 (GF Intraday) → 7,100 (GF1) → 7,000 (Put Wall)</li>
+          <li class="key">Call Wall 7,300 (34K OI) = techo estructural máximo del mes</li>
+          <li class="warn">AAPL AMC hoy — gap NQ mañana posible en ambas direcciones</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- SECTION 5: EDGE -->
+  <div class="section-header">
+    <span class="num">04</span>
+    <span class="title">EDGE — Síntesis Operativa</span>
+    <span class="sub">Earnings Bulls vs Macro Hawkish · AMPLIFIED Day</span>
+  </div>
+
+  <div class="synth-box">
+    <strong>SÍNTESIS:</strong> El día más complejo de la semana en términos de narrativas contrapuestas.
+    <strong>BULL:</strong> Earnings megacap excelentes (MSFT +5%, AMZN +71%, GOOGL +96%, META +57%) · ES sobre EMA200 · NQ sobre Gamma Flip.
+    <strong>BEAR:</strong> Stagflation signal (GDP miss + PCE hot) · Powell hawkish · Fed independence at risk · Warsh incoming.
+    <strong>GAMMA:</strong> AMPLIFIED (Nexa) = dealers NO controlan. Cualquier movimiento puede ser rápido y extenso.
+    <strong>AAPL AMC:</strong> último earnings megacap de la semana — no mantener NQ overnight.
+    <strong>NFP mañana 8:30 ET:</strong> el dato que cerrará la semana y definirá el sesgo de mayo.
+    <strong>Sesgo neto:</strong> alcista por earnings pero frágil — cualquier dato negativo post-apertura o comentario hawkish puede revertir rápido.
+  </div>
+
+  <div class="edge-grid">
+    <div class="scenario-card base">
+      <div class="sc-header sc-base">⚡ BASE CASE</div>
+      <div class="pct sc-base">45%</div>
+      <div class="desc">ES range 7,150–7,200. Earnings sostienen el bid. Macro hawkish frena el break. Consolidación pre-NFP. DHP NEUTRAL toda la sesión. Low volatility intraday.</div>
+      <div class="levels">Range: ES 7,150–7,200 · NQ 27,300–27,500</div>
+    </div>
+    <div class="scenario-card bull">
+      <div class="sc-header sc-bull">🟢 BULL CASE</div>
+      <div class="pct sc-bull">30%</div>
+      <div class="desc">Break sobre Call Wall 7,200 ES (7,150 GAIA) con DHP ACC.BULL. Earnings momentum domina sobre datos macro. NQ lidera sobre 27,500. AAPL earnings positivos amplifican mañana.</div>
+      <div class="levels">Target: ES 7,250 · NQ 27,600</div>
+    </div>
+    <div class="scenario-card bear">
+      <div class="sc-header sc-bear">🔴 BEAR CASE</div>
+      <div class="pct sc-bear">25%</div>
+      <div class="desc">Core PCE 4.3% + Employment Cost 0.9% pesa más que earnings. ES pierde 7,150 (GAIA CW) con DHP ACC.BEAR. Gamma bajo = aceleración rápida hacia 7,100 → 7,000.</div>
+      <div class="levels">Target: ES 7,100 · NQ 27,160–27,230</div>
+    </div>
+  </div>
+
+  <!-- SECTION 6: EARNINGS RECAP -->
+  <div class="section-header">
+    <span class="num">05</span>
+    <span class="title">Earnings — Anoche + Hoy AMC</span>
+    <span class="sub">Megacap Week cierra con AAPL</span>
+  </div>
+
+  <table class="earnings-table">
+    <thead>
+      <tr><th>Ticker</th><th>Empresa</th><th>EPS Act.</th><th>EPS Cons.</th><th>Rev Act.</th><th>Rev Cons.</th><th>Resultado</th></tr>
+    </thead>
+    <tbody>
+      <tr class="last-night">
+        <td class="mega">MSFT</td><td>Microsoft</td>
+        <td class="beat">4.27</td><td>4.05</td>
+        <td class="beat">82.9B</td><td>81.3B</td>
+        <td class="pad-note">✓ BEAT EPS +5% · Cloud fuerte</td>
+      </tr>
+      <tr class="last-night">
+        <td class="mega">AMZN</td><td>Amazon</td>
+        <td class="beat">2.78</td><td>1.62</td>
+        <td class="beat">181.5B</td><td>177B</td>
+        <td class="pad-note">✓ BEAT EPS +71% · AWS record</td>
+      </tr>
+      <tr class="last-night">
+        <td class="mega">GOOGL</td><td>Alphabet</td>
+        <td class="beat">5.11</td><td>2.60</td>
+        <td class="beat">109.9B</td><td>106.6B</td>
+        <td class="pad-note">✓ BEAT EPS +96% · Search + AI</td>
+      </tr>
+      <tr class="last-night">
+        <td class="mega">META</td><td>Meta Platforms</td>
+        <td class="beat">10.44</td><td>6.62</td>
+        <td class="beat">56.3B</td><td>55.3B</td>
+        <td class="pad-note">✓ BEAT EPS +57% · AI ads</td>
+      </tr>
+      <tr>
+        <td class="mega" style="color:var(--warn)">AAPL</td><td>Apple</td>
+        <td>—</td><td>1.95</td>
+        <td>—</td><td>108.9B</td>
+        <td class="pad-note" style="color:var(--warn)">🍎 HOY AMC · $3.9T market cap</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div style="margin-top:10px;padding:10px 12px;background:rgba(255,68,102,.06);border:1px solid rgba(255,68,102,.2);border-radius:4px;font-size:11px;color:var(--text2);">
+    ⚠️ <strong style="color:var(--warn)">AAPL HOY AMC:</strong> El earnings de mayor market cap del mundo cierra la semana megacap.
+    Consensus EPS 1.95 vs prev 1.65 · Revenue 108.9B. Con el contexto de CL sobre 100 y guidance de márgenes,
+    cualquier miss puede ser amplificado por el gamma bajo de NQ. <strong>No mantener NQ overnight.</strong>
+    NFP mañana 8:30 AM añade otra capa de riesgo.
+  </div>
+
+  <!-- SECTION 7: CALENDAR -->
+  <div class="section-header">
+    <span class="num">06</span>
+    <span class="title">Calendario Económico — 30 Apr · Semana</span>
+    <span class="sub">CME QuikStrike · Datos ya publicados marcados</span>
+  </div>
+
+  <table class="cal-table">
+    <thead>
+      <tr><th>Hora ET</th><th>Evento</th><th>Actual</th><th>Cons.</th><th>Impacto</th><th>Nota PAD</th></tr>
+    </thead>
+    <tbody>
+      <tr class="today-row">
+        <td style="color:var(--green)">08:30 ✓</td>
+        <td>GDP Q1 Adv</td>
+        <td class="miss">2.0%</td><td>2.3%</td>
+        <td class="imp-high">ALTO</td>
+        <td class="pad-note">Miss leve · no recesión pero desaceleración</td>
+      </tr>
+      <tr class="today-row">
+        <td style="color:var(--green)">08:30 ✓</td>
+        <td style="color:var(--hot)">Core PCE Prices Q ⚠️</td>
+        <td class="actual-hot">4.3%</td><td>4.1%</td>
+        <td class="imp-high">ALTO</td>
+        <td class="pad-note" style="color:var(--hot)">HOT · Fed no puede cortar en junio</td>
+      </tr>
+      <tr class="today-row">
+        <td style="color:var(--green)">08:30 ✓</td>
+        <td style="color:var(--green)">Jobless Claims ✓</td>
+        <td class="actual-cool">189K</td><td>215K</td>
+        <td class="imp-high">ALTO</td>
+        <td class="pad-note" style="color:var(--green)">FUERTE · labor resiliente</td>
+      </tr>
+      <tr class="today-row">
+        <td>09:45</td>
+        <td>Chicago PMI Apr</td>
+        <td>—</td><td>53</td>
+        <td class="imp-med">MEDIO</td>
+        <td class="pad-note">Monitorear · dato manufacturero</td>
+      </tr>
+      <tr class="today-row">
+        <td>AMC</td>
+        <td style="color:var(--warn)">🍎 AAPL Earnings</td>
+        <td>—</td><td>EPS 1.95</td>
+        <td class="imp-high" style="font-size:13px">🔥 CRÍTICO</td>
+        <td class="pad-note">Gap NQ mañana · no overnight</td>
+      </tr>
+      <tr>
+        <td style="color:var(--red)">VIE 1 08:30</td>
+        <td style="color:var(--red);font-weight:700">NFP + Unemployment 🔥</td>
+        <td>—</td><td>—</td>
+        <td class="imp-high" style="font-size:13px">CRÍTICO</td>
+        <td class="pad-note">Cierre semana · nuevo GEX structure</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- SECTION 8: TWITTER -->
+  <div class="section-header">
+    <span class="num">07</span>
+    <span class="title">Twitter del Día — @PivotAlphaDesk</span>
+    <span class="sub">Publicar ahora · Post-data narrative</span>
+  </div>
+
+  <div class="tweet-box">
+    <div class="tweet-header">
+      <div class="tweet-avatar">PAD</div>
+      <div><div class="tweet-name">PivotAlphaDesk</div><div class="tweet-handle">@PivotAlphaDesk</div></div>
+      <span class="tweet-label">TWEET 1 · OPERATIVO</span>
+    </div>
+    <div class="tweet-content">Pre-Market | Thu 30 Apr · ES Gamma + Data Drop
+
+Data just dropped. Mixed — but the gamma map is clear.
+
+🟢 Support: 7,100 (Gamma Flip GAIA)
+🔴 Resistance: 7,150 (Call Wall GAIA)
+📍 ES: 7,193 · +22 pts over EMA200
+⚡ Regime: AMPLIFIED · low gamma · fast moves
+
+Core PCE Q: 4.3% 🔥 (hot)
+Employment Cost: 0.9% 🔥 (hot)
+Jobless Claims: 189K ✓ (strong)
+
+Earnings bulls vs macro hawks.
+Low gamma = no cushion.
+
+Apple reports tonight.
+NFP tomorrow 8:30 AM.
+
+Structure will tell us which side wins.
+
+<span style="color:#1d9bf0">#ES_F #GDP #PCE #GammaLevels #SPX #AAPL</span></div>
+    <div class="tweet-time">⏰ Publicar: AHORA · 08:37 AM ET · Jueves 30 Apr 2026</div>
+  </div>
+
+  <div class="tweet-box" style="border-color:var(--purple)">
+    <div class="tweet-header">
+      <div class="tweet-avatar" style="background:var(--purple)">PAD</div>
+      <div><div class="tweet-name">PivotAlphaDesk</div><div class="tweet-handle">@PivotAlphaDesk</div></div>
+      <span class="tweet-label" style="color:var(--purple);border-color:rgba(188,140,255,.3);background:rgba(188,140,255,.1)">TWEET 2 · EDUCATIVO</span>
+    </div>
+    <div class="tweet-content">AMPLIFIED regime. What does that mean? 🧵
+
+Most days dealers absorb price moves.
+They buy dips. Sell rallies. Keep things rangy.
+
+That's DAMPENED — high gamma, dealer control.
+
+Today is different.
+
+AMPLIFIED = low gamma across the curve.
+Dealers are NOT in control.
+
+What that means practically:
+
+→ Moves go further than expected
+→ Support and resistance break faster  
+→ False breaks are more common
+→ Size management matters most
+
+The Put Wall (7,000) and Call Wall (7,300) 
+are still there.
+
+But the road between them is wide open.
+
+GAIA flags the regime before the open.
+That changes everything about how you trade.
+
+<span style="color:#1d9bf0">#GammaExposure #SPX #DealerHedging #GAIA #ES_F</span></div>
+    <div class="tweet-time">⏰ Publicar: después del operativo</div>
+  </div>
+
+  <div class="divider"></div>
+
+  <div class="footer">
+    <span>PivotAlphaDesk</span> · GAIA Framework · Briefing 30 Apr 2026 · 08:37 ET &nbsp;|&nbsp;
+    Fuente: CME QuikStrike · CBOE · GAIA Live · Trading Economics &nbsp;|&nbsp;
+    <span>No constituye recomendación de inversión</span>
+  </div>
+
+</div><div id="goog-gt-tt" class="VIpgJd-yAWNEb-L7lbkb skiptranslate" style="border-radius: 12px; margin: 0 0 0 -23px; padding: 0; font-family: &#39;Google Sans&#39;, Arial, sans-serif;" data-id=""><div id="goog-gt-vt" class="VIpgJd-yAWNEb-hvhgNd"><div class="VIpgJd-yAWNEb-hvhgNd-Ud7fr"><img src="./PivotAlphaDesk · GAIA Briefing · 30 Apr 2026_files/24px.svg" width="24" height="24" alt=""><div class=" VIpgJd-yAWNEb-hvhgNd-IuizWc-i3jM8c " dir="ltr">Original text</div></div><div class="VIpgJd-yAWNEb-hvhgNd-k77Iif"><div id="goog-gt-original-text" class="VIpgJd-yAWNEb-nVMfcd-fmcmS VIpgJd-yAWNEb-hvhgNd-axAV1"></div></div><div class="VIpgJd-yAWNEb-hvhgNd-N7Eqid ltr"><div class="VIpgJd-yAWNEb-hvhgNd-N7Eqid-B7I4Od ltr" dir="ltr"><div class="VIpgJd-yAWNEb-hvhgNd-UTujCb">Rate this translation</div><div class="VIpgJd-yAWNEb-hvhgNd-eO9mKe">Your feedback will be used to help improve Google Translate</div></div><div class="VIpgJd-yAWNEb-hvhgNd-xgov5 ltr"><button id="goog-gt-thumbUpButton" type="button" class="VIpgJd-yAWNEb-hvhgNd-bgm6sf" title="Good translation" aria-label="Good translation" aria-pressed="false"><span id="goog-gt-thumbUpIcon"><svg width="24" height="24" viewBox="0 0 24 24" focusable="false" class="VIpgJd-yAWNEb-hvhgNd-THI6Vb NMm5M"><path d="M21 7h-6.31l.95-4.57.03-.32c0-.41-.17-.79-.44-1.06L14.17 0S7.08 6.85 7 7H2v13h16c.83 0 1.54-.5 1.84-1.22l3.02-7.05c.09-.23.14-.47.14-.73V9c0-1.1-.9-2-2-2zM7 18H4V9h3v9zm14-7l-3 7H9V8l4.34-4.34L12 9h9v2z"></path></svg></span><span id="goog-gt-thumbUpIconFilled"><svg width="24" height="24" viewBox="0 0 24 24" focusable="false" class="VIpgJd-yAWNEb-hvhgNd-THI6Vb NMm5M"><path d="M21 7h-6.31l.95-4.57.03-.32c0-.41-.17-.79-.44-1.06L14.17 0S7.08 6.85 7 7v13h11c.83 0 1.54-.5 1.84-1.22l3.02-7.05c.09-.23.14-.47.14-.73V9c0-1.1-.9-2-2-2zM5 7H1v13h4V7z"></path></svg></span></button><button id="goog-gt-thumbDownButton" type="button" class="VIpgJd-yAWNEb-hvhgNd-bgm6sf" title="Poor translation" aria-label="Poor translation" aria-pressed="false"><span id="goog-gt-thumbDownIcon"><svg width="24" height="24" viewBox="0 0 24 24" focusable="false" class="VIpgJd-yAWNEb-hvhgNd-THI6Vb NMm5M"><path d="M3 17h6.31l-.95 4.57-.03.32c0 .41.17.79.44 1.06L9.83 24s7.09-6.85 7.17-7h5V4H6c-.83 0-1.54.5-1.84 1.22l-3.02 7.05c-.09.23-.14.47-.14.73v2c0 1.1.9 2 2 2zM17 6h3v9h-3V6zM3 13l3-7h9v10l-4.34 4.34L12 15H3v-2z"></path></svg></span><span id="goog-gt-thumbDownIconFilled"><svg width="24" height="24" viewBox="0 0 24 24" focusable="false" class="VIpgJd-yAWNEb-hvhgNd-THI6Vb NMm5M"><path d="M3 17h6.31l-.95 4.57-.03.32c0 .41.17.79.44 1.06L9.83 24s7.09-6.85 7.17-7V4H6c-.83 0-1.54.5-1.84 1.22l-3.02 7.05c-.09.23-.14.47-.14.73v2c0 1.1.9 2 2 2zm16 0h4V4h-4v13z"></path></svg></span></button></div></div><div id="goog-gt-votingHiddenPane" class="VIpgJd-yAWNEb-hvhgNd-aXYTce"><form id="goog-gt-votingForm" action="https://translate.googleapis.com/translate_voting?client=te_lib" method="post" target="votingFrame" class="VIpgJd-yAWNEb-hvhgNd-aXYTce"><input type="text" name="sl" id="goog-gt-votingInputSrcLang"><input type="text" name="tl" id="goog-gt-votingInputTrgLang"><input type="text" name="query" id="goog-gt-votingInputSrcText"><input type="text" name="gtrans" id="goog-gt-votingInputTrgText"><input type="text" name="vote" id="goog-gt-votingInputVote"></form><iframe name="votingFrame" frameborder="0" src="./PivotAlphaDesk · GAIA Briefing · 30 Apr 2026_files/saved_resource.html"></iframe></div></div></div>
+
+
+</body></html>
