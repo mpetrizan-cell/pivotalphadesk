@@ -1,0 +1,941 @@
+<!DOCTYPE html>
+<!-- saved from url=(0082)file:///C:/Users/mpetr/Downloads/pad-library-triple-witching-mar20-2026%20(1).html -->
+<html lang="en" class="translated-ltr"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PAD Library — Triple Witching 20-Mar-2026 | The Day Everything Worked</title>
+<link href="./PAD Library — Triple Witching 20-Mar-2026 _ The Day Everything Worked_files/css2" rel="stylesheet">
+<style>
+:root {
+  --bg:      #080c10;
+  --bg2:     #0d1319;
+  --bg3:     #111820;
+  --border:  #1e2d3d;
+  --accent:  #00d4ff;
+  --gold:    #f0b429;
+  --green:   #00e676;
+  --red:     #ff4444;
+  --orange:  #ff6b35;
+  --purple:  #8a2be2;
+  --blue:    #4169e1;
+  --text:    #e8f4f8;
+  --text2:   #8ba4b8;
+  --text3:   #4a6070;
+  --white:   #ffffff;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 16px;
+  line-height: 1.7;
+  overflow-x: hidden;
+}
+
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+  pointer-events: none;
+  z-index: 0;
+  opacity: 0.4;
+}
+
+/* NAV */
+nav {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 48px;
+  background: rgba(8,12,16,0.92);
+  backdrop-filter: blur(16px);
+  border-bottom: 1px solid var(--border);
+}
+
+.nav-logo {
+  font-family: 'Syne', sans-serif;
+  font-weight: 700;
+  font-size: 15px;
+  color: var(--white);
+  text-decoration: none;
+}
+.nav-logo span { color: var(--accent); }
+
+.nav-links {
+  display: flex;
+  gap: 24px;
+  list-style: none;
+}
+.nav-links a {
+  font-family: 'Space Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text2);
+  text-decoration: none;
+  transition: color 0.2s;
+}
+.nav-links a:hover { color: var(--accent); }
+
+/* HERO ARTICLE */
+.article-hero {
+  position: relative;
+  z-index: 1;
+  padding: 120px 48px 64px;
+  max-width: 900px;
+  margin: 0 auto;
+  border-bottom: 1px solid var(--border);
+}
+
+.article-kicker {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-family: 'Space Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 20px;
+}
+
+.kicker-dot {
+  width: 6px; height: 6px;
+  background: var(--red);
+  border-radius: 50%;
+  animation: blink 1.5s ease-in-out infinite;
+}
+
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.2; }
+}
+
+.article-title {
+  font-family: 'Syne', sans-serif;
+  font-weight: 800;
+  font-size: clamp(32px, 5vw, 56px);
+  line-height: 1.05;
+  letter-spacing: -0.03em;
+  color: var(--white);
+  margin-bottom: 16px;
+}
+
+.article-title .highlight { color: var(--gold); }
+.article-title .red { color: var(--red); }
+
+.article-deck {
+  font-size: 20px;
+  color: var(--text2);
+  line-height: 1.6;
+  margin-bottom: 32px;
+  max-width: 680px;
+}
+
+.article-meta {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  flex-wrap: wrap;
+}
+
+.meta-item {
+  font-family: 'Space Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  color: var(--text3);
+  text-transform: uppercase;
+}
+
+.meta-item span { color: var(--text2); }
+
+.meta-divider {
+  width: 1px;
+  height: 12px;
+  background: var(--border);
+}
+
+/* SCORE BANNER */
+.score-banner {
+  position: relative;
+  z-index: 1;
+  background: linear-gradient(135deg, rgba(0,212,255,0.05), rgba(240,180,41,0.05));
+  border-top: 1px solid rgba(0,212,255,0.2);
+  border-bottom: 1px solid rgba(0,212,255,0.2);
+  padding: 32px 48px;
+}
+
+.score-inner {
+  max-width: 900px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 24px;
+}
+
+.score-item { text-align: center; }
+
+.score-num {
+  font-family: 'Syne', sans-serif;
+  font-weight: 800;
+  font-size: 40px;
+  line-height: 1;
+  margin-bottom: 4px;
+}
+
+.score-label {
+  font-family: 'Space Mono', monospace;
+  font-size: 9px;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--text3);
+}
+
+/* ARTICLE BODY */
+.article-body {
+  position: relative;
+  z-index: 1;
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 64px 48px;
+}
+
+/* TYPOGRAPHY */
+.article-body h2 {
+  font-family: 'Syne', sans-serif;
+  font-weight: 800;
+  font-size: 28px;
+  color: var(--white);
+  letter-spacing: -0.02em;
+  margin: 56px 0 20px;
+  padding-top: 56px;
+  border-top: 1px solid var(--border);
+}
+
+.article-body h2:first-child { margin-top: 0; padding-top: 0; border-top: none; }
+
+.article-body h3 {
+  font-family: 'Syne', sans-serif;
+  font-weight: 700;
+  font-size: 18px;
+  color: var(--accent);
+  letter-spacing: 0.02em;
+  margin: 32px 0 12px;
+}
+
+.article-body p {
+  color: var(--text2);
+  margin-bottom: 20px;
+  font-size: 16px;
+  line-height: 1.8;
+}
+
+.article-body strong { color: var(--white); font-weight: 600; }
+.article-body em { color: var(--gold); font-style: normal; font-weight: 600; }
+
+/* TIMELINE */
+.timeline {
+  margin: 32px 0;
+  position: relative;
+  padding-left: 24px;
+  border-left: 2px solid var(--border);
+}
+
+.timeline-item {
+  margin-bottom: 28px;
+  position: relative;
+}
+
+.timeline-item::before {
+  content: '';
+  position: absolute;
+  left: -29px;
+  top: 6px;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  border: 2px solid var(--bg);
+}
+
+.tl-absorption::before { background: var(--green); }
+.tl-warning::before { background: var(--gold); }
+.tl-signal::before { background: var(--accent); }
+.tl-break::before { background: var(--red); }
+.tl-trade::before { background: var(--purple); }
+.tl-macro::before { background: var(--orange); }
+
+.tl-time {
+  font-family: 'Space Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  color: var(--text3);
+  text-transform: uppercase;
+  margin-bottom: 4px;
+}
+
+.tl-title {
+  font-family: 'Syne', sans-serif;
+  font-weight: 700;
+  font-size: 15px;
+  color: var(--white);
+  margin-bottom: 6px;
+}
+
+.tl-body {
+  font-size: 14px;
+  color: var(--text2);
+  line-height: 1.6;
+}
+
+.tl-cvd {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: 'Space Mono', monospace;
+  font-size: 11px;
+  padding: 3px 10px;
+  border-radius: 2px;
+  margin-top: 6px;
+}
+
+.cvd-pos { background: rgba(0,230,118,0.1); color: var(--green); border: 1px solid rgba(0,230,118,0.2); }
+.cvd-neg { background: rgba(255,68,68,0.1); color: var(--red); border: 1px solid rgba(255,68,68,0.2); }
+.cvd-flat { background: rgba(240,180,41,0.1); color: var(--gold); border: 1px solid rgba(240,180,41,0.2); }
+
+/* CODE BLOCKS */
+.code-block {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-left: 3px solid var(--accent);
+  padding: 20px 24px;
+  font-family: 'Space Mono', monospace;
+  font-size: 12px;
+  line-height: 1.8;
+  color: var(--text2);
+  margin: 24px 0;
+  overflow-x: auto;
+}
+
+.code-block .c-green { color: var(--green); }
+.code-block .c-red { color: var(--red); }
+.code-block .c-gold { color: var(--gold); }
+.code-block .c-blue { color: var(--accent); }
+.code-block .c-orange { color: var(--orange); }
+.code-block .c-comment { color: var(--text3); }
+
+/* ALERT BOXES */
+.alert-box {
+  padding: 20px 24px;
+  margin: 24px 0;
+  border-left: 3px solid;
+}
+
+.alert-red { background: rgba(255,68,68,0.06); border-color: var(--red); }
+.alert-green { background: rgba(0,230,118,0.06); border-color: var(--green); }
+.alert-gold { background: rgba(240,180,41,0.06); border-color: var(--gold); }
+.alert-blue { background: rgba(0,212,255,0.06); border-color: var(--accent); }
+
+.alert-title {
+  font-family: 'Syne', sans-serif;
+  font-weight: 700;
+  font-size: 12px;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  margin-bottom: 8px;
+}
+
+.alert-red .alert-title { color: var(--red); }
+.alert-green .alert-title { color: var(--green); }
+.alert-gold .alert-title { color: var(--gold); }
+.alert-blue .alert-title { color: var(--accent); }
+
+.alert-box p { font-size: 14px; color: var(--text2); margin: 0; line-height: 1.7; }
+
+/* LEVELS TABLE */
+.levels-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 24px 0;
+  font-family: 'Space Mono', monospace;
+  font-size: 12px;
+}
+
+.levels-table th {
+  text-align: left;
+  padding: 10px 16px;
+  font-size: 9px;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--text3);
+  border-bottom: 1px solid var(--border);
+}
+
+.levels-table td {
+  padding: 12px 16px;
+  border-bottom: 1px solid rgba(30,45,61,0.5);
+  color: var(--text2);
+}
+
+.levels-table tr:hover td { background: var(--bg2); }
+
+.lvl-dot {
+  display: inline-block;
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  margin-right: 8px;
+}
+
+.check { color: var(--green); font-weight: 700; }
+.cross { color: var(--red); }
+
+/* RULE CARDS */
+.rules-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin: 24px 0;
+}
+
+.rule-card {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  padding: 20px;
+}
+
+.rule-card .rule-num {
+  font-family: 'Space Mono', monospace;
+  font-size: 9px;
+  letter-spacing: 0.2em;
+  color: var(--accent);
+  text-transform: uppercase;
+  margin-bottom: 8px;
+}
+
+.rule-card .rule-title {
+  font-family: 'Syne', sans-serif;
+  font-weight: 700;
+  font-size: 14px;
+  color: var(--white);
+  margin-bottom: 8px;
+}
+
+.rule-card .rule-body {
+  font-size: 13px;
+  color: var(--text2);
+  line-height: 1.6;
+}
+
+/* PULLQUOTE */
+.pullquote {
+  margin: 40px 0;
+  padding: 32px 40px;
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-left: 4px solid var(--gold);
+  position: relative;
+}
+
+.pullquote::before {
+  content: '"';
+  position: absolute;
+  top: -20px;
+  left: 32px;
+  font-family: 'Syne', sans-serif;
+  font-size: 80px;
+  color: var(--gold);
+  opacity: 0.3;
+  line-height: 1;
+}
+
+.pullquote p {
+  font-family: 'Syne', sans-serif;
+  font-size: 22px;
+  font-weight: 600;
+  color: var(--white);
+  line-height: 1.4;
+  margin: 0;
+}
+
+.pullquote cite {
+  display: block;
+  margin-top: 12px;
+  font-family: 'Space Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  color: var(--text3);
+  text-transform: uppercase;
+}
+
+/* SCORE TABLE */
+.score-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 24px 0;
+}
+
+.score-table th {
+  background: var(--bg3);
+  padding: 12px 16px;
+  font-family: 'Space Mono', monospace;
+  font-size: 9px;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--text3);
+  text-align: left;
+  border-bottom: 1px solid var(--border);
+}
+
+.score-table td {
+  padding: 14px 16px;
+  border-bottom: 1px solid rgba(30,45,61,0.5);
+  font-family: 'Space Mono', monospace;
+  font-size: 12px;
+}
+
+.score-table tr:hover td { background: var(--bg2); }
+
+/* FOOTER */
+footer {
+  position: relative;
+  z-index: 1;
+  border-top: 1px solid var(--border);
+  padding: 48px;
+  margin-top: 80px;
+}
+
+.footer-inner {
+  max-width: 900px;
+  margin: 0 auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.footer-left {
+  font-family: 'Space Mono', monospace;
+  font-size: 11px;
+  color: var(--text3);
+}
+
+.footer-left strong { color: var(--text2); font-family: 'Syne', sans-serif; }
+
+.footer-nav {
+  display: flex;
+  gap: 20px;
+}
+
+.footer-nav a {
+  font-family: 'Space Mono', monospace;
+  font-size: 10px;
+  color: var(--text3);
+  text-decoration: none;
+  letter-spacing: 0.08em;
+  transition: color 0.2s;
+}
+
+.footer-nav a:hover { color: var(--accent); }
+
+@media (max-width: 768px) {
+  nav { padding: 16px 24px; }
+  .article-hero { padding: 100px 24px 48px; }
+  .score-inner { grid-template-columns: repeat(2, 1fr); }
+  .article-body { padding: 48px 24px; }
+  .rules-grid { grid-template-columns: 1fr; }
+  .score-banner { padding: 24px; }
+}
+</style>
+<link type="text/css" rel="stylesheet" charset="UTF-8" href="./PAD Library — Triple Witching 20-Mar-2026 _ The Day Everything Worked_files/m=el_main_css"></head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="file:///C:/Users/mpetr/Downloads/index.html" class="nav-logo">Pivot<span>Alpha</span>Desk</a>
+  <ul class="nav-links">
+    <li><a href="file:///C:/Users/mpetr/Downloads/index.html"><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">← Home</font></font></a></li>
+    <li><a href="file:///C:/Users/mpetr/Downloads/briefing_mar_20_2026.html">Briefing 20-Mar</a></li>
+    <li><a href="file:///C:/Users/mpetr/Downloads/pad-library-zonas-algo.html">Library</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<div class="article-hero">
+  <div class="article-kicker">
+    <div class="kicker-dot"></div><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">
+    PAD Research Library · Case Study
+  </font></font></div>
+  <h1 class="article-title"><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">
+    Triple Witching </font></font><br>
+    <span class="highlight"><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">20-Mar-2026 </font></font></span><br>
+    <span style="font-size:0.65em;color:var(--text2)"><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">The Day Everything Worked</font></font></span>
+  </h1>
+  <p class="article-deck"><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">
+    How the gamma structure anticipated a 116-point move in ES, a geopolitical spike in CL, and a historic divergence in NQ—all before the open. A complete case study with real-time CVD.
+  </font></font></p>
+  <div class="article-meta">
+    <span class="meta-item"><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">Date: </font></font><span><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">March 20, 2026</font></font></span></span>
+    <div class="meta-divider"></div>
+    <span class="meta-item"><font dir="auto" style="vertical-align: inherit;"><span><font dir="auto" style="vertical-align: inherit;">ESM6 · NQM6 · CLK6</font></span><font dir="auto" style="vertical-align: inherit;"> Assets</font></font><span><font dir="auto" style="vertical-align: inherit;"></font></span></span>
+    <div class="meta-divider"></div>
+    <span class="meta-item">Evento <span>Triple Witching + Hormuz Risk</span></span>
+    <div class="meta-divider"></div>
+    <span class="meta-item">Régimen <span>DAMPENED → AMPLIFIED</span></span>
+  </div>
+</div>
+
+<!-- SCORE BANNER -->
+<div class="score-banner">
+  <div class="score-inner">
+    <div class="score-item">
+      <div class="score-num" style="color:var(--green)">7/7</div>
+      <div class="score-label"><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">PAD levels worked</font></font></div>
+    </div>
+    <div class="score-item">
+      <div class="score-num" style="color:var(--red)">116</div>
+      <div class="score-label"><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">ES points fell on the day</font></font></div>
+    </div>
+    <div class="score-item">
+      <div class="score-num" style="color:var(--gold)">427</div>
+      <div class="score-label"><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">NQ points fell on the day</font></font></div>
+    </div>
+    <div class="score-item">
+      <div class="score-num" style="color:var(--orange)">113</div>
+      <div class="score-label">IV CL — spike +7.25 pts</div>
+    </div>
+  </div>
+</div>
+
+<!-- BODY -->
+<div class="article-body">
+
+  <h2><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">The Context — What the Data Said at 7:44 AM</font></font></h2>
+
+  <p><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">Before Bloomberg reported a single headline about Iran, before the VIX hit 25.83, before the ES broke the Gamma Flip — the CME Group data was already speaking.</font></font></p>
+
+  <p><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">At 7:44 AM ET, with the market closed and the QuikStrike PDFs in hand, the gamma structure showed three simultaneous signals that in retrospect were unequivocal:</font></font></p>
+
+  <div class="code-block">
+<span class="c-red"><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">⚠ SIGNAL 1:</font></font></span><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;"> IV CL LO3H6 = </font></font><span class="c-gold"><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">113.00 (+7.25 overnight) </font></font></span>
+<span class="c-comment"><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">→ A 7.25 point spike in crude oil IV is not noise. </font></font></span>
+<span class="c-comment"><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">→ The market is pricing in an implied risk event. </font></font></span>
+
+<span class="c-red"><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">⚠ SIGNAL 2:</font></font></span><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;"> P/C ratio ES = </font></font><span class="c-red"><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">2.77</font></font></span><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;"> (73.4% puts)
+ </font></font><span class="c-comment"><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">→ Massive institutional defensive positioning. </font></font></span>
+
+<span class="c-red"><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">⚠ SIGNAL 3:</font></font></span><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;"> NQ IV </font></font><span class="c-red"><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">rose +0.11</font></font></span><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;"> while ES IV </font></font><span class="c-green"><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">fell -0.07 </font></font></span>
+<span class="c-comment"><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">→ Asymmetric pressure on tech. NQ is more vulnerable than ES.</font></font></span>
+  </div>
+
+  <p><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">The day's briefing documented these three signals and translated them into probabilities: </font></font><strong><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">Scenario B (bearish) 35%</font></font></strong><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;"> , with the explicit note that CL's fourth spike suggested "likely geopolitics." At 1:06 PM ET, Bloomberg would confirm what futures had already indicated since early morning.</font></font></p>
+
+  <div class="alert-box alert-gold">
+    <div class="alert-title"><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">PAD Rule Documented This Day</font></font></div>
+    <p><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">When CL's IV spikes +5 points or more overnight — look for Middle East geopolitical headlines before trading. Crude oil prices risk </font></font><strong><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">before</font></font></strong><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;"> the news breaks.</font></font></p>
+  </div>
+
+  <h2><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">The 9 PAD Levels — Final Score</font></font></h2>
+
+  <p><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">Before the opening bell, the nine PAD levels for ESM6 and NQM6 were calculated from CME's OI Matrix, Delta Matrix, and Gamma Matrix data. The closing results were as follows:</font></font></p>
+
+  <table class="levels-table">
+    <thead>
+      <tr>
+        <th><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">PAD level</font></font></th>
+        <th><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">ES Strike</font></font></th>
+        <th><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">NQ Strike</font></font></th>
+        <th><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">Result</font></font></th>
+        <th><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">Use</font></font></th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="lvl-dot" style="background:#ff2d2d"></span>Extreme Gamma Ceiling</td>
+        <td style="color:#ff6666">6,700</td>
+        <td style="color:#ff6666">24,750</td>
+        <td><span class="check">✅</span></td>
+        <td style="color:var(--text3)"><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">Not reached — correct resistance</font></font></td>
+      </tr>
+      <tr>
+        <td><span class="lvl-dot" style="background:#ff6b35"></span>Secondary Resistance</td>
+        <td style="color:#ff6b35">6,650</td>
+        <td style="color:#ff6b35">24,700</td>
+        <td><span class="check"><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">✅</font></font></span></td>
+        <td style="color:var(--text3)"><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">Pre-opening high nears 6,675</font></font></td>
+      </tr>
+      <tr>
+        <td><span class="lvl-dot" style="background:#ffd700"></span><strong>Tactical Anchor / Pin ◉</strong></td>
+        <td style="color:#ffd700"><strong>6,625</strong></td>
+        <td style="color:#ffd700"><strong>24,500</strong></td>
+        <td><span class="check"><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">✅</font></font></span></td>
+        <td style="color:var(--text3)"><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">Magnet all morning — AM absorption</font></font></td>
+      </tr>
+      <tr>
+        <td><span class="lvl-dot" style="background:#a8d8a8"></span>Structure Pivot Proxy</td>
+        <td style="color:#a8d8a8">6,610</td>
+        <td style="color:#a8d8a8">24,400</td>
+        <td><span class="check"><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">✅</font></font></span></td>
+        <td style="color:var(--text3)"><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">Tested and sustained on AM</font></font></td>
+      </tr>
+      <tr>
+        <td><span class="lvl-dot" style="background:#00bfff"></span><strong><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">Gamma Flip ⚡</font></font></strong></td>
+        <td style="color:#00bfff"><strong>6,600</strong></td>
+        <td style="color:#00bfff"><strong>24,300</strong></td>
+        <td><span class="check"><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">✅</font></font></span></td>
+        <td style="color:var(--text3)"><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">Roto PM → Amplified activated</font></font></td>
+      </tr>
+      <tr>
+        <td><span class="lvl-dot" style="background:#4169e1"></span>Gamma Floor</td>
+        <td style="color:#6688ff">6,550</td>
+        <td style="color:#6688ff">24,200</td>
+        <td><span class="check"><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">✅</font></font></span></td>
+        <td style="color:var(--text3)"><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">ES low 6,559 — NQ broke to 24,100</font></font></td>
+      </tr>
+      <tr>
+        <td><span class="lvl-dot" style="background:#8a2be2"></span>Acceleration Zone</td>
+        <td style="color:#b070f0">6,525</td>
+        <td style="color:#b070f0">24,100</td>
+        <td><span class="check"><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">✅</font></font></span></td>
+        <td style="color:var(--text3)"><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">NQ reached the zone at the close</font></font></td>
+      </tr>
+      <tr>
+        <td><span class="lvl-dot" style="background:#dc143c"></span>Emergency Anchor</td>
+        <td style="color:#dc143c">6,500</td>
+        <td style="color:#dc143c">24,000</td>
+        <td><span class="check"><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">✅</font></font></span></td>
+        <td style="color:var(--text3)"><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">Not reached — he maintained as floor</font></font></td>
+      </tr>
+      <tr>
+        <td><span class="lvl-dot" style="background:#8b0000"></span>Structure Break</td>
+        <td style="color:#cc4444">6,450</td>
+        <td style="color:#cc4444">23,950</td>
+        <td><span class="check"><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">✅</font></font></span></td>
+        <td style="color:var(--text3)"><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">Not activated — intact structure</font></font></td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h2><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">The Timeline — Minute by Minute with CVD</font></font></h2>
+
+  <p><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">This was the first session traded with the </font></font><strong><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">standard PAD CVD configuration</font></font></strong><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;"> in Bookmap — minimum 10 contracts in ES, 3 in NQ, reset on RTH open, split buyers/sellers enabled. What we saw was the methodology working in real time.</font></font></p>
+
+  <div class="timeline">
+
+    <div class="timeline-item tl-warning">
+      <div class="tl-time"><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">07:44 ET — Pre-Opening</font></font></div>
+      <div class="tl-title"><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">Briefing published — 3 active alerts</font></font></div>
+      <div class="tl-body"><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">IV CL +7.25, P/C ES 2.77, IV NQ/ES divergence. Scenario B assigned 35% probability. "Implicit macro event in crude oil — likely geopolitics."</font></font></div>
+    </div>
+
+    <div class="timeline-item tl-warning">
+      <div class="tl-time"><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">09:18 ET — Pre-Opening</font></font></div>
+      <div class="tl-title"><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">CVD configuration applied — Globex noise ignored</font></font></div>
+      <div class="tl-body"><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">Minimum change: 1 to 10 ES contracts, 1 to 3 NQ contracts. The accumulated amount in Globex was noise from H6 to M6 rolls and pre-expiration rebalancing. CVD reset for 09:30.</font></font></div>
+      <div><span class="tl-cvd cvd-flat"><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">CVD = GLOBEX NOISE — IGNORE</font></font></span></div>
+    </div>
+
+    <div class="timeline-item tl-signal">
+      <div class="tl-time"><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">09:30 ET — RTH Opening</font></font></div>
+      <div class="tl-title"><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">Opening — CVD buyers slight dominance</font></font></div>
+      <div class="tl-body"><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">Buyers 8,766 vs Sellers 8,535. Delta +231. Both CVD ES and NQ rising. No pre-opening divergence. ES price at 6,633 — above the Gamma Flip 6,600.</font></font></div>
+      <div><span class="tl-cvd cvd-pos"><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">ES CVD +231 · NQ CVD POSITIVE</font></font></span></div>
+    </div>
+
+    <div class="timeline-item tl-absorption">
+      <div class="tl-time"><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">09:32–09:35 ET</font></font></div>
+      <div class="tl-title"><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">Silent Absorption in the Anchor 6,625</font></font></div>
+      <div class="tl-body"><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">CVD sellers dominate, but the price remains stuck at 6,625. Dealers are buying up everything that comes in. The price tests at 6,607 and drops back. Diagnosis: active silent absorption. No setup—wait.</font></font></div>
+      <div><span class="tl-cvd cvd-neg"><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">CVD SELLERS · STATIC PRICE = ABSORPTION</font></font></span></div>
+    </div>
+
+    <div class="timeline-item tl-signal">
+      <div class="tl-time"><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">09:41 ET — KEY SIGNAL</font></font></div>
+      <div class="tl-title"><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">CVD cross-linked — Absorption confirmed</font></font></div>
+      <div class="tl-body"><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">ES Buyers 1,139 vs Sellers 1,110. Delta +29. NQ Buyers 790 vs Sellers 616. Delta +174. Buyers took control simultaneously. NQ leads with +174. Valid long setup activated at 6,625.</font></font></div>
+      <div><span class="tl-cvd cvd-pos"><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">ES CVD +29 · NQ CVD +174 · CONFIRMED ABSORPTION ✅</font></font></span></div>
+    </div>
+
+    <div class="timeline-item tl-trade">
+      <div class="tl-time"><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">09:41–09:48 ET</font></font></div>
+      <div class="tl-title"><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">Price rises to 6,643 — Setup executed</font></font></div>
+      <div class="tl-body"><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">Price rose 18 points from the anchor. Target 1 was almost reached at 6,650. CVD then showed ES +1,402 but NQ only +64 — the first divergence signal. The trade at 6,625 was the valid entry of the morning.</font></font></div>
+      <div><span class="tl-cvd cvd-pos"><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">ES +1,402 · NQ +64 — NEW DIVERGENCE ⚠️</font></font></span></div>
+    </div>
+
+    <div class="timeline-item tl-break">
+      <div class="tl-time"><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">10:27 ET — AMPLIFIED REGIMEN</font></font></div>
+      <div class="tl-title"><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">Gamma Flip broken — Both active</font></font></div>
+      <div class="tl-body"><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">ES breaks 6,600 with CVD sellers taking control. NQ breaks 24,300 simultaneously. Regime changes to AMPLIFIED. Immediate -25% sizing. Do not average. Next support levels: ES 6,550, NQ 24,200.</font></font></div>
+      <div><span class="tl-cvd cvd-neg"><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">ES CVD -439 · NQ CVD -246 · ACTIVE AMPLIFIED 🔴</font></font></span></div>
+    </div>
+
+    <div class="timeline-item tl-trade">
+      <div class="tl-time"><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">10:xx ET — Trade CL</font></font></div>
+      <div class="tl-title">CL spike a 97 — Short en Extreme Gamma Ceiling</div>
+      <div class="tl-body"><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">CL spiked to 97.00 — exactly the level of the Pine Script's Extreme Gamma Ceiling. Algorithmic stop-and-run triggered short stops. Short executed at the Ceiling with good results. Price immediately reversed.</font></font></div>
+      <div><span class="tl-cvd cvd-neg"><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">CL CEILING 97.00 — VALID SHORT ✅</font></font></span></div>
+    </div>
+
+    <div class="timeline-item tl-macro">
+      <div class="tl-time">13:06 ET — Bloomberg</div>
+      <div class="tl-title"><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">Headline confirms what crude oil already knew</font></font></div>
+      <div class="tl-body">"Iran Keeps Striking Gulf as Israel Pledges to Spare Energy Sites" / "Iran Said to Stick to Hardline Position on Strait of Hormuz". El IV spike de CL de la mañana estaba pricing exactamente esto. VIX: 25.83 +7.36%.</div>
+      <div><span class="tl-cvd cvd-neg"><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">Hormuz risk confirmed · IV CL 113 justified</font></font></span></div>
+    </div>
+
+    <div class="timeline-item tl-break">
+      <div class="tl-time"><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">14:37 ET — Ceirre</font></font></div>
+      <div class="tl-title"><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">ES plays Gamma Floor 6,550 — NQ bass 24,200</font></font></div>
+      <div class="tl-body"><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">ES Low of the day: 6,559. NQ Low of the day: 24,100. CVD ES 21,656 vs 21,773 — almost balanced at the close. Market looking for support. The 7 PAD levels held throughout the session.</font></font></div>
+      <div><span class="tl-cvd cvd-flat"><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">Balanced CVD · Market seeking a base</font></font></span></div>
+    </div>
+
+  </div>
+
+  <h2><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">The CVD Lesson — First Session with Config PAD</font></font></h2>
+
+  <p><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">This was the first session traded with the standard PAD CVD configuration correctly applied. For four months, reading the CVD on Bookmap had been confusing—the 1-contract minimum filter included every HFT and arbitrage algorithm trade, generating noise that obscured the actual institutional aggression.</font></font></p>
+
+  <p><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">The change was simple but transformative: </font></font><strong><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">a minimum of 10 contracts in ES, 3 in NQ</font></font></strong><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;"> . That eliminated algorithmic noise and left only intentional aggression visible.</font></font></p>
+
+  <div class="pullquote">
+    <p><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">CVD isn't a number. It's a story. This morning the story was: sellers attacked the Anchor. Dealers absorbed it all. When the sellers ran out—the price soared.</font></font></p>
+    <cite><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">Live session · March 20, 2026 · 09:41 ET</font></font></cite>
+  </div>
+
+  <p><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">All four PAD readings from the CVD were present in this session:</font></font></p>
+
+  <div class="rules-grid">
+    <div class="rule-card">
+      <div class="rule-num"><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">Reading 1</font></font></div>
+      <div class="rule-title" style="color:var(--green)"><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">ABSORPTION ✅</font></font></div>
+      <div class="rule-body"><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">09:32–09:41 ET. CVD sellers dominating but price static at 6,625. Dealers were buying everything that came in. Signal: long setup approaching.</font></font></div>
+    </div>
+    <div class="rule-card">
+      <div class="rule-num"><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">Reading 2</font></font></div>
+      <div class="rule-title" style="color:var(--accent)"><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">CONFIRMATION ✅</font></font></div>
+      <div class="rule-body"><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">09:41 ET. CVD crossed from sellers to buyers simultaneously in ES and NQ. NQ led with +174 vs ES +29. Valid long entry activated.</font></font></div>
+    </div>
+    <div class="rule-card">
+      <div class="rule-num"><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">Reading 3</font></font></div>
+      <div class="rule-title" style="color:var(--gold)"><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">NOISE ZONE ⚠️</font></font></div>
+      <div class="rule-body"><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">When the price is exactly on the Gamma Flip — the CVD becomes unreadable. At that point, the price rules, not the CVD. New documented rule.</font></font></div>
+    </div>
+    <div class="rule-card">
+      <div class="rule-num"><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">Reading 4</font></font></div>
+      <div class="rule-title" style="color:var(--red)"><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">REJECTION 🔴</font></font></div>
+      <div class="rule-body"><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">10:27 ET. CVD ES -439, NQ -246. Both negative simultaneously. Gamma Flip broken. AMPLIFIED mode activated. Immediate -25% sizing.</font></font></div>
+    </div>
+  </div>
+
+  <h2><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">New Rules Documented Today</font></font></h2>
+
+  <p><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">Each live session generates operational knowledge that isn't found in any book. These are the rules that this day added to the PAD system:</font></font></p>
+
+  <div class="alert-box alert-blue">
+    <div class="alert-title"><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">Rule 1 — IV CL as a geopolitical leading indicator</font></font></div>
+    <p><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">When CL's IV spikes by 5 points or more overnight, look for Middle East geopolitical headlines before trading. Crude oil prices risk before the news breaks. A spike in CL AM's IV is a macro warning sign for all assets.</font></font></p>
+  </div>
+
+  <div class="alert-box alert-gold">
+    <div class="alert-title"><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">Rule 2 — In the exact Gamma Flip, price rules</font></font></div>
+    <p><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">When the price is literally on the Gamma Flip, the CVD becomes unreadable—there are two equal forces colliding, and the algorithms generate maximum noise. Do not read the CVD in that area. Wait for the price to move 8-10 points in either direction before interpreting the CVD.</font></font></p>
+  </div>
+
+  <div class="alert-box alert-red">
+    <div class="alert-title"><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">Rule 3 — Triple Witching can generate two selling waves</font></font></div>
+    <p><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">The first wave is absorbed—the dealers do their job. The second wave, generated by the end-of-session expiration flow, can overcome institutional absorption. This is why the Triple Witching briefing always says: wide stops, no averaging, normal sizing until the flip breaks with confirmation.</font></font></p>
+  </div>
+
+  <div class="alert-box alert-green">
+    <div class="alert-title"><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">Rule 4 — CVD ES/NQ Divergence predicts the leader</font></font></div>
+    <p><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">When NQ's CVD is more positive than ES's, NQ will lead the recovery. When NQ's CVD is more negative than ES's, NQ will lead the decline. This divergence was confirmed multiple times during the session—NQ was consistently more extreme in both directions.</font></font></p>
+  </div>
+
+  <h2><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">The Outcome — P&amp;L and Learning</font></font></h2>
+
+  <table class="score-table">
+    <thead>
+      <tr>
+        <th><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">Asset</font></font></th>
+        <th>Trade</th>
+        <th><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">P&amp;L Result</font></font></th>
+        <th><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">Methodology Results</font></font></th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td style="color:var(--accent)"><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">ESM6</font></font></td>
+        <td style="color:var(--text2)"><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">Long 6,620 — stop executed</font></font></td>
+        <td style="color:var(--red)"><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">Controlled loss</font></font></td>
+        <td><span class="check"><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">✅ Correct</font></font></span><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;"> — stop before the flip</font></font></td>
+      </tr>
+      <tr>
+        <td style="color:var(--gold)">CLK6</td>
+        <td style="color:var(--text2)"><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">Shorts from 97.00 Ceiling</font></font></td>
+        <td style="color:var(--green)"><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">Good result</font></font></td>
+        <td><span class="check"><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">✅ Perfect</font></font></span><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;"> — Exact Ceiling</font></font></td>
+      </tr>
+      <tr>
+        <td style="color:#a78bfa"><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">NQM6</font></font></td>
+        <td style="color:var(--text2)">Sin trades</td>
+        <td style="color:var(--text3)">—</td>
+        <td><span class="check"><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">✅ Correct</font></font></span><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;"> — NQ more volatile today</font></font></td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="pullquote">
+    <p><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">A controlled loss in ES + gains in CL + CVD understood forever. The day's P&amp;L was positive. The learning was invaluable.</font></font></p>
+    <cite>PivotAlphaDesk · 20-Mar-2026</cite>
+  </div>
+
+  <h2><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">Connection with GAIA</font></font></h2>
+
+  <p><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">What was done manually today — reading the CVD, identifying the absorption, detecting the crossover, alerting the regime change — is exactly the algorithm that GAIA Phase 2 will encode.</font></font></p>
+
+  <div class="code-block">
+<span class="c-comment"><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">// GAIA Phase 2 — What would have automatically alerted today: </font></font></span>
+
+<span class="c-gold"><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">09:32 ET</font></font></span><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;"> → </font></font><span class="c-blue"><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">Alert: ABSORPTION_DETECTED</font></font></span><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;"> — Flat CVD on Gamma Flip
+ </font></font><span class="c-gold"><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">09:41 ET</font></font></span><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;"> → </font></font><span class="c-green"><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">Alert: CVD_CROSS_BULLISH</font></font></span><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;"> — Buyers took control
+ </font></font><span class="c-gold"><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">09:41 ET</font></font></span><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;"> → </font></font><span class="c-green"><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">Alert: LONG_SETUP_VALID</font></font></span><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;"> @ 6,625 — Absorption confirmed
+ </font></font><span class="c-gold"><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">10:27 ET</font></font></span><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;"> → </font></font><span class="c-red"><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">Alert: REGIME_CHANGE_AMPLIFIED</font></font></span><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;"> — Flip broken, both active
+ </font></font><span class="c-gold"><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">10:27 ET</font></font></span><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;"> → </font></font><span class="c-red"><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">Alert: SIZING_REDUCE_25PCT</font></font></span><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;"> — AMPLIFIED protocol active
+ </font></font><span class="c-gold"><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">AM</font></font></span><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">      → </font></font><span class="c-orange"><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">Alert: IV_CL_SPIKE_GEOPOLITICAL</font></font></span><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;"> — IV +7.25 → Hormuz risk
+
+ </font></font><span class="c-comment"><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">// Manual timing today: ~11 minutes per signal </font></font></span>
+<span class="c-comment"><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">// GAIA timing: &lt; 1 second per signal</font></font></span>
+  </div>
+
+  <p><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">The session on March 20, 2026, is not just a case study—it's GAIA's acceptance test. Everything the system detected manually today, GAIA will automate. The Living Gamma Map.</font></font></p>
+
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-inner">
+    <div class="footer-left">
+      <strong><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">PivotAlphaDesk</font></font></strong><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;"> — PAD Research Library </font></font><br><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">
+      Case Study · Triple Witching 20-Mar-2026
+    </font></font></div>
+    <nav class="footer-nav">
+      <a href="file:///C:/Users/mpetr/Downloads/index.html"><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">← Home</font></font></a>
+      <a href="file:///C:/Users/mpetr/Downloads/briefing_mar_20_2026.html"><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">Briefing of the Day</font></font></a>
+      <a href="file:///C:/Users/mpetr/Downloads/pad-library-zonas-algo.html"><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">Some areas</font></font></a>
+      <a href="file:///C:/Users/mpetr/Downloads/pad_pick_semana12_2026.html">PAD Pick</a>
+    </nav>
+  </div>
+</footer><div id="goog-gt-tt" class="VIpgJd-yAWNEb-L7lbkb skiptranslate" style="border-radius: 12px; margin: 0 0 0 -23px; padding: 0; font-family: &#39;Google Sans&#39;, Arial, sans-serif;" data-id=""><div id="goog-gt-vt" class="VIpgJd-yAWNEb-hvhgNd"><div class="VIpgJd-yAWNEb-hvhgNd-Ud7fr"><img src="./PAD Library — Triple Witching 20-Mar-2026 _ The Day Everything Worked_files/24px.svg" width="24" height="24" alt=""><div class=" VIpgJd-yAWNEb-hvhgNd-IuizWc-i3jM8c " dir="ltr">Original text</div></div><div class="VIpgJd-yAWNEb-hvhgNd-k77Iif"><div id="goog-gt-original-text" class="VIpgJd-yAWNEb-nVMfcd-fmcmS VIpgJd-yAWNEb-hvhgNd-axAV1"></div></div><div class="VIpgJd-yAWNEb-hvhgNd-N7Eqid ltr"><div class="VIpgJd-yAWNEb-hvhgNd-N7Eqid-B7I4Od ltr" dir="ltr"><div class="VIpgJd-yAWNEb-hvhgNd-UTujCb">Rate this translation</div><div class="VIpgJd-yAWNEb-hvhgNd-eO9mKe">Your feedback will be used to help improve Google Translate</div></div><div class="VIpgJd-yAWNEb-hvhgNd-xgov5 ltr"><button id="goog-gt-thumbUpButton" type="button" class="VIpgJd-yAWNEb-hvhgNd-bgm6sf" title="Good translation" aria-label="Good translation" aria-pressed="false"><span id="goog-gt-thumbUpIcon"><svg width="24" height="24" viewBox="0 0 24 24" focusable="false" class="VIpgJd-yAWNEb-hvhgNd-THI6Vb NMm5M"><path d="M21 7h-6.31l.95-4.57.03-.32c0-.41-.17-.79-.44-1.06L14.17 0S7.08 6.85 7 7H2v13h16c.83 0 1.54-.5 1.84-1.22l3.02-7.05c.09-.23.14-.47.14-.73V9c0-1.1-.9-2-2-2zM7 18H4V9h3v9zm14-7l-3 7H9V8l4.34-4.34L12 9h9v2z"></path></svg></span><span id="goog-gt-thumbUpIconFilled"><svg width="24" height="24" viewBox="0 0 24 24" focusable="false" class="VIpgJd-yAWNEb-hvhgNd-THI6Vb NMm5M"><path d="M21 7h-6.31l.95-4.57.03-.32c0-.41-.17-.79-.44-1.06L14.17 0S7.08 6.85 7 7v13h11c.83 0 1.54-.5 1.84-1.22l3.02-7.05c.09-.23.14-.47.14-.73V9c0-1.1-.9-2-2-2zM5 7H1v13h4V7z"></path></svg></span></button><button id="goog-gt-thumbDownButton" type="button" class="VIpgJd-yAWNEb-hvhgNd-bgm6sf" title="Poor translation" aria-label="Poor translation" aria-pressed="false"><span id="goog-gt-thumbDownIcon"><svg width="24" height="24" viewBox="0 0 24 24" focusable="false" class="VIpgJd-yAWNEb-hvhgNd-THI6Vb NMm5M"><path d="M3 17h6.31l-.95 4.57-.03.32c0 .41.17.79.44 1.06L9.83 24s7.09-6.85 7.17-7h5V4H6c-.83 0-1.54.5-1.84 1.22l-3.02 7.05c-.09.23-.14.47-.14.73v2c0 1.1.9 2 2 2zM17 6h3v9h-3V6zM3 13l3-7h9v10l-4.34 4.34L12 15H3v-2z"></path></svg></span><span id="goog-gt-thumbDownIconFilled"><svg width="24" height="24" viewBox="0 0 24 24" focusable="false" class="VIpgJd-yAWNEb-hvhgNd-THI6Vb NMm5M"><path d="M3 17h6.31l-.95 4.57-.03.32c0 .41.17.79.44 1.06L9.83 24s7.09-6.85 7.17-7V4H6c-.83 0-1.54.5-1.84 1.22l-3.02 7.05c-.09.23-.14.47-.14.73v2c0 1.1.9 2 2 2zm16 0h4V4h-4v13z"></path></svg></span></button></div></div><div id="goog-gt-votingHiddenPane" class="VIpgJd-yAWNEb-hvhgNd-aXYTce"><form id="goog-gt-votingForm" action="file://translate.googleapis.com/translate_voting?client=te_lib" method="post" target="votingFrame" class="VIpgJd-yAWNEb-hvhgNd-aXYTce"><input type="text" name="sl" id="goog-gt-votingInputSrcLang"><input type="text" name="tl" id="goog-gt-votingInputTrgLang"><input type="text" name="query" id="goog-gt-votingInputSrcText"><input type="text" name="gtrans" id="goog-gt-votingInputTrgText"><input type="text" name="vote" id="goog-gt-votingInputVote"></form><iframe name="votingFrame" frameborder="0" src="./PAD Library — Triple Witching 20-Mar-2026 _ The Day Everything Worked_files/saved_resource.html"></iframe></div></div></div>
+
+
+
+</body></html>
