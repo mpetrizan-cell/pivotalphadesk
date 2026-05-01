@@ -1,0 +1,684 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PivotAlphaDesk · GAIA Briefing · May 1, 2026</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700&family=Share+Tech+Mono&display=swap');
+  :root {
+    --bg:#0a0c10;--bg2:#0d1117;--bg3:#111820;--border:#1e2d3d;--border2:#243447;
+    --text:#c9d1d9;--text2:#8b949e;--text3:#6e7681;
+    --green:#3fb950;--green-dim:#1a3a22;
+    --orange:#f0883e;--orange-dim:#3d2200;--red:#f85149;--red-dim:#3d0f0d;
+    --blue:#58a6ff;--blue-dim:#0d2040;--yellow:#e3b341;--yellow-dim:#2d2000;
+    --cyan:#39c5cf;--purple:#bc8cff;--white:#f0f6fc;--pad-orange:#ff8c42;
+    --aapl:#00d4ff;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  body{background:var(--bg);color:var(--text);font-family:'JetBrains Mono',monospace;font-size:12px;line-height:1.5;}
+
+  .terminal-bar{background:#0d1117;border-bottom:1px solid var(--border);padding:6px 16px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;}
+  .terminal-bar .logo{color:var(--white);font-weight:700;font-size:13px;letter-spacing:.05em;}
+  .terminal-bar .logo span{color:var(--pad-orange);}
+  .terminal-bar .ts .date{color:var(--orange);font-weight:600;}
+  .terminal-bar .ts .time{color:var(--cyan);}
+  .terminal-bar .live-dot{display:flex;align-items:center;gap:6px;color:var(--green);font-size:11px;}
+  .dot{width:7px;height:7px;border-radius:50%;background:var(--green);animation:pulse 2s infinite;}
+  @keyframes pulse{0%,100%{opacity:1;}50%{opacity:.3;}}
+
+  .aapl-banner{background:linear-gradient(90deg,#001a20,#002d3d,#001a20);border-bottom:2px solid var(--aapl);padding:8px 16px;text-align:center;color:var(--aapl);font-weight:700;font-size:11px;letter-spacing:.1em;}
+  .aapl-banner span{color:var(--white);}
+  .aapl-banner .beat{color:var(--green);}
+
+  .main{max-width:1400px;margin:0 auto;padding:16px;}
+
+  .section-header{display:flex;align-items:center;gap:10px;padding:8px 12px;background:var(--bg3);border-left:3px solid var(--pad-orange);border-bottom:1px solid var(--border);margin-bottom:12px;margin-top:20px;}
+  .section-header .num{color:var(--pad-orange);font-weight:700;font-size:10px;}
+  .section-header .title{color:var(--white);font-weight:700;font-size:13px;letter-spacing:.08em;text-transform:uppercase;}
+  .section-header .sub{color:var(--text3);font-size:10px;margin-left:auto;}
+
+  .snapshot-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:12px;}
+  .snap-card{background:var(--bg3);border:1px solid var(--border);border-radius:4px;padding:12px;position:relative;overflow:hidden;}
+  .snap-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;}
+  .snap-card.es::before{background:var(--blue);}
+  .snap-card.nq::before{background:var(--purple);}
+  .snap-card.cl::before{background:var(--yellow);}
+  .snap-card.spx::before{background:var(--green);}
+  .snap-card .instrument{font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:.1em;margin-bottom:4px;}
+  .snap-card .spot{font-size:22px;font-weight:700;margin-bottom:8px;}
+  .snap-card .spot.up{color:var(--green);}
+  .snap-card .spot.neutral{color:var(--yellow);}
+  .snap-card .rows{display:flex;flex-direction:column;gap:3px;}
+  .snap-card .row{display:flex;justify-content:space-between;font-size:10px;}
+  .snap-card .row .lbl{color:var(--text3);}
+  .snap-card .row .val.above{color:var(--green);}
+  .snap-card .row .val.below{color:var(--red);}
+  .snap-card .row .val.near{color:var(--yellow);}
+  .rf-badge{display:inline-block;padding:1px 6px;border-radius:2px;font-size:10px;font-weight:700;margin-top:6px;}
+  .rf-pos{background:var(--green-dim);color:var(--green);}
+  .rf-neg{background:var(--red-dim);color:var(--red);}
+  .rf-warn{background:var(--orange-dim);color:var(--orange);}
+
+  .context-alert{border:1px solid;border-radius:4px;padding:12px 14px;margin-bottom:14px;font-size:11px;line-height:1.8;}
+  .context-alert.bull{background:rgba(63,185,80,.05);border-color:rgba(63,185,80,.25);}
+  .context-alert.bull .ctx-title{color:var(--green);font-weight:700;font-size:12px;margin-bottom:6px;text-transform:uppercase;letter-spacing:.08em;}
+  .context-alert strong{color:var(--white);}
+
+  .gaia-panel{background:var(--bg3);border:1px solid var(--border);border-left:3px solid var(--cyan);border-radius:4px;padding:14px;margin-bottom:14px;}
+  .gaia-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:12px;margin-bottom:12px;}
+  .gaia-metric{text-align:center;}
+  .gaia-metric .lbl{font-size:9px;color:var(--text3);text-transform:uppercase;letter-spacing:.1em;margin-bottom:4px;}
+  .gaia-metric .val{font-size:16px;font-weight:700;color:var(--white);}
+  .gaia-metric .val.neutral{color:var(--yellow);}
+  .gaia-metric .val.call{color:var(--red);}
+  .gaia-metric .val.put{color:var(--green);}
+  .gaia-metric .val.node{color:var(--purple);}
+  .gaia-metric .val.flip{color:var(--orange);}
+  .gaia-note{background:rgba(57,197,207,.06);border:1px solid rgba(57,197,207,.15);border-radius:3px;padding:8px 12px;font-size:11px;color:var(--text2);}
+  .gaia-note strong{color:var(--cyan);}
+
+  .confluence-box{background:var(--bg3);border:1px solid rgba(188,140,255,.2);border-radius:4px;padding:12px;margin-bottom:12px;font-size:11px;color:var(--text2);}
+  .confluence-box .ct{color:var(--purple);font-weight:700;margin-bottom:8px;font-size:11px;text-transform:uppercase;}
+  .conf-row{display:flex;gap:8px;flex-wrap:wrap;}
+  .conf-chip{padding:3px 10px;border-radius:3px;font-size:11px;font-weight:700;}
+  .conf-2x{background:rgba(188,140,255,.1);color:var(--purple);border:1px solid rgba(188,140,255,.3);}
+  .conf-3x{background:rgba(57,197,207,.1);color:var(--cyan);border:1px solid rgba(57,197,207,.3);}
+
+  .instrument-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px;}
+  .inst-card{background:var(--bg3);border:1px solid var(--border);border-radius:4px;padding:14px;}
+  .inst-card .inst-header{display:flex;align-items:center;gap:8px;margin-bottom:10px;padding-bottom:8px;border-bottom:1px solid var(--border);}
+  .inst-tag{padding:2px 8px;border-radius:3px;font-weight:700;font-size:11px;text-transform:uppercase;}
+  .tag-es{background:var(--blue-dim);color:var(--blue);}
+  .tag-nq{background:rgba(188,140,255,.15);color:var(--purple);}
+  .tag-cl{background:var(--yellow-dim);color:var(--yellow);}
+  .tag-spx{background:var(--green-dim);color:var(--green);}
+  .inst-spot{font-size:18px;font-weight:700;margin-left:auto;}
+  .inst-spot.up{color:var(--green);}
+
+  .pad-table{width:100%;border-collapse:collapse;margin-bottom:10px;}
+  .pad-table th{text-align:left;color:var(--text3);font-size:9px;text-transform:uppercase;letter-spacing:.1em;padding:3px 6px;border-bottom:1px solid var(--border);}
+  .pad-table td{padding:4px 6px;font-size:11px;border-bottom:1px solid rgba(30,45,61,.5);}
+  .pad-table tr:last-child td{border-bottom:none;}
+  .zone-call{color:var(--red);}
+  .zone-flip{color:var(--orange);font-weight:700;}
+  .zone-put{color:var(--green);}
+
+  .tpo-row{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:8px;}
+  .tpo-chip{padding:2px 8px;border-radius:2px;font-size:10px;background:var(--bg2);border:1px solid var(--border);}
+  .tpo-chip .lbl{color:var(--text3);}
+
+  .plan-box{background:var(--bg2);border:1px solid var(--border2);border-radius:3px;padding:10px;font-size:11px;color:var(--text2);line-height:1.7;}
+  .plan-box .plan-title{color:var(--white);font-weight:700;font-size:11px;margin-bottom:6px;text-transform:uppercase;}
+  .plan-box ul{list-style:none;}
+  .plan-box ul li::before{content:'▸ ';color:var(--pad-orange);}
+  .plan-box ul li.bull::before{content:'🟢 ';}
+  .plan-box ul li.bear::before{content:'🔴 ';}
+  .plan-box ul li.key::before{content:'📍 ';}
+  .plan-box ul li.warn::before{content:'⚠️ ';}
+  .plan-box ul li.exp::before{content:'⏰ ';}
+
+  .edge-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:12px;}
+  .scenario-card{border-radius:4px;padding:12px;border:1px solid;}
+  .scenario-card.base{background:rgba(57,197,207,.05);border-color:rgba(57,197,207,.25);}
+  .scenario-card.bull{background:rgba(63,185,80,.05);border-color:rgba(63,185,80,.25);}
+  .scenario-card.bear{background:rgba(248,81,73,.05);border-color:rgba(248,81,73,.25);}
+  .sc-header{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;margin-bottom:6px;}
+  .sc-base{color:var(--cyan);}
+  .sc-bull{color:var(--green);}
+  .sc-bear{color:var(--red);}
+  .scenario-card .pct{font-size:24px;font-weight:700;margin-bottom:6px;}
+  .scenario-card .desc{font-size:10px;color:var(--text2);line-height:1.6;}
+  .scenario-card .levels{margin-top:8px;font-size:10px;color:var(--text3);}
+
+  .cal-table{width:100%;border-collapse:collapse;}
+  .cal-table th{text-align:left;color:var(--text3);font-size:9px;text-transform:uppercase;letter-spacing:.1em;padding:5px 10px;background:var(--bg2);border-bottom:1px solid var(--border);}
+  .cal-table td{padding:6px 10px;font-size:11px;border-bottom:1px solid rgba(30,45,61,.4);color:var(--text2);}
+  .cal-table tr:last-child td{border-bottom:none;}
+  .imp-high{color:var(--red);font-weight:700;}
+  .imp-med{color:var(--yellow);}
+  .imp-low{color:var(--text3);}
+  .pad-note{color:var(--cyan);font-size:10px;}
+  .today-row td{background:rgba(0,212,255,.03);}
+
+  .aapl-card{background:rgba(0,212,255,.04);border:1px solid rgba(0,212,255,.2);border-radius:4px;padding:14px;margin-bottom:14px;}
+  .aapl-card .at{color:var(--aapl);font-weight:700;font-size:12px;margin-bottom:10px;text-transform:uppercase;letter-spacing:.08em;}
+  .aapl-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:10px;}
+  .aapl-metric{text-align:center;background:var(--bg2);border:1px solid var(--border);border-radius:3px;padding:8px;}
+  .aapl-metric .al{font-size:9px;color:var(--text3);text-transform:uppercase;letter-spacing:.1em;margin-bottom:4px;}
+  .aapl-metric .av{font-size:14px;font-weight:700;}
+  .aapl-metric .av.beat{color:var(--green);}
+
+  .tweet-box{background:#050d14;border:1px solid #1d9bf0;border-radius:8px;padding:16px;margin-bottom:12px;}
+  .tweet-header{display:flex;align-items:center;gap:10px;margin-bottom:12px;}
+  .tweet-avatar{width:36px;height:36px;background:var(--pad-orange);border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:14px;color:var(--bg);}
+  .tweet-name{color:var(--white);font-weight:700;font-size:13px;}
+  .tweet-handle{color:var(--text3);font-size:11px;}
+  .tweet-label{margin-left:auto;padding:2px 8px;background:rgba(29,155,240,.15);border:1px solid rgba(29,155,240,.3);border-radius:10px;font-size:10px;color:#1d9bf0;}
+  .tweet-content{font-family:'Share Tech Mono',monospace;font-size:12px;color:var(--text);line-height:1.8;white-space:pre-wrap;background:rgba(255,255,255,.02);border:1px solid var(--border);border-radius:4px;padding:12px;}
+  .tweet-time{margin-top:10px;font-size:10px;color:var(--text3);}
+
+  .synth-box{background:var(--bg3);border:1px solid var(--border2);border-left:3px solid var(--pad-orange);border-radius:4px;padding:14px;margin-bottom:12px;font-size:11px;color:var(--text2);line-height:1.8;}
+  .synth-box strong{color:var(--white);}
+
+  .divider{height:1px;background:linear-gradient(90deg,transparent,var(--border),transparent);margin:16px 0;}
+  .footer{text-align:center;padding:16px;border-top:1px solid var(--border);color:var(--text3);font-size:10px;margin-top:24px;}
+  .footer span{color:var(--pad-orange);}
+</style>
+</head>
+<body>
+
+<div class="terminal-bar">
+  <div class="logo">Pivot<span>Alpha</span>Desk · GAIA Framework</div>
+  <div class="ts" style="color:var(--text3);font-size:11px;">
+    <span class="date">FRIDAY · MAY 1, 2026</span>
+    &nbsp;|&nbsp;<span class="time">07:31 ET</span>
+    &nbsp;|&nbsp;PRE-MARKET SESSION
+  </div>
+  <div class="live-dot"><div class="dot"></div>LIVE</div>
+</div>
+
+<div class="aapl-banner">
+  🍎 &nbsp;<span>APPLE BEAT — RECORD QUARTER</span>&nbsp;
+  EPS <span class="beat">$2.01 vs $1.95</span> · Revenue <span class="beat">$111.2B vs $109.7B</span> · iPhone record · Services ATH $31B · AAPL +3% pre-market
+  &nbsp;|&nbsp; <span>4 WEEKLY EXPIRATIONS TODAY</span> · YM · QN1 · R1E · EW1K6
+</div>
+
+<div class="main">
+
+  <!-- AAPL EARNINGS RECAP -->
+  <div class="aapl-card">
+    <div class="at">🍎 Apple Q2 FY2026 — Record Quarter · Beat Across the Board</div>
+    <div class="aapl-grid">
+      <div class="aapl-metric"><div class="al">EPS</div><div class="av beat">$2.01 ✓</div><div style="font-size:9px;color:var(--text3)">vs $1.95 est</div></div>
+      <div class="aapl-metric"><div class="al">Revenue</div><div class="av beat">$111.2B ✓</div><div style="font-size:9px;color:var(--text3)">vs $109.7B est</div></div>
+      <div class="aapl-metric"><div class="al">iPhone</div><div class="av beat">$57B ✓</div><div style="font-size:9px;color:var(--text3)">+22% YoY record</div></div>
+      <div class="aapl-metric"><div class="al">Services</div><div class="av beat">$31B ✓</div><div style="font-size:9px;color:var(--text3)">ATH · +16% YoY</div></div>
+      <div class="aapl-metric"><div class="al">Gross Margin</div><div class="av beat">49.3%</div><div style="font-size:9px;color:var(--text3)">vs 48.4% est</div></div>
+      <div class="aapl-metric"><div class="al">China</div><div class="av beat">$20.5B</div><div style="font-size:9px;color:var(--text3)">+28% YoY</div></div>
+      <div class="aapl-metric"><div class="al">Q3 Guide</div><div class="av beat">+14–17%</div><div style="font-size:9px;color:var(--text3)">above estimates</div></div>
+      <div class="aapl-metric"><div class="al">AAPL pre-mkt</div><div class="av beat">+3%</div><div style="font-size:9px;color:var(--text3)">~$279</div></div>
+    </div>
+    <div style="font-size:11px;color:var(--text2);line-height:1.7;">
+      <strong>Key notes:</strong> Tim Cook cited "extraordinary" iPhone 17 demand · 
+      Incoming CEO John Ternus joined the call — "most exciting time in my 25-year career" · 
+      Supply constraints on Mac Mini/Mac Studio may extend several months · 
+      No longer providing net cash neutral as formal target · 
+      China surged +28% — critical market holding strong.
+    </div>
+  </div>
+
+  <!-- SECTION 1: SNAPSHOT -->
+  <div class="section-header">
+    <span class="num">01</span>
+    <span class="title">Market Snapshot — Pre-Market 07:31 ET</span>
+    <span class="sub">ESM26 · NQM26 · CLK26 · SPX CBOE</span>
+  </div>
+
+  <div class="context-alert bull">
+    <div class="ctx-title">🟢 BULL CATALYST — AAPL Beat + Weekly Expiration Friday</div>
+    Apple delivered its best March quarter ever — <strong>EPS $2.01 beat, Revenue $111.2B beat, iPhone record, Services ATH.</strong>
+    AAPL +3% pre-market driving NQ higher. ES over EMA200 (+57 pts) with strong structure.
+    <strong>Weekly expiration today (EW1K6):</strong> 4 simultaneous expirations (YM/QN/R1E/EW1) — gamma pinning risk elevated.
+    <strong>Only macro data today:</strong> ISM Manufacturing PMI 10:00 AM (consensus 53 vs prev 52.7) — secondary to AAPL move.
+    <strong>SPX at 7,209</strong> — above Tactical Anchor (7,200) — approaching GF_Intraday (7,340).
+    <strong>Structure note:</strong> Flip very high (7,300–7,340) — market below flip = AMPLIFIED mechanics · fast moves possible.
+  </div>
+
+  <div class="snapshot-grid">
+    <div class="snap-card es">
+      <div class="instrument">ES · ESM26 · Jun 2026</div>
+      <div class="spot up">7,253.50</div>
+      <div class="rows">
+        <div class="row"><span class="lbl">EMA200</span><span class="val above">7,196.83 · +56.67 pts</span></div>
+        <div class="row"><span class="lbl">VWAP</span><span class="val above">7,255.10</span></div>
+        <div class="row"><span class="lbl">VAH</span><span class="val">7,260.00</span></div>
+        <div class="row"><span class="lbl">POC</span><span class="val">7,250.00</span></div>
+        <div class="row"><span class="lbl">VAL</span><span class="val">7,251.25</span></div>
+        <div class="row"><span class="lbl">RF</span><span class="val near">0 · balance over high</span></div>
+      </div>
+      <span class="rf-badge rf-pos">OVER EMA200 ✓</span>
+    </div>
+    <div class="snap-card nq">
+      <div class="instrument">NQ · NQM26 · Jun 2026</div>
+      <div class="spot up">27,548.50</div>
+      <div class="rows">
+        <div class="row"><span class="lbl">EMA200</span><span class="val above">27,366.47 · +182 pts</span></div>
+        <div class="row"><span class="lbl">VWAP</span><span class="val above">27,606.60</span></div>
+        <div class="row"><span class="lbl">VAH</span><span class="val">27,640.00</span></div>
+        <div class="row"><span class="lbl">POC</span><span class="val">27,600.00</span></div>
+        <div class="row"><span class="lbl">VAL</span><span class="val">27,618.75</span></div>
+        <div class="row"><span class="lbl">RF</span><span class="val below">-6 · partial VAH rejection</span></div>
+      </div>
+      <span class="rf-badge rf-warn">🍎 AAPL BOOST</span>
+    </div>
+    <div class="snap-card cl">
+      <div class="instrument">CL · CLK26 · May 2026</div>
+      <div class="spot up">104.34</div>
+      <div class="rows">
+        <div class="row"><span class="lbl">EMA200</span><span class="val above">102.51 · +1.83 pts</span></div>
+        <div class="row"><span class="lbl">VWAP</span><span class="val near">105.36 · BELOW</span></div>
+        <div class="row"><span class="lbl">VAH</span><span class="val">105.75</span></div>
+        <div class="row"><span class="lbl">POC</span><span class="val">105.00</span></div>
+        <div class="row"><span class="lbl">VAL</span><span class="val">105.63</span></div>
+        <div class="row"><span class="lbl">RF</span><span class="val near">+1 · tight compression</span></div>
+      </div>
+      <span class="rf-badge rf-warn">PROFILE TYPE D</span>
+    </div>
+    <div class="snap-card spx">
+      <div class="instrument">SPX · CBOE · Cash</div>
+      <div class="spot up">7,209.01</div>
+      <div class="rows">
+        <div class="row"><span class="lbl">EMA200</span><span class="val above">7,053.05 · +156 pts</span></div>
+        <div class="row"><span class="lbl">VAH</span><span class="val">7,182.00</span></div>
+        <div class="row"><span class="lbl">POC</span><span class="val">7,167.75</span></div>
+        <div class="row"><span class="lbl">VAL</span><span class="val">7,134.50</span></div>
+        <div class="row"><span class="lbl">GF Intraday</span><span class="val near">7,340</span></div>
+        <div class="row"><span class="lbl">RF</span><span class="val above">+12 · expansion above value</span></div>
+      </div>
+      <span class="rf-badge rf-pos">ABOVE VALUE AREA ✓</span>
+    </div>
+  </div>
+
+  <!-- SECTION 2: GAIA DHP -->
+  <div class="section-header">
+    <span class="num">02</span>
+    <span class="title">GAIA DHP — Pre-Open State</span>
+    <span class="sub">GEX Structure · SPX · NDX · 07:31 ET</span>
+  </div>
+
+  <div class="gaia-panel">
+    <div class="gaia-grid">
+      <div class="gaia-metric"><div class="lbl">DHP Total</div><div class="val neutral">0M</div></div>
+      <div class="gaia-metric"><div class="lbl">Regime</div><div class="val neutral">NEUTRAL</div></div>
+      <div class="gaia-metric"><div class="lbl">Momentum</div><div class="val neutral">NEUTRAL</div></div>
+      <div class="gaia-metric"><div class="lbl">Call Wall</div><div class="val call">7200</div></div>
+      <div class="gaia-metric"><div class="lbl">Put Wall</div><div class="val put">7200</div></div>
+      <div class="gaia-metric"><div class="lbl">Gamma Node</div><div class="val node">7200</div></div>
+    </div>
+    <div class="gaia-grid" style="margin-top:8px">
+      <div class="gaia-metric"><div class="lbl">Gamma Flip</div><div class="val flip">7150</div></div>
+      <div class="gaia-metric"><div class="lbl">SPX Spot</div><div class="val" style="color:var(--green)">7,209.01</div></div>
+      <div class="gaia-metric"><div class="lbl">vs Gamma Node</div><div class="val" style="color:var(--green)">+9 ABOVE</div></div>
+      <div class="gaia-metric"><div class="lbl">vs GF Intraday</div><div class="val" style="color:var(--yellow)">-131 BELOW</div></div>
+      <div class="gaia-metric"><div class="lbl">Expiration</div><div class="val" style="color:var(--pad-orange)">WEEKLY TODAY</div></div>
+      <div class="gaia-metric"><div class="lbl">Nexa Regime</div><div class="val" style="color:var(--pad-orange);font-size:11px">AMPLIFIED</div></div>
+    </div>
+    <div class="gaia-note">
+      <strong>PRE-OPEN NEUTRAL ✓</strong> — correct before 9:30 ET.
+      SPX 7,209 — above Gamma Node (7,200) and Call Wall (7,200) — structurally ABOVE the node.
+      <strong>4 weekly expirations today</strong> — EW1K6 (ES), QN1K6 (NQ), YM1K6 (DOW), R1EK6 (Russell) — gamma pinning elevated.
+      Nexa marks AMPLIFIED — gamma below flip → fast directional moves possible.
+      <strong>The key level today:</strong> Can SPX hold above 7,200 (Gamma Node) and push toward 7,340 (GF Intraday/Flip)?
+      AAPL +3% pre-market is the primary catalyst for NQ and potential SPX expansion.
+    </div>
+  </div>
+
+  <!-- NDX CONFLUENCE -->
+  <div class="confluence-box">
+    <div class="ct">🔵 GAIA NDX — 07:31 ET · Above Flip · BULL</div>
+    <div style="font-size:11px;color:var(--text2);margin-bottom:8px;">
+      NQ 27,452 · Basis +204.24 · Call Wall 27,500 · Put Wall 27,200 · Gamma Flip 27,030 · Gamma Node 27,500
+    </div>
+    <div class="conf-row">
+      <span class="conf-2x">27,200 (support)</span>
+      <span class="conf-2x">27,250 (EA)</span>
+      <span class="conf-2x">27,300 (GF)</span>
+      <span class="conf-3x">27,500 (Call Wall / Node) ← TARGET</span>
+      <span class="conf-2x">27,640 (VAH)</span>
+      <span class="conf-2x">28,000 (GP/Flip)</span>
+    </div>
+    <div style="margin-top:8px;font-size:10px;color:var(--text3);">
+      NQ above Gamma Flip (27,030) · BULL confirmed · AAPL +3% = catalyst toward 27,640 VAH → 28,000 Flip
+    </div>
+  </div>
+
+  <!-- SECTION 3: INSTRUMENTS -->
+  <div class="section-header">
+    <span class="num">03</span>
+    <span class="title">Instrument Analysis — TPO + PAD</span>
+    <span class="sub">AAPL Beat · Weekly Expiration · May 1, 2026</span>
+  </div>
+
+  <div class="instrument-grid">
+    <!-- ES -->
+    <div class="inst-card">
+      <div class="inst-header">
+        <span class="inst-tag tag-es">ES · ESM26</span>
+        <span style="color:var(--green);font-size:10px;">DAMPENED · OVER EMA200</span>
+        <span class="inst-spot up">7,253.50</span>
+      </div>
+      <div class="tpo-row">
+        <div class="tpo-chip"><span class="lbl">VAH </span><span style="color:var(--text2)">7,260.00</span></div>
+        <div class="tpo-chip"><span class="lbl">POC </span><span style="color:var(--text2)">7,250.00</span></div>
+        <div class="tpo-chip"><span class="lbl">VAL </span><span style="color:var(--text2)">7,251.25</span></div>
+        <div class="tpo-chip"><span class="lbl">EMA200 </span><span style="color:var(--green)">7,196.83</span></div>
+        <div class="tpo-chip"><span class="lbl">VWAP </span><span style="color:var(--text2)">7,255.10</span></div>
+        <div class="tpo-chip"><span class="lbl">RF </span><span style="color:var(--yellow)">0</span></div>
+      </div>
+      <table class="pad-table">
+        <tr><th>Zone</th><th>Strike</th><th>Label</th><th>Type</th></tr>
+        <tr><td class="zone-call">▲ GC1</td><td>7,350</td><td>Call Wall</td><td style="color:var(--text3)">Acceleration</td></tr>
+        <tr><td class="zone-call">▲ GC2</td><td>7,300</td><td>Call Wall 2 / GP</td><td style="color:var(--yellow)">FLIP · PIVOT</td></tr>
+        <tr><td class="zone-call">▲ GC3</td><td>7,400</td><td>Gamma Ceiling</td><td style="color:var(--text3)">Acceleration</td></tr>
+        <tr><td style="color:var(--cyan)">📍 SPOT</td><td>7,253</td><td>Current Price</td><td style="color:var(--cyan)">Between zones</td></tr>
+        <tr><td class="zone-put">▼ GF1</td><td>7,000</td><td>Put Wall MAX</td><td style="color:var(--green)">Strong 31,485 OI</td></tr>
+        <tr><td class="zone-put">▼ GF2</td><td>7,100</td><td>Gamma Floor 2</td><td style="color:var(--green)">Strong 26,356 OI</td></tr>
+        <tr><td class="zone-put">▼ GF3</td><td>7,050</td><td>Gamma Floor 3</td><td style="color:var(--green)">Mixed 19,408 OI</td></tr>
+      </table>
+      <div class="plan-box">
+        <div class="plan-title">📋 ES Trading Plan</div>
+        <ul>
+          <li class="key">SPOT 7,253 — tight balance between VAH (7,260) and POC (7,250) — RF=0</li>
+          <li class="key">Gamma Flip (GP) at 7,300 — 47 pts above — the key level for bull breakout</li>
+          <li class="bull">Bull: break above 7,260 (VAH) with DHP BLD.BULL → 7,300 (GP/Flip) → 7,350</li>
+          <li class="bear">Bear: lose 7,200 (EMA200 zone) → 7,100 → 7,050 (strong put support)</li>
+          <li class="warn">Weekly expiration pinning — price may oscillate 7,200–7,300 range</li>
+          <li class="exp">Put floor very strong at 7,000–7,100 (>50K combined OI) — structural support</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- NQ -->
+    <div class="inst-card">
+      <div class="inst-header">
+        <span class="inst-tag tag-nq">NQ · NQM26</span>
+        <span style="color:var(--green);font-size:10px;">🍎 AAPL +3% · ABOVE FLIP</span>
+        <span class="inst-spot up">27,548.50</span>
+      </div>
+      <div class="tpo-row">
+        <div class="tpo-chip"><span class="lbl">VAH </span><span style="color:var(--text2)">27,640.00</span></div>
+        <div class="tpo-chip"><span class="lbl">POC </span><span style="color:var(--text2)">27,600.00</span></div>
+        <div class="tpo-chip"><span class="lbl">VAL </span><span style="color:var(--text2)">27,618.75</span></div>
+        <div class="tpo-chip"><span class="lbl">EMA200 </span><span style="color:var(--green)">27,366.47</span></div>
+        <div class="tpo-chip"><span class="lbl">VWAP </span><span style="color:var(--text2)">27,606.60</span></div>
+        <div class="tpo-chip"><span class="lbl">RF </span><span style="color:var(--red)">-6</span></div>
+      </div>
+      <table class="pad-table">
+        <tr><th>Zone</th><th>Strike</th><th>Label</th><th>Type</th></tr>
+        <tr><td class="zone-flip">◆ GP/Flip</td><td>28,000</td><td>Gamma Flip · MAX OI</td><td style="color:var(--yellow)">Pivot · Target</td></tr>
+        <tr><td class="zone-call">▲ GC1</td><td>27,700</td><td>Call Wall</td><td style="color:var(--text3)">Acceleration</td></tr>
+        <tr><td class="zone-call">▲ GC2/Node</td><td>27,500</td><td>Call Wall 2 / Node</td><td style="color:var(--yellow)">GAIA ceiling</td></tr>
+        <tr><td style="color:var(--cyan)">📍 SPOT</td><td>27,548</td><td>Current Price</td><td style="color:var(--cyan)">Above Node</td></tr>
+        <tr><td class="zone-put">▼ GF1</td><td>27,200</td><td>Gamma Floor 1</td><td style="color:var(--green)">Strong containment</td></tr>
+        <tr><td class="zone-put">▼ GF2/EA</td><td>27,250</td><td>Emergency Anchor</td><td style="color:var(--green)">Strong containment</td></tr>
+      </table>
+      <div class="plan-box">
+        <div class="plan-title">📋 NQ Trading Plan</div>
+        <ul>
+          <li class="key">SPOT 27,548 — above Call Wall/Node (27,500) · NQ leading today</li>
+          <li class="key">AAPL +3% pre-market = primary NQ catalyst · iPhone 17 demand + Services ATH</li>
+          <li class="bull">Bull: hold above 27,500 (Node) → 27,640 (VAH) → 27,700 → 28,000 (Flip)</li>
+          <li class="bear">Bear: lose 27,500 (Node/CW) → 27,350 (TA) → 27,200–27,250 (strong floor)</li>
+          <li class="warn">RF = -6 (partial VAH rejection) — not yet full acceptance above VAH</li>
+          <li class="exp">Weekly QN1K6 expiration — gamma pinning between 27,400–27,600</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="instrument-grid">
+    <!-- CL -->
+    <div class="inst-card">
+      <div class="inst-header">
+        <span class="inst-tag tag-cl">CL · CLK26</span>
+        <span style="color:var(--yellow);font-size:10px;">PROFILE D · COMPRESSION</span>
+        <span class="inst-spot up">104.34</span>
+      </div>
+      <div class="tpo-row">
+        <div class="tpo-chip"><span class="lbl">VAH </span><span style="color:var(--text2)">105.75</span></div>
+        <div class="tpo-chip"><span class="lbl">POC </span><span style="color:var(--text2)">105.00</span></div>
+        <div class="tpo-chip"><span class="lbl">VAL </span><span style="color:var(--text2)">105.63</span></div>
+        <div class="tpo-chip"><span class="lbl">EMA200 </span><span style="color:var(--green)">102.51</span></div>
+        <div class="tpo-chip"><span class="lbl">VWAP </span><span style="color:var(--red)">105.36 · BELOW</span></div>
+        <div class="tpo-chip"><span class="lbl">RF </span><span style="color:var(--yellow)">+1</span></div>
+      </div>
+      <table class="pad-table">
+        <tr><th>Zone</th><th>Strike</th><th>Label</th><th>Type</th></tr>
+        <tr><td class="zone-call">▲ GC1</td><td>106</td><td>Call Wall · 18,272 OI</td><td style="color:var(--green)">Strong containment</td></tr>
+        <tr><td class="zone-call">▲ GC2</td><td>109</td><td>Call Wall 2</td><td style="color:var(--text3)">Acceleration</td></tr>
+        <tr><td style="color:var(--yellow)">📍 TA</td><td>103–104</td><td>Tactical Anchor</td><td style="color:var(--yellow)">SPOT HERE</td></tr>
+        <tr><td class="zone-put">▼ GF1/PW</td><td>100</td><td>Put Wall · 43,976 OI</td><td style="color:var(--green)">MASSIVE support</td></tr>
+        <tr><td class="zone-flip">◆ GP</td><td>98.75</td><td>Gamma Flip</td><td style="color:var(--orange)">Structural flip</td></tr>
+        <tr><td class="zone-put">▼ EA</td><td>102</td><td>Emergency Anchor</td><td style="color:var(--green)">Containment</td></tr>
+      </table>
+      <div class="plan-box">
+        <div class="plan-title">📋 CL Trading Plan</div>
+        <ul>
+          <li class="key">SPOT 104.34 — in Tactical Anchor zone · below VWAP (105.36)</li>
+          <li class="key">Profile Type D = tight compression — energy building for breakout</li>
+          <li class="bull">Bull: reclaim 105 (POC) → 105.75 (VAH) → 106 (Call Wall · strong)</li>
+          <li class="bear">Bear: lose 103 (TA lower) → 102 (EA) → 100 (Put Wall MASSIVE 44K OI)</li>
+          <li class="warn">Call Wall 106 with 18K OI = hard ceiling today</li>
+          <li class="key">Mean reversion dominant (gamma positive) — range 100–106 expected</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- SPX -->
+    <div class="inst-card">
+      <div class="inst-header">
+        <span class="inst-tag tag-spx">SPX · CBOE</span>
+        <span style="color:var(--pad-orange);font-size:10px;">AMPLIFIED · GF INTRA 7,340</span>
+        <span class="inst-spot up">7,209.01</span>
+      </div>
+      <div class="tpo-row">
+        <div class="tpo-chip"><span class="lbl">VAH </span><span style="color:var(--text2)">7,182.00</span></div>
+        <div class="tpo-chip"><span class="lbl">POC </span><span style="color:var(--text2)">7,167.75</span></div>
+        <div class="tpo-chip"><span class="lbl">VAL </span><span style="color:var(--text2)">7,134.50</span></div>
+        <div class="tpo-chip"><span class="lbl">GF Intraday </span><span style="color:var(--orange)">7,340</span></div>
+        <div class="tpo-chip"><span class="lbl">GF Struct. </span><span style="color:var(--yellow)">7,340</span></div>
+      </div>
+      <table class="pad-table">
+        <tr><th>PAD Zone</th><th>Strike</th><th>Label</th><th>OI</th></tr>
+        <tr><td class="zone-call">▲ GC1</td><td>7,340</td><td>Call Wall DOM. / Flip</td><td style="color:var(--red)">34,270 MAX</td></tr>
+        <tr><td class="zone-call">▲ GC2</td><td>7,280</td><td>Call Wall 2</td><td style="color:var(--text3)">20,377</td></tr>
+        <tr><td class="zone-call">▲ GC3</td><td>7,350</td><td>Gamma Ceiling</td><td style="color:var(--text3)">16,059</td></tr>
+        <tr><td style="color:var(--cyan)">📍 TA</td><td>7,200</td><td>Tactical Anchor</td><td style="color:var(--cyan)">Intraday pivot</td></tr>
+        <tr><td class="zone-put">▼ GF1</td><td>7,050</td><td>Gamma Floor 1</td><td style="color:var(--text3)">11,071</td></tr>
+        <tr><td class="zone-put">▼ GF2</td><td>7,150</td><td>Gamma Floor 2 / EA</td><td style="color:var(--text3)">8,936</td></tr>
+        <tr><td class="zone-put">▼ GF3/PW</td><td>7,200</td><td>Put Wall</td><td style="color:var(--green)">7,440</td></tr>
+      </table>
+      <div class="plan-box">
+        <div class="plan-title">📋 SPX — AAPL Beat + Weekly Expiration</div>
+        <ul>
+          <li class="key">SPOT 7,209 — ABOVE value area (VAH 7,182) · expansion in progress</li>
+          <li class="key">Tactical Anchor 7,200 = intraday pivot · support for pullbacks</li>
+          <li class="bull">Bull: hold above 7,200 (TA) → 7,280 (CW2) → 7,340 (GF Intraday / CW MAX)</li>
+          <li class="warn">Call Wall 7,340 with 34K OI = major institutional ceiling</li>
+          <li class="bear">Bear: lose 7,200 (TA/PW) → 7,150 (EA) → 7,050 (GF1)</li>
+          <li class="exp">Weekly expiration EW1K6 — pinning between 7,200–7,280 likely pre-ISM</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- SECTION 4: EDGE -->
+  <div class="section-header">
+    <span class="num">04</span>
+    <span class="title">EDGE — Operational Synthesis</span>
+    <span class="sub">AAPL Beat · Weekly Expiration · ISM 10AM · 3 Scenarios</span>
+  </div>
+
+  <div class="synth-box">
+    <strong>SYNTHESIS:</strong> The week closes on a strong note. AAPL beat across the board — EPS +3%, iPhone record, Services ATH, China +28%.
+    ES well above EMA200 (+57 pts), SPX above value area (7,182 VAH) and Tactical Anchor (7,200).
+    NQ above Gamma Node (27,500) with AAPL as primary catalyst.
+    <strong>The structural challenge:</strong> Gamma Flip is far above (7,300 ES / 7,340 SPX) — market in AMPLIFIED zone.
+    Moves can extend quickly in either direction without dealer cushion.
+    <strong>Weekly expiration today</strong> — 4 simultaneous (ES/NQ/YM/RUT) — pinning risk between 7,200–7,280 SPX.
+    <strong>Only macro:</strong> ISM PMI 10:00 AM (consensus 53) — secondary but watch for surprise.
+    <strong>Net bias: BULLISH</strong> — AAPL momentum + strong structure + solid put floor below.
+  </div>
+
+  <div class="edge-grid">
+    <div class="scenario-card base">
+      <div class="sc-header sc-base">⚡ BASE CASE</div>
+      <div class="pct sc-base">45%</div>
+      <div class="desc">AAPL momentum holds. Weekly expiration pins ES between 7,200–7,280. ISM in line. DHP stays BLD.BULL. NQ oscillates around 27,500 (Node). Clean close above EMA200.</div>
+      <div class="levels">Range: ES 7,200–7,280 · NQ 27,400–27,640</div>
+    </div>
+    <div class="scenario-card bull">
+      <div class="sc-header sc-bull">🟢 BULL CASE</div>
+      <div class="pct sc-bull">35%</div>
+      <div class="desc">AAPL gap drives NQ above VAH (27,640). ES breaks 7,260 (VAH) with ACC.BULL. DHP goes positive. ISM beats 53. ES pushes toward 7,300 (GP/Flip ES). Strong weekly close.</div>
+      <div class="levels">Target: ES 7,300 · NQ 27,700–28,000</div>
+    </div>
+    <div class="scenario-card bear">
+      <div class="sc-header sc-bear">🔴 BEAR CASE</div>
+      <div class="pct sc-bear">20%</div>
+      <div class="desc">AAPL fades after gap open (sell the news). ISM miss below 52. ES loses 7,200 (TA/GAIA Node) with DHP ACC.BEAR. AMPLIFIED = fast drop toward 7,150 → 7,100.</div>
+      <div class="levels">Target: ES 7,150 · NQ 27,200–27,300</div>
+    </div>
+  </div>
+
+  <!-- SECTION 5: CALENDAR -->
+  <div class="section-header">
+    <span class="num">05</span>
+    <span class="title">Economic Calendar — May 1, 2026</span>
+    <span class="sub">CME QuikStrike · Weekly close</span>
+  </div>
+
+  <table class="cal-table">
+    <thead>
+      <tr><th>Time ET</th><th>Event</th><th>Prev</th><th>Consensus</th><th>Impact</th><th>PAD Note</th></tr>
+    </thead>
+    <tbody>
+      <tr class="today-row">
+        <td style="color:var(--pad-orange)">ALL DAY</td>
+        <td style="color:var(--pad-orange);font-weight:700">Weekly Option Expirations (4) · EW1/QN1/YM1/R1E</td>
+        <td>—</td><td>—</td>
+        <td class="imp-high">HIGH</td>
+        <td class="pad-note">ES pinning 7,200–7,280 · NQ pinning 27,400–27,600</td>
+      </tr>
+      <tr class="today-row">
+        <td>10:00 AM</td>
+        <td>ISM Manufacturing PMI Apr</td>
+        <td>52.7</td><td>53</td>
+        <td class="imp-med">MEDIUM</td>
+        <td class="pad-note">If beats 53 → confirms expansion · bull case</td>
+      </tr>
+      <tr class="today-row">
+        <td>10:00 AM</td>
+        <td>ISM Manufacturing Employment Apr</td>
+        <td>48.7</td><td>49</td>
+        <td class="imp-low">LOW</td>
+        <td class="pad-note">Labor component — watch with last week's claims</td>
+      </tr>
+      <tr>
+        <td style="color:var(--text3)">Next Week</td>
+        <td>FOMC Minutes · Fed Speakers</td>
+        <td>—</td><td>—</td>
+        <td class="imp-med">MEDIUM</td>
+        <td class="pad-note">Post-Powell follow-up · hawkish language risk</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- SECTION 6: WEEKLY RECAP -->
+  <div class="section-header">
+    <span class="num">06</span>
+    <span class="title">Weekly Recap — April 28–May 1</span>
+    <span class="sub">GAIA System Performance · Structure held all week</span>
+  </div>
+
+  <div class="synth-box">
+    <strong>WEEK IN REVIEW — GAIA PERFORMANCE:</strong>
+
+    <br><br><strong>Mon Apr 28 — Iran Risk-Off:</strong> Trump cancelled Iran talks → WTI +2%. ES broke EMA200 pre-market.
+    Gamma Floor 7,150 mapped pre-market → held all session. DHP absorbed the geopolitical shock.
+
+    <br><br><strong>Tue Apr 29 — FOMC Day:</strong> Fed held 3.75%. Powell: "Fed independence is at risk." 4 dissenters.
+    Net DHP: -1,917M → +1,041M in 40 minutes. Put Wall 7,100 never broke. Structure won over news.
+
+    <br><br><strong>Wed Apr 30 — Stagflation Data:</strong> GDP 2.0% miss · Core PCE Q 4.3% HOT · Claims 189K.
+    Gamma Flip 7,130 tested twice → held both times. Double bottom confirmed by structure.
+    New parser confirmed: AM vs PM XLS comparison identified intraday put flow.
+
+    <br><br><strong>Thu May 1 — AAPL Beat:</strong> Record quarter across the board. ES/NQ gap up.
+    Weekly expiration adds pinning dynamic. ISM 10:00 AM the only data point.
+
+    <br><br><strong>Key phrase of the week: "Structure matters more than news."</strong>
+    Every major macro shock this week was absorbed by gamma structure at the levels mapped pre-market.
+  </div>
+
+  <!-- SECTION 7: TWITTER -->
+  <div class="section-header">
+    <span class="num">07</span>
+    <span class="title">Tweet of the Day — @PivotAlphaDesk</span>
+    <span class="sub">Publish 7:30–8:30 AM ET · AAPL + Weekly expiration narrative</span>
+  </div>
+
+  <div class="tweet-box">
+    <div class="tweet-header">
+      <div class="tweet-avatar">PAD</div>
+      <div><div class="tweet-name">PivotAlphaDesk</div><div class="tweet-handle">@PivotAlphaDesk</div></div>
+      <span class="tweet-label">TWEET 1 · OPERATIONAL</span>
+    </div>
+    <div class="tweet-content">Pre-Market | Fri May 1 · ES Gamma + AAPL Week
+
+Apple just delivered its best March quarter ever.
+EPS $2.01 · Revenue $111B · iPhone record · Services ATH.
+
+🟢 Support:  7,200 (Tactical Anchor · GAIA)
+🔴 Flip:     7,300 (ES Gamma Flip)
+📍 ES:       7,253 · +57 pts over EMA200
+⚡ Regime:   NEUTRAL pre-open ✓
+
+4 weekly expirations today.
+Dealers pinning between 7,200–7,280.
+
+AAPL told the story of the week.
+Gamma told us where price would go.
+
+Structure matters more than news.
+Every single day this week.
+
+<span style="color:#1d9bf0">#ES_F #AAPL #GammaLevels #SPX #WeeklyExpiration</span></div>
+    <div class="tweet-time">⏰ Publish: 7:30–8:30 AM ET · Friday May 1, 2026</div>
+  </div>
+
+  <div class="tweet-box" style="border-color:var(--purple)">
+    <div class="tweet-header">
+      <div class="tweet-avatar" style="background:var(--purple)">PAD</div>
+      <div><div class="tweet-name">PivotAlphaDesk</div><div class="tweet-handle">@PivotAlphaDesk</div></div>
+      <span class="tweet-label" style="color:var(--purple);border-color:rgba(188,140,255,.3);background:rgba(188,140,255,.1)">TWEET 2 · WEEKLY CLOSE</span>
+    </div>
+    <div class="tweet-content">Week in review. April 28–May 1. 🧵
+
+Mon: Iran risk-off. ES broke EMA200 pre-market.
+Gamma Floor 7,150 → held.
+
+Tue: FOMC. Powell hawkish. 4 dissenters.
+Net DHP: -1,917M → +1,041M in 40 min.
+Put Wall 7,100 → never broke.
+
+Wed: Stagflation data. GDP miss. PCE hot.
+Gamma Flip 7,130 → tested twice → held twice.
+
+Thu: AAPL beat. Record quarter.
+Structure absorbed everything.
+
+Every shock. Every headline.
+The gamma map held.
+
+Static levels are the map.
+Real-time dealer flow is the territory.
+
+See you Monday.
+
+<span style="color:#1d9bf0">#SPX #GammaExposure #WeeklyRecap #DealerHedging #GAIA</span></div>
+    <div class="tweet-time">⏰ Publish: end of session · Friday close</div>
+  </div>
+
+  <div class="divider"></div>
+
+  <div class="footer">
+    <span>PivotAlphaDesk</span> · GAIA Framework · Briefing May 1, 2026 · 07:31 ET &nbsp;|&nbsp;
+    Source: CME QuikStrike · CBOE · GAIA Live · Yahoo Finance &nbsp;|&nbsp;
+    <span>Not investment advice</span>
+  </div>
+
+</div>
+</body>
+</html>
