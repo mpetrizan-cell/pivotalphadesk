@@ -19,7 +19,7 @@ var TRIAL_CODES = {
 };
 
 var SESSION_HOURS = 12;
-var STORAGE_KEY   = 'pad_access_v1';
+var STORAGE_KEY   = 'pad_access_v2';
 
 function isValidCode(code) {
   return ACCESS_CODES.indexOf(code.toUpperCase().trim()) !== -1;
@@ -117,9 +117,8 @@ function showLockScreen() {
     '<div class="pad-gate-error" id="pad-gate-error"></div>',
     '<button class="pad-gate-btn" id="pad-gate-submit">ACCESS BRIEFING</button>',
     '<div class="pad-gate-link">',
-    'Not a member? <a href="https://pivotalphadesk.com/#pricing">Get Pro Access &rarr;</a>',
+    'Not a member? <a href="pricing.html">Start Free Trial &rarr;</a>',
     '</div>',
-    '<div class="pad-gate-trial">Free trial available &mdash; PADTRIAL</div>',
     '</div>'
   ].join('');
   document.body.appendChild(box);
