@@ -1,0 +1,706 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pro Access · PivotAlphaDesk</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Barlow+Condensed:wght@300;400;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #05080c;
+  --bg2: #080d13;
+  --bg3: #0b1219;
+  --border: #141f2e;
+  --border2: #1a2d42;
+  --text: #8aa0b4;
+  --dim: #3a5068;
+  --bright: #ddeeff;
+  --teal: #00d4b4;
+  --fuchsia: #c040e8;
+  --gold: #f0b830;
+  --blue: #2a7fe8;
+  --green: #28c87a;
+  --red: #e83040;
+  --white: #f0f8ff;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Barlow Condensed', sans-serif;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* ── GRID NOISE BACKGROUND ── */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(0,212,180,.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0,212,180,.03) 1px, transparent 1px);
+  background-size: 48px 48px;
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* ── GLOW ORBS ── */
+.orb {
+  position: fixed;
+  border-radius: 50%;
+  filter: blur(120px);
+  pointer-events: none;
+  z-index: 0;
+}
+.orb-1 {
+  width: 600px; height: 600px;
+  background: rgba(0,212,180,.06);
+  top: -200px; left: -200px;
+}
+.orb-2 {
+  width: 500px; height: 500px;
+  background: rgba(192,64,232,.05);
+  bottom: -100px; right: -100px;
+}
+
+/* ── NAV ── */
+nav {
+  position: relative; z-index: 10;
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 18px 48px;
+  border-bottom: 1px solid var(--border);
+  background: rgba(5,8,12,.85);
+  backdrop-filter: blur(12px);
+}
+.nav-logo {
+  font-family: 'Space Mono', monospace;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--teal);
+  letter-spacing: .12em;
+  text-decoration: none;
+}
+.nav-logo span { color: var(--dim); }
+.nav-links {
+  display: flex; gap: 32px; align-items: center;
+}
+.nav-links a {
+  font-size: 12px;
+  color: var(--dim);
+  text-decoration: none;
+  letter-spacing: .1em;
+  transition: color .2s;
+}
+.nav-links a:hover { color: var(--text); }
+.nav-badge {
+  font-family: 'Space Mono', monospace;
+  font-size: 9px;
+  letter-spacing: .15em;
+  padding: 4px 12px;
+  border: 1px solid var(--teal);
+  color: var(--teal);
+  background: rgba(0,212,180,.06);
+}
+
+/* ── HERO ── */
+.hero {
+  position: relative; z-index: 1;
+  text-align: center;
+  padding: 100px 48px 60px;
+}
+.hero-eyebrow {
+  font-family: 'Space Mono', monospace;
+  font-size: 10px;
+  color: var(--teal);
+  letter-spacing: .25em;
+  margin-bottom: 20px;
+  display: flex; align-items: center; justify-content: center; gap: 10px;
+}
+.hero-eyebrow::before,
+.hero-eyebrow::after {
+  content: '';
+  width: 40px; height: 1px;
+  background: var(--teal);
+  opacity: .4;
+}
+.hero-title {
+  font-size: clamp(48px, 6vw, 80px);
+  font-weight: 900;
+  line-height: .95;
+  letter-spacing: -.02em;
+  color: var(--white);
+  margin-bottom: 24px;
+}
+.hero-title em {
+  font-style: normal;
+  background: linear-gradient(135deg, var(--teal), var(--fuchsia));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+.hero-sub {
+  font-size: 18px;
+  font-weight: 400;
+  color: var(--text);
+  max-width: 540px;
+  margin: 0 auto 16px;
+  line-height: 1.5;
+}
+.hero-trial {
+  font-family: 'Space Mono', monospace;
+  font-size: 11px;
+  color: var(--green);
+  letter-spacing: .1em;
+}
+
+/* ── PRICING CARD ── */
+.pricing-wrap {
+  position: relative; z-index: 1;
+  display: flex;
+  justify-content: center;
+  padding: 40px 24px 80px;
+}
+
+.card {
+  width: 100%;
+  max-width: 520px;
+  background: var(--bg2);
+  border: 1px solid var(--border2);
+  position: relative;
+  overflow: hidden;
+}
+
+/* top gradient line */
+.card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, var(--teal), var(--fuchsia), var(--gold));
+}
+
+/* corner accent */
+.card::after {
+  content: 'PRO';
+  position: absolute;
+  top: 20px; right: -28px;
+  background: var(--teal);
+  color: var(--bg);
+  font-family: 'Space Mono', monospace;
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: .2em;
+  padding: 4px 40px;
+  transform: rotate(45deg);
+}
+
+.card-header {
+  padding: 40px 40px 32px;
+  border-bottom: 1px solid var(--border);
+}
+
+.card-tier {
+  font-family: 'Space Mono', monospace;
+  font-size: 10px;
+  letter-spacing: .2em;
+  color: var(--teal);
+  margin-bottom: 16px;
+}
+
+.card-price-row {
+  display: flex;
+  align-items: flex-end;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.price-dollar {
+  font-family: 'Space Mono', monospace;
+  font-size: 16px;
+  color: var(--dim);
+  padding-bottom: 12px;
+}
+
+.price-amount {
+  font-family: 'Space Mono', monospace;
+  font-size: 72px;
+  font-weight: 700;
+  line-height: 1;
+  color: var(--white);
+  letter-spacing: -.04em;
+}
+
+.price-period {
+  font-size: 14px;
+  color: var(--dim);
+  padding-bottom: 10px;
+}
+
+.card-trial {
+  font-family: 'Space Mono', monospace;
+  font-size: 10px;
+  color: var(--green);
+  letter-spacing: .1em;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.card-trial::before {
+  content: '◆';
+  font-size: 7px;
+}
+
+/* ── FEATURES ── */
+.card-features {
+  padding: 32px 40px;
+  border-bottom: 1px solid var(--border);
+}
+
+.features-label {
+  font-family: 'Space Mono', monospace;
+  font-size: 8px;
+  letter-spacing: .2em;
+  color: var(--dim);
+  margin-bottom: 20px;
+}
+
+.feature {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  padding: 10px 0;
+  border-bottom: 1px solid rgba(255,255,255,.03);
+}
+.feature:last-child { border-bottom: none; }
+
+.feature-icon {
+  width: 28px; height: 28px;
+  border: 1px solid var(--border2);
+  background: var(--bg3);
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+  font-size: 12px;
+}
+
+.feature-content { flex: 1; }
+
+.feature-name {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--bright);
+  letter-spacing: .02em;
+  line-height: 1.2;
+}
+
+.feature-desc {
+  font-size: 12px;
+  color: var(--dim);
+  margin-top: 2px;
+  line-height: 1.4;
+}
+
+.feature-tag {
+  font-family: 'Space Mono', monospace;
+  font-size: 8px;
+  letter-spacing: .1em;
+  padding: 2px 7px;
+  border: 1px solid var(--border2);
+  color: var(--dim);
+  flex-shrink: 0;
+  align-self: center;
+}
+.feature-tag.live {
+  border-color: var(--teal);
+  color: var(--teal);
+  background: rgba(0,212,180,.06);
+}
+.feature-tag.new {
+  border-color: var(--fuchsia);
+  color: var(--fuchsia);
+  background: rgba(192,64,232,.06);
+}
+
+/* ── CTA ── */
+.card-cta {
+  padding: 32px 40px;
+}
+
+.btn-stripe {
+  display: block;
+  width: 100%;
+  background: var(--teal);
+  color: var(--bg);
+  font-family: 'Space Mono', monospace;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: .15em;
+  text-align: center;
+  text-decoration: none;
+  padding: 18px 24px;
+  border: none;
+  cursor: pointer;
+  transition: all .2s;
+  position: relative;
+  overflow: hidden;
+}
+
+.btn-stripe::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,.15), transparent);
+  transform: translateX(-100%);
+  transition: transform .5s;
+}
+
+.btn-stripe:hover {
+  background: #00f0cc;
+  transform: translateY(-1px);
+  box-shadow: 0 8px 32px rgba(0,212,180,.3);
+}
+
+.btn-stripe:hover::before {
+  transform: translateX(100%);
+}
+
+.cta-sub {
+  text-align: center;
+  margin-top: 14px;
+  font-family: 'Space Mono', monospace;
+  font-size: 9px;
+  color: var(--dim);
+  letter-spacing: .08em;
+  line-height: 1.6;
+}
+
+.cta-sub span {
+  color: var(--text);
+}
+
+/* ── TRUST STRIP ── */
+.trust-strip {
+  position: relative; z-index: 1;
+  display: flex;
+  justify-content: center;
+  gap: 48px;
+  padding: 0 48px 80px;
+  flex-wrap: wrap;
+}
+
+.trust-item {
+  text-align: center;
+}
+
+.trust-val {
+  font-family: 'Space Mono', monospace;
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--white);
+  display: block;
+}
+
+.trust-lbl {
+  font-size: 11px;
+  color: var(--dim);
+  letter-spacing: .08em;
+  display: block;
+  margin-top: 2px;
+}
+
+/* ── FAQ ── */
+.faq {
+  position: relative; z-index: 1;
+  max-width: 640px;
+  margin: 0 auto;
+  padding: 0 24px 100px;
+}
+
+.faq-title {
+  font-family: 'Space Mono', monospace;
+  font-size: 10px;
+  letter-spacing: .2em;
+  color: var(--dim);
+  text-align: center;
+  margin-bottom: 32px;
+}
+
+.faq-item {
+  border-top: 1px solid var(--border);
+  padding: 20px 0;
+}
+.faq-item:last-child { border-bottom: 1px solid var(--border); }
+
+.faq-q {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--bright);
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  letter-spacing: .02em;
+}
+
+.faq-q::after {
+  content: '+';
+  font-family: 'Space Mono', monospace;
+  font-size: 16px;
+  color: var(--teal);
+  transition: transform .2s;
+}
+
+.faq-item.open .faq-q::after {
+  transform: rotate(45deg);
+}
+
+.faq-a {
+  font-size: 13px;
+  color: var(--text);
+  line-height: 1.6;
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height .3s ease, padding .3s;
+}
+
+.faq-item.open .faq-a {
+  max-height: 200px;
+  padding-top: 12px;
+}
+
+/* ── FOOTER ── */
+footer {
+  position: relative; z-index: 1;
+  border-top: 1px solid var(--border);
+  padding: 24px 48px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.footer-logo {
+  font-family: 'Space Mono', monospace;
+  font-size: 11px;
+  color: var(--dim);
+  letter-spacing: .1em;
+}
+
+.footer-links {
+  display: flex; gap: 24px;
+}
+.footer-links a {
+  font-family: 'Space Mono', monospace;
+  font-size: 9px;
+  color: var(--dim);
+  text-decoration: none;
+  letter-spacing: .1em;
+  transition: color .2s;
+}
+.footer-links a:hover { color: var(--text); }
+
+.footer-disclaimer {
+  font-size: 10px;
+  color: var(--dim);
+  width: 100%;
+  opacity: .6;
+}
+
+/* ── ANIMATIONS ── */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(24px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.hero { animation: fadeUp .6s ease both; }
+.pricing-wrap { animation: fadeUp .6s .15s ease both; }
+.trust-strip { animation: fadeUp .6s .3s ease both; }
+
+/* ── RESPONSIVE ── */
+@media (max-width: 600px) {
+  nav { padding: 14px 20px; }
+  .hero { padding: 60px 20px 40px; }
+  .card-header, .card-features, .card-cta { padding-left: 24px; padding-right: 24px; }
+  .trust-strip { gap: 28px; }
+  footer { padding: 20px; flex-direction: column; align-items: flex-start; }
+}
+</style>
+</head>
+<body>
+
+<div class="orb orb-1"></div>
+<div class="orb orb-2"></div>
+
+<!-- NAV -->
+<nav>
+  <a href="index.html" class="nav-logo">PIVOT<span>ALPHA</span>DESK</a>
+  <div class="nav-links">
+    <a href="index.html">Briefings</a>
+    <a href="education.html">Education</a>
+    <a href="login.html">Login</a>
+    <div class="nav-badge">PRO ACCESS</div>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-eyebrow">GAIA FRAMEWORK · PROFESSIONAL ACCESS</div>
+  <h1 class="hero-title">Trade with<br><em>Gamma Intelligence</em></h1>
+  <p class="hero-sub">Daily pre-market briefings powered by GAIA — gamma exposure, dealer hedging pressure, and PAD zones for ES, NQ, CL and SPX.</p>
+  <p class="hero-trial">◆ 7-DAY FREE TRIAL · CANCEL ANYTIME · NO RISK</p>
+</section>
+
+<!-- PRICING CARD -->
+<div class="pricing-wrap">
+  <div class="card">
+
+    <div class="card-header">
+      <div class="card-tier">PIVOTALPHADESK PRO</div>
+      <div class="card-price-row">
+        <span class="price-dollar">$</span>
+        <span class="price-amount">49</span>
+        <span class="price-period">/ month</span>
+      </div>
+      <div class="card-trial">7 DAYS FREE · THEN $49/MO · CANCEL ANYTIME</div>
+    </div>
+
+    <div class="card-features">
+      <div class="features-label">WHAT'S INCLUDED</div>
+
+      <div class="feature">
+        <div class="feature-icon">📋</div>
+        <div class="feature-content">
+          <div class="feature-name">Daily Pre-Market Briefings</div>
+          <div class="feature-desc">Full HTML briefings with ES, NQ, CL and SPX analysis — delivered before 8:00 AM ET every trading day.</div>
+        </div>
+        <div class="feature-tag live">DAILY</div>
+      </div>
+
+      <div class="feature">
+        <div class="feature-icon">⚡</div>
+        <div class="feature-content">
+          <div class="feature-name">GAIA Gamma Levels</div>
+          <div class="feature-desc">Call Walls, Put Walls, Gamma Flip, Gravity Pins and DHP structure for all four instruments.</div>
+        </div>
+        <div class="feature-tag live">LIVE</div>
+      </div>
+
+      <div class="feature">
+        <div class="feature-icon">📊</div>
+        <div class="feature-content">
+          <div class="feature-name">SPX PAD Chart</div>
+          <div class="feature-desc">Interactive SPX gamma zones chart updated daily with GAIA String — 1σ range, regime and key levels.</div>
+        </div>
+        <div class="feature-tag live">LIVE</div>
+      </div>
+
+      <div class="feature">
+        <div class="feature-icon">🧮</div>
+        <div class="feature-content">
+          <div class="feature-name">Options Calculator</div>
+          <div class="feature-desc">P&L scenarios, breakeven and risk calculations built for futures and SPX options traders.</div>
+        </div>
+        <div class="feature-tag new">NEW</div>
+      </div>
+
+      <div class="feature">
+        <div class="feature-icon">📚</div>
+        <div class="feature-content">
+          <div class="feature-name">Education Library</div>
+          <div class="feature-desc">Full GAIA methodology — gamma exposure, dealer hedging, PAD zones and multi-scenario edge frameworks.</div>
+        </div>
+        <div class="feature-tag">LIBRARY</div>
+      </div>
+
+    </div>
+
+    <div class="card-cta">
+      <a href="https://buy.stripe.com/5kQ7sL8CH16hfpo8nq5EY01" class="btn-stripe">
+        START 7-DAY FREE TRIAL →
+      </a>
+      <div class="cta-sub">
+        <span>No charge today.</span> Card required to start trial.<br>
+        Cancel before day 7 and you won't be billed. Secure checkout via Stripe.
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- TRUST STRIP -->
+<div class="trust-strip">
+  <div class="trust-item">
+    <span class="trust-val">4</span>
+    <span class="trust-lbl">INSTRUMENTS COVERED</span>
+  </div>
+  <div class="trust-item">
+    <span class="trust-val">5s</span>
+    <span class="trust-lbl">GAIA UPDATE CYCLE</span>
+  </div>
+  <div class="trust-item">
+    <span class="trust-val">8AM</span>
+    <span class="trust-lbl">BRIEFING DELIVERY ET</span>
+  </div>
+  <div class="trust-item">
+    <span class="trust-val">7d</span>
+    <span class="trust-lbl">FREE TRIAL · NO RISK</span>
+  </div>
+</div>
+
+<!-- FAQ -->
+<div class="faq">
+  <div class="faq-title">FREQUENTLY ASKED</div>
+
+  <div class="faq-item">
+    <div class="faq-q">What exactly is in each daily briefing?</div>
+    <div class="faq-a">Each briefing covers pre-market snapshot, GAIA DHP structure, TPO/PAD analysis with trading plans for ES, NQ and CL, SPX gamma analysis with IV%, a three-scenario edge framework (Base/Bull/Bear with probabilities), economic calendar and earnings schedule.</div>
+  </div>
+
+  <div class="faq-item">
+    <div class="faq-q">What is GAIA and how does it work?</div>
+    <div class="faq-a">GAIA (Gamma AI Analysis) processes SPX options data from CBOE to calculate dealer gamma exposure and hedging pressure in real time. It identifies key gamma levels — Call Walls, Put Walls, Gamma Flip — that act as structural support and resistance for futures and index traders.</div>
+  </div>
+
+  <div class="faq-item">
+    <div class="faq-q">Can I cancel during the free trial?</div>
+    <div class="faq-a">Yes. Cancel any time before day 7 and you will not be charged. No questions asked. You can manage or cancel your subscription directly through Stripe's customer portal.</div>
+  </div>
+
+  <div class="faq-item">
+    <div class="faq-q">Is this investment advice?</div>
+    <div class="faq-a">No. PivotAlphaDesk provides technical analysis and gamma structure data for educational purposes only. All content is informational and does not constitute investment advice or trading recommendations.</div>
+  </div>
+
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-logo">PIVOTALPHADESK © 2026 · GAIA FRAMEWORK</div>
+  <div class="footer-links">
+    <a href="index.html">Home</a>
+    <a href="education.html">Education</a>
+    <a href="login.html">Login</a>
+    <a href="mailto:contact@pivotalphadesk.com">Contact</a>
+  </div>
+  <div class="footer-disclaimer">
+    For educational and informational purposes only. Not investment advice. Trading futures involves substantial risk of loss.
+  </div>
+</footer>
+
+<script>
+// FAQ toggle
+document.querySelectorAll('.faq-q').forEach(q => {
+  q.addEventListener('click', () => {
+    const item = q.parentElement;
+    const wasOpen = item.classList.contains('open');
+    document.querySelectorAll('.faq-item').forEach(i => i.classList.remove('open'));
+    if (!wasOpen) item.classList.add('open');
+  });
+});
+</script>
+
+</body>
+</html>
