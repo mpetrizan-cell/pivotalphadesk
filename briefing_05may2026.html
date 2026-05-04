@@ -661,7 +661,48 @@ Structure matters more than news.
   <div class="tweet-time">Ready to post · May 5, 2026 · 11:00 AM ET</div>
 </div>
 
-<div class="footer">
+<div class="section-header">
+  <span class="num">11</span>
+  <span class="title">GAIA String · SPX PAD Chart</span>
+  <span class="sub">Copy → Paste in SPX PAD Chart → APPLY</span>
+</div>
+
+<div style="background:#0d1117;border:1px solid #39c5cf;border-left:3px solid #39c5cf;border-radius:4px;padding:16px;margin-bottom:16px;">
+  <div style="font-size:10px;color:#39c5cf;letter-spacing:.12em;text-transform:uppercase;margin-bottom:10px;">📋 DAILY GAIA STRING · MAY 5, 2026 · SPX PAD CHART</div>
+  <div style="display:flex;align-items:center;gap:10px;">
+    <div id="gaia-string-box" style="flex:1;background:#070a0e;border:1px solid #1e2d3d;color:#c9d1d9;font-family:'JetBrains Mono',monospace;font-size:11px;padding:10px 14px;letter-spacing:.04em;word-break:break-all;line-height:1.6;">DATE:May 5 2026 ET|REGIME:DAMPENED|SPOT:7229.32|GC1:7300|GC2:7350|GC3:7340|GP:7200|PIN:7250|GF1:7200|GF2:7150|GF3:7100|TA:7150|EA:7050|SIGMA_HI:7299|SIGMA_LO:7159</div>
+    <button onclick="copyGAIA()" id="copy-btn" style="background:#39c5cf;color:#070a0e;border:none;padding:10px 18px;font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:700;letter-spacing:.1em;cursor:pointer;white-space:nowrap;flex-shrink:0;">COPY →</button>
+  </div>
+  <div style="margin-top:10px;font-size:10px;color:#6e7681;line-height:1.7;">
+    1. Click <strong style="color:#39c5cf;">COPY →</strong> above &nbsp;·&nbsp; 
+    2. Open <strong style="color:#c9d1d9;">SPX PAD Chart</strong> in your member portal &nbsp;·&nbsp; 
+    3. Paste in the <strong style="color:#c9d1d9;">GAIA STRING</strong> input bar &nbsp;·&nbsp; 
+    4. Click <strong style="color:#c9d1d9;">APPLY →</strong>
+  </div>
+</div>
+
+<script>
+function copyGAIA() {
+  var str = document.getElementById('gaia-string-box').textContent.trim();
+  navigator.clipboard.writeText(str).then(function() {
+    var btn = document.getElementById('copy-btn');
+    btn.textContent = '✓ COPIED';
+    btn.style.background = '#3fb950';
+    setTimeout(function(){ btn.textContent = 'COPY →'; btn.style.background = '#39c5cf'; }, 2000);
+  }).catch(function() {
+    var range = document.createRange();
+    range.selectNode(document.getElementById('gaia-string-box'));
+    window.getSelection().removeAllRanges();
+    window.getSelection().addRange(range);
+    document.execCommand('copy');
+    window.getSelection().removeAllRanges();
+    var btn = document.getElementById('copy-btn');
+    btn.textContent = '✓ COPIED';
+    btn.style.background = '#3fb950';
+    setTimeout(function(){ btn.textContent = 'COPY →'; btn.style.background = '#39c5cf'; }, 2000);
+  });
+}
+</script>
   <span>PivotAlphaDesk</span> · GAIA Framework · May 5, 2026 · Pre-Market Briefing<br>
   For educational purposes only. Not financial advice. Trading futures involves substantial risk of loss.<br>
   Source: CME QuikStrike · GAIA Analysis System
