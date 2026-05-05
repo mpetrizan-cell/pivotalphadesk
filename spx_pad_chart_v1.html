@@ -35,7 +35,7 @@
   <div id="string-bar" style="background:#0c1118;border-bottom:1px solid #1a2535;padding:8px 14px;display:flex;align-items:center;gap:8px;">
     <span style="font-family:'Space Mono',monospace;font-size:9px;color:#4a6070;letter-spacing:.12em;white-space:nowrap;flex-shrink:0;">GAIA STRING</span>
     <input id="gaiaInput" type="text"
-      placeholder="DATE:...|REGIME:...|SPOT:...|GC1:...|GC2:...|GC3:...|GP:...|PIN:...|GF1:...|GF2:...|GF3:...|TA:...|EA:...|SIGMA_HI:...|SIGMA_LO:..."
+      placeholder="DATE:...|REGIME:...|SPOT:...|GC1:...|GC2:...|GC3:...|GP:...|NODE:...|PIN:...|GF1:...|GF2:...|GF3:...|TA:...|EA:...|SIGMA_HI:...|SIGMA_LO:..."
       style="flex:1;background:#070a0e;border:1px solid #1a2535;color:#c0d0dc;font-family:'Space Mono',monospace;font-size:10px;padding:5px 10px;outline:none;min-width:0;"
     />
     <button onclick="applyString()" style="background:#00d4ff;color:#070a0e;border:none;padding:5px 14px;font-family:'Space Mono',monospace;font-size:9px;font-weight:700;letter-spacing:.12em;cursor:pointer;white-space:nowrap;flex-shrink:0;">APPLY →</button>
@@ -125,7 +125,7 @@ function parseString(raw) {
   const num = k => { const v=get(k); return v ? parseFloat(v) : null; };
   return { fecha:get('DATE'), regimen:get('REGIME'), spot:num('SPOT'),
     gc1:num('GC1'), gc2:num('GC2'), gc3:num('GC3'),
-    gp:num('GP'), pin:num('PIN'),
+    gp:num('GP'), pin:num('PIN'), node:num('NODE'),
     gf1:num('GF1'), gf2:num('GF2'), gf3:num('GF3'), gf4:num('GF4'),
     ta:num('TA'), ea:num('EA'),
     sigHi:num('SIGMA_HI'), sigLo:num('SIGMA_LO') };
@@ -143,6 +143,7 @@ function applyString() {
   add('gc2', p.gc2,  `Call Wall 2 · C=${p.gc2}`,         '#e84040', true,  1.5);
   add('gc3', p.gc3,  `Gamma Ceiling · C=${p.gc3}`,       '#e84040', true,  1.2);
   add('flip',p.gp,   `Gamma Flip / GP · ${p.gp}`,        '#e040fb', false, 2.0);
+  add('node', p.node, `Gamma Node · ${p.node}`,           '#bc8cff', false, 2.0);
   add('pin', p.pin,  `Gamma Flip Struct · ${p.pin}`,     '#bc8cff', true,  1.0);
   add('gf1', p.gf1,  `Put Wall · P=${p.gf1}`,            '#3a8ef0', false, 2.0);
   add('gf2', p.gf2,  `Gamma Floor 2 · P=${p.gf2}`,      '#3a8ef0', true,  1.5);
@@ -180,9 +181,10 @@ function applyString() {
       ].filter(x=>x.val).sort((a,b)=>b.val-a.val).map(x=>`
       <div class="level-item"><div class="level-info"><div class="level-dot" style="background:#e84040;opacity:${x.op}"></div><div class="level-name">${x.label}</div></div><div class="level-price" style="color:#e84040;opacity:${x.op===1?1:x.op+0.05}">${fmt(x.val)}</div></div>`).join('')}
       <div class="sep"></div>
-      <div class="panel-section flip">◆ GAMMA FLIP</div>
+      <div class="panel-section flip">◆ GAMMA FLIP · NODE</div>
       <div class="level-item"><div class="level-info"><div class="level-dot" style="background:#f0c040"></div><div class="level-name">▶ Spot Ref</div></div><div class="level-price" style="color:#f0c040">${fmt(p.spot)}</div></div>
       <div class="level-item"><div class="level-info"><div class="level-dot" style="background:#e040fb"></div><div class="level-name">Gamma Flip / GP</div></div><div class="level-price" style="color:#e040fb">${fmt(p.gp)}</div></div>
+      ${p.node ? `<div class="level-item"><div class="level-info"><div class="level-dot" style="background:#bc8cff"></div><div class="level-name">Gamma Node ◆</div></div><div class="level-price" style="color:#bc8cff;font-weight:700">${fmt(p.node)}</div></div>` : ''}
       <div class="sep"></div>
       <div class="panel-section put">▼ GAMMA FLOOR</div>
       ${[
@@ -221,6 +223,7 @@ function applyString() {
       <div class="sigma-item"><span class="sigma-lbl">RÉGIMEN</span><span class="sigma-val" style="color:${p.regimen==='DAMPENED'?'#3ecf6a':'#f0853a'}">${p.regimen}</span></div>
       <div class="sigma-item"><span class="sigma-lbl">SPOT REF</span><span class="sigma-val" style="color:#f0c040">${p.spot?.toLocaleString('en-US',{minimumFractionDigits:2})}</span></div>
       <div class="sigma-item"><span class="sigma-lbl">GAMMA FLIP</span><span class="sigma-val" style="color:#e040fb">${p.gp}</span></div>
+      ${p.node ? `<div class="sigma-item"><span class="sigma-lbl">GAMMA NODE</span><span class="sigma-val" style="color:#bc8cff">${p.node}</span></div>` : ''}
       <div class="sigma-item"><span class="sigma-lbl">PUT WALL</span><span class="sigma-val" style="color:#3a8ef0">${p.gf1}</span></div>
       <div class="sigma-item"><span class="sigma-lbl">1σ RANGO</span><span class="sigma-val" style="color:#5a7080">${p.sigLo?.toLocaleString()} / ${p.sigHi?.toLocaleString()}</span></div>`;
   }
