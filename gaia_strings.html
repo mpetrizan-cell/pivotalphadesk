@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GAIA Strings · PivotAlphaDesk</title>
+<script src="protect-briefing.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Barlow+Condensed:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:#05080c;--bg2:#080d13;--bg3:#0b1219;
+  --border:#141f2e;--border2:#1a2d42;
+  --text:#8aa0b4;--dim:#3a5068;--bright:#ddeeff;
+  --teal:#00d4b4;--fuchsia:#c040e8;--gold:#f0b830;
+  --blue:#2a7fe8;--green:#28c87a;--red:#e83040;
+  --orange:#f0853a;--white:#f0f8ff;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{background:var(--bg);color:var(--text);font-family:'Barlow Condensed',sans-serif;min-height:100vh;}
+body::before{content:'';position:fixed;inset:0;background-image:linear-gradient(rgba(0,212,180,.03) 1px,transparent 1px),linear-gradient(90deg,rgba(0,212,180,.03) 1px,transparent 1px);background-size:48px 48px;pointer-events:none;z-index:0;}
+
+/* TERMINAL BAR */
+.terminal-bar{position:relative;z-index:10;background:var(--bg2);border-bottom:1px solid var(--border2);padding:10px 20px;display:flex;justify-content:space-between;align-items:center;}
+.terminal-bar::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--teal),var(--fuchsia),var(--gold));}
+.t-logo{font-family:'Space Mono',monospace;font-size:13px;font-weight:700;color:var(--teal);letter-spacing:.1em;}
+.t-logo span{color:var(--dim);}
+.t-date{font-family:'Space Mono',monospace;font-size:10px;color:var(--gold);letter-spacing:.1em;}
+.t-live{display:flex;align-items:center;gap:6px;font-family:'Space Mono',monospace;font-size:9px;color:var(--green);letter-spacing:.1em;}
+.dot{width:6px;height:6px;border-radius:50%;background:var(--green);animation:pulse 2s infinite;}
+@keyframes pulse{0%,100%{opacity:1;}50%{opacity:.3;}}
+
+/* MAIN */
+.main{position:relative;z-index:1;max-width:900px;margin:0 auto;padding:32px 20px;}
+
+/* PAGE HEADER */
+.page-header{margin-bottom:32px;}
+.page-eyebrow{font-family:'Space Mono',monospace;font-size:9px;color:var(--teal);letter-spacing:.2em;margin-bottom:10px;display:flex;align-items:center;gap:8px;}
+.page-eyebrow::after{content:'';flex:1;height:1px;background:var(--border2);}
+.page-title{font-size:36px;font-weight:800;color:var(--white);letter-spacing:-.01em;margin-bottom:6px;}
+.page-sub{font-size:14px;color:var(--dim);letter-spacing:.05em;}
+
+/* INSTRUCTION BAR */
+.instruction-bar{background:rgba(0,212,180,.05);border:1px solid rgba(0,212,180,.15);border-left:3px solid var(--teal);padding:12px 16px;margin-bottom:28px;font-size:13px;color:var(--text);line-height:1.6;}
+.instruction-bar strong{color:var(--teal);}
+.instruction-steps{display:flex;gap:24px;margin-top:8px;flex-wrap:wrap;}
+.step{display:flex;align-items:center;gap:8px;font-family:'Space Mono',monospace;font-size:10px;color:var(--dim);}
+.step-num{width:18px;height:18px;border-radius:50%;background:var(--teal);color:var(--bg);display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;flex-shrink:0;}
+
+/* SECTION LABEL */
+.section-label{font-family:'Space Mono',monospace;font-size:8px;color:var(--dim);letter-spacing:.2em;text-transform:uppercase;margin-bottom:14px;padding-bottom:6px;border-bottom:1px solid var(--border);}
+
+/* STRING CARD */
+.string-card{background:var(--bg2);border:1px solid var(--border2);margin-bottom:12px;position:relative;overflow:hidden;}
+.string-card::before{content:'';position:absolute;top:0;left:0;bottom:0;width:3px;}
+.string-card.spx::before{background:var(--green);}
+.string-card.soon::before{background:var(--border2);}
+
+.card-header{display:flex;align-items:center;gap:12px;padding:12px 16px;border-bottom:1px solid var(--border);}
+.instrument-badge{font-family:'Space Mono',monospace;font-size:11px;font-weight:700;padding:3px 10px;border-radius:2px;}
+.badge-spx{background:rgba(40,200,122,.12);color:var(--green);border:1px solid rgba(40,200,122,.25);}
+.badge-soon{background:rgba(58,80,104,.15);color:var(--dim);border:1px solid var(--border);}
+.card-name{font-size:15px;font-weight:700;color:var(--bright);letter-spacing:.03em;}
+.card-regime{font-family:'Space Mono',monospace;font-size:9px;padding:2px 8px;border-radius:2px;margin-left:auto;}
+.regime-amplified{background:rgba(240,133,58,.1);color:var(--orange);border:1px solid rgba(240,133,58,.25);}
+.regime-dampened{background:rgba(40,200,122,.08);color:var(--green);border:1px solid rgba(40,200,122,.2);}
+.card-updated{font-family:'Space Mono',monospace;font-size:9px;color:var(--dim);margin-left:8px;}
+
+.string-body{padding:14px 16px;}
+.string-display{display:flex;align-items:stretch;gap:0;border:1px solid var(--border2);border-radius:2px;overflow:hidden;margin-bottom:10px;}
+.string-text{flex:1;background:var(--bg);color:var(--bright);font-family:'Space Mono',monospace;font-size:10px;padding:10px 14px;line-height:1.7;word-break:break-all;letter-spacing:.02em;}
+.copy-btn{background:var(--teal);color:var(--bg);border:none;padding:0 20px;font-family:'Space Mono',monospace;font-size:10px;font-weight:700;letter-spacing:.12em;cursor:pointer;transition:all .2s;white-space:nowrap;flex-shrink:0;}
+.copy-btn:hover{background:#00f0cc;}
+.copy-btn.copied{background:var(--green);}
+
+.key-levels{display:flex;gap:8px;flex-wrap:wrap;}
+.level-chip{font-family:'Space Mono',monospace;font-size:10px;padding:3px 10px;background:var(--bg3);border:1px solid var(--border);border-radius:2px;}
+.level-chip .lbl{color:var(--dim);}
+.level-chip .val{color:var(--bright);font-weight:700;}
+.level-chip.flip .val{color:var(--fuchsia);}
+.level-chip.call .val{color:var(--red);}
+.level-chip.put .val{color:var(--blue);}
+.level-chip.sigma .val{color:var(--dim);}
+
+/* SOON CARD */
+.soon-body{padding:20px 16px;display:flex;align-items:center;gap:12px;}
+.soon-categories{display:flex;gap:8px;flex-wrap:wrap;}
+.soon-tag{font-family:'Space Mono',monospace;font-size:9px;padding:3px 10px;border:1px solid var(--border);color:var(--dim);letter-spacing:.1em;border-radius:2px;}
+.soon-label{font-family:'Space Mono',monospace;font-size:9px;color:var(--dim);letter-spacing:.1em;margin-right:8px;}
+
+/* FOOTER */
+.page-footer{margin-top:40px;padding-top:20px;border-top:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;}
+.footer-note{font-family:'Space Mono',monospace;font-size:9px;color:var(--dim);letter-spacing:.08em;}
+.back-link{font-family:'Space Mono',monospace;font-size:9px;color:var(--teal);text-decoration:none;letter-spacing:.1em;}
+.back-link:hover{color:var(--white);}
+</style>
+</head>
+<body>
+
+<!-- TERMINAL BAR -->
+<div class="terminal-bar">
+  <div class="t-logo">Pivot<span>Alpha</span>Desk · GAIA Strings</div>
+  <div class="t-date">TUESDAY · MAY 6, 2026 · 07:30 ET</div>
+  <div class="t-live"><div class="dot"></div>PRO ACCESS</div>
+</div>
+
+<div class="main">
+
+  <!-- PAGE HEADER -->
+  <div class="page-header">
+    <div class="page-eyebrow">DAILY GAIA STRINGS</div>
+    <div class="page-title">GAIA Zone Strings</div>
+    <div class="page-sub">Updated every pre-market · Copy → Paste into your SPX PAD Chart → APPLY</div>
+  </div>
+
+  <!-- INSTRUCTIONS -->
+  <div class="instruction-bar">
+    <strong>How to use:</strong> Copy the string below and paste it into the GAIA STRING input bar at the top of your SPX PAD Chart, then click APPLY →
+    <div class="instruction-steps">
+      <div class="step"><div class="step-num">1</div>Click COPY → on the string</div>
+      <div class="step"><div class="step-num">2</div>Open SPX PAD Chart in your portal</div>
+      <div class="step"><div class="step-num">3</div>Paste in the GAIA STRING input bar</div>
+      <div class="step"><div class="step-num">4</div>Click APPLY → · Zones appear instantly</div>
+    </div>
+  </div>
+
+  <!-- ACTIVE STRINGS -->
+  <div class="section-label">ACTIVE · MAY 6, 2026</div>
+
+  <!-- SPX STRING -->
+  <div class="string-card spx">
+    <div class="card-header">
+      <span class="instrument-badge badge-spx">SPX</span>
+      <span class="card-name">S&P 500 Index · CBOE</span>
+      <span class="card-regime regime-amplified">AMPLIFIED</span>
+      <span class="card-updated">Updated 07:30 ET</span>
+    </div>
+    <div class="string-body">
+      <div class="string-display">
+        <div class="string-text" id="spx-string">DATE:2026-05-05 ET|REGIME:AMPLIFIED|SPOT:7201.46|GC1:7350|GC2:7410|GC3:7340|GP:7200|PIN:7350|GF1:7000|GF2:6900|GF3:7150|GF4:6925|TA:7175|EA:6925|SIGMA_HI:7271.27|SIGMA_LO:7131.65</div>
+        <button class="copy-btn" id="copy-spx" onclick="copyString('spx-string','copy-spx')">COPY →</button>
+      </div>
+      <div class="key-levels">
+        <div class="level-chip call"><span class="lbl">Call Wall </span><span class="val">7,350</span></div>
+        <div class="level-chip flip"><span class="lbl">Gamma Flip </span><span class="val">7,200</span></div>
+        <div class="level-chip put"><span class="lbl">Put Wall </span><span class="val">7,150</span></div>
+        <div class="level-chip"><span class="lbl">TA </span><span class="val">7,175</span></div>
+        <div class="level-chip"><span class="lbl">EA </span><span class="val">6,925</span></div>
+        <div class="level-chip sigma"><span class="lbl">1σ </span><span class="val">7,131 / 7,271</span></div>
+        <div class="level-chip"><span class="lbl">IV </span><span class="val">16.91%</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- COMING SOON -->
+  <div class="section-label" style="margin-top:28px;">COMING SOON</div>
+
+  <div class="string-card soon">
+    <div class="card-header">
+      <span class="instrument-badge badge-soon">NEXT</span>
+      <span class="card-name" style="color:var(--dim);">More instruments being added</span>
+    </div>
+    <div class="soon-body">
+      <span class="soon-label">PRÓXIMAMENTE</span>
+      <div class="soon-categories">
+        <span class="soon-tag">INDEX</span>
+        <span class="soon-tag">STOCK</span>
+        <span class="soon-tag">ETF</span>
+        <span class="soon-tag">VIX</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <div class="page-footer">
+    <div class="footer-note">PivotAlphaDesk · GAIA Framework · For educational purposes only</div>
+    <a href="login.html" class="back-link">← Back to Portal</a>
+  </div>
+
+</div>
+
+<script>
+function copyString(textId, btnId) {
+  var str = document.getElementById(textId).textContent.trim();
+  var btn = document.getElementById(btnId);
+  navigator.clipboard.writeText(str).then(function() {
+    btn.textContent = '✓ COPIED';
+    btn.classList.add('copied');
+    setTimeout(function(){ btn.textContent = 'COPY →'; btn.classList.remove('copied'); }, 2000);
+  }).catch(function() {
+    var range = document.createRange();
+    range.selectNode(document.getElementById(textId));
+    window.getSelection().removeAllRanges();
+    window.getSelection().addRange(range);
+    document.execCommand('copy');
+    window.getSelection().removeAllRanges();
+    btn.textContent = '✓ COPIED';
+    btn.classList.add('copied');
+    setTimeout(function(){ btn.textContent = 'COPY →'; btn.classList.remove('copied'); }, 2000);
+  });
+}
+</script>
+
+</body>
+</html>
