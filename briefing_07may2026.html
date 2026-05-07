@@ -1,0 +1,785 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PivotAlphaDesk · GAIA Briefing · May 7, 2026</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700&family=Share+Tech+Mono&display=swap');
+  :root {
+    --bg:#0a0c10;--bg2:#0d1117;--bg3:#111820;--border:#1e2d3d;--border2:#243447;
+    --text:#c9d1d9;--text2:#8b949e;--text3:#6e7681;
+    --green:#3fb950;--green-dim:#1a3a22;
+    --orange:#f0883e;--orange-dim:#3d2200;--red:#f85149;--red-dim:#3d0f0d;
+    --blue:#58a6ff;--blue-dim:#0d2040;--yellow:#e3b341;--yellow-dim:#2d2000;
+    --cyan:#39c5cf;--purple:#bc8cff;--white:#f0f6fc;--pad-orange:#ff8c42;
+    --amplified:#f0853a;--oil-red:#ff4455;--ath-gold:#f0c040;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  body{background:var(--bg);color:var(--text);font-family:'JetBrains Mono',monospace;font-size:12px;line-height:1.5;}
+
+  .terminal-bar{background:#0d1117;border-bottom:1px solid var(--border);padding:6px 16px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;}
+  .terminal-bar .logo{color:var(--white);font-weight:700;font-size:13px;letter-spacing:.05em;}
+  .terminal-bar .logo span{color:var(--pad-orange);}
+  .terminal-bar .ts{color:var(--text3);font-size:11px;}
+  .terminal-bar .ts .date{color:var(--ath-gold);font-weight:600;}
+  .terminal-bar .ts .time{color:var(--cyan);}
+  .terminal-bar .live-dot{display:flex;align-items:center;gap:6px;color:var(--green);font-size:11px;}
+  .dot{width:7px;height:7px;border-radius:50%;background:var(--green);animation:pulse 2s infinite;}
+  @keyframes pulse{0%,100%{opacity:1;}50%{opacity:.3;}}
+
+  .ath-banner{background:linear-gradient(90deg,#1a1200,#3d2d00,#1a1200);border-bottom:3px solid var(--ath-gold);padding:10px 16px;text-align:center;color:var(--ath-gold);font-weight:700;font-size:12px;letter-spacing:.12em;}
+  .ath-banner span{color:var(--white);}
+
+  .data-banner{background:linear-gradient(90deg,#0a1a0a,#1a3d1a,#0a1a0a);border-bottom:2px solid var(--green);padding:8px 16px;text-align:center;color:var(--green);font-weight:700;font-size:11px;letter-spacing:.1em;}
+  .data-banner span{color:var(--white);}
+
+  .main{max-width:1400px;margin:0 auto;padding:16px;}
+
+  .section-header{display:flex;align-items:center;gap:10px;padding:8px 12px;background:var(--bg3);border-left:3px solid var(--ath-gold);border-bottom:1px solid var(--border);margin-bottom:12px;margin-top:20px;}
+  .section-header .num{color:var(--ath-gold);font-weight:700;font-size:10px;}
+  .section-header .title{color:var(--white);font-weight:700;font-size:13px;letter-spacing:.08em;text-transform:uppercase;}
+  .section-header .sub{color:var(--text3);font-size:10px;margin-left:auto;}
+
+  .snapshot-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:12px;}
+  .snap-card{background:var(--bg3);border:1px solid var(--border);border-radius:4px;padding:12px;position:relative;overflow:hidden;}
+  .snap-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;}
+  .snap-card.es::before{background:var(--blue);}
+  .snap-card.nq::before{background:var(--purple);}
+  .snap-card.cl::before{background:var(--oil-red);}
+  .snap-card.spx::before{background:var(--ath-gold);}
+  .snap-card .instrument{font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:.1em;margin-bottom:4px;}
+  .snap-card .spot{font-size:22px;font-weight:700;margin-bottom:8px;}
+  .snap-card .spot.up{color:var(--green);}
+  .snap-card .spot.ath{color:var(--ath-gold);}
+  .snap-card .spot.warn{color:var(--amplified);}
+  .snap-card .spot.danger{color:var(--oil-red);}
+  .snap-card .rows{display:flex;flex-direction:column;gap:3px;}
+  .snap-card .row{display:flex;justify-content:space-between;font-size:10px;}
+  .snap-card .row .lbl{color:var(--text3);}
+  .snap-card .row .val.above{color:var(--green);}
+  .snap-card .row .val.ath{color:var(--ath-gold);}
+  .snap-card .row .val.near{color:var(--yellow);}
+  .snap-card .row .val.warn{color:var(--amplified);}
+  .snap-card .row .val.danger{color:var(--oil-red);}
+  .rf-badge{display:inline-block;padding:1px 6px;border-radius:2px;font-size:10px;font-weight:700;margin-top:6px;}
+  .rf-pos{background:var(--green-dim);color:var(--green);}
+  .rf-ath{background:#3d2d00;color:var(--ath-gold);}
+  .rf-warn{background:var(--orange-dim);color:var(--amplified);}
+  .rf-danger{background:var(--red-dim);color:var(--oil-red);}
+
+  .context-alert{border:1px solid;border-radius:4px;padding:12px 14px;margin-bottom:14px;font-size:11px;line-height:1.8;}
+  .context-alert.ath{background:rgba(240,192,64,.06);border-color:rgba(240,192,64,.35);}
+  .context-alert.ath .ctx-title{color:var(--ath-gold);font-weight:700;font-size:12px;margin-bottom:6px;text-transform:uppercase;letter-spacing:.08em;}
+  .context-alert.bull{background:rgba(63,185,80,.05);border-color:rgba(63,185,80,.25);}
+  .context-alert.bull .ctx-title{color:var(--green);font-weight:700;font-size:12px;margin-bottom:6px;text-transform:uppercase;letter-spacing:.08em;}
+  .context-alert.macro{background:rgba(240,136,62,.05);border-color:rgba(240,136,62,.3);}
+  .context-alert.macro .ctx-title{color:var(--orange);font-weight:700;font-size:12px;margin-bottom:6px;text-transform:uppercase;letter-spacing:.08em;}
+  .context-alert strong{color:var(--white);}
+
+  .gaia-panel{background:var(--bg3);border:1px solid var(--border);border-left:3px solid var(--cyan);border-radius:4px;padding:14px;margin-bottom:14px;}
+  .gaia-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:12px;margin-bottom:12px;}
+  .gaia-metric{text-align:center;}
+  .gaia-metric .lbl{font-size:9px;color:var(--text3);text-transform:uppercase;letter-spacing:.1em;margin-bottom:4px;}
+  .gaia-metric .val{font-size:16px;font-weight:700;color:var(--white);}
+  .gaia-metric .val.neutral{color:var(--yellow);}
+  .gaia-metric .val.bull{color:var(--green);}
+  .gaia-note{background:rgba(57,197,207,.06);border:1px solid rgba(57,197,207,.15);border-radius:3px;padding:8px 12px;font-size:11px;color:var(--text2);}
+  .gaia-note strong{color:var(--cyan);}
+
+  .instrument-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px;}
+  .inst-card{background:var(--bg3);border:1px solid var(--border);border-radius:4px;padding:14px;}
+  .inst-card .inst-header{display:flex;align-items:center;gap:8px;margin-bottom:10px;padding-bottom:8px;border-bottom:1px solid var(--border);}
+  .inst-tag{padding:2px 8px;border-radius:3px;font-weight:700;font-size:11px;text-transform:uppercase;}
+  .tag-es{background:var(--blue-dim);color:var(--blue);}
+  .tag-nq{background:rgba(188,140,255,.15);color:var(--purple);}
+  .tag-cl{background:var(--red-dim);color:var(--oil-red);}
+  .tag-spx{background:#3d2d00;color:var(--ath-gold);}
+  .inst-spot{font-size:18px;font-weight:700;margin-left:auto;}
+  .inst-spot.up{color:var(--green);}
+  .inst-spot.ath{color:var(--ath-gold);}
+  .inst-spot.warn{color:var(--amplified);}
+  .inst-spot.danger{color:var(--oil-red);}
+
+  .pad-table{width:100%;border-collapse:collapse;margin-bottom:10px;}
+  .pad-table th{text-align:left;color:var(--text3);font-size:9px;text-transform:uppercase;letter-spacing:.1em;padding:3px 6px;border-bottom:1px solid var(--border);}
+  .pad-table td{padding:4px 6px;font-size:11px;border-bottom:1px solid rgba(30,45,61,.5);}
+  .pad-table tr:last-child td{border-bottom:none;}
+  .zone-call{color:var(--red);}
+  .zone-flip{color:var(--amplified);font-weight:700;}
+  .zone-node{color:var(--purple);font-weight:700;}
+  .zone-put{color:var(--blue);}
+  .zone-anchor{color:var(--cyan);}
+  .zone-ath{color:var(--ath-gold);font-weight:700;}
+
+  .tpo-row{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:8px;}
+  .tpo-chip{padding:2px 8px;border-radius:2px;font-size:10px;background:var(--bg2);border:1px solid var(--border);}
+  .tpo-chip.above{border-color:var(--green);color:var(--green);}
+  .tpo-chip.ath{border-color:var(--ath-gold);color:var(--ath-gold);}
+  .tpo-chip.below{border-color:var(--red);color:var(--red);}
+  .tpo-chip.warn{border-color:var(--yellow);color:var(--yellow);}
+
+  .plan-box{background:var(--bg2);border:1px solid var(--border2);border-radius:3px;padding:10px;font-size:11px;color:var(--text2);line-height:1.7;}
+  .plan-box .plan-title{color:var(--white);font-weight:700;font-size:11px;margin-bottom:6px;text-transform:uppercase;}
+  .plan-box ul{list-style:none;}
+  .plan-box ul li::before{content:'▸ ';color:var(--ath-gold);}
+  .plan-box ul li.bull::before{content:'🟢 ';}
+  .plan-box ul li.bear::before{content:'🔴 ';}
+  .plan-box ul li.key::before{content:'📍 ';}
+  .plan-box ul li.warn::before{content:'⚠️ ';}
+  .plan-box ul li.ath::before{content:'🏆 ';}
+
+  .edge-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:12px;}
+  .scenario-card{border-radius:4px;padding:14px;border:1px solid;}
+  .scenario-card.base{background:rgba(57,197,207,.05);border-color:rgba(57,197,207,.25);}
+  .scenario-card.bull{background:rgba(63,185,80,.05);border-color:rgba(63,185,80,.25);}
+  .scenario-card.bear{background:rgba(248,81,73,.05);border-color:rgba(248,81,73,.25);}
+  .sc-header{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;margin-bottom:6px;}
+  .sc-base{color:var(--cyan);}
+  .sc-bull{color:var(--green);}
+  .sc-bear{color:var(--red);}
+  .scenario-card .pct{font-size:26px;font-weight:700;margin-bottom:8px;}
+  .scenario-card .desc{font-size:10px;color:var(--text2);line-height:1.7;}
+  .scenario-card .levels{margin-top:10px;font-size:10px;color:var(--text3);border-top:1px solid rgba(255,255,255,.05);padding-top:8px;}
+
+  .synth-box{background:var(--bg3);border:1px solid var(--border2);border-left:3px solid var(--ath-gold);border-radius:4px;padding:16px;margin-bottom:14px;font-size:11px;color:var(--text2);line-height:1.9;}
+  .synth-box strong{color:var(--white);}
+  .synth-box .ath-note{color:var(--ath-gold);font-weight:700;}
+
+  .macro-table{width:100%;border-collapse:collapse;margin-bottom:12px;}
+  .macro-table th{text-align:left;color:var(--text3);font-size:9px;text-transform:uppercase;letter-spacing:.1em;padding:5px 10px;background:var(--bg2);border-bottom:1px solid var(--border);}
+  .macro-table td{padding:6px 10px;font-size:11px;border-bottom:1px solid rgba(30,45,61,.4);color:var(--text2);}
+  .macro-table tr:last-child td{border-bottom:none;}
+  .actual-hot{color:var(--oil-red);font-weight:700;}
+  .actual-cool{color:var(--green);font-weight:700;}
+  .imp-high{color:var(--red);font-weight:700;}
+  .imp-med{color:var(--yellow);}
+  .imp-low{color:var(--text3);}
+  .pad-note{color:var(--cyan);font-size:10px;}
+  .today-row td{background:rgba(240,192,64,.04);}
+
+  .earnings-table{width:100%;border-collapse:collapse;}
+  .earnings-table th{text-align:left;color:var(--text3);font-size:9px;text-transform:uppercase;letter-spacing:.1em;padding:5px 10px;background:var(--bg2);border-bottom:1px solid var(--border);}
+  .earnings-table td{padding:6px 10px;font-size:11px;border-bottom:1px solid rgba(30,45,61,.4);color:var(--text2);}
+  .amc{color:var(--purple);}
+  .bmo{color:var(--yellow);}
+  .mega{color:var(--amplified);font-weight:700;}
+
+  .gaia-string-section{background:#050d14;border:1px solid var(--cyan);border-left:3px solid var(--cyan);border-radius:4px;padding:16px;margin-bottom:16px;}
+  .gs-header{font-size:10px;color:var(--cyan);letter-spacing:.12em;text-transform:uppercase;margin-bottom:10px;display:flex;align-items:center;gap:8px;}
+  .gs-display{display:flex;align-items:stretch;gap:0;border:1px solid var(--border2);border-radius:2px;overflow:hidden;margin-bottom:10px;}
+  .gs-text{flex:1;background:var(--bg);color:var(--white);font-family:'JetBrains Mono',monospace;font-size:10px;padding:10px 14px;line-height:1.7;word-break:break-all;}
+  .gs-copy{background:var(--cyan);color:var(--bg);border:none;padding:0 20px;font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:700;letter-spacing:.12em;cursor:pointer;white-space:nowrap;flex-shrink:0;}
+  .gs-copy.copied{background:var(--green);}
+  .gs-steps{font-size:10px;color:var(--text3);line-height:1.8;}
+  .gs-steps strong{color:var(--cyan);}
+
+  .tweet-box{background:#050d14;border:1px solid #1d9bf0;border-radius:8px;padding:16px;margin-bottom:12px;}
+  .tweet-header{display:flex;align-items:center;gap:10px;margin-bottom:12px;}
+  .tweet-avatar{width:36px;height:36px;background:var(--pad-orange);border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:14px;color:var(--bg);}
+  .tweet-name{color:var(--white);font-weight:700;font-size:13px;}
+  .tweet-handle{color:var(--text3);font-size:11px;}
+  .tweet-label{margin-left:auto;padding:2px 8px;background:rgba(29,155,240,.15);border:1px solid rgba(29,155,240,.3);border-radius:10px;font-size:10px;color:#1d9bf0;}
+  .tweet-content{font-family:'Share Tech Mono',monospace;font-size:12px;color:var(--text);line-height:1.8;white-space:pre-wrap;background:rgba(255,255,255,.02);border:1px solid var(--border);border-radius:4px;padding:12px;}
+  .tweet-time{margin-top:10px;font-size:10px;color:var(--text3);}
+
+  .divider{height:1px;background:linear-gradient(90deg,transparent,var(--border),transparent);margin:16px 0;}
+  .footer{text-align:center;padding:16px;border-top:1px solid var(--border);color:var(--text3);font-size:10px;margin-top:24px;}
+  .footer span{color:var(--pad-orange);}
+
+  .ath-pulse{animation:athpulse 3s ease-in-out infinite;}
+  @keyframes athpulse{0%,100%{text-shadow:0 0 8px rgba(240,192,64,.4);}50%{text-shadow:0 0 20px rgba(240,192,64,.8);}}
+</style>
+</head>
+<body>
+
+<div class="terminal-bar">
+  <div class="logo">Pivot<span>Alpha</span>Desk · GAIA Framework</div>
+  <div class="ts">
+    <span class="date">THURSDAY · MAY 7, 2026</span>
+    &nbsp;|&nbsp;<span class="time">08:48 ET</span>
+    &nbsp;|&nbsp;PRE-MARKET SESSION
+  </div>
+  <div class="live-dot"><div class="dot"></div>LIVE</div>
+</div>
+
+<div class="ath-banner ath-pulse">
+  🏆 ALL-TIME HIGH TERRITORY · ES 7,402 · SPX 7,365 · DAMPENED REGIME · DEALERS NET BULLISH +8,758M · GAMMA NODE 7,350 = INTRADAY MAGNET
+  &nbsp;|&nbsp;<span>Initial Jobless Claims 08:30 ET · Fed Hammack 02:05 PM · Fed Williams 03:30 PM · ARM / ABNB / COIN AMC</span>
+</div>
+
+<div class="data-banner">
+  ⚡ DAMPENED REGIME · BULLISH STRUCTURE · ES ABOVE EMA200 +98 pts · NQ ABOVE EMA200 +579 pts · SPX ABOVE FLIP 7,270 · NFP TOMORROW 08:30 ET
+  &nbsp;|&nbsp;<span>ES 7,402 · NQ 28,755 · CL 92.01 · SPX 7,365</span>
+</div>
+
+<div class="main">
+
+<!-- ═══ SECTION 1 — SNAPSHOT ═══ -->
+<div class="section-header">
+  <span class="num">01</span>
+  <span class="title">Pre-Market Snapshot · ATH Session</span>
+  <span class="sub">08:48 ET · May 7, 2026 · DAMPENED · Bullish structure across all instruments</span>
+</div>
+
+<div class="snapshot-grid">
+  <div class="snap-card es">
+    <div class="instrument">ES · ESM26 · Jun 2026</div>
+    <div class="spot ath">7,402.25</div>
+    <div class="rows">
+      <div class="row"><span class="lbl">EMA200</span><span class="val above">7,303.96 ↑ +98 pts</span></div>
+      <div class="row"><span class="lbl">VWAP</span><span class="val above">7,386.75 ↑ above</span></div>
+      <div class="row"><span class="lbl">VAH / POC / VAL</span><span class="val near">7,402 / 7,393 / 7,378</span></div>
+      <div class="row"><span class="lbl">Call Wall GC1</span><span class="val ath">7,625 ← Structural ceiling</span></div>
+      <div class="row"><span class="lbl">Gamma Node</span><span class="val ath">7,400 ← AT SPOT</span></div>
+      <div class="row"><span class="lbl">Gamma Flip</span><span class="val above">7,500 · well above</span></div>
+    </div>
+    <span class="rf-badge rf-ath">🏆 RF +14 · ATH ZONE · DAMPENED · ABOVE ALL LEVELS</span>
+  </div>
+
+  <div class="snap-card nq">
+    <div class="instrument">NQ · NQM26 · Jun 2026</div>
+    <div class="spot up">28,754.75</div>
+    <div class="rows">
+      <div class="row"><span class="lbl">EMA200</span><span class="val above">28,175.65 ↑ +579 pts</span></div>
+      <div class="row"><span class="lbl">VWAP</span><span class="val above">28,712.25 ↑ above</span></div>
+      <div class="row"><span class="lbl">VAH / POC / VAL</span><span class="val near">28,751 / 28,666 / 28,719</span></div>
+      <div class="row"><span class="lbl">Call Wall GC1</span><span class="val warn">30,000 ← Far ceiling</span></div>
+      <div class="row"><span class="lbl">Gamma Node</span><span class="val above">28,750 ← AT SPOT</span></div>
+      <div class="row"><span class="lbl">Gamma Flip</span><span class="val above">29,000 · above spot</span></div>
+    </div>
+    <span class="rf-badge rf-pos">▲ RF +7 · ABOVE EMA200 · BALANCE OVERNIGHT · ARM AMC</span>
+  </div>
+
+  <div class="snap-card cl">
+    <div class="instrument">CL · CLK26 · May 2026</div>
+    <div class="spot danger">92.01</div>
+    <div class="rows">
+      <div class="row"><span class="lbl">EMA200</span><span class="val danger">99.29 ↓ BELOW -7 pts</span></div>
+      <div class="row"><span class="lbl">VWAP</span><span class="val danger">94.01 ↓ below</span></div>
+      <div class="row"><span class="lbl">VAH / POC / VAL</span><span class="val danger">96.60 / 95.85 / 93.30</span></div>
+      <div class="row"><span class="lbl">Gamma Node</span><span class="val warn">92.00 ← AT SPOT</span></div>
+      <div class="row"><span class="lbl">Gamma Flip</span><span class="val danger">95.00 ← above</span></div>
+      <div class="row"><span class="lbl">GF1 Put Wall</span><span class="val danger">90.00 ← Key support</span></div>
+    </div>
+    <span class="rf-badge rf-danger">🛢️ RF -16 · BELOW EMA200 · BEARISH STRUCTURE</span>
+  </div>
+
+  <div class="snap-card spx">
+    <div class="instrument">SPX · CBOE · Cash</div>
+    <div class="spot ath">7,365.12</div>
+    <div class="rows">
+      <div class="row"><span class="lbl">EMA200</span><span class="val above">7,146.63 ↑ +218 pts</span></div>
+      <div class="row"><span class="lbl">VAH / POC / VAL</span><span class="val near">7,350 / 7,335 / 7,320</span></div>
+      <div class="row"><span class="lbl">Gamma Flip</span><span class="val above">7,270 ← BELOW SPOT ✅</span></div>
+      <div class="row"><span class="lbl">Gamma Node</span><span class="val ath">7,335 ← Real intraday node</span></div>
+      <div class="row"><span class="lbl">Call Wall GC1</span><span class="val warn">7,500 ← Next ceiling</span></div>
+      <div class="row"><span class="lbl">1σ Range</span><span class="val near">7,292 – 7,435</span></div>
+    </div>
+    <span class="rf-badge rf-ath">🏆 RF +12 · DAMPENED · ABOVE FLIP · ATH EXPANSION</span>
+  </div>
+</div>
+
+<!-- ATH CONTEXT -->
+<div class="context-alert ath">
+  <div class="ctx-title">🏆 ALL-TIME HIGH TERRITORY — STRUCTURAL BULLISH REGIME</div>
+  ES at <strong>7,402</strong> and SPX at <strong>7,365</strong> represent a full recovery and expansion beyond pre-tariff ATH levels. The market has repriced dramatically from the April lows. GAIA DHP Total is <strong>+8,758M — BULLISH</strong>. Regime is <strong>DAMPENED</strong> — dealers are net long gamma, which means they will <strong>sell into rallies and buy dips</strong>, creating a gravitational pull toward key nodes. In ATH territory, Call Walls are not resistances to break through quickly — they are zones where dealer hedging creates natural compression. <strong>The key question today: does the market accept price above 7,400 or does it gravitate back to Node 7,350?</strong>
+</div>
+
+<div class="context-alert bull">
+  <div class="ctx-title">📋 ATH DAMPENED PLAYBOOK — KEY DYNAMICS</div>
+  In DAMPENED + ATH conditions: <strong>1)</strong> Mean reversion is the dominant force — dealers suppress volatility. <strong>2)</strong> Breakouts above Call Walls require significant catalyst + ACC.BULL DHP. <strong>3)</strong> Dips to Gamma Node (7,350 ES / 7,335 SPX) are buyable IF DHP stays BLD.BULL. <strong>4)</strong> False breakouts above Node are common — wait for acceptance. <strong>5)</strong> NFP tomorrow at 08:30 = tail risk. Participants will manage gamma exposure through the close today. <strong>Structure matters more than news.</strong>
+</div>
+
+<div class="context-alert macro">
+  <div class="ctx-title">📅 TODAY'S MACRO — JOBLESS CLAIMS + 2 FED SPEAKERS</div>
+  <strong>08:30 ET — Initial Jobless Claims (May 02)</strong>: Previous 190K / Consensus 205K / Actual 200K. Slight beat — labor market still resilient. Positive for risk assets short-term. <strong>Nonfarm Productivity</strong> QoQ Prel: Actual 0.8% vs consensus 1.4% — slight miss, not market-moving. <strong>Unit Labour Costs</strong>: Actual 2.3% vs consensus 2.6% — below consensus, mild inflation relief. <strong>02:05 PM — Fed Hammack speech</strong>. <strong>03:30 PM — Fed Williams speech</strong> — two Fed speakers in PM session could create volatility near close. <strong>Tomorrow 08:30 ET: NFP APR</strong> — Previous 178K / Consensus 95K. This is the key event for the week.
+</div>
+
+<!-- ═══ SECTION 2 — GAIA DHP PRE-OPEN ═══ -->
+<div class="section-header">
+  <span class="num">02</span>
+  <span class="title">GAIA DHP · Pre-Market State</span>
+  <span class="sub">Pre-open · NEUTRAL expected before 09:30 ET · +8,758M Total DHP</span>
+</div>
+
+<div class="gaia-panel">
+  <div class="gaia-grid">
+    <div class="gaia-metric"><div class="lbl">DHP Total</div><div class="val bull">+8,758M</div></div>
+    <div class="gaia-metric"><div class="lbl">Regime</div><div class="val bull">BULLISH</div></div>
+    <div class="gaia-metric"><div class="lbl">Momentum</div><div class="val neutral">NEUTRAL</div></div>
+    <div class="gaia-metric"><div class="lbl">Call Wall ES</div><div class="val" style="color:var(--red)">7,394.63</div></div>
+    <div class="gaia-metric"><div class="lbl">Put Wall ES</div><div class="val" style="color:var(--blue)">7,319.63</div></div>
+    <div class="gaia-metric"><div class="lbl">Gamma Node</div><div class="val" style="color:var(--purple)">7,350</div></div>
+  </div>
+  <div class="gaia-note">
+    <strong>PRE-OPEN NEUTRAL = CORRECT.</strong> DHP reads NEUTRAL before 09:30 ET — this is expected behavior, not a signal. GEX structure shows dominant Call GEX at 7,375 (+766K) with Gamma Node at 7,350 (+1.5M) — the most powerful magnet in the structure. Dealers are positioned net BULLISH (+8,758M delta). Watch for DHP direction at open: BLD.BULL confirms continuation toward 7,425–7,500 / BLD.BEAR = compression back to Node 7,350.
+  </div>
+</div>
+
+<!-- ═══ SECTION 3 — ES ═══ -->
+<div class="section-header">
+  <span class="num">03</span>
+  <span class="title">ES · E-Mini S&P 500</span>
+  <span class="sub">ESM26 · ATH Zone · Node 7,400 AT SPOT · DAMPENED</span>
+</div>
+
+<div class="instrument-grid">
+  <div class="inst-card">
+    <div class="inst-header">
+      <span class="inst-tag tag-es">ES</span>
+      <span style="color:var(--text3);font-size:10px;">PAD ZONES · MAY 7 · DAMPENED</span>
+      <span class="inst-spot ath">7,402.25</span>
+    </div>
+    <table class="pad-table">
+      <tr><th>Zone</th><th>Level</th><th>Label</th><th>OI / Note</th></tr>
+      <tr><td class="zone-call">▲ GC1</td><td class="zone-call">7,625</td><td>Gamma Ceiling 1</td><td>10,135 · Far ceiling</td></tr>
+      <tr><td class="zone-call">▲ GC2</td><td class="zone-call">7,500</td><td>Call Wall 2 / Gamma Flip</td><td>9,361 · Major resistance</td></tr>
+      <tr><td class="zone-call">▲ GC3</td><td class="zone-call">7,600</td><td>Call Wall 3</td><td>7,673</td></tr>
+      <tr><td class="zone-ath">◆ NODE</td><td class="zone-ath">7,400</td><td>Gamma Node ← AT SPOT</td><td>Net GEX High · MAGNET</td></tr>
+      <tr><td class="zone-anchor">📍 TA</td><td class="zone-anchor">7,300</td><td>Tactical Anchor</td><td>Key dynamic support</td></tr>
+      <tr><td class="zone-put">▼ GF1</td><td class="zone-put">7,200</td><td>Gamma Floor 1</td><td>21,644 · High OI</td></tr>
+      <tr><td class="zone-put">▼ GF2</td><td class="zone-put">7,250</td><td>Gamma Floor 2</td><td>14,384</td></tr>
+      <tr><td class="zone-put">▼ GF3</td><td class="zone-put">7,150</td><td>Gamma Floor 3</td><td>13,163</td></tr>
+      <tr><td class="zone-put">▼ EA</td><td class="zone-put">7,175</td><td>Emergency Anchor</td><td>7,426</td></tr>
+    </table>
+  </div>
+
+  <div class="inst-card">
+    <div class="inst-header">
+      <span class="inst-tag tag-es">ES</span>
+      <span style="color:var(--text3);font-size:10px;">TPO + ATH CONTEXT · MAY 7</span>
+    </div>
+    <div class="tpo-row">
+      <div class="tpo-chip ath">VAH 7,402.50</div>
+      <div class="tpo-chip ath">POC 7,393.25</div>
+      <div class="tpo-chip above">VAL 7,378.50</div>
+      <div class="tpo-chip above">VWAP 7,386.75</div>
+      <div class="tpo-chip above">EMA200 7,303.96</div>
+      <div class="tpo-chip ath">RF +14</div>
+    </div>
+    <div class="plan-box">
+      <div class="plan-title">📋 ES Read — May 7 · ATH · DAMPENED</div>
+      <ul>
+        <li class="ath">ES is AT the Gamma Node 7,400 — price will gravitate here. Expect compression.</li>
+        <li class="key">Spot is compressing near POC 7,393 / VAH 7,402 — tight balance zone overnight.</li>
+        <li class="key">VWAP 7,386.75 = first key level. Holding above VWAP = bullish bias intraday.</li>
+        <li class="bull">DHP BLD.BULL + acceptance above 7,402 → extension toward 7,450 (Gravity Pin) → 7,500 (GP)</li>
+        <li class="bear">Loses VWAP 7,386 + DHP BEAR → Node compression to 7,350 → TA 7,300</li>
+        <li class="warn">DAMPENED = dealers suppress both sides. False breakouts likely above 7,420.</li>
+        <li class="warn">NFP tomorrow = gamma risk management today. Participants may reduce exposure into close.</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ SECTION 4 — NQ ═══ -->
+<div class="section-header">
+  <span class="num">04</span>
+  <span class="title">NQ · E-Mini Nasdaq 100</span>
+  <span class="sub">NQM26 · Node 28,750 AT SPOT · ARM / ABNB / COIN AMC tonight</span>
+</div>
+
+<div class="instrument-grid">
+  <div class="inst-card">
+    <div class="inst-header">
+      <span class="inst-tag tag-nq">NQ</span>
+      <span style="color:var(--text3);font-size:10px;">PAD ZONES · MAY 7 · DAMPENED</span>
+      <span class="inst-spot up">28,754.75</span>
+    </div>
+    <table class="pad-table">
+      <tr><th>Zone</th><th>Level</th><th>Label</th><th>OI / Note</th></tr>
+      <tr><td class="zone-call">▲ GC1</td><td class="zone-call">30,000</td><td>Gamma Ceiling 1</td><td>2,274 · Round number + ceiling</td></tr>
+      <tr><td class="zone-call">▲ GC2</td><td class="zone-call">29,000</td><td>Call Wall / Gamma Flip</td><td>1,421 · Key resistance + GP</td></tr>
+      <tr><td class="zone-call">▲ GC3</td><td class="zone-call">29,750</td><td>Call Wall 3</td><td>557</td></tr>
+      <tr><td class="zone-ath">◆ NODE</td><td class="zone-ath">28,750</td><td>Gamma Node ← AT SPOT</td><td>Net GEX · MAGNET</td></tr>
+      <tr><td class="zone-anchor">📍 EA</td><td class="zone-anchor">28,700</td><td>Emergency Anchor / TA 28,650</td><td>395</td></tr>
+      <tr><td class="zone-put">▼ GF1</td><td class="zone-put">28,500</td><td>Gamma Floor 1</td><td>1,046</td></tr>
+      <tr><td class="zone-put">▼ GF2</td><td class="zone-put">28,325</td><td>Gamma Floor 2</td><td>887</td></tr>
+      <tr><td class="zone-put">▼ GF3</td><td class="zone-put">28,400</td><td>Gamma Floor 3 · Accel below</td><td>605 · Low gamma = fast move</td></tr>
+    </table>
+  </div>
+
+  <div class="inst-card">
+    <div class="inst-header">
+      <span class="inst-tag tag-nq">NQ</span>
+      <span style="color:var(--text3);font-size:10px;">TPO + EARNINGS CONTEXT</span>
+    </div>
+    <div class="tpo-row">
+      <div class="tpo-chip above">VAH 28,751</div>
+      <div class="tpo-chip above">POC 28,666</div>
+      <div class="tpo-chip above">VAL 28,719</div>
+      <div class="tpo-chip above">VWAP 28,712</div>
+      <div class="tpo-chip above">EMA200 28,175</div>
+      <div class="tpo-chip warn">RF +7 · Balance</div>
+    </div>
+    <div class="plan-box">
+      <div class="plan-title">📋 NQ Read — May 7 · Node AT SPOT · ARM Risk AMC</div>
+      <ul>
+        <li class="ath">Spot at Node 28,750 — tightest balance zone. RF +7 = narrow overnight range.</li>
+        <li class="key">VWAP 28,712 = key intraday reference. Balance between VAH 28,751 and VAL 28,719.</li>
+        <li class="warn">ARM (Arm Holdings) reports AMC tonight — primary NQ catalyst. ±3% reaction possible.</li>
+        <li class="bull">DHP BLD.BULL + break above 28,750 + ARM pre-position → 29,000 (Call Wall/Flip)</li>
+        <li class="bear">Loses 28,500 GF1 → acceleration zone begins — low gamma below 28,400/28,325</li>
+        <li class="warn">ABNB (Airbnb) + COIN (Coinbase) also AMC — risk-on sentiment barometer.</li>
+        <li class="key">Today NQ likely range-bound 28,500–29,000 ahead of ARM earnings.</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ SECTION 5 — CL ═══ -->
+<div class="section-header">
+  <span class="num">05</span>
+  <span class="title">CL · Crude Oil WTI</span>
+  <span class="sub">CLK26 · Bearish structure · Node 92.00 AT SPOT · Below EMA200</span>
+</div>
+
+<div class="instrument-grid">
+  <div class="inst-card">
+    <div class="inst-header">
+      <span class="inst-tag tag-cl">CL</span>
+      <span style="color:var(--text3);font-size:10px;">PAD ZONES · MAY 7 · DAMPENED</span>
+      <span class="inst-spot danger">92.01</span>
+    </div>
+    <table class="pad-table">
+      <tr><th>Zone</th><th>Level</th><th>Label</th><th>OI / Note</th></tr>
+      <tr><td class="zone-call">▲ GC1</td><td class="zone-call">100.00</td><td>Gamma Ceiling 1</td><td>56,168 · Massive OI ceiling</td></tr>
+      <tr><td class="zone-call">▲ GC2</td><td class="zone-call">95.00</td><td>Call Wall / Gamma Flip</td><td>9,390 · Key recovery level</td></tr>
+      <tr><td class="zone-call">▲ GC3</td><td class="zone-call">93.00</td><td>Call Wall 3 · Near spot</td><td>5,213</td></tr>
+      <tr><td class="zone-node">◆ NODE</td><td class="zone-node">92.00</td><td>Gamma Node ← AT SPOT</td><td>Net GEX · Pivot</td></tr>
+      <tr><td class="zone-anchor">📍 TA</td><td class="zone-anchor">91.00</td><td>Tactical Anchor</td><td>Key near support</td></tr>
+      <tr><td class="zone-put">▼ GF1</td><td class="zone-put">90.00</td><td>Put Wall ← KEY FLOOR</td><td>38,034 · Massive OI</td></tr>
+      <tr><td class="zone-put">▼ GF2</td><td class="zone-put">89.00</td><td>Gamma Floor 2</td><td>7,110</td></tr>
+      <tr><td class="zone-put">▼ EA</td><td class="zone-put">90.50</td><td>Emergency Anchor</td><td>1,741</td></tr>
+    </table>
+  </div>
+
+  <div class="inst-card">
+    <div class="inst-header">
+      <span class="inst-tag tag-cl">CL</span>
+      <span style="color:var(--text3);font-size:10px;">TPO + STRUCTURE</span>
+    </div>
+    <div class="tpo-row">
+      <div class="tpo-chip below">VAH 96.60</div>
+      <div class="tpo-chip below">POC 95.85</div>
+      <div class="tpo-chip below">VAL 93.30</div>
+      <div class="tpo-chip below">VWAP 94.01</div>
+      <div class="tpo-chip below">EMA200 99.29 ↓</div>
+      <div class="tpo-chip warn">RF -16</div>
+    </div>
+    <div class="plan-box">
+      <div class="plan-title">📋 CL Read — May 7 · Bearish · Node 92 AT SPOT</div>
+      <ul>
+        <li class="key">CL holding at Gamma Node 92.00 — dealers are at pivot. Critical structural test.</li>
+        <li class="key">Below EMA200 (99.29), below VWAP (94.01), below VAL (93.30) — full bearish structure.</li>
+        <li class="warn">Put Wall 90.00 has 38,034 OI — MASSIVE floor. If 90.00 holds, strong bounce possible.</li>
+        <li class="bull">Recovery: needs reclaim 93.00 (GC3) → 95.00 (Flip) → 100.00 (major OI ceiling)</li>
+        <li class="bear">Loses 91.00 TA → 90.00 Put Wall test. Break of 90 = acceleration to 89.00</li>
+        <li class="warn">Iran deal framework + OPEC supply dynamics = headline risk. Watch news flow.</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ SECTION 6 — SPX ═══ -->
+<div class="section-header">
+  <span class="num">06</span>
+  <span class="title">SPX · S&P 500 Index</span>
+  <span class="sub">CBOE · Cash · DAMPENED · ABOVE FLIP 7,270 · Node 7,335 · 1σ: 7,292–7,435</span>
+</div>
+
+<div class="instrument-grid">
+  <div class="inst-card">
+    <div class="inst-header">
+      <span class="inst-tag tag-spx">SPX</span>
+      <span style="color:var(--text3);font-size:10px;">PAD ZONES · MAY 7 · CORRECTED NEXA</span>
+      <span class="inst-spot ath">7,365.12</span>
+    </div>
+    <table class="pad-table">
+      <tr><th>Zone</th><th>Level</th><th>Label</th><th>Function</th></tr>
+      <tr><td class="zone-call">▲ GC1</td><td class="zone-call">7,500</td><td>Call Wall — Structural Ceiling</td><td>Techo estructural principal</td></tr>
+      <tr><td class="zone-call">▲ GC2</td><td class="zone-call">7,525</td><td>Call Wall 2 — Dealer Extension</td><td>Dealer hedge extension</td></tr>
+      <tr><td class="zone-call">▲ GC3</td><td class="zone-call">7,425</td><td>Tactical Ceiling</td><td>Near ceiling · 1σ Hi 7,435</td></tr>
+      <tr><td class="zone-ath">◆ NODE</td><td class="zone-ath">7,335</td><td>Real Gamma Node ← MAGNET</td><td>POC TPO coincidence · Key</td></tr>
+      <tr><td class="zone-flip">◆ GP</td><td class="zone-flip">7,270</td><td>Gamma Flip ← BELOW SPOT ✅</td><td>Tactical support + Flip</td></tr>
+      <tr><td class="zone-flip">◆ PIN</td><td class="zone-flip">7,150</td><td>Structural Flip — Deep</td><td>Long-term dealer pivot</td></tr>
+      <tr><td class="zone-anchor">📍 TA</td><td class="zone-anchor">7,270</td><td>Tactical Anchor</td><td>Coincides with GP</td></tr>
+      <tr><td class="zone-put">▼ GF1</td><td class="zone-put">7,175</td><td>Gamma Floor 1</td><td>Primer soporte dealer</td></tr>
+      <tr><td class="zone-put">▼ GF2</td><td class="zone-put">7,100</td><td>Gamma Floor 2</td><td>Second structural support</td></tr>
+      <tr><td class="zone-put">▼ GF3</td><td class="zone-put">7,050</td><td>Put Wall Dominant</td><td>Major put positioning</td></tr>
+      <tr><td class="zone-put">▼ EA</td><td class="zone-put">7,000</td><td>Emergency Anchor</td><td>Round number + final floor</td></tr>
+    </table>
+  </div>
+
+  <div class="inst-card">
+    <div class="inst-header">
+      <span class="inst-tag tag-spx">SPX</span>
+      <span style="color:var(--text3);font-size:10px;">DAMPENED · ABOVE FLIP · ATH ZONE</span>
+    </div>
+    <div class="tpo-row">
+      <div class="tpo-chip ath">VAH 7,350</div>
+      <div class="tpo-chip ath">POC 7,335</div>
+      <div class="tpo-chip above">VAL 7,320</div>
+      <div class="tpo-chip above">EMA200 7,146</div>
+      <div class="tpo-chip warn">1σ 7,292–7,435</div>
+      <div class="tpo-chip ath">RF +12</div>
+    </div>
+    <div class="plan-box">
+      <div class="plan-title">📋 SPX Read — May 7 · DAMPENED · ABOVE FLIP</div>
+      <ul>
+        <li class="ath">SPX is ABOVE Gamma Flip 7,270 — bullish dealer pressure. Structure confirms ATH.</li>
+        <li class="key">Real NODE = 7,335 (coincides with POC TPO + acceptance zone). This is the intraday gravity center.</li>
+        <li class="key">Current spot 7,365 is between Node 7,335 and GC3 7,425. Classic ATH compression zone.</li>
+        <li class="key">1σ range: 7,292–7,435. SPX trading at mid-to-upper 1σ. Room to 7,435 still within range.</li>
+        <li class="bull">DHP BLD.BULL + acceptance above 7,370 → GC3 7,425 → GC1 7,500</li>
+        <li class="bear">Loses 7,335 Node → Gamma Flip 7,270 retest. Below 7,270 = regime change.</li>
+        <li class="warn">PIN 7,150 is structural dealer flip — not intraday target, but context for week.</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ SECTION 7 — EDGE ═══ -->
+<div class="section-header">
+  <span class="num">07</span>
+  <span class="title">GAIA Edge · 3-Scenario Framework</span>
+  <span class="sub">ATH + DAMPENED + NFP Tomorrow = Compression + Directional Risk</span>
+</div>
+
+<div class="synth-box">
+  <span class="ath-note">🏆 ATH OPERATIVE SYNTHESIS — MAY 7, 2026:</span><br><br>
+  The market enters Thursday at <strong>all-time high territory</strong> with a structurally clean setup. ES at 7,402 is sitting AT the Gamma Node — the most powerful gravitational level in the structure. GAIA DHP is <strong>+8,758M BULLISH</strong> and regime is <strong>DAMPENED</strong>, which means dealers are net long gamma and will act as a mechanical stabilizer: they sell into rallies and buy dips, suppressing volatility.<br><br>
+  The <strong>key tension today</strong> is threefold: (1) <strong>Jobless Claims came in at 200K</strong> — slight beat on labor, mildly positive for risk. (2) <strong>Two Fed speakers in the PM session</strong> (Hammack 2:05 PM, Williams 3:30 PM) — verbal risk near close. (3) <strong>NFP tomorrow</strong> — participants will begin managing gamma exposure today, potentially reducing size into the close.<br><br>
+  In ATH + DAMPENED conditions, the primary edge is <strong>NOT chasing breakouts</strong> — it's identifying when Node compression resolves. The Gamma Node 7,400 (ES) / 7,335 (SPX) will act as the session anchor. Price will gravitate toward these nodes when momentum fades. <strong>The structural question: does Node hold as support for continuation, or does it become the ceiling for a compression rotation back to 7,350?</strong><br><br>
+  ARM earnings AMC is the wildcard for NQ. A beat + guidance raise = NQ extension to 29,000. A miss = NQ breakdown through 28,500 with acceleration risk.
+</div>
+
+<div class="edge-grid">
+  <div class="scenario-card base">
+    <div class="sc-header sc-base">📊 BASE SCENARIO</div>
+    <div class="pct" style="color:var(--cyan)">45%</div>
+    <div class="desc">
+      DAMPENED compression dominates. ES oscillates between VWAP 7,386 and GC3 7,420. SPX compresses around Node 7,335–7,370. NQ balance 28,600–28,900 ahead of ARM. DHP stays BLD.BULL but does not reach ACC. Fed speakers cause brief volatility 2–3 PM but no structural break. Participants manage gamma exposure into close ahead of NFP. Tight, choppy, low-conviction session.
+    </div>
+    <div class="levels">
+      ES range: 7,378 – 7,425 | SPX: 7,335 – 7,390 | NQ: 28,600 – 28,900<br>
+      Key trigger: VWAP hold + DHP NEUTRAL
+    </div>
+  </div>
+
+  <div class="scenario-card bull">
+    <div class="sc-header sc-bull">🟢 BULL SCENARIO</div>
+    <div class="pct" style="color:var(--green)">35%</div>
+    <div class="desc">
+      DHP transitions to ACC.BULL early session. ES accepts above 7,420 → extension toward 7,450 (Gravity Pin) → 7,500 (Gamma Flip). SPX clears 7,390 → targets GC3 7,425 → GC1 7,500. NQ leads with pre-ARM positioning. Jobless Claims beat gives initial fuel. Fed speakers dovish tone. DAMPENED slows but does not stop the move — breakout needs volume + sustained DHP BULL. ATH expansion confirmed.
+    </div>
+    <div class="levels">
+      ES target: 7,450 → 7,500 | SPX: 7,425 → 7,500 | NQ: 29,000<br>
+      Key trigger: ACC.BULL + ES holds above 7,402 after open
+    </div>
+  </div>
+
+  <div class="scenario-card bear">
+    <div class="sc-header sc-bear">🔴 BEAR SCENARIO</div>
+    <div class="pct" style="color:var(--red)">20%</div>
+    <div class="desc">
+      DHP turns BLD.BEAR at open. ES loses VWAP 7,386 → Node compression to 7,350 → TA 7,300. SPX loses Node 7,335 → Gamma Flip 7,270 retest — critical level. NQ breaks 28,500 GF1 → acceleration zone (low gamma below 28,400). Catalysts: hawkish Fed speaker, NFP pre-positioning selloff, CL re-breakdown below 90.00. DAMPENED limits speed but if 7,270 SPX breaks = regime concern.
+    </div>
+    <div class="levels">
+      ES support: 7,350 → 7,300 | SPX: 7,270 Flip | NQ: 28,500 → 28,325<br>
+      Key trigger: BLD.BEAR + loss of VWAP + CL breakdown below 90
+    </div>
+  </div>
+</div>
+
+<!-- ═══ SECTION 8 — CALENDAR ═══ -->
+<div class="section-header">
+  <span class="num">08</span>
+  <span class="title">Economic Calendar · May 7, 2026</span>
+  <span class="sub">All times ET · Claims already out · Fed Hammack 2:05 PM · Fed Williams 3:30 PM</span>
+</div>
+
+<table class="macro-table">
+  <tr><th>Time</th><th>Event</th><th>Previous</th><th>Consensus</th><th>Actual</th><th>Impact</th><th>PAD Note</th></tr>
+  <tr class="today-row">
+    <td>08:30 AM</td>
+    <td><strong style="color:var(--white)">Initial Jobless Claims ✅ OUT</strong></td>
+    <td>190K</td>
+    <td>205K</td>
+    <td class="actual-cool">200K ↓ Beat</td>
+    <td class="imp-med">MED</td>
+    <td class="pad-note">Labor resilience confirmed. Mild positive for equities. ES already priced in.</td>
+  </tr>
+  <tr class="today-row">
+    <td>08:30 AM</td>
+    <td><strong style="color:var(--white)">Nonfarm Productivity QoQ Prel ✅</strong></td>
+    <td>1.6%</td>
+    <td>1.4%</td>
+    <td class="actual-hot">0.8% ↓ Miss</td>
+    <td class="imp-low">LOW</td>
+    <td class="pad-note">Productivity miss — slight negative but not market-moving in isolation.</td>
+  </tr>
+  <tr class="today-row">
+    <td>08:30 AM</td>
+    <td><strong style="color:var(--white)">Unit Labour Costs QoQ Prel ✅</strong></td>
+    <td>4.6%</td>
+    <td>2.6%</td>
+    <td class="actual-cool">2.3% ↓ Cool</td>
+    <td class="imp-low">LOW</td>
+    <td class="pad-note">Below consensus — mild inflation relief. Supports dovish Fed narrative.</td>
+  </tr>
+  <tr>
+    <td>02:05 PM</td>
+    <td><strong style="color:var(--white)">Fed Hammack Speech</strong></td>
+    <td>—</td>
+    <td>—</td>
+    <td>—</td>
+    <td class="imp-med">MED</td>
+    <td class="pad-note">Watch for tone on rates. Near Power Hour — can create volatility. DHP will react.</td>
+  </tr>
+  <tr>
+    <td>03:30 PM</td>
+    <td><strong style="color:var(--white)">Fed Williams Speech</strong></td>
+    <td>—</td>
+    <td>—</td>
+    <td>—</td>
+    <td class="imp-med">MED</td>
+    <td class="pad-note">Closing Drive zone. If hawkish → risk-off into close + gamma hedging. Key 15 min.</td>
+  </tr>
+  <tr style="opacity:.6">
+    <td>Fri 08:30</td>
+    <td><strong style="color:var(--ath-gold)">NON FARM PAYROLLS APR ← TOMORROW</strong></td>
+    <td>178K</td>
+    <td>95K</td>
+    <td>—</td>
+    <td class="imp-high">HIGH ⚡</td>
+    <td class="pad-note">The week's key event. If < 60K = recession fear. If > 150K = hawkish Fed fear. Both extremes = vol spike.</td>
+  </tr>
+</table>
+
+<!-- ═══ SECTION 9 — EARNINGS ═══ -->
+<div class="section-header">
+  <span class="num">09</span>
+  <span class="title">Earnings · May 7, 2026</span>
+  <span class="sub">ARM + Airbnb + Coinbase + AppLovin AMC · NQ overnight risk</span>
+</div>
+
+<table class="earnings-table">
+  <tr><th>Day</th><th>Company</th><th>When</th><th>PAD Impact</th></tr>
+  <tr><td>Thu May 7</td><td class="mega">Arm Holdings (ARM) ← PRIMARY NQ CATALYST</td><td class="amc">AMC</td><td class="pad-note">AI chip leader. ±3% NQ reaction. If beat + raised guidance → NQ extension toward 29,000. Miss → 28,500 GF1 breakdown risk.</td></tr>
+  <tr><td>Thu May 7</td><td class="mega">Airbnb (ABNB)</td><td class="amc">AMC</td><td class="pad-note">Consumer discretionary / Travel demand. Indicator for post-CL economy read.</td></tr>
+  <tr><td>Thu May 7</td><td class="mega">Coinbase (COIN)</td><td class="amc">AMC</td><td class="pad-note">Crypto beta. Risk appetite barometer. High beta move expected.</td></tr>
+  <tr><td>Thu May 7</td><td>AppLovin (APP), Fortinet (FTNT), Warner Bros (WBD)</td><td class="amc">AMC</td><td class="pad-note">APP = high beta tech. FTNT = cybersecurity. WBD = media/streaming.</td></tr>
+  <tr><td>Fri May 8</td><td class="mega" style="color:var(--ath-gold)">NON FARM PAYROLLS — WEEK'S KEY EVENT</td><td class="bmo">08:30 ET</td><td class="pad-note">Prev 178K / Est 95K. Extreme outcomes in either direction = significant vol event. Today: manage gamma exposure ahead of this.</td></tr>
+</table>
+
+<div class="divider"></div>
+
+<!-- ═══ SECTION 10 — GAIA STRING ═══ -->
+<div class="section-header">
+  <span class="num">10</span>
+  <span class="title">GAIA String · SPX PAD Chart</span>
+  <span class="sub">DAMPENED · NODE:7335 · GP:7270 · Corrected by Nexa · Copy → SPX PAD Chart → APPLY</span>
+</div>
+
+<div class="gaia-string-section">
+  <div class="gs-header">
+    📋 SPX GAIA STRING · MAY 7, 2026 · DAMPENED · NODE: 7,335 · GP: 7,270
+  </div>
+  <div class="gs-display">
+    <div class="gs-text" id="gaia-str">DATE:2026-05-07 ET|REGIME:DAMPENED|SPOT:7363.68|GC1:7500|GC2:7525|GC3:7425|GP:7270|NODE:7335|PIN:7150|RT_HI:7435.10|RT_LO:7292.26|GF1:7175|GF2:7100|GF3:7050|GF4:7270|TA:7270|EA:7000|SIGMA_HI:7435.10|SIGMA_LO:7292.26|SIGMA_LBL:71.42 0.97pct</div>
+    <button class="gs-copy" id="gs-btn" onclick="copyGS()">COPY →</button>
+  </div>
+  <div class="gs-steps">
+    1. Click <strong>COPY →</strong> &nbsp;·&nbsp;
+    2. Open <strong>SPX PAD Chart</strong> in your portal &nbsp;·&nbsp;
+    3. Paste in the <strong>GAIA STRING</strong> input bar &nbsp;·&nbsp;
+    4. Click <strong>APPLY →</strong>
+  </div>
+</div>
+
+<!-- ═══ SECTION 11 — TWITTER ═══ -->
+<div class="section-header">
+  <span class="num">11</span>
+  <span class="title">Twitter · @PivotAlphaDesk</span>
+  <span class="sub">Publish 7:30–8:30 AM ET · ATH session · DAMPENED regime</span>
+</div>
+
+<div class="tweet-box">
+  <div class="tweet-header">
+    <div class="tweet-avatar">P</div>
+    <div><div class="tweet-name">PivotAlphaDesk</div><div class="tweet-handle">@PivotAlphaDesk</div></div>
+    <div class="tweet-label">TWEET 1 — OPERATIVE</div>
+  </div>
+  <div class="tweet-content">Pre-Market | THU MAY 7 · ES Gamma · ATH Session
+
+All-time highs. Dealers are net +$8.7B bullish delta.
+But DAMPENED regime means they suppress both sides.
+
+🟢 Node:    7,400 (Gamma Node · intraday magnet)
+🔴 Ceiling: 7,500 (Call Wall · structural cap)
+📍 ES:      7,402 · Above EMA200 +98 pts
+⚡ Regime:  DAMPENED · Bullish · Above Flip
+
+Jobless Claims 200K — labor holds.
+Two Fed speakers PM. NFP tomorrow.
+
+Structure compresses at ATH.
+The edge is knowing where dealers anchor.
+
+#ES_F #GammaLevels #SPX #OptionsFlow #ATH</div>
+  <div class="tweet-time">Ready to post · May 7, 2026 · 7:30–8:30 AM ET</div>
+</div>
+
+<div class="tweet-box">
+  <div class="tweet-header">
+    <div class="tweet-avatar">P</div>
+    <div><div class="tweet-name">PivotAlphaDesk</div><div class="tweet-handle">@PivotAlphaDesk</div></div>
+    <div class="tweet-label">TWEET 2 — GAIA STRING · SPX ZONES</div>
+  </div>
+  <div class="tweet-content">SPX GAIA Zones · May 7, 2026
+
+DAMPENED. Dealers above Gamma Flip.
+Node at 7,335. Room to 7,425–7,500.
+
+Today's string for SPX PAD Chart 👇
+
+DATE:2026-05-07 ET|REGIME:DAMPENED|SPOT:7363.68|GC1:7500|GC2:7525|GC3:7425|GP:7270|NODE:7335|PIN:7150|GF1:7175|GF2:7100|GF3:7050|TA:7270|EA:7000|SIGMA_HI:7435.10|SIGMA_LO:7292.26
+
+Paste → SPX PAD Chart → APPLY →
+pivotalphadesk.com
+
+#SPX #GammaLevels #OptionsFlow #TradingView</div>
+  <div class="tweet-time">Ready to post · May 7, 2026 · 8:00–8:30 AM ET</div>
+</div>
+
+<div class="footer">
+  <span>PivotAlphaDesk</span> · GAIA Framework · May 7, 2026 · Pre-Market Briefing<br>
+  For educational purposes only. Not financial advice. Trading futures involves substantial risk of loss.<br>
+  Source: CME QuikStrike · GAIA Analysis System · Nexa Processing Layer
+</div>
+
+</div>
+
+<script>
+function copyGS() {
+  var str = document.getElementById('gaia-str').textContent.trim();
+  var btn = document.getElementById('gs-btn');
+  navigator.clipboard.writeText(str).then(function() {
+    btn.textContent = '✓ COPIED'; btn.classList.add('copied');
+    setTimeout(function(){ btn.textContent = 'COPY →'; btn.classList.remove('copied'); }, 2000);
+  }).catch(function() {
+    var range = document.createRange();
+    range.selectNode(document.getElementById('gaia-str'));
+    window.getSelection().removeAllRanges();
+    window.getSelection().addRange(range);
+    document.execCommand('copy');
+    window.getSelection().removeAllRanges();
+    btn.textContent = '✓ COPIED'; btn.classList.add('copied');
+    setTimeout(function(){ btn.textContent = 'COPY →'; btn.classList.remove('copied'); }, 2000);
+  });
+}
+</script>
+</body>
+</html>
