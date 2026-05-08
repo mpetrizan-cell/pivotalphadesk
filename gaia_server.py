@@ -158,6 +158,9 @@ iframe{width:100%;height:100%;border:none;}
   <a href="/chart" class="tab {% if active == 'chart' %}active{% endif %}">
     GEX Structure
   </a>
+  <a href="/chart4" class="tab {% if active == 'chart4' %}active{% endif %}">
+    GEX Structure v4
+  </a>
   <a href="/flow" class="tab {% if active == 'flow' %}active{% endif %}">
     DHP Flow
   </a>
@@ -316,6 +319,13 @@ def chart():
         active='chart', page='gaia_chart_v3.html',
         spot=get_spot(), trial_days=get_trial_days())
 
+@app.route('/chart4')
+@require_auth
+def chart4():
+    return render_template_string(DASHBOARD_HTML,
+        active='chart4', page='gaia_chart_v4.html',
+        spot=get_spot(), trial_days=get_trial_days())
+
 @app.route('/ndx')
 @require_auth
 def ndx():
@@ -429,6 +439,11 @@ def serve_cvd():
 @require_auth
 def serve_chart():
     return send_from_directory(BASE_DIR, 'gaia_chart_v3.html')
+
+@app.route('/gaia_chart_v4.html')
+@require_auth
+def serve_chart_v4():
+    return send_from_directory(BASE_DIR, 'gaia_chart_v4.html')
 
 @app.route('/gaia_flow_v1.html')
 @require_auth
