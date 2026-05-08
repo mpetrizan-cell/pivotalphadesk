@@ -298,18 +298,29 @@ def calculate_gaia(strikes, spot):
         net_dhp  = call_dhp + put_dhp
         total_call_dhp += call_dhp
         total_put_dhp  += put_dhp
+        # Delta × OI = presión real de hedging por strike
+        call_delta_oi = round(s["call_delta"] * s["call_oi"], 2)
+        put_delta_oi  = round(s["put_delta"]  * s["put_oi"],  2)
+
         results.append({
-            "strike":   strike,
-            "call_gex": round(call_gex / 1e6, 2),
-            "put_gex":  round(put_gex  / 1e6, 2),
-            "net_gex":  round(net_gex  / 1e6, 2),
-            "call_dhp": round(call_dhp / 1e6, 2),
-            "put_dhp":  round(put_dhp  / 1e6, 2),
-            "net_dhp":  round(net_dhp  / 1e6, 2),
-            "call_oi":  s["call_oi"],
-            "put_oi":   s["put_oi"],
-            "call_iv":  s["call_iv"],
-            "put_iv":   s["put_iv"],
+            "strike":        strike,
+            "call_gex":      round(call_gex / 1e6, 2),
+            "put_gex":       round(put_gex  / 1e6, 2),
+            "net_gex":       round(net_gex  / 1e6, 2),
+            "call_dhp":      round(call_dhp / 1e6, 2),
+            "put_dhp":       round(put_dhp  / 1e6, 2),
+            "net_dhp":       round(net_dhp  / 1e6, 2),
+            "call_oi":       s["call_oi"],
+            "put_oi":        s["put_oi"],
+            # ── NUEVAS CAPAS ───────────────────────
+            "call_delta":    round(s["call_delta"], 4),
+            "put_delta":     round(s["put_delta"],  4),
+            "call_gamma":    round(s["call_gamma"], 6),
+            "put_gamma":     round(s["put_gamma"],  6),
+            "call_delta_oi": call_delta_oi,
+            "put_delta_oi":  put_delta_oi,
+            "call_iv":       round(s["call_iv"] * 100, 2),
+            "put_iv":        round(s["put_iv"]  * 100, 2),
         })
 
     total_dhp = round((total_call_dhp + total_put_dhp) / 1e6, 2)
