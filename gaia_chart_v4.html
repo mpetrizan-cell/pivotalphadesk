@@ -454,7 +454,58 @@ body::after {
   text-align: center;
 }
 
-/* ── GLOW ANIMATIONS ── */
+/* Confluence badge */
+.conf-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px; height: 12px;
+  border-radius: 2px;
+  font-size: 7px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  margin-left: 3px;
+}
+.conf-2x { background: rgba(0,212,255,0.15); color: var(--cyan); border: 1px solid rgba(0,212,255,0.3); }
+.conf-3x { background: rgba(204,68,255,0.2); color: var(--node); border: 1px solid rgba(204,68,255,0.5);
+           box-shadow: 0 0 8px rgba(204,68,255,0.4); animation: glow-node 2s infinite; }
+
+/* Score bar */
+.sk-score-wrap {
+  width: 100%; height: 14px;
+  display: flex; align-items: center; gap: 3px;
+}
+.sk-score-bar {
+  height: 5px; border-radius: 2px; min-width: 1px;
+  transition: width 0.5s ease;
+}
+.sk-score-num {
+  font-size: 8px; font-weight: 700;
+  font-family: 'IBM Plex Mono', monospace;
+  white-space: nowrap;
+}
+
+/* IV split */
+.sk-iv-split {
+  display: flex; flex-direction: column; gap: 1px; text-align: right;
+}
+.sk-iv-call { font-size: 7px; color: var(--call); font-family: 'IBM Plex Mono', monospace; }
+.sk-iv-put  { font-size: 7px; color: var(--put);  font-family: 'IBM Plex Mono', monospace; }
+
+/* Layers badge in metrics */
+.layers-bar {
+  display: flex; gap: 4px; align-items: center;
+  padding: 3px 8px; background: var(--bg2);
+  border-top: 1px solid var(--border); flex-shrink: 0;
+}
+.layer-chip {
+  font-size: 7px; letter-spacing: 1px; padding: 2px 6px;
+  border-radius: 2px; cursor: pointer; transition: all 0.2s;
+}
+.layer-chip.active-0dte  { background: rgba(0,229,160,0.15); color: var(--green); border: 1px solid rgba(0,229,160,0.4); }
+.layer-chip.active-weekly { background: rgba(0,212,255,0.12); color: var(--cyan);  border: 1px solid rgba(0,212,255,0.3); }
+.layer-chip.active-monthly{ background: rgba(240,192,64,0.12); color: var(--gold);  border: 1px solid rgba(240,192,64,0.3); }
+.layer-chip.inactive { background: var(--bg3); color: var(--dim); border: 1px solid var(--border); }
 @keyframes glow-call {
   0%,100% { box-shadow: 0 0 8px rgba(245,166,35,0.4); }
   50% { box-shadow: 0 0 20px rgba(245,166,35,0.8); }
@@ -481,7 +532,7 @@ body::after {
     <div class="logo-badge">PAD</div>
     <div>
       <div class="logo-name">PIVOTALPHADESK</div>
-      <div class="logo-sub">GAIA LIVE v4  ·  DEALER POSITIONING  ·  0DTE  ·  ES FUTURES</div>
+      <div class="logo-sub">GAIA LIVE v5  ·  DEALER POSITIONING  ·  3 LAYERS  ·  ES FUTURES</div>
     </div>
   </div>
   <div class="header-center">
@@ -524,6 +575,15 @@ body::after {
     <div class="metric-label">GAMMA NODE</div>
     <div class="metric-val node" id="m-node">—</div>
   </div>
+</div>
+
+<!-- LAYERS BAR -->
+<div class="layers-bar" id="layers-bar">
+  <span style="font-size:7px;color:var(--dim);letter-spacing:2px;margin-right:4px;">LAYERS</span>
+  <div class="layer-chip inactive" id="chip-0dte">0DTE —</div>
+  <div class="layer-chip inactive" id="chip-weekly">WEEKLY —</div>
+  <div class="layer-chip inactive" id="chip-monthly">MONTHLY —</div>
+  <span style="margin-left:auto;font-size:7px;color:var(--dim)">CONFLUENCE: <span id="conf-summary" style="color:var(--node)">—</span></span>
 </div>
 
 <!-- BODY -->
@@ -602,14 +662,14 @@ body::after {
 
   <!-- RIGHT — GALACTIC STRIKE TABLE -->
   <div class="right">
-    <div class="panel-title">STRIKE BOOK — FOUR LAYERS</div>
+    <div class="panel-title" id="strike-book-title">STRIKE BOOK — FIVE LAYERS · <span id="confluence-count" style="color:var(--node)">—</span></div>
     <div class="strike-header">
       <div class="sh-col">STRIKE</div>
       <div class="sh-col">GEX BARS</div>
       <div class="sh-col">NET GEX</div>
       <div class="sh-col">Δ×OI</div>
-      <div class="sh-col">GAMMA</div>
-      <div class="sh-col">IV%</div>
+      <div class="sh-col">C.IV / P.IV</div>
+      <div class="sh-col">SCORE</div>
     </div>
     <div class="strike-list" id="strike-list"></div>
     <div class="ts-footer" id="ts-footer">——</div>
@@ -730,30 +790,67 @@ function detectClusters(strikes) {
   return clusters;
 }
 
-// ── STRIKE TABLE (GALACTIC) ────────────────────────────────────────────────────
+// ── LAYERS BAR UPDATE ─────────────────────────────────────────────────────────
+function updateLayersBar(data) {
+  const layers = data.layers || {};
+
+  const chip0dte   = document.getElementById('chip-0dte');
+  const chipWeekly = document.getElementById('chip-weekly');
+  const chipMonthly= document.getElementById('chip-monthly');
+  const confSum    = document.getElementById('conf-summary');
+
+  if (layers['0dte']?.expiration) {
+    chip0dte.textContent = `0DTE ${layers['0dte'].expiration.slice(5)}`;
+    chip0dte.className   = 'layer-chip active-0dte';
+  }
+  if (layers['weekly']?.expiration) {
+    chipWeekly.textContent = `WEEKLY ${layers['weekly'].expiration.slice(5)}`;
+    chipWeekly.className   = 'layer-chip active-weekly';
+  }
+  if (layers['monthly']?.expiration) {
+    chipMonthly.textContent = `MONTHLY ${layers['monthly'].expiration.slice(5)}`;
+    chipMonthly.className   = 'layer-chip active-monthly';
+  }
+
+  const conf = data.confluence || [];
+  if (conf.length > 0) {
+    const strong = conf.filter(c => c.strength >= 3).length;
+    const normal = conf.filter(c => c.strength === 2).length;
+    confSum.textContent = `${strong > 0 ? strong + '× 3x  ' : ''}${normal}× 2x`;
+    confSum.style.color = strong > 0 ? 'var(--node)' : 'var(--cyan)';
+  } else {
+    confSum.textContent = 'none';
+  }
+}
+
+// ── STRIKE TABLE — FIVE LAYERS ────────────────────────────────────────────────
 function renderStrikeList(data) {
   const list    = document.getElementById('strike-list');
   const strikes = data.strikes;
   const spot    = data.spot_spx;
   const lv      = data.levels || {};
+  const conf    = data.confluence || [];
 
   if (!strikes) { list.innerHTML = ''; return; }
 
-  const maxGex = Math.max(...strikes.map(s => Math.max(s.call_gex || 0, Math.abs(s.put_gex || 0))), 0.001);
-  const sorted = [...strikes].sort((a, b) => b.strike - a.strike);
+  // Build confluence map: strike → strength
+  const confMap = {};
+  conf.forEach(c => { confMap[c.strike] = c.strength; });
+
+  const maxGex   = Math.max(...strikes.map(s => Math.max(s.call_gex || 0, Math.abs(s.put_gex || 0))), 0.001);
+  const sorted   = [...strikes].sort((a, b) => b.strike - a.strike);
   const clusters = detectClusters([...strikes].sort((a,b) => a.strike - b.strike));
 
-  // Max values for scaling new columns
   const maxDoi   = Math.max(...strikes.map(s => Math.max(Math.abs(s.call_delta_oi||0), Math.abs(s.put_delta_oi||0))), 1);
-  const maxGamma = Math.max(...strikes.map(s => Math.max(s.call_gamma||0, s.put_gamma||0)), 0.00001);
 
   list.innerHTML = sorted.map(s => {
-    const isATM   = Math.abs(s.strike - spot) < 3;
-    const isCW    = s.strike === lv.call_wall;
-    const isPW    = s.strike === lv.put_wall;
-    const isNode  = s.strike === lv.gamma_node;
-    const isFlip  = s.strike === lv.gamma_flip;
+    const isATM  = Math.abs(s.strike - spot) < 3;
+    const isCW   = s.strike === lv.call_wall;
+    const isPW   = s.strike === lv.put_wall;
+    const isNode = s.strike === lv.gamma_node;
+    const isFlip = s.strike === lv.gamma_flip;
     const cluster = clusters[s.strike];
+    const confStrength = confMap[s.strike] || 0;
 
     const callPct = Math.min(((s.call_gex || 0) / maxGex) * 100, 100);
     const putPct  = Math.min((Math.abs(s.put_gex || 0) / maxGex) * 100, 100);
@@ -766,46 +863,53 @@ function renderStrikeList(data) {
 
     // Row class
     let rowClass = 'strike-row';
-    if (isATM)   rowClass += ' atm';
-    else if (isCW)   rowClass += ' cw-row';
-    else if (isPW)   rowClass += ' pw-row';
-    else if (isNode) rowClass += ' node-row';
+    if (isATM)            rowClass += ' atm';
+    else if (isCW)        rowClass += ' cw-row';
+    else if (isPW)        rowClass += ' pw-row';
+    else if (isNode)      rowClass += ' node-row';
     else if (cluster === 'call') rowClass += ' cluster-call';
     else if (cluster === 'put')  rowClass += ' cluster-put';
 
-    // Delta×OI — net pressure
-    const netDoi  = (s.call_delta_oi || 0) - (s.put_delta_oi || 0);
-    const doiCol  = netDoi > 0 ? 'var(--call)' : 'var(--put)';
-    const doiTxt  = netDoi !== 0
+    // Delta×OI net
+    const netDoi = (s.call_delta_oi || 0) - (s.put_delta_oi || 0);
+    const doiCol = netDoi > 0 ? 'var(--call)' : 'var(--put)';
+    const doiTxt = netDoi !== 0
       ? `${netDoi > 0 ? '+' : ''}${(netDoi / 1000).toFixed(1)}K`
       : '—';
 
-    // Gamma — max of call/put
-    const gamma   = Math.max(s.call_gamma || 0, s.put_gamma || 0);
-    const gammaIntensity = gamma / maxGamma;
-    const gammaCol = gammaIntensity > 0.7 ? 'var(--node)' :
-                     gammaIntensity > 0.4 ? 'var(--gold)' : 'var(--dim)';
-    const gammaTxt = gamma > 0 ? gamma.toFixed(4) : '—';
+    // Call IV / Put IV separados
+    const callIv = s.call_iv || 0;
+    const putIv  = s.put_iv  || 0;
+    const ivSkew = Math.abs(callIv - putIv);
+    const callIvTxt = callIv > 0 ? callIv.toFixed(1) + '%' : '—';
+    const putIvTxt  = putIv  > 0 ? putIv.toFixed(1)  + '%' : '—';
+    const ivSkewGlow = ivSkew > 3
+      ? `; text-shadow: 0 0 8px ${callIv > putIv ? 'rgba(245,166,35,0.6)' : 'rgba(45,143,255,0.6)'}`
+      : '';
 
-    // IV — average of call/put
-    const iv     = ((s.call_iv || 0) + (s.put_iv || 0)) / 2;
-    const ivHigh = iv > 20;
-    const ivCol  = ivHigh ? 'var(--red)' : iv > 15 ? 'var(--gold)' : 'var(--dim)';
-    const ivTxt  = iv > 0 ? iv.toFixed(1) + '%' : '—';
+    // Prediction Score
+    const score    = s.prediction_score || 0;
+    const scoreCol = score >= 70 ? 'var(--node)' : score >= 50 ? 'var(--gold)' : score >= 30 ? 'var(--cyan)' : 'var(--dim)';
+    const scorePct = Math.min(score, 100);
 
-    // Cluster badge
-    const clusterBadge = cluster
-      ? `<div class="cluster-badge" style="color:${cluster === 'call' ? 'var(--call)' : 'var(--put)'}">${cluster.toUpperCase()}</div>`
+    // Confluence badge
+    const confBadge = confStrength >= 2
+      ? `<span class="conf-badge ${confStrength >= 3 ? 'conf-3x' : 'conf-2x'}">${confStrength}x</span>`
       : '';
 
     // Zone label
-    const zoneLabel = isCW ? ' ⬤CW' : isPW ? ' ⬤PW' : isNode ? ' ⬤NODE' : isFlip ? ' ⬤FLIP' : '';
+    const zoneLabel    = isCW ? ' ⬤CW' : isPW ? ' ⬤PW' : isNode ? ' ⬤NODE' : isFlip ? ' ⬤FLIP' : '';
     const zoneLblColor = isCW ? 'var(--call)' : isPW ? 'var(--put)' : isNode ? 'var(--node)' : 'var(--gold)';
+
+    // Cluster badge
+    const clusterBadge = cluster && !confStrength
+      ? `<div class="cluster-badge" style="color:${cluster === 'call' ? 'var(--call)' : 'var(--put)'}">${cluster.toUpperCase()}</div>`
+      : '';
 
     return `<div class="${rowClass}">
       ${clusterBadge}
       <div class="sk-price" style="color:${priceCol}">
-        ${s.strike}${zoneLabel ? `<span style="font-size:7px;color:${zoneLblColor}">${zoneLabel}</span>` : ''}
+        ${s.strike}${confBadge}${zoneLabel ? `<span style="font-size:7px;color:${zoneLblColor}">${zoneLabel}</span>` : ''}
       </div>
       <div class="sk-bars">
         <div class="sk-bar-wrap"><div class="sk-bar-call" style="width:${callPct}%"></div></div>
@@ -815,8 +919,14 @@ function renderStrikeList(data) {
         ${(s.net_gex||0) > 0 ? '+' : ''}${(s.net_gex||0).toFixed(0)}
       </div>
       <div class="sk-doi" style="color:${doiCol}">${doiTxt}</div>
-      <div class="sk-gamma" style="color:${gammaCol}">${gammaTxt}</div>
-      <div class="sk-iv" style="color:${ivCol}">${ivTxt}</div>
+      <div class="sk-iv-split">
+        <div class="sk-iv-call"${ivSkewGlow}>C:${callIvTxt}</div>
+        <div class="sk-iv-put"${ivSkewGlow}>P:${putIvTxt}</div>
+      </div>
+      <div class="sk-score-wrap">
+        <div class="sk-score-bar" style="width:${scorePct}%;background:${scoreCol};opacity:0.8"></div>
+        <div class="sk-score-num" style="color:${scoreCol}">${score > 0 ? Math.round(score) : '—'}</div>
+      </div>
     </div>`;
   }).join('');
 }
@@ -1205,6 +1315,7 @@ async function update() {
     renderGEX(data);
     renderDHP();
     renderStrikeList(data);
+    updateLayersBar(data);
     drawWheel(data.total_dhp, data.dhp_direction || 'NEUTRAL');
     updateSignal(data.total_dhp, data.dhp_direction || 'NEUTRAL');
   } finally {
