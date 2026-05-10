@@ -3,206 +3,136 @@
 <head>
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1"/>
-<title>GAIA Pressure Map · PivotAlphaDesk</title>
+<title>GAIA Pressure Map v2 · PivotAlphaDesk</title>
 <style>
 :root{
   --bg:#030711;--panel:#071020;--panel2:#050d1a;--line:#1e293b;
   --txt:#e2e8f0;--muted:#64748b;
-  --cyan:#67e8f9;--rose:#fb7185;--amber:#fbbf24;
-  --violet:#e879f9;--green:#34d399;--yellow:#fde68a;
-  --red:#f87171;--slate:#94a3b8;
+  --cyan:#67e8f9;--red:#f87171;--amber:#fbbf24;
+  --violet:#e879f9;--green:#34d399;--rose:#fb7185;
+  --yellow:#fde68a;--slate:#94a3b8;
 }
 *{box-sizing:border-box;margin:0;padding:0;}
 body{background:var(--bg);color:var(--txt);font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;min-height:100vh;}
-
-/* ── HEADER ── */
-.header{border-bottom:1px solid var(--line);background:var(--panel);overflow:hidden;}
-.top{display:flex;gap:20px;align-items:center;justify-content:space-between;padding:14px 20px;border-bottom:1px solid var(--line);}
-.brand{display:flex;gap:14px;align-items:center;}
-.logo{height:38px;width:38px;border:1px solid #eab30899;color:#facc15;display:grid;place-items:center;border-radius:7px;font-weight:900;font-size:11px;}
-.kicker{font-size:9px;letter-spacing:.22em;color:var(--muted);}
-.title-txt{letter-spacing:.28em;font-weight:900;font-size:13px;}
-.permission{border:1px solid #f59e0b77;background:#f59e0b14;border-radius:8px;padding:8px 16px;text-align:center;}
-.permission small{display:block;font-size:9px;letter-spacing:.18em;color:var(--muted);}
-.permission b{display:block;font-size:19px;letter-spacing:.12em;}
-.perm-favorable b{color:#34d399;border-color:#34d39977;}
-.perm-balanced b{color:#fbbf24;}
-.perm-fragile b{color:#fb7185;border-color:#fb718577;}
-.perm-expansive b{color:#e879f9;border-color:#e879f977;}
+.header{border-bottom:1px solid var(--line);background:var(--panel);}
+.top{display:flex;gap:16px;align-items:center;justify-content:space-between;padding:12px 18px;border-bottom:1px solid var(--line);}
+.brand{display:flex;gap:12px;align-items:center;}
+.logo{height:36px;width:36px;border:1px solid #eab30899;color:#facc15;display:grid;place-items:center;border-radius:7px;font-weight:900;font-size:11px;}
+.kicker{font-size:9px;letter-spacing:.2em;color:var(--muted);}
+.title-txt{letter-spacing:.26em;font-weight:900;font-size:12px;}
 .conn{display:flex;align-items:center;gap:6px;}
-.conn-dot{width:7px;height:7px;border-radius:50%;background:#34d399;animation:blink 2s infinite;}
-.conn-lbl{font-size:9px;letter-spacing:.18em;color:#34d399;}
-.conn-dot.off{background:#fb7185;animation:none;}
-@keyframes blink{50%{opacity:.3;}}
+.conn-dot{width:7px;height:7px;border-radius:50%;background:var(--green);animation:blink 2s infinite;}
+.conn-dot.off{background:var(--red);animation:none;}
+.conn-lbl{font-size:9px;letter-spacing:.16em;color:var(--green);}
+.perm-block{border-radius:8px;padding:8px 14px;text-align:center;border:1px solid;}
+.perm-block small{display:block;font-size:8px;letter-spacing:.16em;color:var(--muted);margin-bottom:2px;}
+.perm-block b{display:block;font-size:18px;letter-spacing:.1em;font-weight:900;}
+.p-defensive{border-color:#f8717177;background:#f8717114;} .p-defensive b{color:var(--red);}
+.p-fragile{border-color:#fb718577;background:#fb718514;} .p-fragile b{color:var(--rose);}
+.p-balanced{border-color:#fbbf2477;background:#fbbf2414;} .p-balanced b{color:var(--amber);}
+.p-favorable{border-color:#34d39977;background:#34d39914;} .p-favorable b{color:var(--green);}
+.p-expansive{border-color:#e879f977;background:#e879f914;} .p-expansive b{color:var(--violet);}
 .spot-block{text-align:right;}
-.spot-sym{font-size:9px;color:var(--muted);letter-spacing:.18em;}
-.spot-price{font-size:42px;font-weight:900;letter-spacing:.14em;line-height:1;}
-.spot-es{font-size:9px;color:var(--muted);letter-spacing:.12em;margin-top:2px;}
-
-.metrics{display:grid;grid-template-columns:repeat(8,1fr);gap:1px;background:var(--line);}
-.metric{background:var(--panel2);padding:10px 12px;}
-.metric small{display:block;color:var(--muted);font-size:9px;letter-spacing:.16em;margin-bottom:2px;}
-.metric b{font-size:14px;font-weight:900;}
-
-/* ── MAIN GRID ── */
-.main{display:grid;grid-template-columns:1fr 320px;gap:16px;padding:16px;align-items:start;}
-
-/* ── PRESSURE MAP ── */
-.map-card{border:1px solid var(--line);background:var(--panel);border-radius:14px;overflow:hidden;}
-.map-head{display:flex;justify-content:space-between;align-items:center;padding:12px 16px;border-bottom:1px solid var(--line);background:var(--panel2);}
-.map-head b{font-size:11px;letter-spacing:.2em;}
-.map-head span{font-size:9px;color:var(--muted);letter-spacing:.12em;}
-
-.field{position:relative;height:640px;overflow:hidden;
-  background:radial-gradient(circle at 50% 45%,rgba(51,65,85,.55),transparent 60%),
-  linear-gradient(#071020,#020510);}
-.field::before{
-  content:"";position:absolute;inset:0;opacity:.18;
-  background-image:linear-gradient(rgba(148,163,184,.12) 1px,transparent 1px),
-    linear-gradient(90deg,rgba(148,163,184,.06) 1px,transparent 1px);
-  background-size:100% 40px,60px 100%;
-  animation:gridpulse 6s ease-in-out infinite;
-}
+.spot-sym{font-size:9px;color:var(--muted);letter-spacing:.16em;}
+.spot-price{font-size:38px;font-weight:900;letter-spacing:.12em;line-height:1;}
+.spot-es{font-size:9px;color:var(--muted);margin-top:2px;}
+.metrics{display:grid;grid-template-columns:repeat(9,1fr);gap:1px;background:var(--line);}
+.metric{background:var(--panel2);padding:9px 10px;}
+.metric small{display:block;color:var(--muted);font-size:8px;letter-spacing:.14em;margin-bottom:2px;}
+.metric b{font-size:13px;font-weight:900;}
+.main{display:grid;grid-template-columns:1fr 310px;gap:14px;padding:14px;align-items:start;}
+.map-card{border:1px solid var(--line);background:var(--panel);border-radius:12px;overflow:hidden;}
+.map-head{display:flex;justify-content:space-between;align-items:center;padding:10px 14px;border-bottom:1px solid var(--line);background:var(--panel2);}
+.map-head b{font-size:10px;letter-spacing:.18em;}
+.map-head span{font-size:8px;color:var(--muted);letter-spacing:.1em;}
+.field{position:relative;height:620px;overflow:hidden;
+  background:radial-gradient(circle at 50% 45%,rgba(51,65,85,.5),transparent 60%),linear-gradient(#071020,#020510);}
+.field::before{content:"";position:absolute;inset:0;opacity:.16;
+  background-image:linear-gradient(rgba(148,163,184,.1) 1px,transparent 1px),linear-gradient(90deg,rgba(148,163,184,.05) 1px,transparent 1px);
+  background-size:100% 38px,58px 100%;animation:gridpulse 6s ease-in-out infinite;}
 .atmo1,.atmo2{position:absolute;border-radius:999px;filter:blur(48px);pointer-events:none;}
-.atmo1{left:25%;top:20%;width:52%;height:62%;
-  background:linear-gradient(#22d3ee13,transparent,#fb71851a);
-  animation:floaty 7.5s ease-in-out infinite;}
-.atmo2{left:30%;top:26%;width:48%;height:48%;
-  background:linear-gradient(90deg,transparent,#22d3ee17,transparent);
-  animation:floatx 9s ease-in-out infinite;}
-.trigger-halo{
-  position:absolute;border-radius:999px;filter:blur(22px);pointer-events:none;
-  left:34%;top:39%;width:32%;height:24%;
-  border:1px solid #e879f955;background:#d946ef22;
-  animation:ignite 1.4s ease-in-out infinite;
-}
-.spot-line{
-  position:absolute;left:88px;right:36px;height:2px;
-  background:#f0abfc;box-shadow:0 0 22px #d946ef;z-index:8;
-  animation:spotpulse 1.2s ease-in-out infinite;
-}
-.spot-label{
-  position:absolute;right:18px;font-size:9px;color:rgba(255,255,255,0.5);
-  letter-spacing:.14em;z-index:9;
-}
-.flow-particle{
-  position:absolute;height:1px;width:140px;
-  background:linear-gradient(90deg,transparent,#f0abfcaa,transparent);
-  opacity:.5;animation:stream 2s ease-in-out infinite;
-}
-.trigger-box{
-  position:absolute;right:28px;bottom:28px;
-  border:1px solid #e879f955;background:#050d1ae6;
-  border-radius:10px;padding:12px 14px;z-index:20;
-  backdrop-filter:blur(8px);
-}
-.trigger-box small{display:block;color:var(--violet);font-size:9px;letter-spacing:.18em;margin-bottom:4px;}
-.trigger-box b{display:block;color:#f5d0fe;font-size:18px;letter-spacing:.1em;}
-.trigger-box span{font-size:9px;color:var(--muted);}
-
-/* ── ZONE ELEMENT ── */
+.atmo1{left:25%;top:20%;width:52%;height:62%;background:linear-gradient(#22d3ee13,transparent,#f8717115);animation:floaty 7.5s ease-in-out infinite;}
+.atmo2{left:30%;top:26%;width:48%;height:48%;background:linear-gradient(90deg,transparent,#22d3ee15,transparent);animation:floatx 9s ease-in-out infinite;}
+.trigger-halo{position:absolute;border-radius:999px;filter:blur(20px);pointer-events:none;left:34%;top:39%;width:32%;height:24%;border:1px solid #e879f955;background:#d946ef1a;animation:ignite 1.4s ease-in-out infinite;}
+.spot-line{position:absolute;left:86px;right:32px;height:2px;background:#f0abfc;box-shadow:0 0 20px #d946ef;z-index:8;animation:spotpulse 1.2s ease-in-out infinite;}
+.spot-label{position:absolute;right:14px;font-size:8px;color:rgba(255,255,255,.5);letter-spacing:.12em;z-index:9;}
+.flow-p{position:absolute;height:1px;width:130px;background:linear-gradient(90deg,transparent,#f0abfc99,transparent);opacity:.45;animation:stream 2s ease-in-out infinite;}
+.trigger-box{position:absolute;right:24px;bottom:24px;border:1px solid #e879f955;background:#050d1aee;border-radius:10px;padding:11px 13px;z-index:20;backdrop-filter:blur(8px);}
+.trigger-box small{display:block;color:var(--violet);font-size:8px;letter-spacing:.16em;margin-bottom:3px;}
+.trigger-box b{display:block;font-size:17px;letter-spacing:.1em;}
+.trigger-box span{font-size:8px;color:var(--muted);}
+.no-data{display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;gap:10px;color:var(--muted);}
+.no-data-icon{font-size:38px;opacity:.12;}
+.no-data-txt{font-size:9px;letter-spacing:.18em;text-align:center;line-height:2;}
+/* ZONES */
 .zone{position:absolute;left:0;right:0;z-index:5;}
-.zone .s-label{position:absolute;left:16px;top:-9px;width:52px;text-align:right;font-weight:900;font-size:13px;color:#cbd5e1;}
-.zone .halo{position:absolute;border-radius:999px;filter:blur(24px);opacity:.4;
-  animation:bandpulse var(--dur,1.8s) ease-in-out infinite;animation-delay:var(--delay,0s);}
-.zone .band{position:absolute;border-radius:999px;border:1px solid #ffffff22;filter:blur(1.5px);opacity:.82;
-  animation:bandpulse var(--dur,1.8s) ease-in-out infinite;animation-delay:var(--delay,0s);}
-.zone .dot{position:absolute;left:104px;top:-8px;width:15px;height:15px;border-radius:50%;
-  box-shadow:0 0 16px currentColor;
-  animation:dotpulse var(--dur,1.8s) ease-in-out infinite;animation-delay:var(--delay,0s);}
-.zone .state-lbl{position:absolute;left:126px;top:-9px;font-weight:900;font-size:11px;letter-spacing:.1em;}
-.zone .zdata{position:absolute;right:24px;top:-12px;display:flex;gap:14px;font-size:9px;color:#94a3b8;}
+.zone .s-label{position:absolute;left:14px;top:-9px;width:52px;text-align:right;font-weight:900;font-size:13px;color:#cbd5e1;}
+.zone .halo{position:absolute;border-radius:999px;filter:blur(22px);opacity:.38;animation:bandpulse var(--dur,1.8s) ease-in-out infinite;animation-delay:var(--delay,0s);}
+.zone .band{position:absolute;border-radius:999px;border:1px solid #ffffff1a;filter:blur(1.5px);opacity:.8;animation:bandpulse var(--dur,1.8s) ease-in-out infinite;animation-delay:var(--delay,0s);}
+.zone .dot{position:absolute;left:102px;top:-8px;width:14px;height:14px;border-radius:50%;box-shadow:0 0 14px currentColor;animation:dotpulse var(--dur,1.8s) ease-in-out infinite;animation-delay:var(--delay,0s);}
+.zone .state-lbl{position:absolute;left:122px;top:-9px;font-weight:900;font-size:11px;letter-spacing:.1em;}
+.zone .zdata{position:absolute;right:20px;top:-12px;display:flex;gap:12px;font-size:9px;color:#94a3b8;}
 .zone .zdata span{font-weight:900;}
-
-/* ZONE COLORS */
-.z-cyan .halo,.z-cyan .band{background:linear-gradient(90deg,#67e8f9cc,#38bdf866,transparent);}
-.z-cyan .dot{background:var(--cyan);color:var(--cyan);}
-.z-cyan .state-lbl{color:var(--cyan);}
-.z-rose .halo,.z-rose .band{background:linear-gradient(90deg,#fb7185dd,#ef444466,transparent);}
-.z-rose .dot{background:var(--rose);color:var(--rose);}
-.z-rose .state-lbl{color:var(--rose);}
-.z-red .halo,.z-red .band{background:linear-gradient(90deg,#f87171dd,#dc262666,transparent);}
-.z-red .dot{background:var(--red);color:var(--red);}
-.z-red .state-lbl{color:var(--red);}
-.z-amber .halo,.z-amber .band{background:linear-gradient(90deg,#fbbf24dd,#eab30866,transparent);}
-.z-amber .dot{background:var(--amber);color:var(--amber);}
-.z-amber .state-lbl{color:var(--amber);}
-.z-violet .halo,.z-violet .band{background:linear-gradient(90deg,#e879f9dd,#c026d366,transparent);}
-.z-violet .dot{background:var(--violet);color:var(--violet);}
-.z-violet .state-lbl{color:var(--violet);}
-.z-slate .halo,.z-slate .band{background:linear-gradient(90deg,#94a3b877,#64748b44,transparent);}
-.z-slate .dot{background:#cbd5e1;color:#cbd5e1;}
-.z-slate .state-lbl{color:#94a3b8;}
-
-/* ── SIDE PANEL ── */
-.side{display:flex;flex-direction:column;gap:12px;}
-.side-card{border:1px solid var(--line);background:var(--panel);border-radius:12px;padding:14px;}
-.side-card h3{font-size:10px;letter-spacing:.22em;color:#cbd5e1;margin-bottom:12px;font-weight:900;}
-.row{display:flex;justify-content:space-between;gap:10px;font-size:12px;padding:4px 0;border-bottom:1px solid #1e293b55;}
-.row:last-child{border-bottom:none;}
-.row span:first-child{color:var(--muted);}
-.row b{font-weight:900;}
-
-.level-entry{border-bottom:1px solid #1e293b77;padding:6px 0;}
+/* SPEC COLORS: positive GEX=cyan, negative=red, convexity=violet, reactive=amber */
+.z-cyan .halo,.z-cyan .band{background:linear-gradient(90deg,#67e8f9cc,#22d3ee55,transparent);}
+.z-cyan .dot{background:var(--cyan);color:var(--cyan);} .z-cyan .state-lbl{color:var(--cyan);}
+.z-red .halo,.z-red .band{background:linear-gradient(90deg,#f87171dd,#ef444455,transparent);}
+.z-red .dot{background:var(--red);color:var(--red);} .z-red .state-lbl{color:var(--red);}
+.z-amber .halo,.z-amber .band{background:linear-gradient(90deg,#fbbf24dd,#f59e0b55,transparent);}
+.z-amber .dot{background:var(--amber);color:var(--amber);} .z-amber .state-lbl{color:var(--amber);}
+.z-violet .halo,.z-violet .band{background:linear-gradient(90deg,#e879f9dd,#d946ef55,transparent);}
+.z-violet .dot{background:var(--violet);color:var(--violet);} .z-violet .state-lbl{color:var(--violet);}
+.z-slate .halo,.z-slate .band{background:linear-gradient(90deg,#94a3b866,#64748b33,transparent);}
+.z-slate .dot{background:#cbd5e1;color:#cbd5e1;} .z-slate .state-lbl{color:#94a3b8;}
+/* SIDE */
+.side{display:flex;flex-direction:column;gap:10px;}
+.side-card{border:1px solid var(--line);background:var(--panel);border-radius:10px;padding:12px;}
+.side-card h3{font-size:9px;letter-spacing:.2em;color:#cbd5e1;margin-bottom:10px;font-weight:900;text-transform:uppercase;}
+.srow{display:flex;justify-content:space-between;gap:8px;font-size:11px;padding:4px 0;border-bottom:1px solid #1e293b44;}
+.srow:last-child{border-bottom:none;}
+.srow span:first-child{color:var(--muted);}
+.srow b{font-weight:900;}
+.mcs-bar{margin-top:8px;}
+.mcs-labels{display:flex;justify-content:space-between;font-size:8px;color:var(--muted);margin-bottom:3px;}
+.mcs-track{height:6px;border-radius:999px;background:#1e293b;overflow:hidden;}
+.mcs-fill{height:100%;border-radius:999px;transition:width .5s ease;}
+.mcs-lbl{font-size:8px;letter-spacing:.1em;margin-top:3px;text-align:center;}
+.level-entry{border-bottom:1px solid #1e293b55;padding:5px 0;}
 .level-entry:last-child{border-bottom:none;}
-.level-top{display:flex;justify-content:space-between;font-size:12px;}
-.level-bot{display:flex;justify-content:space-between;font-size:10px;color:var(--muted);margin-top:2px;}
-
-.interp{font-size:12px;line-height:1.6;color:#cbd5e1;}
-
-.permission-meter{margin-top:10px;}
-.meter-labels{display:flex;justify-content:space-between;font-size:9px;color:var(--muted);margin-bottom:4px;}
-.meter-track{position:relative;height:8px;border-radius:999px;background:#1e293b;overflow:hidden;}
-.meter-fill{position:absolute;left:0;top:0;height:100%;
-  background:linear-gradient(90deg,#fb7185,#fbbf24,#34d399);}
-.meter-needle{position:absolute;top:-3px;width:3px;height:14px;border-radius:999px;
-  background:#fff;box-shadow:0 0 10px rgba(251,191,36,.9);}
-.meter-lbl{font-size:9px;letter-spacing:.12em;margin-top:4px;text-align:center;}
-
-.dex-section{margin-top:10px;border-top:1px solid var(--line);padding-top:10px;}
-.dex-title{font-size:9px;letter-spacing:.18em;color:var(--muted);margin-bottom:6px;}
-.dex-row{display:flex;justify-content:space-between;font-size:11px;padding:2px 0;}
-
-.no-data{display:flex;flex-direction:column;align-items:center;justify-content:center;
-  height:100%;gap:12px;color:var(--muted);}
-.no-data-icon{font-size:40px;opacity:.15;}
-.no-data-txt{font-size:10px;letter-spacing:.2em;text-align:center;line-height:2;}
-
-.ts-footer{font-size:8px;color:var(--muted);text-align:center;padding:8px 16px;
-  border-top:1px solid var(--line);background:var(--panel2);}
-
-/* ── KEYFRAMES ── */
-@keyframes gridpulse{50%{opacity:.28;}}
-@keyframes floaty{50%{transform:translateY(22px) scaleX(1.06);opacity:.28;}}
-@keyframes floatx{50%{transform:translateX(36px);opacity:.24;}}
-@keyframes ignite{50%{transform:scale(1.16);opacity:.6;}}
-@keyframes spotpulse{50%{opacity:.45;}}
-@keyframes stream{50%{transform:translate(55px,22px);opacity:.6;}}
-@keyframes bandpulse{50%{transform:scaleX(1.06);opacity:.5;}}
-@keyframes dotpulse{50%{transform:scale(1.38);opacity:.65;}}
+.level-top{display:flex;justify-content:space-between;font-size:11px;}
+.level-bot{display:flex;justify-content:space-between;font-size:9px;color:var(--muted);margin-top:2px;}
+.interp{font-size:11px;line-height:1.6;color:#cbd5e1;}
+.meter-wrap{margin-top:10px;}
+.meter-labels{display:flex;justify-content:space-between;font-size:8px;color:var(--muted);margin-bottom:3px;}
+.meter-track{position:relative;height:7px;border-radius:999px;background:#1e293b;overflow:hidden;}
+.meter-fill{position:absolute;left:0;top:0;height:100%;background:linear-gradient(90deg,#f87171,#fbbf24,#34d399);}
+.meter-needle{position:absolute;top:-3px;width:3px;height:13px;border-radius:999px;background:#fff;box-shadow:0 0 8px rgba(251,191,36,.8);}
+.meter-lbl{font-size:8px;letter-spacing:.1em;margin-top:3px;text-align:center;}
+.dex-section{margin-top:8px;border-top:1px solid var(--line);padding-top:8px;}
+.dex-title{font-size:8px;letter-spacing:.16em;color:var(--muted);margin-bottom:5px;text-transform:uppercase;}
+.dex-row{display:flex;justify-content:space-between;font-size:10px;padding:2px 0;}
+.ts-footer{font-size:7px;color:var(--muted);text-align:center;padding:6px 14px;border-top:1px solid var(--line);background:var(--panel2);}
+@keyframes blink{50%{opacity:.3;}}
+@keyframes gridpulse{50%{opacity:.26;}}
+@keyframes floaty{50%{transform:translateY(20px) scaleX(1.05);opacity:.26;}}
+@keyframes floatx{50%{transform:translateX(32px);opacity:.22;}}
+@keyframes ignite{50%{transform:scale(1.14);opacity:.58;}}
+@keyframes spotpulse{50%{opacity:.42;}}
+@keyframes stream{50%{transform:translate(50px,20px);opacity:.58;}}
+@keyframes bandpulse{50%{transform:scaleX(1.05);opacity:.48;}}
+@keyframes dotpulse{50%{transform:scale(1.35);opacity:.62;}}
 </style>
 </head>
 <body>
-
-<!-- HEADER -->
 <div class="header">
   <div class="top">
     <div class="brand">
       <div class="logo">PAD</div>
-      <div>
-        <div class="title-txt">PIVOTALPHADESK</div>
-        <div class="kicker">GAIA DEALER PRESSURE MAP · SPATIAL STATE ENGINE · SPX → ES</div>
-      </div>
+      <div><div class="title-txt">PIVOTALPHADESK</div><div class="kicker">GAIA ENGINE v2 · DEALER PRESSURE MAP · PHASE B+C · SPX → ES</div></div>
     </div>
-    <div style="display:flex;align-items:center;gap:16px;">
-      <div class="conn">
-        <div class="conn-dot" id="conn-dot"></div>
-        <div class="conn-lbl" id="conn-lbl">CONNECTING</div>
-      </div>
-      <div class="permission" id="permission-block">
-        <small>TRADE PERMISSION</small>
-        <b id="trade-permission">—</b>
-      </div>
+    <div style="display:flex;align-items:center;gap:14px;">
+      <div class="conn"><div class="conn-dot" id="conn-dot"></div><div class="conn-lbl" id="conn-lbl">CONNECTING</div></div>
+      <div class="perm-block p-balanced" id="perm-block"><small>TRADE PERMISSION</small><b id="trade-perm">—</b></div>
     </div>
     <div class="spot-block">
       <div class="spot-sym" id="spot-sym">SPX · —</div>
@@ -211,187 +141,172 @@ body{background:var(--bg);color:var(--txt);font-family:ui-monospace,SFMono-Regul
     </div>
   </div>
   <div class="metrics">
-    <div class="metric"><small>STATE</small><b id="m-state">—</b></div>
+    <div class="metric"><small>MARKET STATE</small><b id="m-state">—</b></div>
     <div class="metric"><small>DSI</small><b id="m-dsi" style="color:var(--cyan)">—</b></div>
-    <div class="metric"><small>VOL TRIGGER</small><b id="m-vts" style="color:var(--violet)">—</b></div>
-    <div class="metric"><small>TRIGGER STATE</small><b id="m-trigger" style="color:var(--violet)">—</b></div>
+    <div class="metric"><small>VTS</small><b id="m-vts" style="color:var(--violet)">—</b></div>
+    <div class="metric"><small>MCS</small><b id="m-mcs" style="color:var(--amber)">—</b></div>
+    <div class="metric"><small>TRIGGER</small><b id="m-trigger" style="color:var(--violet)">—</b></div>
     <div class="metric"><small>DOM NODE</small><b id="m-node" style="color:var(--cyan)">—</b></div>
-    <div class="metric"><small>FRAGILE ZONE</small><b id="m-fragile" style="color:var(--rose)">—</b></div>
+    <div class="metric"><small>FRAGILE ZONE</small><b id="m-fragile" style="color:var(--red)">—</b></div>
     <div class="metric"><small>DRIFT</small><b id="m-drift" style="color:var(--amber)">—</b></div>
-    <div class="metric"><small>DEX PRESSURE</small><b id="m-dex" style="color:var(--green)">—</b></div>
+    <div class="metric"><small>DEX NET</small><b id="m-dex" style="color:var(--green)">—</b></div>
   </div>
 </div>
-
-<!-- MAIN -->
 <div class="main">
-
-  <!-- MAP -->
   <div class="map-card">
     <div class="map-head">
-      <div>
-        <b>DYNAMIC SPATIAL PRESSURE FIELD · SPX → ES TRANSLATION</b><br>
-        <span>Continuous fields · pressure drift · trigger turbulence · live backend</span>
-      </div>
-      <span id="layers-label">0DTE / WEEKLY / MONTHLY CONFLUENCE</span>
+      <div><b>DYNAMIC SPATIAL PRESSURE FIELD · SPX → ES · GAIA ENGINE v2</b><br><span>DEX · GEX · Convexity · Confluence · MCS · Phase B+C</span></div>
+      <span id="layers-lbl">0DTE / WEEKLY / MONTHLY</span>
     </div>
     <div class="field" id="field">
-      <div class="atmo1"></div>
-      <div class="atmo2"></div>
-      <div class="trigger-halo"></div>
+      <div class="atmo1"></div><div class="atmo2"></div><div class="trigger-halo"></div>
       <div class="spot-line" id="spot-line" style="top:50%"></div>
       <div class="spot-label" id="spot-label" style="top:48%">SPOT · ——</div>
       <div class="trigger-box" id="trigger-box">
         <small>VOLATILITY TRIGGER</small>
-        <b id="trigger-state-box">—</b>
-        <span id="trigger-detail">—</span>
+        <b id="trig-state-box">—</b>
+        <span id="trig-detail">—</span>
       </div>
-      <div id="no-data-msg" class="no-data">
+      <div class="no-data" id="no-data">
         <div class="no-data-icon">◈</div>
         <div class="no-data-txt">WAITING FOR DATA<br>RUN ts_gaia_chart.py</div>
       </div>
     </div>
     <div class="ts-footer" id="ts-footer">——</div>
   </div>
-
-  <!-- SIDE -->
   <div class="side">
-
     <div class="side-card">
-      <h3>GAIA ENGINE OUTPUT · DEX / GEX / VOL TRIGGER</h3>
-      <div class="row"><span>Market State</span><b id="s-state">—</b></div>
-      <div class="row"><span>Trade Permission</span><b id="s-perm">—</b></div>
-      <div class="row"><span>Dealer Stability</span><b id="s-dsi" style="color:var(--cyan)">—</b></div>
-      <div class="row"><span>Volatility Trigger Score</span><b id="s-vts" style="color:var(--violet)">—</b></div>
-      <div class="row"><span>Volatility Trigger State</span><b id="s-trigger" style="color:var(--violet)">—</b></div>
-      <div class="row"><span>Nearest Trigger Zone</span><b id="s-fragile" style="color:var(--rose)">—</b></div>
-      <div class="row"><span>Pressure Drift</span><b id="s-drift" style="color:var(--amber)">—</b></div>
-      <div class="row"><span>Absorption / Fragility</span><b id="s-balance">—</b></div>
+      <h3>GAIA Engine Output · Schema v1</h3>
+      <div class="srow"><span>Market State</span><b id="s-state">—</b></div>
+      <div class="srow"><span>Trade Permission</span><b id="s-perm">—</b></div>
+      <div class="srow"><span>DSI</span><b id="s-dsi" style="color:var(--cyan)">—</b></div>
+      <div class="srow"><span>VTS</span><b id="s-vts" style="color:var(--violet)">—</b></div>
+      <div class="srow"><span>MCS</span><b id="s-mcs" style="color:var(--amber)">—</b></div>
+      <div class="srow"><span>Trigger Status</span><b id="s-trigger">—</b></div>
+      <div class="srow"><span>Dominant Node</span><b id="s-node" style="color:var(--cyan)">—</b></div>
+      <div class="srow"><span>Fragile Zone</span><b id="s-fragile" style="color:var(--red)">—</b></div>
+      <div class="srow"><span>Pressure Drift</span><b id="s-drift" style="color:var(--amber)">—</b></div>
+      <div class="srow"><span>Absorption / Fragility</span><b id="s-balance">—</b></div>
+      <div class="mcs-bar">
+        <div class="mcs-labels"><span>LOW CONFIDENCE</span><span>HIGH CONFIDENCE</span></div>
+        <div class="mcs-track"><div class="mcs-fill" id="mcs-fill" style="width:50%"></div></div>
+        <div class="mcs-lbl" id="mcs-lbl">MCS · —</div>
+      </div>
     </div>
-
     <div class="side-card">
-      <h3>SPX → ES EXECUTION TRANSLATION</h3>
+      <h3>SPX → ES Execution Translation</h3>
       <div id="levels-panel"></div>
     </div>
-
     <div class="side-card">
-      <h3>ADAPTIVE STATE READOUT</h3>
+      <h3>Adaptive State Readout</h3>
       <p class="interp" id="interp-txt">Waiting for data...</p>
-      <div style="margin-top:12px;border:1px solid var(--line);background:var(--panel2);border-radius:8px;padding:10px;">
-        <div class="row"><span>Market State</span><b id="r-state">—</b></div>
-        <div class="row"><span>Trader Bias</span><b id="r-bias" style="color:var(--amber)">—</b></div>
-        <div class="row"><span>Trigger Level</span><b id="r-trigger" style="color:var(--violet)">—</b></div>
-        <div class="row"><span>Trade Permission</span><b id="r-perm">—</b></div>
-        <div class="permission-meter">
+      <div style="margin-top:10px;border:1px solid var(--line);background:var(--panel2);border-radius:7px;padding:9px;">
+        <div class="srow"><span>Market State</span><b id="r-state">—</b></div>
+        <div class="srow"><span>Trader Bias</span><b id="r-bias" style="color:var(--amber)">—</b></div>
+        <div class="srow"><span>Trigger Level</span><b id="r-trigger" style="color:var(--violet)">—</b></div>
+        <div class="srow"><span>Trade Permission</span><b id="r-perm">—</b></div>
+        <div class="meter-wrap">
           <div class="meter-labels"><span>DEFENSIVE</span><span>FAVORABLE</span></div>
           <div class="meter-track">
             <div class="meter-fill" id="meter-fill" style="width:50%"></div>
-            <div class="meter-needle" id="meter-needle" style="left:50%"></div>
+            <div class="meter-needle" id="meter-needle" style="left:49%"></div>
           </div>
           <div class="meter-lbl" id="meter-lbl">PERMISSION METER · —</div>
         </div>
-
         <div class="dex-section">
-          <div class="dex-title">DEX BY ZONE — TOP 3 NEAR SPOT</div>
+          <div class="dex-title">DEX Top 3 Near Spot</div>
           <div id="dex-rows"></div>
         </div>
       </div>
     </div>
-
   </div>
 </div>
 
 <script>
-// ── ADAPTER — gaiaSpatialAdapter (inline) ─────────────────────────────────────
+// GAIA ENGINE v2 — Phase B+C — Schema v1
 function clamp(v,mn=0,mx=1){return Math.max(mn,Math.min(mx,v));}
 function normAbs(v,mx){return mx?clamp(Math.abs(v)/mx):0;}
+function getConf(raw,strike){const m=raw.confluence?.find(c=>Number(c.strike)===Number(strike));return{strength:m?.strength??1,layers:m?.layers??[]};}
+function calcCvx(row,maxG){const g=Math.abs(row.call_gamma??0)+Math.abs(row.put_gamma??0);const gi=normAbs(g,maxG);const pi=clamp((row.prediction_score??0)/100);const ivs=clamp(Math.abs((row.put_iv??0)-(row.call_iv??0))/5);return Math.round(clamp(gi*.45+pi*.4+ivs*.15)*100);}
+function calcDex(row){return(row.call_delta_oi??0)+(row.put_delta_oi??0);}
 
-function getConf(raw,strike){
-  const m=raw.confluence?.find(c=>Number(c.strike)===Number(strike));
-  return {strength:m?.strength??1,layers:m?.layers??[],types:m?.types??[]};
-}
-
-function classifyState({strike,spot,netGex,netDhp,dex,predScore,conf,levels}){
+function classifyZone({strike,spot,netGex,netDhp,dex,cvx,conf,levels,trigActive}){
   const near=Math.abs(strike-spot)<=10;
   const isCW=Number(strike)===Number(levels?.call_wall);
   const isPW=Number(strike)===Number(levels?.put_wall);
   const isNode=Number(strike)===Number(levels?.gamma_node);
   const isFlip=Number(strike)===Number(levels?.gamma_flip);
   const isPin=Number(strike)===Number(levels?.gravity_pin);
-
-  if((isCW||isNode||isPin)&&netGex>0&&conf>=3) return 'ABSORPTION';
-  if(isFlip&&predScore>=60) return 'REACTIVE';
+  if(trigActive&&netGex<0&&near&&cvx>=65) return 'EXPANSION';
+  if((isCW||isNode||isPin)&&netGex>0&&conf>=2&&dex>=0) return 'ABSORPTION';
   if(isPW&&netGex<0) return 'FRAGILE';
-  if(netGex<0&&dex<0&&near&&predScore>=55) return 'CHASE';
   if(netGex<0&&near) return 'FRAGILE';
-  if(netGex>0&&Math.abs(netDhp)<2&&predScore<50) return 'COMPRESSION';
-  if(netGex>0&&predScore>=55) return 'REACTIVE';
+  if(netGex<0&&dex<0&&cvx>=55) return 'CHASE';
+  if((isFlip||netGex>0)&&cvx>=50) return 'REACTIVE';
+  if(netGex>0&&Math.abs(netDhp)<2) return 'COMPRESSION';
   return 'BALANCED';
 }
 
-function calcConvexity(row,maxGamma){
-  const cg=Math.abs(row.call_gamma??0);
-  const pg=Math.abs(row.put_gamma??0);
-  const gi=normAbs(cg+pg,maxGamma);
-  const pi=clamp((row.prediction_score??0)/100);
-  const ivs=clamp(Math.abs((row.put_iv??0)-(row.call_iv??0))/5);
-  return Math.round(clamp(gi*.45+pi*.4+ivs*.15)*100);
-}
-
 function buildVisual({state,netGex,netDhp,cvx,conf,maxG,maxD}){
-  const gi=normAbs(netGex,maxG),di=normAbs(netDhp,maxD);
-  const ci=clamp(cvx/100),cfi=clamp(conf/7);
-  let color='amber';
+  const gi=normAbs(netGex,maxG),di=normAbs(netDhp,maxD),ci=clamp(cvx/100),cfi=clamp(conf/7);
+  let color='slate';
   if(state==='ABSORPTION'||state==='COMPRESSION') color='cyan';
-  if(state==='FRAGILE') color='rose';
-  if(state==='CHASE') color='violet';
-  if(state==='BALANCED') color='slate';
-  return {
-    color,
-    fw:clamp(.25+gi*.65+di*.1),
-    glow:clamp(.15+gi*.45+cfi*.35),
-    speed:clamp(1-ci*.75,.15,1),
-    thick:clamp(.2+cfi*.55+gi*.25),
-    turb:clamp(ci*.65+di*.35),
-  };
+  else if(state==='FRAGILE') color='red';
+  else if(state==='CHASE'||state==='EXPANSION') color='violet';
+  else if(state==='REACTIVE') color='amber';
+  else color=netGex>=0?'cyan':'red';
+  return{color,fw:clamp(.25+gi*.65+di*.1),glow:clamp(.15+gi*.45+cfi*.35),speed:clamp(1-ci*.75,.15,1),thick:clamp(.2+cfi*.55+gi*.25),turb:clamp(ci*.65+di*.35)};
 }
 
 function detectDrift(zones,spot){
-  const above=zones.filter(z=>z.strike>spot);
-  const below=zones.filter(z=>z.strike<spot);
-  const ap=above.reduce((s,z)=>s+z.net_gex*z.visual.fw,0);
-  const bp=below.reduce((s,z)=>s+z.net_gex*z.visual.fw,0);
+  const ap=zones.filter(z=>z.strike>spot).reduce((s,z)=>s+z.net_gex*(z.visual.fw||0),0);
+  const bp=zones.filter(z=>z.strike<spot).reduce((s,z)=>s+z.net_gex*(z.visual.fw||0),0);
   const net=bp-ap;
   if(net<-25000) return 'UPWARD_STABILIZATION';
-  if(net>25000)  return 'DOWNWARD_FRAGILITY';
+  if(net>25000) return 'DOWNWARD_FRAGILITY';
   return 'NEUTRAL_FLOW';
 }
 
-function summarize(raw,zones,drift){
-  const dom=[...zones].sort((a,b)=>b.visual.glow+b.visual.thick-(a.visual.glow+a.visual.thick))[0];
-  const fragZ=zones.filter(z=>z.state==='FRAGILE'||z.state==='CHASE');
-  const nearF=fragZ.sort((a,b)=>Math.abs(a.dist)-Math.abs(b.dist))[0];
+function calcDSI(zones){
   const absStr=zones.filter(z=>z.state==='ABSORPTION'||z.state==='COMPRESSION').reduce((s,z)=>s+z.visual.glow+z.visual.thick,0);
-  const fragStr=zones.filter(z=>z.state==='FRAGILE'||z.state==='CHASE').reduce((s,z)=>s+z.visual.glow+z.visual.turb,0);
-  const tot=absStr+fragStr||1;
-  const absPct=Math.round(absStr/tot*100);
-  const fragPct=100-absPct;
-  const trigDist=nearF?Math.abs(nearF.strike-raw.spot_spx):null;
-  const trigProx=trigDist===null?0:Math.max(0,100-trigDist*4);
+  const fragStr=zones.filter(z=>z.state==='FRAGILE'||z.state==='CHASE'||z.state==='EXPANSION').reduce((s,z)=>s+z.visual.glow+z.visual.turb,0);
   const avgTurb=zones.reduce((s,z)=>s+z.visual.turb,0)/zones.length;
-  const dsi=Math.round(Math.max(0,Math.min(100,70+absPct*.25-fragPct*.35-avgTurb*25)));
-  const vts=Math.round(Math.max(0,Math.min(100,20+fragPct*.45+trigProx*.25+avgTurb*35)));
-  let ms='BALANCED';
-  if(dsi>=75&&vts<=35) ms='STABLE';
-  else if(vts>=75) ms='EXPANSIVE';
-  else if(dsi<65||vts>=50) ms='FRAGILE';
-  const perm=ms==='STABLE'?'FAVORABLE':ms==='EXPANSIVE'?'EXPANSIVE':ms==='FRAGILE'?'FRAGILE':'BALANCED';
-  const trig=vts>=90?'EXTREME':vts>=75?'ACTIVE':vts>=56?'ARMING':vts>=31?'WATCH':'LOW';
-  const interp=ms==='STABLE'?'Structure is stable. Absorption dominates. Avoid chasing late breakouts.'
-    :ms==='FRAGILE'?`Structure is fragile. Reduce size. Watch ${nearF?.strike??'nearest fragile zone'}.`
-    :ms==='EXPANSIVE'?'Volatility expansion active. Momentum may continue — risk is elevated.'
-    :'Structure is balanced. Trade selectively and wait for DHP confirmation.';
-  return {ms,perm,dsi,vts,trig,drift,dom:dom?.strike,fragZ:nearF?.strike,absPct,fragPct,interp};
+  const fragPct=(fragStr/(absStr+fragStr||1))*100;
+  return Math.round(Math.max(0,Math.min(100,70+(100-fragPct)*.25-fragPct*.35-avgTurb*25)));
 }
+
+function calcVTS(zones,spot){
+  const fragZ=zones.filter(z=>z.state==='FRAGILE'||z.state==='CHASE'||z.state==='EXPANSION');
+  const nearF=fragZ.sort((a,b)=>Math.abs(a.dist)-Math.abs(b.dist))[0];
+  const trigProx=nearF?Math.max(0,100-Math.abs(nearF.strike-spot)*4):0;
+  const avgTurb=zones.reduce((s,z)=>s+z.visual.turb,0)/zones.length;
+  const fragPct=(fragZ.length/zones.length)*100;
+  return Math.round(Math.max(0,Math.min(100,20+fragPct*.45+trigProx*.25+avgTurb*35)));
+}
+
+function calcMCS(zones,dsi,vts,drift){
+  const hasAbs=zones.some(z=>z.state==='ABSORPTION');
+  const hasFrag=zones.some(z=>z.state==='FRAGILE');
+  const balanced=zones.filter(z=>z.state==='BALANCED').length;
+  const extremeAgree=(dsi>=75&&vts<=30)||(dsi<=35&&vts>=75);
+  const mixed=dsi>=50&&vts>=50;
+  const contradiction=hasAbs&&hasFrag&&Math.abs(dsi-50)<15;
+  const clearDrift=drift!=='NEUTRAL_FLOW';
+  let mcs=50;
+  if(extremeAgree) mcs+=25;
+  if(hasAbs||hasFrag) mcs+=10;
+  if(clearDrift) mcs+=10;
+  if(contradiction) mcs-=20;
+  if(mixed) mcs-=15;
+  mcs-=(balanced/zones.length)*20;
+  return Math.round(Math.max(0,Math.min(100,mcs)));
+}
+
+function trigStatus(vts){return vts>=90?'EXTREME':vts>=75?'ACTIVE':vts>=56?'ARMING':vts>=31?'WATCH':'LOW';}
+function classifyMarket(dsi,vts){if(dsi<35&&vts>=75) return 'EXPANSIVE';if(dsi>=75&&vts<=35) return 'STABLE';if(dsi<65||vts>=50) return 'FRAGILE';return 'BALANCED';}
+function tradePerm(ms,dsi,vts){if(dsi<35&&vts>=75) return 'DEFENSIVE';if(ms==='EXPANSIVE') return 'EXPANSIVE';if(ms==='FRAGILE') return 'FRAGILE';if(ms==='STABLE') return 'FAVORABLE';return 'BALANCED';}
+function traderImplication(ms,perm,fz){const z=fz??'nearest trigger zone';if(perm==='DEFENSIVE') return 'Structure is dangerous. Do not trade aggressively. Expansion risk is confirmed. Protect capital.';if(ms==='STABLE') return 'Structure is stable. Absorption dominates. Favor patience and mean reversion. Avoid chasing late breakouts.';if(ms==='FRAGILE') return `Structure is fragile. Expansion risk elevated near ${z}. Reduce size and avoid chasing.`;if(ms==='EXPANSIVE') return 'Volatility expansion active. Momentum may continue — do not trade this as a range environment.';return 'Structure is balanced. Trade selectively and wait for DHP confirmation near major pressure nodes.';}
+function traderBias(ms){if(ms==='STABLE') return 'Favor fades · Avoid chasing';if(ms==='FRAGILE') return 'Reduce size · Wait clarity';if(ms==='EXPANSIVE') return 'Momentum active · Control risk';return 'Trade selectively · DHP confirm';}
 
 function adaptRaw(raw){
   if(!raw?.strikes?.length) return null;
@@ -399,203 +314,133 @@ function adaptRaw(raw){
   const maxD=Math.max(...raw.strikes.map(s=>Math.abs(s.net_dhp??0)),1);
   const maxGamma=Math.max(...raw.strikes.map(s=>Math.abs(s.call_gamma??0)+Math.abs(s.put_gamma??0)),1);
 
-  const zones=raw.strikes.map(row=>{
-    const {strength:conf}=getConf(raw,row.strike);
-    const cvx=calcConvexity(row,maxGamma);
-    const dex=(row.call_delta_oi??0)+(row.put_delta_oi??0);
-    const state=classifyState({
-      strike:row.strike,spot:raw.spot_spx,
-      netGex:row.net_gex,netDhp:row.net_dhp,
-      dex,predScore:row.prediction_score,
-      conf,levels:raw.levels
+  function buildZones(trigActive){
+    return raw.strikes.map(row=>{
+      const{strength:conf}=getConf(raw,row.strike);
+      const cvx=calcCvx(row,maxGamma);
+      const dex=calcDex(row);
+      const state=classifyZone({strike:row.strike,spot:raw.spot_spx,netGex:row.net_gex,netDhp:row.net_dhp,dex,cvx,conf,levels:raw.levels,trigActive});
+      const visual=buildVisual({state,netGex:row.net_gex,netDhp:row.net_dhp,cvx,conf,maxG,maxD});
+      return{...row,dex,conf,cvx,state,visual,dist:row.strike-raw.spot_spx};
     });
-    const visual=buildVisual({state,netGex:row.net_gex,netDhp:row.net_dhp,cvx,conf,maxG,maxD});
-    return {...row,dex,conf,cvx,state,visual,dist:row.strike-raw.spot_spx};
-  });
+  }
 
-  const drift=detectDrift(zones,raw.spot_spx);
-  const summary=summarize(raw,zones,drift);
-  return {raw,zones,summary};
+  const zones1=buildZones(false);
+  const drift=detectDrift(zones1,raw.spot_spx);
+  const dsi1=calcDSI(zones1);
+  const vts1=calcVTS(zones1,raw.spot_spx);
+  const zones=buildZones(vts1>=75);
+  const dsi=calcDSI(zones);
+  const vts=calcVTS(zones,raw.spot_spx);
+  const mcs=calcMCS(zones,dsi,vts,drift);
+  const ms=classifyMarket(dsi,vts);
+  const perm=tradePerm(ms,dsi,vts);
+  const trig=trigStatus(vts);
+  const dom=[...zones].sort((a,b)=>b.visual.glow+b.visual.thick-(a.visual.glow+a.visual.thick))[0];
+  const fragZ=zones.filter(z=>z.state==='FRAGILE'||z.state==='CHASE'||z.state==='EXPANSION').sort((a,b)=>Math.abs(a.dist)-Math.abs(b.dist))[0];
+  const absStr=zones.filter(z=>z.state==='ABSORPTION'||z.state==='COMPRESSION').reduce((s,z)=>s+z.visual.glow+z.visual.thick,0);
+  const frgStr=zones.filter(z=>z.state==='FRAGILE'||z.state==='CHASE'||z.state==='EXPANSION').reduce((s,z)=>s+z.visual.glow+z.visual.turb,0);
+  const tot=absStr+frgStr||1;
+  const absPct=Math.round(absStr/tot*100);
+
+  const schema={symbol:'SPX',timestamp:raw.timestamp,spot:raw.spot_spx,market_state:ms,trade_permission:perm,dealer_stability_index:dsi,volatility_trigger_score:vts,market_confidence_score:mcs,trigger_status:trig,dominant_node:dom?.strike??null,fragile_zone:fragZ?[fragZ.strike]:null,pressure_balance:{absorption:absPct,fragility:100-absPct},trader_implication:traderImplication(ms,perm,fragZ?.strike),pressure_drift:drift};
+  return{raw,zones,schema,drift};
 }
 
-// ── RENDER ────────────────────────────────────────────────────────────────────
-const FIELD_PAD_TOP=50,FIELD_PAD_BOT=480;
-const REFRESH=5000;
-let lastData=null;
-
-function fmt2(v){return Number(v).toLocaleString(undefined,{minimumFractionDigits:2,maximumFractionDigits:2});}
-function fmtMoney(v){const s=v>=0?'+':'-';const a=Math.abs(v);return s+(a>=1e6?(a/1e6).toFixed(1)+'M':a>=1e3?(a/1e3).toFixed(1)+'K':a.toFixed(0));}
-function cluster(v){const lo=Math.floor(v/5)*5,hi=Math.ceil(v/5)*5;return `${lo}–${hi}`;}
-
-function permColor(p){
-  return p==='FAVORABLE'?'#34d399':p==='FRAGILE'?'#fb7185':p==='EXPANSIVE'?'#e879f9':'#fbbf24';
-}
+const PTOP=50,PBOT=470;
+function fmt(v){const s=v>=0?'+':'-';const a=Math.abs(v);return s+(a>=1e6?(a/1e6).toFixed(1)+'M':a>=1e3?(a/1e3).toFixed(1)+'K':a.toFixed(0));}
+function f2(v){return Number(v).toLocaleString(undefined,{minimumFractionDigits:2,maximumFractionDigits:2});}
+function cluster(v){return`${Math.floor(v/5)*5}–${Math.ceil(v/5)*5}`;}
+function sColor(v){if(v==='STABLE'||v==='FAVORABLE') return'var(--green)';if(v==='EXPANSIVE'||v==='EXTREME'||v==='ACTIVE') return'var(--violet)';if(v==='FRAGILE'||v==='DEFENSIVE'||v==='ARMING') return'var(--red)';if(v==='WATCH') return'var(--amber)';return'var(--amber)';}
+function pColor(p){if(p==='DEFENSIVE') return'var(--red)';if(p==='FRAGILE') return'var(--rose)';if(p==='FAVORABLE') return'var(--green)';if(p==='EXPANSIVE') return'var(--violet)';return'var(--amber)';}
+function pPct(p){return p==='DEFENSIVE'?8:p==='FRAGILE'?22:p==='BALANCED'?50:p==='FAVORABLE'?78:p==='EXPANSIVE'?92:50;}
 
 function renderField(model){
   const field=document.getElementById('field');
-  const noData=document.getElementById('no-data-msg');
-  noData.style.display='none';
-
-  // Remove old zones
-  field.querySelectorAll('.zone').forEach(e=>e.remove());
-  field.querySelectorAll('.flow-particle').forEach(e=>e.remove());
-
-  const raw=model.raw;
-  const zones=model.zones;
+  document.getElementById('no-data').style.display='none';
+  field.querySelectorAll('.zone,.flow-p').forEach(e=>e.remove());
+  const{raw,zones,schema}=model;
   const spot=raw.spot_spx;
-
-  const strikes=zones.map(z=>z.strike);
-  const minS=Math.min(...strikes),maxS=Math.max(...strikes);
-  const range=maxS-minS||1;
-
-  function yPos(s){return FIELD_PAD_TOP+((maxS-s)/range)*FIELD_PAD_BOT;}
-
-  // Spot line
-  const spotY=yPos(spot);
-  const sl=document.getElementById('spot-line');
+  const ss=zones.map(z=>z.strike),minS=Math.min(...ss),maxS=Math.max(...ss),range=maxS-minS||1;
+  function yp(s){return PTOP+((maxS-s)/range)*PBOT;}
+  const sy=yp(spot);
+  document.getElementById('spot-line').style.top=sy+'px';
   const slbl=document.getElementById('spot-label');
-  sl.style.top=spotY+'px';
-  slbl.style.top=(spotY-14)+'px';
-  slbl.textContent=`SPOT · ${spot.toLocaleString(undefined,{minimumFractionDigits:2,maximumFractionDigits:2})}`;
-
-  // Flow particles
-  for(let i=0;i<7;i++){
-    const fp=document.createElement('div');
-    fp.className='flow-particle';
-    fp.style.left=(28+i*5)+'%';
-    fp.style.top=(26+i*7)+'%';
-    fp.style.animationDelay=(i*.18)+'s';
-    field.appendChild(fp);
-  }
-
-  // Zones
+  slbl.style.top=(sy-13)+'px';
+  slbl.textContent=`SPOT · ${f2(spot)}`;
+  for(let i=0;i<6;i++){const fp=document.createElement('div');fp.className='flow-p';fp.style.cssText=`left:${28+i*5}%;top:${25+i*7}%;animation-delay:${i*.18}s`;field.appendChild(fp);}
   zones.forEach(z=>{
-    const yp=yPos(z.strike);
-    const W=field.clientWidth||900;
-    const fw=180+(z.visual.fw)*600;
-    const fh=20+(z.visual.thick)*52;
-    const dur=(0.8+(1-z.cvx/100)*3.2)+'s';
-    const delay=(Math.abs(z.dist)*.015)+'s';
-
+    const yPos=yp(z.strike);
+    const fw=160+(z.visual.fw)*560,fh=18+(z.visual.thick)*48;
+    const dur=(0.8+(1-z.cvx/100)*3.0)+'s',delay=(Math.abs(z.dist)*.014)+'s';
+    const dexC=z.dex>=0?'var(--green)':'var(--red)';
     const el=document.createElement('div');
     el.className=`zone z-${z.visual.color}`;
-    el.style.top=yp+'px';
-    el.style.setProperty('--dur',dur);
-    el.style.setProperty('--delay',delay);
-
-    const cc=z.visual.color==='rose'?'#fb7185':z.visual.color==='cyan'?'#67e8f9':z.visual.color==='amber'?'#fbbf24':z.visual.color==='violet'?'#e879f9':'#94a3b8';
-    const dexVal=(z.call_delta_oi??0)+(z.put_delta_oi??0);
-
-    el.innerHTML=`
-      <div class="s-label">${z.strike}</div>
-      <div class="halo" style="left:120px;top:${-fh*1.3}px;width:${fw}px;height:${fh*2.6}px;"></div>
-      <div class="band" style="left:132px;top:${-fh*.5}px;width:${fw*.78}px;height:${fh}px;"></div>
-      <div class="dot"></div>
-      <div class="state-lbl">${z.state}</div>
-      <div class="zdata">
-        <div>GEX <span style="color:${z.net_gex>=0?'var(--cyan)':'var(--rose)'}">${fmtMoney(z.net_gex)}</span></div>
-        <div>DEX <span style="color:${dexVal>=0?'var(--green)':'var(--rose)'}">${fmtMoney(dexVal)}</span></div>
-        <div>CVX <span style="color:var(--violet)">${z.cvx}</span></div>
-        <div>C <span style="color:var(--yellow)">${z.conf}x</span></div>
-        <div>ES <span style="color:var(--yellow)">${fmt2(z.strike+(raw.basis||0))}</span></div>
-      </div>`;
+    el.style.cssText=`top:${yPos}px;--dur:${dur};--delay:${delay}`;
+    el.innerHTML=`<div class="s-label">${z.strike}</div><div class="halo" style="left:118px;top:${-fh*1.25}px;width:${fw}px;height:${fh*2.5}px"></div><div class="band" style="left:130px;top:${-fh*.5}px;width:${fw*.76}px;height:${fh}px"></div><div class="dot"></div><div class="state-lbl">${z.state}</div><div class="zdata"><div>GEX <span style="color:${z.net_gex>=0?'var(--cyan)':'var(--red)'}">${fmt(z.net_gex)}</span></div><div>DEX <span style="color:${dexC}">${fmt(z.dex)}</span></div><div>CVX <span style="color:var(--violet)">${z.cvx}</span></div><div>C <span style="color:var(--yellow)">${z.conf}x</span></div><div>ES <span style="color:var(--yellow)">${f2(z.strike+(raw.basis||0))}</span></div></div>`;
     field.appendChild(el);
   });
+  const tc=schema.trigger_status,tcol=tc==='EXTREME'||tc==='ACTIVE'?'var(--red)':tc==='ARMING'?'var(--violet)':tc==='WATCH'?'var(--amber)':'var(--slate)';
+  document.getElementById('trig-state-box').textContent=tc;
+  document.getElementById('trig-state-box').style.color=tcol;
+  document.getElementById('trig-detail').textContent=`Score ${schema.volatility_trigger_score} · Zone ${schema.fragile_zone?.[0]??'—'}`;
 }
 
 function renderSide(model){
-  const s=model.summary;
-  const raw=model.raw;
-
-  // Permission block
-  const pb=document.getElementById('permission-block');
-  pb.className='permission perm-'+s.perm.toLowerCase();
-
-  // Metrics
-  const col=v=>v==='STABLE'||v==='FAVORABLE'?'#34d399':v==='FRAGILE'||v==='ACTIVE'||v==='EXTREME'?'#fb7185':v==='EXPANSIVE'||v==='ARMING'?'#e879f9':'#fbbf24';
-  document.getElementById('trade-permission').textContent=s.perm;
-  document.getElementById('trade-permission').style.color=permColor(s.perm);
-  document.getElementById('m-state').textContent=s.ms;
-  document.getElementById('m-state').style.color=col(s.ms);
-  document.getElementById('m-dsi').textContent=s.dsi;
-  document.getElementById('m-vts').textContent=s.vts;
-  document.getElementById('m-trigger').textContent=s.trig;
-  document.getElementById('m-trigger').style.color=col(s.trig);
-  document.getElementById('m-node').textContent=s.dom??'—';
-  document.getElementById('m-fragile').textContent=s.fragZ??'—';
-  document.getElementById('m-drift').textContent=s.drift.replace(/_/g,' ');
-  document.getElementById('m-dex').textContent=fmtMoney(raw.total_dhp||0)+'M';
-
-  // Side panel
-  document.getElementById('s-state').textContent=s.ms; document.getElementById('s-state').style.color=col(s.ms);
-  document.getElementById('s-perm').textContent=s.perm; document.getElementById('s-perm').style.color=permColor(s.perm);
-  document.getElementById('s-dsi').textContent=s.dsi+'%';
-  document.getElementById('s-vts').textContent=s.vts;
-  document.getElementById('s-trigger').textContent=s.trig; document.getElementById('s-trigger').style.color=col(s.trig);
-  document.getElementById('s-fragile').textContent=s.fragZ??'—';
-  document.getElementById('s-drift').textContent=s.drift.replace(/_/g,' ');
-  document.getElementById('s-balance').textContent=`${s.absPct}% / ${s.fragPct}%`;
-
-  // Levels panel
-  const lv=raw.levels||{};
-  const basis=raw.basis||0;
-  const lvPanel=document.getElementById('levels-panel');
-  lvPanel.innerHTML='';
-  Object.entries(lv).forEach(([k,v])=>{
-    if(!v) return;
-    const es=v+basis;
-    const d=document.createElement('div');
-    d.className='level-entry';
-    d.innerHTML=`<div class="level-top"><span style="color:var(--muted);text-transform:uppercase;font-size:11px">${k.replace(/_/g,' ')}</span><b>SPX ${v}</b></div><div class="level-bot"><span>ES exact</span><b style="color:var(--yellow)">${fmt2(es)}</b><span>Cluster</span><b style="color:var(--amber)">${cluster(es)}</b></div>`;
-    lvPanel.appendChild(d);
-  });
-
-  // Readout
-  document.getElementById('interp-txt').textContent=s.interp;
-  document.getElementById('r-state').textContent=s.ms; document.getElementById('r-state').style.color=col(s.ms);
-  document.getElementById('r-bias').textContent=s.ms==='STABLE'?'Favor fades · Avoid chasing':s.ms==='FRAGILE'?'Reduce size · Wait for clarity':s.ms==='EXPANSIVE'?'Momentum active · Risk elevated':'Trade selectively · Wait DHP';
-  document.getElementById('r-trigger').textContent=s.fragZ??'—';
-  document.getElementById('r-perm').textContent=s.perm; document.getElementById('r-perm').style.color=permColor(s.perm);
-
-  // Meter
-  const pct=s.perm==='FAVORABLE'?80:s.perm==='EXPANSIVE'?90:s.perm==='FRAGILE'?20:50;
-  document.getElementById('meter-fill').style.width=pct+'%';
-  document.getElementById('meter-needle').style.left=(pct-1)+'%';
-  document.getElementById('meter-lbl').textContent=`PERMISSION METER · ${s.perm}`;
-  document.getElementById('meter-lbl').style.color=permColor(s.perm);
-
-  // Trigger box
-  document.getElementById('trigger-state-box').textContent=s.trig;
-  document.getElementById('trigger-state-box').style.color=col(s.trig);
-  document.getElementById('trigger-detail').textContent=`Score ${s.vts} · Zone ${s.fragZ??'—'}`;
-
-  // Spot header
-  document.getElementById('spot-price').textContent=raw.spot_spx?.toLocaleString(undefined,{minimumFractionDigits:2,maximumFractionDigits:2})||'——';
+  const{raw,zones,schema,drift}=model;
+  document.getElementById('perm-block').className=`perm-block p-${schema.trade_permission.toLowerCase()}`;
+  const tp=document.getElementById('trade-perm');tp.textContent=schema.trade_permission;tp.style.color=pColor(schema.trade_permission);
+  document.getElementById('m-state').textContent=schema.market_state;document.getElementById('m-state').style.color=sColor(schema.market_state);
+  document.getElementById('m-dsi').textContent=schema.dealer_stability_index;
+  document.getElementById('m-vts').textContent=schema.volatility_trigger_score;
+  document.getElementById('m-mcs').textContent=schema.market_confidence_score;
+  document.getElementById('m-trigger').textContent=schema.trigger_status;document.getElementById('m-trigger').style.color=sColor(schema.trigger_status);
+  document.getElementById('m-node').textContent=schema.dominant_node??'—';
+  document.getElementById('m-fragile').textContent=schema.fragile_zone?.[0]??'—';
+  document.getElementById('m-drift').textContent=(drift||'—').replace(/_/g,' ');
+  document.getElementById('m-dex').textContent=fmt(raw.total_dhp||0)+'M';
+  document.getElementById('s-state').textContent=schema.market_state;document.getElementById('s-state').style.color=sColor(schema.market_state);
+  document.getElementById('s-perm').textContent=schema.trade_permission;document.getElementById('s-perm').style.color=pColor(schema.trade_permission);
+  document.getElementById('s-dsi').textContent=schema.dealer_stability_index+'%';
+  document.getElementById('s-vts').textContent=schema.volatility_trigger_score;
+  document.getElementById('s-mcs').textContent=schema.market_confidence_score+'%';
+  document.getElementById('s-trigger').textContent=schema.trigger_status;document.getElementById('s-trigger').style.color=sColor(schema.trigger_status);
+  document.getElementById('s-node').textContent=schema.dominant_node??'—';
+  document.getElementById('s-fragile').textContent=schema.fragile_zone?.[0]??'—';
+  document.getElementById('s-drift').textContent=(drift||'—').replace(/_/g,' ');
+  document.getElementById('s-balance').textContent=`${schema.pressure_balance.absorption}% / ${schema.pressure_balance.fragility}%`;
+  const mc=schema.market_confidence_score,mcC=mc>=70?'var(--green)':mc>=50?'var(--amber)':'var(--red)';
+  document.getElementById('mcs-fill').style.cssText=`width:${mc}%;background:${mcC};border-radius:999px;height:100%;transition:width .5s ease;`;
+  document.getElementById('mcs-lbl').textContent=`MCS · ${mc}% CONFIDENCE`;document.getElementById('mcs-lbl').style.color=mcC;
+  const lv=raw.levels||{},basis=raw.basis||0,lvP=document.getElementById('levels-panel');
+  lvP.innerHTML='';
+  Object.entries(lv).forEach(([k,v])=>{if(!v)return;const es=v+basis;const d=document.createElement('div');d.className='level-entry';d.innerHTML=`<div class="level-top"><span style="color:var(--muted);text-transform:uppercase;font-size:10px">${k.replace(/_/g,' ')}</span><b>SPX ${v}</b></div><div class="level-bot"><span>ES exact</span><b style="color:var(--yellow)">${f2(es)}</b><span>Cluster</span><b style="color:var(--amber)">${cluster(es)}</b></div>`;lvP.appendChild(d);});
+  document.getElementById('interp-txt').textContent=schema.trader_implication;
+  document.getElementById('r-state').textContent=schema.market_state;document.getElementById('r-state').style.color=sColor(schema.market_state);
+  document.getElementById('r-bias').textContent=traderBias(schema.market_state);
+  document.getElementById('r-trigger').textContent=schema.fragile_zone?.[0]??'—';
+  document.getElementById('r-perm').textContent=schema.trade_permission;document.getElementById('r-perm').style.color=pColor(schema.trade_permission);
+  const pp=pPct(schema.trade_permission);
+  document.getElementById('meter-fill').style.width=pp+'%';
+  document.getElementById('meter-needle').style.left=(pp-1)+'%';
+  document.getElementById('meter-lbl').textContent=`PERMISSION METER · ${schema.trade_permission}`;document.getElementById('meter-lbl').style.color=pColor(schema.trade_permission);
+  document.getElementById('spot-price').textContent=f2(raw.spot_spx||0);
   document.getElementById('spot-sym').textContent=`SPX · ${raw.expiration||'—'}`;
-  document.getElementById('spot-es').textContent=`ES ${fmt2(raw.spot_es||0)} · BASIS ${raw.basis>=0?'+':''}${fmt2(raw.basis||0)}`;
-  document.getElementById('ts-footer').textContent=`${raw.timestamp||'—'} · BASIS ${raw.basis>=0?'+':''}${fmt2(raw.basis||0)} · SPX ${fmt2(raw.spot_spx||0)} · pivotalphadesk.com`;
-
-  // DEX top 3 near spot
-  const spot=raw.spot_spx;
-  const top3=[...model.zones].sort((a,b)=>Math.abs(a.dist)-Math.abs(b.dist)).slice(0,3);
-  const dexDiv=document.getElementById('dex-rows');
-  dexDiv.innerHTML=top3.map(z=>{
-    const dex=(z.call_delta_oi??0)+(z.put_delta_oi??0);
-    const col=dex>=0?'var(--green)':'var(--rose)';
-    return `<div class="dex-row"><span style="color:var(--muted)">${z.strike}</span><span style="color:${col};font-weight:700">${fmtMoney(dex)} DEX</span><span style="color:var(--violet)">${z.state}</span></div>`;
-  }).join('');
+  document.getElementById('spot-es').textContent=`ES ${f2(raw.spot_es||0)} · BASIS ${(raw.basis||0)>=0?'+':''}${f2(raw.basis||0)}`;
+  document.getElementById('ts-footer').textContent=`${raw.timestamp||'—'} · MCS:${schema.market_confidence_score}% · DSI:${schema.dealer_stability_index} · VTS:${schema.volatility_trigger_score} · pivotalphadesk.com`;
+  const top3=[...zones].sort((a,b)=>Math.abs(a.dist)-Math.abs(b.dist)).slice(0,3);
+  document.getElementById('dex-rows').innerHTML=top3.map(z=>{const dc=z.dex>=0?'var(--green)':'var(--red)';const sc=z.state==='ABSORPTION'?'var(--cyan)':z.state==='FRAGILE'||z.state==='EXPANSION'?'var(--red)':z.state==='CHASE'?'var(--violet)':'var(--amber)';return`<div class="dex-row"><span style="color:var(--muted)">${z.strike}</span><span style="color:${dc};font-weight:700">${fmt(z.dex)}</span><span style="color:${sc}">${z.state}</span></div>`;}).join('');
+  const layers=raw.layers||{};
+  const parts=[];
+  if(layers['0dte']?.expiration) parts.push(`0DTE ${layers['0dte'].expiration.slice(5)}`);
+  if(layers['weekly']?.expiration) parts.push(`WEEKLY ${layers['weekly'].expiration.slice(5)}`);
+  if(layers['monthly']?.expiration) parts.push(`MONTHLY ${layers['monthly'].expiration.slice(5)}`);
+  document.getElementById('layers-lbl').textContent=parts.join(' / ')||'0DTE / WEEKLY / MONTHLY';
 }
 
-// ── CONNECTION ────────────────────────────────────────────────────────────────
-function setConn(ok){
-  const dot=document.getElementById('conn-dot');
-  const lbl=document.getElementById('conn-lbl');
-  dot.className='conn-dot'+(ok?'':' off');
-  lbl.textContent=ok?'LIVE':'NO DATA';
-  lbl.style.color=ok?'#34d399':'#fb7185';
-}
+function traderBias(ms){if(ms==='STABLE') return'Favor fades · Avoid chasing';if(ms==='FRAGILE') return'Reduce size · Wait clarity';if(ms==='EXPANSIVE') return'Momentum active · Control risk';return'Trade selectively · DHP confirm';}
+function setConn(ok){document.getElementById('conn-dot').className='conn-dot'+(ok?'':' off');document.getElementById('conn-lbl').textContent=ok?'LIVE':'NO DATA';document.getElementById('conn-lbl').style.color=ok?'var(--green)':'var(--red)';}
 
-// ── FETCH + UPDATE ────────────────────────────────────────────────────────────
 async function update(){
   try{
     const r=await fetch('/gaia_live.json?t='+Date.now());
@@ -604,18 +449,10 @@ async function update(){
     if(!raw?.strikes?.length){setConn(false);return;}
     const model=adaptRaw(raw);
     if(!model){setConn(false);return;}
-    setConn(true);
-    renderField(model);
-    renderSide(model);
-  }catch(e){
-    setConn(false);
-    console.error('GAIA Pressure Map error:',e);
-  }
+    setConn(true);renderField(model);renderSide(model);
+  }catch(e){setConn(false);console.error('GAIA Engine v2:',e);}
 }
-
-update();
-setInterval(update,REFRESH);
-window.addEventListener('resize',()=>{if(lastData)renderField(lastData);});
+update();setInterval(update,5000);
 </script>
 </body>
 </html>
