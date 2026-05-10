@@ -161,6 +161,9 @@ iframe{width:100%;height:100%;border:none;}
   <a href="/chart4" class="tab {% if active == 'chart4' %}active{% endif %}">
     GEX Structure v4
   </a>
+  <a href="/pressure" class="tab {% if active == 'pressure' %}active{% endif %}" style="{% if active == 'pressure' %}background:rgba(204,68,255,0.15);border-color:#cc44ff;color:#cc44ff;{% endif %}">
+    Pressure Map
+  </a>
   <a href="/flow" class="tab {% if active == 'flow' %}active{% endif %}">
     DHP Flow
   </a>
@@ -325,6 +328,18 @@ def chart4():
     return render_template_string(DASHBOARD_HTML,
         active='chart4', page='gaia_chart_v4.html',
         spot=get_spot(), trial_days=get_trial_days())
+
+@app.route('/pressure')
+@require_auth
+def pressure():
+    return render_template_string(DASHBOARD_HTML,
+        active='pressure', page='gaia_pressure_map.html',
+        spot=get_spot(), trial_days=get_trial_days())
+
+@app.route('/gaia_pressure_map.html')
+@require_auth
+def serve_pressure():
+    return send_from_directory(BASE_DIR, 'gaia_pressure_map.html')
 
 @app.route('/ndx')
 @require_auth
