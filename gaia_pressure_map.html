@@ -1,0 +1,621 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>GAIA Pressure Map · PivotAlphaDesk</title>
+<style>
+:root{
+  --bg:#030711;--panel:#071020;--panel2:#050d1a;--line:#1e293b;
+  --txt:#e2e8f0;--muted:#64748b;
+  --cyan:#67e8f9;--rose:#fb7185;--amber:#fbbf24;
+  --violet:#e879f9;--green:#34d399;--yellow:#fde68a;
+  --red:#f87171;--slate:#94a3b8;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{background:var(--bg);color:var(--txt);font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;min-height:100vh;}
+
+/* ── HEADER ── */
+.header{border-bottom:1px solid var(--line);background:var(--panel);overflow:hidden;}
+.top{display:flex;gap:20px;align-items:center;justify-content:space-between;padding:14px 20px;border-bottom:1px solid var(--line);}
+.brand{display:flex;gap:14px;align-items:center;}
+.logo{height:38px;width:38px;border:1px solid #eab30899;color:#facc15;display:grid;place-items:center;border-radius:7px;font-weight:900;font-size:11px;}
+.kicker{font-size:9px;letter-spacing:.22em;color:var(--muted);}
+.title-txt{letter-spacing:.28em;font-weight:900;font-size:13px;}
+.permission{border:1px solid #f59e0b77;background:#f59e0b14;border-radius:8px;padding:8px 16px;text-align:center;}
+.permission small{display:block;font-size:9px;letter-spacing:.18em;color:var(--muted);}
+.permission b{display:block;font-size:19px;letter-spacing:.12em;}
+.perm-favorable b{color:#34d399;border-color:#34d39977;}
+.perm-balanced b{color:#fbbf24;}
+.perm-fragile b{color:#fb7185;border-color:#fb718577;}
+.perm-expansive b{color:#e879f9;border-color:#e879f977;}
+.conn{display:flex;align-items:center;gap:6px;}
+.conn-dot{width:7px;height:7px;border-radius:50%;background:#34d399;animation:blink 2s infinite;}
+.conn-lbl{font-size:9px;letter-spacing:.18em;color:#34d399;}
+.conn-dot.off{background:#fb7185;animation:none;}
+@keyframes blink{50%{opacity:.3;}}
+.spot-block{text-align:right;}
+.spot-sym{font-size:9px;color:var(--muted);letter-spacing:.18em;}
+.spot-price{font-size:42px;font-weight:900;letter-spacing:.14em;line-height:1;}
+.spot-es{font-size:9px;color:var(--muted);letter-spacing:.12em;margin-top:2px;}
+
+.metrics{display:grid;grid-template-columns:repeat(8,1fr);gap:1px;background:var(--line);}
+.metric{background:var(--panel2);padding:10px 12px;}
+.metric small{display:block;color:var(--muted);font-size:9px;letter-spacing:.16em;margin-bottom:2px;}
+.metric b{font-size:14px;font-weight:900;}
+
+/* ── MAIN GRID ── */
+.main{display:grid;grid-template-columns:1fr 320px;gap:16px;padding:16px;align-items:start;}
+
+/* ── PRESSURE MAP ── */
+.map-card{border:1px solid var(--line);background:var(--panel);border-radius:14px;overflow:hidden;}
+.map-head{display:flex;justify-content:space-between;align-items:center;padding:12px 16px;border-bottom:1px solid var(--line);background:var(--panel2);}
+.map-head b{font-size:11px;letter-spacing:.2em;}
+.map-head span{font-size:9px;color:var(--muted);letter-spacing:.12em;}
+
+.field{position:relative;height:640px;overflow:hidden;
+  background:radial-gradient(circle at 50% 45%,rgba(51,65,85,.55),transparent 60%),
+  linear-gradient(#071020,#020510);}
+.field::before{
+  content:"";position:absolute;inset:0;opacity:.18;
+  background-image:linear-gradient(rgba(148,163,184,.12) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(148,163,184,.06) 1px,transparent 1px);
+  background-size:100% 40px,60px 100%;
+  animation:gridpulse 6s ease-in-out infinite;
+}
+.atmo1,.atmo2{position:absolute;border-radius:999px;filter:blur(48px);pointer-events:none;}
+.atmo1{left:25%;top:20%;width:52%;height:62%;
+  background:linear-gradient(#22d3ee13,transparent,#fb71851a);
+  animation:floaty 7.5s ease-in-out infinite;}
+.atmo2{left:30%;top:26%;width:48%;height:48%;
+  background:linear-gradient(90deg,transparent,#22d3ee17,transparent);
+  animation:floatx 9s ease-in-out infinite;}
+.trigger-halo{
+  position:absolute;border-radius:999px;filter:blur(22px);pointer-events:none;
+  left:34%;top:39%;width:32%;height:24%;
+  border:1px solid #e879f955;background:#d946ef22;
+  animation:ignite 1.4s ease-in-out infinite;
+}
+.spot-line{
+  position:absolute;left:88px;right:36px;height:2px;
+  background:#f0abfc;box-shadow:0 0 22px #d946ef;z-index:8;
+  animation:spotpulse 1.2s ease-in-out infinite;
+}
+.spot-label{
+  position:absolute;right:18px;font-size:9px;color:rgba(255,255,255,0.5);
+  letter-spacing:.14em;z-index:9;
+}
+.flow-particle{
+  position:absolute;height:1px;width:140px;
+  background:linear-gradient(90deg,transparent,#f0abfcaa,transparent);
+  opacity:.5;animation:stream 2s ease-in-out infinite;
+}
+.trigger-box{
+  position:absolute;right:28px;bottom:28px;
+  border:1px solid #e879f955;background:#050d1ae6;
+  border-radius:10px;padding:12px 14px;z-index:20;
+  backdrop-filter:blur(8px);
+}
+.trigger-box small{display:block;color:var(--violet);font-size:9px;letter-spacing:.18em;margin-bottom:4px;}
+.trigger-box b{display:block;color:#f5d0fe;font-size:18px;letter-spacing:.1em;}
+.trigger-box span{font-size:9px;color:var(--muted);}
+
+/* ── ZONE ELEMENT ── */
+.zone{position:absolute;left:0;right:0;z-index:5;}
+.zone .s-label{position:absolute;left:16px;top:-9px;width:52px;text-align:right;font-weight:900;font-size:13px;color:#cbd5e1;}
+.zone .halo{position:absolute;border-radius:999px;filter:blur(24px);opacity:.4;
+  animation:bandpulse var(--dur,1.8s) ease-in-out infinite;animation-delay:var(--delay,0s);}
+.zone .band{position:absolute;border-radius:999px;border:1px solid #ffffff22;filter:blur(1.5px);opacity:.82;
+  animation:bandpulse var(--dur,1.8s) ease-in-out infinite;animation-delay:var(--delay,0s);}
+.zone .dot{position:absolute;left:104px;top:-8px;width:15px;height:15px;border-radius:50%;
+  box-shadow:0 0 16px currentColor;
+  animation:dotpulse var(--dur,1.8s) ease-in-out infinite;animation-delay:var(--delay,0s);}
+.zone .state-lbl{position:absolute;left:126px;top:-9px;font-weight:900;font-size:11px;letter-spacing:.1em;}
+.zone .zdata{position:absolute;right:24px;top:-12px;display:flex;gap:14px;font-size:9px;color:#94a3b8;}
+.zone .zdata span{font-weight:900;}
+
+/* ZONE COLORS */
+.z-cyan .halo,.z-cyan .band{background:linear-gradient(90deg,#67e8f9cc,#38bdf866,transparent);}
+.z-cyan .dot{background:var(--cyan);color:var(--cyan);}
+.z-cyan .state-lbl{color:var(--cyan);}
+.z-rose .halo,.z-rose .band{background:linear-gradient(90deg,#fb7185dd,#ef444466,transparent);}
+.z-rose .dot{background:var(--rose);color:var(--rose);}
+.z-rose .state-lbl{color:var(--rose);}
+.z-red .halo,.z-red .band{background:linear-gradient(90deg,#f87171dd,#dc262666,transparent);}
+.z-red .dot{background:var(--red);color:var(--red);}
+.z-red .state-lbl{color:var(--red);}
+.z-amber .halo,.z-amber .band{background:linear-gradient(90deg,#fbbf24dd,#eab30866,transparent);}
+.z-amber .dot{background:var(--amber);color:var(--amber);}
+.z-amber .state-lbl{color:var(--amber);}
+.z-violet .halo,.z-violet .band{background:linear-gradient(90deg,#e879f9dd,#c026d366,transparent);}
+.z-violet .dot{background:var(--violet);color:var(--violet);}
+.z-violet .state-lbl{color:var(--violet);}
+.z-slate .halo,.z-slate .band{background:linear-gradient(90deg,#94a3b877,#64748b44,transparent);}
+.z-slate .dot{background:#cbd5e1;color:#cbd5e1;}
+.z-slate .state-lbl{color:#94a3b8;}
+
+/* ── SIDE PANEL ── */
+.side{display:flex;flex-direction:column;gap:12px;}
+.side-card{border:1px solid var(--line);background:var(--panel);border-radius:12px;padding:14px;}
+.side-card h3{font-size:10px;letter-spacing:.22em;color:#cbd5e1;margin-bottom:12px;font-weight:900;}
+.row{display:flex;justify-content:space-between;gap:10px;font-size:12px;padding:4px 0;border-bottom:1px solid #1e293b55;}
+.row:last-child{border-bottom:none;}
+.row span:first-child{color:var(--muted);}
+.row b{font-weight:900;}
+
+.level-entry{border-bottom:1px solid #1e293b77;padding:6px 0;}
+.level-entry:last-child{border-bottom:none;}
+.level-top{display:flex;justify-content:space-between;font-size:12px;}
+.level-bot{display:flex;justify-content:space-between;font-size:10px;color:var(--muted);margin-top:2px;}
+
+.interp{font-size:12px;line-height:1.6;color:#cbd5e1;}
+
+.permission-meter{margin-top:10px;}
+.meter-labels{display:flex;justify-content:space-between;font-size:9px;color:var(--muted);margin-bottom:4px;}
+.meter-track{position:relative;height:8px;border-radius:999px;background:#1e293b;overflow:hidden;}
+.meter-fill{position:absolute;left:0;top:0;height:100%;
+  background:linear-gradient(90deg,#fb7185,#fbbf24,#34d399);}
+.meter-needle{position:absolute;top:-3px;width:3px;height:14px;border-radius:999px;
+  background:#fff;box-shadow:0 0 10px rgba(251,191,36,.9);}
+.meter-lbl{font-size:9px;letter-spacing:.12em;margin-top:4px;text-align:center;}
+
+.dex-section{margin-top:10px;border-top:1px solid var(--line);padding-top:10px;}
+.dex-title{font-size:9px;letter-spacing:.18em;color:var(--muted);margin-bottom:6px;}
+.dex-row{display:flex;justify-content:space-between;font-size:11px;padding:2px 0;}
+
+.no-data{display:flex;flex-direction:column;align-items:center;justify-content:center;
+  height:100%;gap:12px;color:var(--muted);}
+.no-data-icon{font-size:40px;opacity:.15;}
+.no-data-txt{font-size:10px;letter-spacing:.2em;text-align:center;line-height:2;}
+
+.ts-footer{font-size:8px;color:var(--muted);text-align:center;padding:8px 16px;
+  border-top:1px solid var(--line);background:var(--panel2);}
+
+/* ── KEYFRAMES ── */
+@keyframes gridpulse{50%{opacity:.28;}}
+@keyframes floaty{50%{transform:translateY(22px) scaleX(1.06);opacity:.28;}}
+@keyframes floatx{50%{transform:translateX(36px);opacity:.24;}}
+@keyframes ignite{50%{transform:scale(1.16);opacity:.6;}}
+@keyframes spotpulse{50%{opacity:.45;}}
+@keyframes stream{50%{transform:translate(55px,22px);opacity:.6;}}
+@keyframes bandpulse{50%{transform:scaleX(1.06);opacity:.5;}}
+@keyframes dotpulse{50%{transform:scale(1.38);opacity:.65;}}
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div class="header">
+  <div class="top">
+    <div class="brand">
+      <div class="logo">PAD</div>
+      <div>
+        <div class="title-txt">PIVOTALPHADESK</div>
+        <div class="kicker">GAIA DEALER PRESSURE MAP · SPATIAL STATE ENGINE · SPX → ES</div>
+      </div>
+    </div>
+    <div style="display:flex;align-items:center;gap:16px;">
+      <div class="conn">
+        <div class="conn-dot" id="conn-dot"></div>
+        <div class="conn-lbl" id="conn-lbl">CONNECTING</div>
+      </div>
+      <div class="permission" id="permission-block">
+        <small>TRADE PERMISSION</small>
+        <b id="trade-permission">—</b>
+      </div>
+    </div>
+    <div class="spot-block">
+      <div class="spot-sym" id="spot-sym">SPX · —</div>
+      <div class="spot-price" id="spot-price">——</div>
+      <div class="spot-es" id="spot-es">ES —— · BASIS ——</div>
+    </div>
+  </div>
+  <div class="metrics">
+    <div class="metric"><small>STATE</small><b id="m-state">—</b></div>
+    <div class="metric"><small>DSI</small><b id="m-dsi" style="color:var(--cyan)">—</b></div>
+    <div class="metric"><small>VOL TRIGGER</small><b id="m-vts" style="color:var(--violet)">—</b></div>
+    <div class="metric"><small>TRIGGER STATE</small><b id="m-trigger" style="color:var(--violet)">—</b></div>
+    <div class="metric"><small>DOM NODE</small><b id="m-node" style="color:var(--cyan)">—</b></div>
+    <div class="metric"><small>FRAGILE ZONE</small><b id="m-fragile" style="color:var(--rose)">—</b></div>
+    <div class="metric"><small>DRIFT</small><b id="m-drift" style="color:var(--amber)">—</b></div>
+    <div class="metric"><small>DEX PRESSURE</small><b id="m-dex" style="color:var(--green)">—</b></div>
+  </div>
+</div>
+
+<!-- MAIN -->
+<div class="main">
+
+  <!-- MAP -->
+  <div class="map-card">
+    <div class="map-head">
+      <div>
+        <b>DYNAMIC SPATIAL PRESSURE FIELD · SPX → ES TRANSLATION</b><br>
+        <span>Continuous fields · pressure drift · trigger turbulence · live backend</span>
+      </div>
+      <span id="layers-label">0DTE / WEEKLY / MONTHLY CONFLUENCE</span>
+    </div>
+    <div class="field" id="field">
+      <div class="atmo1"></div>
+      <div class="atmo2"></div>
+      <div class="trigger-halo"></div>
+      <div class="spot-line" id="spot-line" style="top:50%"></div>
+      <div class="spot-label" id="spot-label" style="top:48%">SPOT · ——</div>
+      <div class="trigger-box" id="trigger-box">
+        <small>VOLATILITY TRIGGER</small>
+        <b id="trigger-state-box">—</b>
+        <span id="trigger-detail">—</span>
+      </div>
+      <div id="no-data-msg" class="no-data">
+        <div class="no-data-icon">◈</div>
+        <div class="no-data-txt">WAITING FOR DATA<br>RUN ts_gaia_chart.py</div>
+      </div>
+    </div>
+    <div class="ts-footer" id="ts-footer">——</div>
+  </div>
+
+  <!-- SIDE -->
+  <div class="side">
+
+    <div class="side-card">
+      <h3>GAIA ENGINE OUTPUT · DEX / GEX / VOL TRIGGER</h3>
+      <div class="row"><span>Market State</span><b id="s-state">—</b></div>
+      <div class="row"><span>Trade Permission</span><b id="s-perm">—</b></div>
+      <div class="row"><span>Dealer Stability</span><b id="s-dsi" style="color:var(--cyan)">—</b></div>
+      <div class="row"><span>Volatility Trigger Score</span><b id="s-vts" style="color:var(--violet)">—</b></div>
+      <div class="row"><span>Volatility Trigger State</span><b id="s-trigger" style="color:var(--violet)">—</b></div>
+      <div class="row"><span>Nearest Trigger Zone</span><b id="s-fragile" style="color:var(--rose)">—</b></div>
+      <div class="row"><span>Pressure Drift</span><b id="s-drift" style="color:var(--amber)">—</b></div>
+      <div class="row"><span>Absorption / Fragility</span><b id="s-balance">—</b></div>
+    </div>
+
+    <div class="side-card">
+      <h3>SPX → ES EXECUTION TRANSLATION</h3>
+      <div id="levels-panel"></div>
+    </div>
+
+    <div class="side-card">
+      <h3>ADAPTIVE STATE READOUT</h3>
+      <p class="interp" id="interp-txt">Waiting for data...</p>
+      <div style="margin-top:12px;border:1px solid var(--line);background:var(--panel2);border-radius:8px;padding:10px;">
+        <div class="row"><span>Market State</span><b id="r-state">—</b></div>
+        <div class="row"><span>Trader Bias</span><b id="r-bias" style="color:var(--amber)">—</b></div>
+        <div class="row"><span>Trigger Level</span><b id="r-trigger" style="color:var(--violet)">—</b></div>
+        <div class="row"><span>Trade Permission</span><b id="r-perm">—</b></div>
+        <div class="permission-meter">
+          <div class="meter-labels"><span>DEFENSIVE</span><span>FAVORABLE</span></div>
+          <div class="meter-track">
+            <div class="meter-fill" id="meter-fill" style="width:50%"></div>
+            <div class="meter-needle" id="meter-needle" style="left:50%"></div>
+          </div>
+          <div class="meter-lbl" id="meter-lbl">PERMISSION METER · —</div>
+        </div>
+
+        <div class="dex-section">
+          <div class="dex-title">DEX BY ZONE — TOP 3 NEAR SPOT</div>
+          <div id="dex-rows"></div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+// ── ADAPTER — gaiaSpatialAdapter (inline) ─────────────────────────────────────
+function clamp(v,mn=0,mx=1){return Math.max(mn,Math.min(mx,v));}
+function normAbs(v,mx){return mx?clamp(Math.abs(v)/mx):0;}
+
+function getConf(raw,strike){
+  const m=raw.confluence?.find(c=>Number(c.strike)===Number(strike));
+  return {strength:m?.strength??1,layers:m?.layers??[],types:m?.types??[]};
+}
+
+function classifyState({strike,spot,netGex,netDhp,dex,predScore,conf,levels}){
+  const near=Math.abs(strike-spot)<=10;
+  const isCW=Number(strike)===Number(levels?.call_wall);
+  const isPW=Number(strike)===Number(levels?.put_wall);
+  const isNode=Number(strike)===Number(levels?.gamma_node);
+  const isFlip=Number(strike)===Number(levels?.gamma_flip);
+  const isPin=Number(strike)===Number(levels?.gravity_pin);
+
+  if((isCW||isNode||isPin)&&netGex>0&&conf>=3) return 'ABSORPTION';
+  if(isFlip&&predScore>=60) return 'REACTIVE';
+  if(isPW&&netGex<0) return 'FRAGILE';
+  if(netGex<0&&dex<0&&near&&predScore>=55) return 'CHASE';
+  if(netGex<0&&near) return 'FRAGILE';
+  if(netGex>0&&Math.abs(netDhp)<2&&predScore<50) return 'COMPRESSION';
+  if(netGex>0&&predScore>=55) return 'REACTIVE';
+  return 'BALANCED';
+}
+
+function calcConvexity(row,maxGamma){
+  const cg=Math.abs(row.call_gamma??0);
+  const pg=Math.abs(row.put_gamma??0);
+  const gi=normAbs(cg+pg,maxGamma);
+  const pi=clamp((row.prediction_score??0)/100);
+  const ivs=clamp(Math.abs((row.put_iv??0)-(row.call_iv??0))/5);
+  return Math.round(clamp(gi*.45+pi*.4+ivs*.15)*100);
+}
+
+function buildVisual({state,netGex,netDhp,cvx,conf,maxG,maxD}){
+  const gi=normAbs(netGex,maxG),di=normAbs(netDhp,maxD);
+  const ci=clamp(cvx/100),cfi=clamp(conf/7);
+  let color='amber';
+  if(state==='ABSORPTION'||state==='COMPRESSION') color='cyan';
+  if(state==='FRAGILE') color='rose';
+  if(state==='CHASE') color='violet';
+  if(state==='BALANCED') color='slate';
+  return {
+    color,
+    fw:clamp(.25+gi*.65+di*.1),
+    glow:clamp(.15+gi*.45+cfi*.35),
+    speed:clamp(1-ci*.75,.15,1),
+    thick:clamp(.2+cfi*.55+gi*.25),
+    turb:clamp(ci*.65+di*.35),
+  };
+}
+
+function detectDrift(zones,spot){
+  const above=zones.filter(z=>z.strike>spot);
+  const below=zones.filter(z=>z.strike<spot);
+  const ap=above.reduce((s,z)=>s+z.net_gex*z.visual.fw,0);
+  const bp=below.reduce((s,z)=>s+z.net_gex*z.visual.fw,0);
+  const net=bp-ap;
+  if(net<-25000) return 'UPWARD_STABILIZATION';
+  if(net>25000)  return 'DOWNWARD_FRAGILITY';
+  return 'NEUTRAL_FLOW';
+}
+
+function summarize(raw,zones,drift){
+  const dom=[...zones].sort((a,b)=>b.visual.glow+b.visual.thick-(a.visual.glow+a.visual.thick))[0];
+  const fragZ=zones.filter(z=>z.state==='FRAGILE'||z.state==='CHASE');
+  const nearF=fragZ.sort((a,b)=>Math.abs(a.dist)-Math.abs(b.dist))[0];
+  const absStr=zones.filter(z=>z.state==='ABSORPTION'||z.state==='COMPRESSION').reduce((s,z)=>s+z.visual.glow+z.visual.thick,0);
+  const fragStr=zones.filter(z=>z.state==='FRAGILE'||z.state==='CHASE').reduce((s,z)=>s+z.visual.glow+z.visual.turb,0);
+  const tot=absStr+fragStr||1;
+  const absPct=Math.round(absStr/tot*100);
+  const fragPct=100-absPct;
+  const trigDist=nearF?Math.abs(nearF.strike-raw.spot_spx):null;
+  const trigProx=trigDist===null?0:Math.max(0,100-trigDist*4);
+  const avgTurb=zones.reduce((s,z)=>s+z.visual.turb,0)/zones.length;
+  const dsi=Math.round(Math.max(0,Math.min(100,70+absPct*.25-fragPct*.35-avgTurb*25)));
+  const vts=Math.round(Math.max(0,Math.min(100,20+fragPct*.45+trigProx*.25+avgTurb*35)));
+  let ms='BALANCED';
+  if(dsi>=75&&vts<=35) ms='STABLE';
+  else if(vts>=75) ms='EXPANSIVE';
+  else if(dsi<65||vts>=50) ms='FRAGILE';
+  const perm=ms==='STABLE'?'FAVORABLE':ms==='EXPANSIVE'?'EXPANSIVE':ms==='FRAGILE'?'FRAGILE':'BALANCED';
+  const trig=vts>=90?'EXTREME':vts>=75?'ACTIVE':vts>=56?'ARMING':vts>=31?'WATCH':'LOW';
+  const interp=ms==='STABLE'?'Structure is stable. Absorption dominates. Avoid chasing late breakouts.'
+    :ms==='FRAGILE'?`Structure is fragile. Reduce size. Watch ${nearF?.strike??'nearest fragile zone'}.`
+    :ms==='EXPANSIVE'?'Volatility expansion active. Momentum may continue — risk is elevated.'
+    :'Structure is balanced. Trade selectively and wait for DHP confirmation.';
+  return {ms,perm,dsi,vts,trig,drift,dom:dom?.strike,fragZ:nearF?.strike,absPct,fragPct,interp};
+}
+
+function adaptRaw(raw){
+  if(!raw?.strikes?.length) return null;
+  const maxG=Math.max(...raw.strikes.map(s=>Math.abs(s.net_gex??0)),1);
+  const maxD=Math.max(...raw.strikes.map(s=>Math.abs(s.net_dhp??0)),1);
+  const maxGamma=Math.max(...raw.strikes.map(s=>Math.abs(s.call_gamma??0)+Math.abs(s.put_gamma??0)),1);
+
+  const zones=raw.strikes.map(row=>{
+    const {strength:conf}=getConf(raw,row.strike);
+    const cvx=calcConvexity(row,maxGamma);
+    const dex=(row.call_delta_oi??0)+(row.put_delta_oi??0);
+    const state=classifyState({
+      strike:row.strike,spot:raw.spot_spx,
+      netGex:row.net_gex,netDhp:row.net_dhp,
+      dex,predScore:row.prediction_score,
+      conf,levels:raw.levels
+    });
+    const visual=buildVisual({state,netGex:row.net_gex,netDhp:row.net_dhp,cvx,conf,maxG,maxD});
+    return {...row,dex,conf,cvx,state,visual,dist:row.strike-raw.spot_spx};
+  });
+
+  const drift=detectDrift(zones,raw.spot_spx);
+  const summary=summarize(raw,zones,drift);
+  return {raw,zones,summary};
+}
+
+// ── RENDER ────────────────────────────────────────────────────────────────────
+const FIELD_PAD_TOP=50,FIELD_PAD_BOT=480;
+const REFRESH=5000;
+let lastData=null;
+
+function fmt2(v){return Number(v).toLocaleString(undefined,{minimumFractionDigits:2,maximumFractionDigits:2});}
+function fmtMoney(v){const s=v>=0?'+':'-';const a=Math.abs(v);return s+(a>=1e6?(a/1e6).toFixed(1)+'M':a>=1e3?(a/1e3).toFixed(1)+'K':a.toFixed(0));}
+function cluster(v){const lo=Math.floor(v/5)*5,hi=Math.ceil(v/5)*5;return `${lo}–${hi}`;}
+
+function permColor(p){
+  return p==='FAVORABLE'?'#34d399':p==='FRAGILE'?'#fb7185':p==='EXPANSIVE'?'#e879f9':'#fbbf24';
+}
+
+function renderField(model){
+  const field=document.getElementById('field');
+  const noData=document.getElementById('no-data-msg');
+  noData.style.display='none';
+
+  // Remove old zones
+  field.querySelectorAll('.zone').forEach(e=>e.remove());
+  field.querySelectorAll('.flow-particle').forEach(e=>e.remove());
+
+  const raw=model.raw;
+  const zones=model.zones;
+  const spot=raw.spot_spx;
+
+  const strikes=zones.map(z=>z.strike);
+  const minS=Math.min(...strikes),maxS=Math.max(...strikes);
+  const range=maxS-minS||1;
+
+  function yPos(s){return FIELD_PAD_TOP+((maxS-s)/range)*FIELD_PAD_BOT;}
+
+  // Spot line
+  const spotY=yPos(spot);
+  const sl=document.getElementById('spot-line');
+  const slbl=document.getElementById('spot-label');
+  sl.style.top=spotY+'px';
+  slbl.style.top=(spotY-14)+'px';
+  slbl.textContent=`SPOT · ${spot.toLocaleString(undefined,{minimumFractionDigits:2,maximumFractionDigits:2})}`;
+
+  // Flow particles
+  for(let i=0;i<7;i++){
+    const fp=document.createElement('div');
+    fp.className='flow-particle';
+    fp.style.left=(28+i*5)+'%';
+    fp.style.top=(26+i*7)+'%';
+    fp.style.animationDelay=(i*.18)+'s';
+    field.appendChild(fp);
+  }
+
+  // Zones
+  zones.forEach(z=>{
+    const yp=yPos(z.strike);
+    const W=field.clientWidth||900;
+    const fw=180+(z.visual.fw)*600;
+    const fh=20+(z.visual.thick)*52;
+    const dur=(0.8+(1-z.cvx/100)*3.2)+'s';
+    const delay=(Math.abs(z.dist)*.015)+'s';
+
+    const el=document.createElement('div');
+    el.className=`zone z-${z.visual.color}`;
+    el.style.top=yp+'px';
+    el.style.setProperty('--dur',dur);
+    el.style.setProperty('--delay',delay);
+
+    const cc=z.visual.color==='rose'?'#fb7185':z.visual.color==='cyan'?'#67e8f9':z.visual.color==='amber'?'#fbbf24':z.visual.color==='violet'?'#e879f9':'#94a3b8';
+    const dexVal=(z.call_delta_oi??0)+(z.put_delta_oi??0);
+
+    el.innerHTML=`
+      <div class="s-label">${z.strike}</div>
+      <div class="halo" style="left:120px;top:${-fh*1.3}px;width:${fw}px;height:${fh*2.6}px;"></div>
+      <div class="band" style="left:132px;top:${-fh*.5}px;width:${fw*.78}px;height:${fh}px;"></div>
+      <div class="dot"></div>
+      <div class="state-lbl">${z.state}</div>
+      <div class="zdata">
+        <div>GEX <span style="color:${z.net_gex>=0?'var(--cyan)':'var(--rose)'}">${fmtMoney(z.net_gex)}</span></div>
+        <div>DEX <span style="color:${dexVal>=0?'var(--green)':'var(--rose)'}">${fmtMoney(dexVal)}</span></div>
+        <div>CVX <span style="color:var(--violet)">${z.cvx}</span></div>
+        <div>C <span style="color:var(--yellow)">${z.conf}x</span></div>
+        <div>ES <span style="color:var(--yellow)">${fmt2(z.strike+(raw.basis||0))}</span></div>
+      </div>`;
+    field.appendChild(el);
+  });
+}
+
+function renderSide(model){
+  const s=model.summary;
+  const raw=model.raw;
+
+  // Permission block
+  const pb=document.getElementById('permission-block');
+  pb.className='permission perm-'+s.perm.toLowerCase();
+
+  // Metrics
+  const col=v=>v==='STABLE'||v==='FAVORABLE'?'#34d399':v==='FRAGILE'||v==='ACTIVE'||v==='EXTREME'?'#fb7185':v==='EXPANSIVE'||v==='ARMING'?'#e879f9':'#fbbf24';
+  document.getElementById('trade-permission').textContent=s.perm;
+  document.getElementById('trade-permission').style.color=permColor(s.perm);
+  document.getElementById('m-state').textContent=s.ms;
+  document.getElementById('m-state').style.color=col(s.ms);
+  document.getElementById('m-dsi').textContent=s.dsi;
+  document.getElementById('m-vts').textContent=s.vts;
+  document.getElementById('m-trigger').textContent=s.trig;
+  document.getElementById('m-trigger').style.color=col(s.trig);
+  document.getElementById('m-node').textContent=s.dom??'—';
+  document.getElementById('m-fragile').textContent=s.fragZ??'—';
+  document.getElementById('m-drift').textContent=s.drift.replace(/_/g,' ');
+  document.getElementById('m-dex').textContent=fmtMoney(raw.total_dhp||0)+'M';
+
+  // Side panel
+  document.getElementById('s-state').textContent=s.ms; document.getElementById('s-state').style.color=col(s.ms);
+  document.getElementById('s-perm').textContent=s.perm; document.getElementById('s-perm').style.color=permColor(s.perm);
+  document.getElementById('s-dsi').textContent=s.dsi+'%';
+  document.getElementById('s-vts').textContent=s.vts;
+  document.getElementById('s-trigger').textContent=s.trig; document.getElementById('s-trigger').style.color=col(s.trig);
+  document.getElementById('s-fragile').textContent=s.fragZ??'—';
+  document.getElementById('s-drift').textContent=s.drift.replace(/_/g,' ');
+  document.getElementById('s-balance').textContent=`${s.absPct}% / ${s.fragPct}%`;
+
+  // Levels panel
+  const lv=raw.levels||{};
+  const basis=raw.basis||0;
+  const lvPanel=document.getElementById('levels-panel');
+  lvPanel.innerHTML='';
+  Object.entries(lv).forEach(([k,v])=>{
+    if(!v) return;
+    const es=v+basis;
+    const d=document.createElement('div');
+    d.className='level-entry';
+    d.innerHTML=`<div class="level-top"><span style="color:var(--muted);text-transform:uppercase;font-size:11px">${k.replace(/_/g,' ')}</span><b>SPX ${v}</b></div><div class="level-bot"><span>ES exact</span><b style="color:var(--yellow)">${fmt2(es)}</b><span>Cluster</span><b style="color:var(--amber)">${cluster(es)}</b></div>`;
+    lvPanel.appendChild(d);
+  });
+
+  // Readout
+  document.getElementById('interp-txt').textContent=s.interp;
+  document.getElementById('r-state').textContent=s.ms; document.getElementById('r-state').style.color=col(s.ms);
+  document.getElementById('r-bias').textContent=s.ms==='STABLE'?'Favor fades · Avoid chasing':s.ms==='FRAGILE'?'Reduce size · Wait for clarity':s.ms==='EXPANSIVE'?'Momentum active · Risk elevated':'Trade selectively · Wait DHP';
+  document.getElementById('r-trigger').textContent=s.fragZ??'—';
+  document.getElementById('r-perm').textContent=s.perm; document.getElementById('r-perm').style.color=permColor(s.perm);
+
+  // Meter
+  const pct=s.perm==='FAVORABLE'?80:s.perm==='EXPANSIVE'?90:s.perm==='FRAGILE'?20:50;
+  document.getElementById('meter-fill').style.width=pct+'%';
+  document.getElementById('meter-needle').style.left=(pct-1)+'%';
+  document.getElementById('meter-lbl').textContent=`PERMISSION METER · ${s.perm}`;
+  document.getElementById('meter-lbl').style.color=permColor(s.perm);
+
+  // Trigger box
+  document.getElementById('trigger-state-box').textContent=s.trig;
+  document.getElementById('trigger-state-box').style.color=col(s.trig);
+  document.getElementById('trigger-detail').textContent=`Score ${s.vts} · Zone ${s.fragZ??'—'}`;
+
+  // Spot header
+  document.getElementById('spot-price').textContent=raw.spot_spx?.toLocaleString(undefined,{minimumFractionDigits:2,maximumFractionDigits:2})||'——';
+  document.getElementById('spot-sym').textContent=`SPX · ${raw.expiration||'—'}`;
+  document.getElementById('spot-es').textContent=`ES ${fmt2(raw.spot_es||0)} · BASIS ${raw.basis>=0?'+':''}${fmt2(raw.basis||0)}`;
+  document.getElementById('ts-footer').textContent=`${raw.timestamp||'—'} · BASIS ${raw.basis>=0?'+':''}${fmt2(raw.basis||0)} · SPX ${fmt2(raw.spot_spx||0)} · pivotalphadesk.com`;
+
+  // DEX top 3 near spot
+  const spot=raw.spot_spx;
+  const top3=[...model.zones].sort((a,b)=>Math.abs(a.dist)-Math.abs(b.dist)).slice(0,3);
+  const dexDiv=document.getElementById('dex-rows');
+  dexDiv.innerHTML=top3.map(z=>{
+    const dex=(z.call_delta_oi??0)+(z.put_delta_oi??0);
+    const col=dex>=0?'var(--green)':'var(--rose)';
+    return `<div class="dex-row"><span style="color:var(--muted)">${z.strike}</span><span style="color:${col};font-weight:700">${fmtMoney(dex)} DEX</span><span style="color:var(--violet)">${z.state}</span></div>`;
+  }).join('');
+}
+
+// ── CONNECTION ────────────────────────────────────────────────────────────────
+function setConn(ok){
+  const dot=document.getElementById('conn-dot');
+  const lbl=document.getElementById('conn-lbl');
+  dot.className='conn-dot'+(ok?'':' off');
+  lbl.textContent=ok?'LIVE':'NO DATA';
+  lbl.style.color=ok?'#34d399':'#fb7185';
+}
+
+// ── FETCH + UPDATE ────────────────────────────────────────────────────────────
+async function update(){
+  try{
+    const r=await fetch('/gaia_live.json?t='+Date.now());
+    if(!r.ok){setConn(false);return;}
+    const raw=await r.json();
+    if(!raw?.strikes?.length){setConn(false);return;}
+    const model=adaptRaw(raw);
+    if(!model){setConn(false);return;}
+    setConn(true);
+    renderField(model);
+    renderSide(model);
+  }catch(e){
+    setConn(false);
+    console.error('GAIA Pressure Map error:',e);
+  }
+}
+
+update();
+setInterval(update,REFRESH);
+window.addEventListener('resize',()=>{if(lastData)renderField(lastData);});
+</script>
+</body>
+</html>
