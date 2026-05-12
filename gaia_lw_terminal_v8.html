@@ -120,11 +120,9 @@ async function fetchBars(tf) {
     const data = await r.json();
     if (data.status !== 'ok' || !data.bars?.length) return null;
     // Server already returns unix timestamps
-    // TradeStation timestamps are UTC — shift to ET (UTC-4 EDT)
-    const ET_OFFSET = 4 * 3600;
+    // Server already converts UTC→ET
     return data.bars
       .filter(b => b.close > 0)
-      .map(b => ({ ...b, time: b.time - ET_OFFSET }))
       .sort((a,b) => a.time - b.time);
   } catch(e) {
     console.warn('Bar fetch error:', e);
