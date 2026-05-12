@@ -576,7 +576,7 @@ def health():
 
 # ── BARS ENDPOINT ─────────────────────────────────────────────────────────────
 TF_CONFIG = {
-    'M1':  {'unit': 'Minute', 'interval': 1,  'barsback': 200},
+    'M1':  {'unit': 'Minute', 'interval': 1,  'barsback': 390},
     'M5':  {'unit': 'Minute', 'interval': 5,  'barsback': 100},
     'M15': {'unit': 'Minute', 'interval': 15, 'barsback': 80},
 }
@@ -611,10 +611,14 @@ def bars():
         bars_out = []
         for b in bars_raw:
             try:
+                ts_raw = (b.get('TimeStamp') or b.get('timestamp',''))[:19]
+                # Parse as UTC then convert to ET (UTC-4 EDT)
+                import calendar
+                t = time.strptime(ts_raw, '%Y-%m-%dT%H:%M:%S')
+                utc_ts = calendar.timegm(t)  # UTC timestamp
+                et_ts  = utc_ts - (4 * 3600)  # convert to ET (EDT)
                 bars_out.append({
-                    'time':  int(time.mktime(time.strptime(
-                                 (b.get('TimeStamp') or b.get('timestamp',''))[:19],
-                                 '%Y-%m-%dT%H:%M:%S'))),
+                    'time': et_ts,
                     'open':  float(b.get('Open',  b.get('open',  0))),
                     'high':  float(b.get('High',  b.get('high',  0))),
                     'low':   float(b.get('Low',   b.get('low',   0))),
