@@ -1,0 +1,504 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>GAIA LW Terminal v8 · Railway</title>
+<script src="https://unpkg.com/lightweight-charts@4.2.0/dist/lightweight-charts.standalone.production.js"></script>
+<style>
+:root{
+--bg:#020611;--panel:#071020;--line:#1e293b;--txt:#e2e8f0;--muted:#64748b;
+--cyan:#67e8f9;--red:#fb7185;--amber:#fbbf24;--violet:#e879f9;--green:#34d399;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{width:100%;height:100%;overflow:hidden;background:var(--bg);color:var(--txt);
+font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
+.terminal{width:100vw;height:100vh;display:grid;grid-template-rows:40px 1fr 28px}
+.header{display:grid;grid-template-columns:1.6fr .7fr .7fr .8fr .8fr 2fr;gap:8px;
+padding:6px 8px;border-bottom:1px solid var(--line);background:#050b15}
+.hbox{border:1px solid var(--line);background:#071020;border-radius:6px;padding:4px 8px;min-width:0}
+.lbl{font-size:7px;letter-spacing:.18em;color:var(--muted);text-transform:uppercase}
+.val{font-size:12px;font-weight:800;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.controls{display:flex;align-items:center;justify-content:flex-end;gap:6px;flex-wrap:nowrap}
+.btn{border:1px solid #334155;background:#071020;color:#94a3b8;border-radius:4px;padding:1px 7px;font-size:9px;cursor:pointer}
+.btn.active{border-color:#67e8f9;color:#67e8f9;background:#0d2330}
+.toggle.on{border-color:#34d399;color:#34d399;background:#08251d}
+.main{display:grid;grid-template-columns:1fr 250px;min-height:0}
+.center{display:grid;grid-template-rows:1fr 160px;gap:6px;padding:6px;min-height:0}
+.wrap{position:relative;min-height:0}
+.chart{width:100%;height:100%;border:1px solid var(--line);border-radius:8px;overflow:hidden}
+#gaiaCanvas{position:absolute;inset:0;pointer-events:none;z-index:5}
+.right{border-left:1px solid var(--line);padding:8px;background:#050b15;display:flex;flex-direction:column;gap:8px}
+.card{border:1px solid var(--line);border-radius:8px;background:#071020;padding:8px}
+.card h3{font-size:8px;letter-spacing:.18em;color:#cbd5e1;margin-bottom:7px;text-transform:uppercase}
+.row{display:flex;justify-content:space-between;font-size:10px;padding:3px 0;border-bottom:1px solid #1e293b55;gap:10px}
+.row:last-child{border-bottom:0}
+.bottom{display:grid;grid-template-columns:1fr 1fr .8fr;gap:8px;padding:4px 8px;border-top:1px solid var(--line);background:#050b15}
+.bbox{border:1px solid var(--line);background:#071020;border-radius:6px;padding:5px 8px;font-size:10px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.cyan{color:var(--cyan)}.red{color:var(--red)}.green{color:var(--green)}.yellow{color:var(--amber)}.violet{color:var(--violet)}
+</style>
+</head>
+<body>
+<div class="terminal">
+<div class="header">
+  <div class="hbox">
+    <div class="lbl">Terminal</div>
+    <div class="val">GAIA DHP · v8 Live Bars · ESM26 · Railway</div>
+  </div>
+  <div class="hbox"><div class="lbl">SPX</div><div class="val" id="spx">—</div></div>
+  <div class="hbox"><div class="lbl">ES</div><div class="val" id="es">—</div></div>
+  <div class="hbox"><div class="lbl">Regime</div><div class="val" id="regime">—</div></div>
+  <div class="hbox"><div class="lbl">Trigger</div><div class="val" id="trigger">—</div></div>
+  <div class="hbox controls">
+    <span class="lbl" id="tfmode">TF INIT</span>
+<button class="btn tf active" data-tf="M1">M1</button>
+    <button class="btn tf" data-tf="M5">M5</button>
+    <button class="btn tf" data-tf="M15">M15</button>
+    <button class="btn toggle on" data-layer="vwap">VWAP</button>
+    <button class="btn toggle on" data-layer="ema9">EMA9</button>
+    <button class="btn toggle on" data-layer="ema20">EMA20</button>
+    <button class="btn toggle on" data-layer="atr">ATR</button>
+  </div>
+</div>
+
+<div class="main">
+  <div class="center">
+    <div class="wrap">
+      <div id="priceChart" class="chart"></div>
+      <canvas id="gaiaCanvas"></canvas>
+    </div>
+    <div class="wrap">
+      <div id="flowChart" class="chart"></div>
+    </div>
+  </div>
+
+  <div class="right">
+    <div class="card">
+      <h3>Dealer State</h3>
+      <div class="row"><span>DSI</span><b id="dsi">—</b></div>
+      <div class="row"><span>VTS</span><b id="vts">—</b></div>
+      <div class="row"><span>MCS</span><b id="mcs">—</b></div>
+      <div class="row"><span>DHP Momentum</span><b id="dhpm">—</b></div>
+      <div class="row"><span>ATR Regime</span><b id="atrState">—</b></div>
+    </div>
+
+    <div class="card">
+      <h3>Levels · ES</h3>
+      <div class="row"><span>Call Wall</span><b id="cw">—</b></div>
+      <div class="row"><span>Gamma Node</span><b id="gn">—</b></div>
+      <div class="row"><span>Gamma Flip</span><b id="gf">—</b></div>
+      <div class="row"><span>Put Wall</span><b id="pw">—</b></div>
+    </div>
+
+    <div class="card">
+      <h3>Layer Readout</h3>
+      <div style="font-size:10px;line-height:1.6;color:#cbd5e1" id="readout">Loading…</div>
+    </div>
+
+</div>
+
+<div class="bottom">
+  <div class="bbox"><span class="lbl">Flow State</span> <b id="flowState">—</b></div>
+  <div class="bbox"><span class="lbl">Structure</span> <b id="structure">—</b></div>
+  <div class="bbox"><span class="lbl">Alert</span> <b id="alert">—</b></div>
+</div>
+</div>
+
+<script>
+// ═══════════════════════════════════════════════════════════
+// TRADESTATION BAR FETCH
+// ═══════════════════════════════════════════════════════════
+const SYMBOL = 'ESM26';
+const TF_MAP = { M1: { unit:'Minute', interval:1, bars:200 }, M5: { unit:'Minute', interval:5, bars:100 }, M15: { unit:'Minute', interval:15, bars:80 } };
+
+async function fetchBars(tf) {
+  // Fetch via Railway server — no CORS, no token needed in browser
+  try {
+    const r = await fetch(`/bars?symbol=${SYMBOL}&tf=${tf}`);
+    if (!r.ok) { console.warn('bars endpoint:', r.status); return null; }
+    const data = await r.json();
+    if (data.status !== 'ok' || !data.bars?.length) return null;
+    // Server already returns unix timestamps
+    return data.bars.filter(b => b.close > 0).sort((a,b) => a.time - b.time);
+  } catch(e) {
+    console.warn('Bar fetch error:', e);
+    return null;
+  }
+}
+
+function parseBars(data) {
+  const bars = data?.Bars || data?.bars || [];
+  if (!bars.length) return null;
+  return bars.map(b => ({
+    time: Math.floor(new Date(b.TimeStamp || b.timestamp).getTime() / 1000),
+    open:  parseFloat(b.Open  || b.open),
+    high:  parseFloat(b.High  || b.high),
+    low:   parseFloat(b.Low   || b.low),
+    close: parseFloat(b.Close || b.close)
+  })).filter(b => !isNaN(b.close)).sort((a,b)=>a.time-b.time);
+}
+
+// ═══════════════════════════════════════════════════════════
+// GAIA LIVE DATA
+// ═══════════════════════════════════════════════════════════
+const GAIA_URL = '/gaia_live.json';
+const fallback = {
+  spot_spx:7365.44, spot_es:7390.5, basis:25.06,
+  dhp_momentum:-85.2, dhp_direction:'ACCELERATING_BEAR',
+  levels_es:{ call_wall:7425, put_wall:7375, gamma_node:7375, gamma_flip:7425, gravity_pin:7440 },
+  strikes:[]
+};
+let raw = fallback;
+
+async function loadGaia() {
+  try {
+    const r = await fetch(GAIA_URL + '?t=' + Date.now());
+    if (r.ok) { raw = await r.json(); updateUI(); }
+  } catch(e) {}
+}
+
+// ═══════════════════════════════════════════════════════════
+// CHART SETUP
+// ═══════════════════════════════════════════════════════════
+let priceChart, priceSeries, flowChart, flowSeries, histSeries;
+let vwapSeries, ema9Series, ema20Series, atrHiSeries, atrLoSeries;
+let active = { vwap:true, ema9:true, ema20:true, atr:true };
+let lastCandles = [];
+let tf = 'M1';
+let isLive = false;
+
+function buildCharts() {
+  priceChart = LightweightCharts.createChart(document.getElementById('priceChart'), {
+    layout:{ background:{ color:'#020611' }, textColor:'#cbd5e1' },
+    grid:{ vertLines:{ color:'#111827' }, horzLines:{ color:'#111827' } },
+    rightPriceScale:{ borderColor:'#1e293b' },
+    timeScale:{ timeVisible:true, secondsVisible:false, borderColor:'#1e293b' }
+  });
+
+  priceSeries = priceChart.addCandlestickSeries({
+    upColor:'#34d399', downColor:'#fb7185',
+    borderUpColor:'#34d399', borderDownColor:'#fb7185',
+    wickUpColor:'#34d399', wickDownColor:'#fb7185'
+  });
+
+  vwapSeries  = priceChart.addLineSeries({ color:'#fbbf24', lineWidth:2, priceLineVisible:false, lastValueVisible:false });
+  ema9Series  = priceChart.addLineSeries({ color:'#67e8f9', lineWidth:1, priceLineVisible:false, lastValueVisible:false });
+  ema20Series = priceChart.addLineSeries({ color:'#e879f9', lineWidth:1, priceLineVisible:false, lastValueVisible:false });
+  atrHiSeries = priceChart.addLineSeries({ color:'rgba(148,163,184,.4)', lineWidth:1, priceLineVisible:false, lastValueVisible:false });
+  atrLoSeries = priceChart.addLineSeries({ color:'rgba(148,163,184,.4)', lineWidth:1, priceLineVisible:false, lastValueVisible:false });
+
+  flowChart = LightweightCharts.createChart(document.getElementById('flowChart'), {
+    layout:{ background:{ color:'#020611' }, textColor:'#94a3b8' },
+    grid:{ vertLines:{ color:'#111827' }, horzLines:{ color:'#111827' } },
+    rightPriceScale:{ borderColor:'#1e293b' },
+    timeScale:{ timeVisible:true, secondsVisible:false, borderColor:'#1e293b' }
+  });
+  flowSeries = flowChart.addLineSeries({ color:'#67e8f9', lineWidth:2 });
+  histSeries = flowChart.addHistogramSeries({ priceFormat:{ type:'volume' }, priceScaleId:'' });
+
+  // TF buttons
+  document.querySelectorAll('.tf').forEach(b => {
+    b.onclick = () => {
+      document.querySelectorAll('.tf').forEach(x => x.classList.remove('active'));
+      b.classList.add('active');
+      tf = b.dataset.tf;
+      fetchBarsAndRender();
+    };
+  });
+
+  // Layer toggles
+  document.querySelectorAll('.toggle').forEach(b => {
+    b.onclick = () => {
+      const layer = b.dataset.layer;
+      active[layer] = !active[layer];
+      b.classList.toggle('on', active[layer]);
+      renderTech(lastCandles);
+      drawGaia();
+    };
+  });
+
+  window.addEventListener('resize', resize);
+  priceChart.timeScale().subscribeVisibleTimeRangeChange(drawGaia);
+}
+
+// ═══════════════════════════════════════════════════════════
+// MATH HELPERS
+// ═══════════════════════════════════════════════════════════
+function calcEma(data, len) {
+  const k = 2/(len+1); let prev = null;
+  return data.map(d => { prev = prev===null ? d.close : (d.close*k + prev*(1-k)); return { time:d.time, value:prev }; });
+}
+
+function calcVwap(data) {
+  let pv = 0, vv = 0;
+  return data.map((d,i) => {
+    const vol = 1000 + Math.abs(d.close-d.open)*700 + i*8;
+    const tp = (d.high+d.low+d.close)/3;
+    pv += tp*vol; vv += vol;
+    return { time:d.time, value:pv/vv };
+  });
+}
+
+function calcAtr(data, len=14) {
+  let trs = [];
+  for (let i=0; i<data.length; i++) {
+    const prev = i ? data[i-1].close : data[i].close;
+    trs.push(Math.max(data[i].high-data[i].low, Math.abs(data[i].high-prev), Math.abs(data[i].low-prev)));
+  }
+  let out = [], prev = null;
+  for (let i=0; i<data.length; i++) {
+    prev = prev===null ? trs[i] : (prev*(len-1)+trs[i])/len;
+    out.push({ time:data[i].time, value:prev });
+  }
+  return out;
+}
+
+function buildFlowData(candles) {
+  // Generate DHP-correlated flow from candle momentum
+  let v = raw.dhp_momentum || 0;
+  return candles.map((c, i) => {
+    const momentum = (c.close - c.open) * 10;
+    v = v * 0.92 + momentum * 0.08;
+    return { time:c.time, value:v };
+  });
+}
+
+// ═══════════════════════════════════════════════════════════
+// RENDER PIPELINE
+// ═══════════════════════════════════════════════════════════
+function renderTech(candles) {
+  if (!candles.length) return;
+  const vwapData  = calcVwap(candles);
+  const ema9Data  = calcEma(candles, 9);
+  const ema20Data = calcEma(candles, 20);
+  const atrData   = calcAtr(candles, 14);
+  const lastVwap  = vwapData[vwapData.length-1]?.value || candles[candles.length-1].close;
+  const hi = atrData.map(a => ({ time:a.time, value:lastVwap + a.value }));
+  const lo = atrData.map(a => ({ time:a.time, value:lastVwap - a.value }));
+
+  vwapSeries .setData(active.vwap  ? vwapData  : []);
+  ema9Series .setData(active.ema9  ? ema9Data  : []);
+  ema20Series.setData(active.ema20 ? ema20Data : []);
+  atrHiSeries.setData(active.atr   ? hi        : []);
+  atrLoSeries.setData(active.atr   ? lo        : []);
+
+  const fl = buildFlowData(candles);
+  flowSeries.setData(fl);
+  histSeries.setData(fl.map(x => ({
+    time:x.time, value:Math.abs(x.value),
+    color: x.value >= 0 ? 'rgba(103,232,249,.35)' : 'rgba(251,113,133,.35)'
+  })));
+
+  return atrData[atrData.length-1]?.value || 0;
+}
+
+async function fetchBarsAndRender() {
+  document.getElementById('tfmode').textContent = 'FETCHING…';
+  const bars = await fetchBars(tf);
+
+  if (bars && bars.length > 0) {
+    lastCandles = bars;
+    isLive = true;
+    document.getElementById('tfmode').textContent = 'TF LIVE · ' + tf;
+  } else {
+    // Fallback to demo candles anchored at current ES price
+    lastCandles = demoCandles(tf);
+    isLive = false;
+    document.getElementById('tfmode').textContent = 'TF DEMO · ' + tf;
+  }
+
+  priceSeries.setData(lastCandles);
+  const atrVal = renderTech(lastCandles);
+  priceChart.timeScale().fitContent();
+  flowChart.timeScale().fitContent();
+  updateUI(atrVal);
+  drawGaia();
+}
+
+// ═══════════════════════════════════════════════════════════
+// DEMO CANDLES (fallback)
+// ═══════════════════════════════════════════════════════════
+function demoCandles(tf) {
+  const step = tf==='M1' ? 60 : tf==='M5' ? 300 : 900;
+  const base = raw.spot_es || 7390;
+  let p = base;
+  const now = Math.floor(Date.now()/1000) - 64*step;
+  return Array.from({length:64}, (_,i) => {
+    const drift = Math.sin(i/9)*9 + Math.cos(i/5)*4;
+    const o = p + (Math.sin(i)*2);
+    const c = o + (Math.cos(i*.7)*4) + drift*.08;
+    const h = Math.max(o,c) + 2.2 + Math.abs(Math.sin(i*.4))*2;
+    const l = Math.min(o,c) - 2.2 - Math.abs(Math.cos(i*.3))*2;
+    p = c;
+    return { time:now+i*step, open:o, high:h, low:l, close:c };
+  });
+}
+
+// ═══════════════════════════════════════════════════════════
+// UI UPDATE
+// ═══════════════════════════════════════════════════════════
+function updateUI(atrVal) {
+  const es  = raw.levels_es || {};
+  const mom = raw.dhp_momentum || 0;
+  const regime   = mom < -20 ? 'FRAGILE' : mom < 0 ? 'BALANCED' : 'BULLISH';
+  const atrState = !atrVal ? '—' : atrVal > 8 ? 'EXPANDED' : atrVal > 5 ? 'NORMAL' : 'COMPRESSED';
+  const mcsVal   = regime === 'FRAGILE' ? 38 : 72;
+  const mcsColor = mcsVal < 40 ? 'var(--red)' : mcsVal < 55 ? 'var(--amber)' : 'var(--green)';
+
+  document.getElementById('spx').textContent = raw.spot_spx?.toFixed(2) || '—';
+  document.getElementById('es').textContent  = raw.spot_es?.toFixed(2)  || '—';
+
+  const regEl = document.getElementById('regime');
+  regEl.textContent = regime;
+  regEl.style.color = regime==='FRAGILE' ? 'var(--red)' : regime==='BULLISH' ? 'var(--green)' : 'var(--amber)';
+
+  document.getElementById('trigger').textContent = raw.dhp_direction || '—';
+  document.getElementById('dsi').textContent = regime==='FRAGILE' ? '48%' : regime==='BULLISH' ? '81%' : '64%';
+  document.getElementById('vts').textContent = regime==='FRAGILE' ? '71' : '38';
+
+  const mcsEl = document.getElementById('mcs');
+  mcsEl.textContent = mcsVal + '%' + (mcsVal < 40 ? ' ⚠' : '');
+  mcsEl.style.color = mcsColor;
+  if (mcsVal < 40) mcsEl.title = 'LOW CONFIDENCE · OBSERVE ONLY';
+
+  document.getElementById('dhpm').textContent = mom.toFixed(1);
+  document.getElementById('atrState').textContent = atrState + (atrVal ? ' · ' + atrVal.toFixed(2) : '');
+  document.getElementById('cw').textContent = es.call_wall || '—';
+  document.getElementById('gn').textContent = es.gamma_node || '—';
+  document.getElementById('gf').textContent = es.gamma_flip || '—';
+  document.getElementById('pw').textContent = es.put_wall || '—';
+  document.getElementById('flowState').textContent = raw.dhp_direction || '—';
+  document.getElementById('structure').textContent  = regime;
+  document.getElementById('alert').textContent      = regime==='FRAGILE' ? 'Absorption deterioration' : mcsVal<40 ? 'LOW CONFIDENCE · OBSERVE' : 'Dealer structure stable';
+
+  // Checklist SHORT trigger when below flip
+  const spot = raw.spot_es || 0;
+  const flip = es.gamma_flip || 0;
+  const belowFlip = spot < flip;
+  document.getElementById('readout').innerHTML =
+    `Heatmap = dealer pressure density.<br>
+    VWAP/EMA = execution context.<br>
+    ATR = adaptive field width.<br><br>
+    VWAP ${active.vwap?'<span style="color:var(--green)">ON</span>':'OFF'} &nbsp;
+    EMA9 ${active.ema9?'<span style="color:var(--cyan)">ON</span>':'OFF'} &nbsp;
+    EMA20 ${active.ema20?'<span style="color:var(--violet)">ON</span>':'OFF'} &nbsp;
+    ATR ${active.atr?'<span style="color:var(--amber)">ON</span>':'OFF'}<br><br>
+    ${belowFlip ? `<span style="color:var(--red);font-weight:700">▼ BELOW FLIP · SHORT CHECKLIST:<br>
+    ✓ DHP ${raw.dhp_direction}<br>
+    ✓ Spot ${spot} &lt; Flip ${flip}<br>
+    ✓ Watch Put Wall ${es.put_wall}</span>` :
+    `<span style="color:var(--green)">▲ ABOVE FLIP · LONG BIAS<br>
+    Spot ${spot} &gt; Flip ${flip}<br>
+    Call Wall target: ${es.call_wall}</span>`}
+    ${mcsVal < 40 ? '<br><br><span style="color:var(--red);border:1px solid var(--red);padding:2px 6px;font-size:9px">LOW CONFIDENCE · OBSERVE ONLY</span>' : ''}`;
+}
+
+// ═══════════════════════════════════════════════════════════
+// HEATMAP GAIA OVERLAY
+// ═══════════════════════════════════════════════════════════
+function drawGaia() {
+  const canvas = document.getElementById('gaiaCanvas');
+  if (!canvas || !priceSeries) return;
+  const ctx = canvas.getContext('2d'), dpr = devicePixelRatio;
+  const rect = canvas.getBoundingClientRect();
+  ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  ctx.clearRect(0, 0, rect.width, rect.height);
+
+  const mom = raw.dhp_momentum || 0;
+  const fragile = mom < -20;
+  const atm = fragile ? 'rgba(251,113,133,.10)' : 'rgba(103,232,249,.08)';
+  const rg = ctx.createRadialGradient(rect.width*.55, rect.height*.5, 20, rect.width*.55, rect.height*.5, rect.width*.7);
+  rg.addColorStop(0, atm); rg.addColorStop(1, 'rgba(0,0,0,0)');
+  ctx.fillStyle = rg; ctx.fillRect(0, 0, rect.width, rect.height);
+
+  const atrVal = lastCandles.length ? calcAtr(lastCandles, 14).at(-1).value : 6;
+  const basis  = raw.basis || 25;
+
+  (raw.strikes || []).forEach(s => {
+    const esStrike = s.strike + basis;
+    const y = priceSeries.priceToCoordinate(esStrike);
+    if (y == null) return;
+
+    const strength   = Math.min(1, Math.abs(s.net_gex) / 200000);
+    const isFragile  = s.net_dhp < 30 || mom < -35;
+    const base       = isFragile ? '251,113,133' : '103,232,249';
+    const radius     = (active.atr ? atrVal : 5) * (2.2 + strength * 2.5);
+    const len        = 180 + strength * 480;
+
+    for (let k = 0; k < 7; k++) {
+      const yy = y + (k-3) * radius * .22;
+      const alpha = (.04 + strength*.07) * (1 - Math.abs(k-3)/4);
+      const g = ctx.createLinearGradient(20, yy, 20+len, yy);
+      g.addColorStop(0, `rgba(${base},${alpha*2.2})`);
+      g.addColorStop(.45, `rgba(${base},${alpha})`);
+      g.addColorStop(1, 'rgba(0,0,0,0)');
+      ctx.fillStyle = g;
+      roundRect(ctx, 30, yy-radius/2, len, radius, Math.max(6, radius/2));
+      ctx.fill();
+    }
+    ctx.shadowColor = `rgba(${base},.6)`; ctx.shadowBlur = 16 + strength*16;
+    ctx.fillStyle = `rgba(${base},${.16 + strength*.18})`;
+    roundRect(ctx, 38, y-7, len*.6, 14, 7); ctx.fill();
+    ctx.shadowBlur = 0;
+    ctx.fillStyle = 'rgba(226,232,240,.84)';
+    ctx.font = '9px monospace';
+    ctx.fillText(`${s.strike} · ${isFragile?'FRAGILE':'ABSORB'} · GEX ${(s.net_gex/1000).toFixed(0)}k`, 50, y+3);
+  });
+
+  // PAD levels overlay
+  const es = raw.levels_es || {};
+  const levelDefs = [
+    { val:es.call_wall,  color:'#fb7185', label:'Call Wall',   dash:[] },
+    { val:es.gamma_flip, color:'#fbbf24', label:'Gamma Flip',  dash:[6,4] },
+    { val:es.gamma_node, color:'#e879f9', label:'Gamma Node',  dash:[4,4] },
+    { val:es.put_wall,   color:'#34d399', label:'Put Wall',    dash:[] },
+    { val:es.gravity_pin,color:'#67e8f9', label:'Gravity Pin', dash:[3,3] },
+  ];
+  levelDefs.forEach(lv => {
+    if (!lv.val) return;
+    const y = priceSeries.priceToCoordinate(lv.val);
+    if (y == null) return;
+    ctx.strokeStyle = lv.color; ctx.lineWidth = 1.2;
+    ctx.setLineDash(lv.dash);
+    ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(rect.width, y); ctx.stroke();
+    ctx.setLineDash([]);
+    ctx.fillStyle = lv.color; ctx.font = 'bold 8px monospace';
+    ctx.fillText(`${lv.label} ${lv.val}`, rect.width - 120, y - 3);
+  });
+}
+
+function roundRect(ctx, x, y, w, h, r) {
+  ctx.beginPath(); ctx.moveTo(x+r,y); ctx.arcTo(x+w,y,x+w,y+h,r); ctx.arcTo(x+w,y+h,x,y+h,r); ctx.arcTo(x,y+h,x,y,r); ctx.arcTo(x,y,x+w,y,r); ctx.closePath();
+}
+
+function resize() {
+  const p = document.getElementById('priceChart').getBoundingClientRect();
+  priceChart.applyOptions({ width:p.width, height:p.height });
+  const f = document.getElementById('flowChart').getBoundingClientRect();
+  flowChart.applyOptions({ width:f.width, height:f.height });
+  const c = document.getElementById('gaiaCanvas');
+  c.width = p.width * devicePixelRatio; c.height = p.height * devicePixelRatio;
+  c.style.width = p.width + 'px'; c.style.height = p.height + 'px';
+  drawGaia();
+}
+
+// ═══════════════════════════════════════════════════════════
+// BOOT & INTERVALS
+// ═══════════════════════════════════════════════════════════
+async function boot() {
+  buildCharts();
+  resize();
+  await loadGaia();
+  await fetchBarsAndRender();
+}
+
+boot();
+
+// Refresh bars every 60s (M1), GAIA every 5s
+setInterval(() => { if (isLive || tsToken.access_token) fetchBarsAndRender(); }, 60000);
+setInterval(async () => { await loadGaia(); if (lastCandles.length) { const atr = renderTech(lastCandles); updateUI(atr); drawGaia(); } }, 5000);
+// Token health check every 5 min
+setInterval(() => { if (tsToken.access_token && !tokenValid() && tsToken.refresh_token) refreshToken(); }, 300000);
+</script>
+</body>
+</html>
