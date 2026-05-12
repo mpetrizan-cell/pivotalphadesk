@@ -9,8 +9,12 @@ RAILWAY:
 """
 
 from flask import Flask, jsonify, request, send_from_directory, redirect, session, render_template_string
-import json, os, time, logging
+import json, os, time, logging, threading
 from functools import wraps
+try:
+    import requests as _requests
+except ImportError:
+    _requests = None
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 app = Flask(__name__, static_folder=BASE_DIR)
@@ -35,6 +39,79 @@ _last_push_etf = 0
 logging.basicConfig(level=logging.INFO,
     format='%(asctime)s [%(levelname)s] %(message)s')
 log = logging.getLogger(__name__)
+
+# ── TRADESTATION TOKEN (env vars en Railway) ───────────────────────────────────
+TS_CLIENT_ID    = os.environ.get('TS_CLIENT_ID', 'HMVux6j6ncGeYOVFbWVXyB0lSVL4WkWe')
+TS_AUTH_URL     = 'https://signin.tradestation.com/oauth/token'
+TS_API_URL      = 'https://api.tradestation.com'
+_ts_token = {
+    'access_token':  os.environ.get('TS_ACCESS_TOKEN', ''),
+    'refresh_token': os.environ.get('TS_REFRESH_TOKEN', ''),
+    'saved_at':      float(os.environ.get('TS_SAVED_AT', '0')),
+    'expires_in':    int(os.environ.get('TS_EXPIRES_IN', '1200')),
+}
+_ts_lock = threading.Lock()
+
+def _ts_token_valid():
+    age = time.time() - _ts_token['saved_at']
+    return bool(_ts_token['access_token']) and age < (_ts_token['expires_in'] - 60)
+
+def _ts_refresh():
+    global _ts_token
+    if not _ts_token['refresh_token']:
+        log.warning('TS refresh: no refresh_token available')
+        return False
+    if not _requests:
+        log.warning('TS refresh: requests library not available')
+        return False
+    try:
+        r = _requests.post(TS_AUTH_URL, data={
+            'grant_type':    'refresh_token',
+            'client_id':     TS_CLIENT_ID,
+            'refresh_token': _ts_token['refresh_token'],
+        }, timeout=10)
+        if r.status_code != 200:
+            log.warning(f'TS refresh failed: {r.status_code}')
+            return False
+        data = r.json()
+        with _ts_lock:
+            _ts_token['access_token'] = data['access_token']
+            if 'refresh_token' in data:
+                _ts_token['refresh_token'] = data['refresh_token']
+            _ts_token['saved_at']   = time.time()
+            _ts_token['expires_in'] = data.get('expires_in', 1200)
+        log.info('TS token refreshed OK')
+        return True
+    except Exception as e:
+        log.warning(f'TS refresh exception: {e}')
+        return False
+
+def _ts_ensure_token():
+    if _ts_token_valid():
+        return True
+    with _ts_lock:
+        if _ts_token_valid():
+            return True
+        return _ts_refresh()
+
+# Token refresh endpoint — llamado desde ts_gaia_chart.py local para actualizar
+@app.route('/push_token', methods=['POST'])
+def push_token():
+    global _ts_token
+    token = request.headers.get('X-Push-Token', '')
+    if token != PUSH_TOKEN:
+        return jsonify({'error': 'unauthorized'}), 401
+    try:
+        data = request.get_json(force=True)
+        with _ts_lock:
+            if 'access_token'  in data: _ts_token['access_token']  = data['access_token']
+            if 'refresh_token' in data: _ts_token['refresh_token'] = data['refresh_token']
+            if 'saved_at'      in data: _ts_token['saved_at']      = float(data['saved_at'])
+            if 'expires_in'    in data: _ts_token['expires_in']    = int(data['expires_in'])
+        log.info('TS token updated via /push_token')
+        return jsonify({'status': 'ok'})
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
 
 # ── LOGIN PAGE ─────────────────────────────────────────────────────────────────
 LOGIN_HTML = """
@@ -172,6 +249,9 @@ iframe{width:100%;height:100%;border:none;}
   </a>
   <a href="/alerts" class="tab {% if active == 'alerts' %}active{% endif %}">
     Alerts
+  </a>
+  <a href="/terminal" class="tab {% if active == 'terminal' %}active{% endif %}" style="{% if active == 'terminal' %}background:rgba(103,232,249,0.12);border-color:#67e8f9;color:#67e8f9;{% endif %}">
+    LW Terminal
   </a>
 </div>
 <div class="frame-wrap">
@@ -493,6 +573,75 @@ def health():
         'dhp_spy':  _live_data_etf.get('spy',{}).get('total_dhp') if _live_data_etf else None,
         'dhp_qqq':  _live_data_etf.get('qqq',{}).get('total_dhp') if _live_data_etf else None,
     })
+
+# ── BARS ENDPOINT ─────────────────────────────────────────────────────────────
+TF_CONFIG = {
+    'M1':  {'unit': 'Minute', 'interval': 1,  'barsback': 200},
+    'M5':  {'unit': 'Minute', 'interval': 5,  'barsback': 100},
+    'M15': {'unit': 'Minute', 'interval': 15, 'barsback': 80},
+}
+
+@app.route('/bars')
+@require_auth
+def bars():
+    symbol = request.args.get('symbol', 'ESM26').upper()
+    tf     = request.args.get('tf', 'M1').upper()
+    cfg    = TF_CONFIG.get(tf, TF_CONFIG['M1'])
+
+    if not _ts_ensure_token():
+        return jsonify({'error': 'token unavailable', 'status': 'auth_failed'}), 503
+
+    if not _requests:
+        return jsonify({'error': 'requests not installed on server'}), 500
+
+    url = (f"{TS_API_URL}/v3/marketdata/barcharts/{symbol}"
+           f"?unit={cfg['unit']}&interval={cfg['interval']}&barsback={cfg['barsback']}")
+    try:
+        r = _requests.get(url, headers={'Authorization': f"Bearer {_ts_token['access_token']}"}, timeout=10)
+        if r.status_code == 401:
+            # Try refresh once
+            if _ts_refresh():
+                r = _requests.get(url, headers={'Authorization': f"Bearer {_ts_token['access_token']}"}, timeout=10)
+            else:
+                return jsonify({'error': 'token expired', 'status': 'auth_failed'}), 401
+        if not r.ok:
+            return jsonify({'error': f'TS API {r.status_code}', 'status': 'api_error'}), 502
+        data = r.json()
+        bars_raw = data.get('Bars', data.get('bars', []))
+        bars_out = []
+        for b in bars_raw:
+            try:
+                bars_out.append({
+                    'time':  int(time.mktime(time.strptime(
+                                 (b.get('TimeStamp') or b.get('timestamp',''))[:19],
+                                 '%Y-%m-%dT%H:%M:%S'))),
+                    'open':  float(b.get('Open',  b.get('open',  0))),
+                    'high':  float(b.get('High',  b.get('high',  0))),
+                    'low':   float(b.get('Low',   b.get('low',   0))),
+                    'close': float(b.get('Close', b.get('close', 0))),
+                    'volume':int(b.get('TotalVolume', b.get('volume', 0))),
+                })
+            except Exception:
+                continue
+        resp = jsonify({'status': 'ok', 'symbol': symbol, 'tf': tf, 'bars': bars_out, 'count': len(bars_out)})
+        resp.headers['Cache-Control'] = 'no-cache, no-store, must-revalidate'
+        return resp
+    except Exception as e:
+        log.warning(f'/bars error: {e}')
+        return jsonify({'error': str(e)}), 500
+
+# ── LW TERMINAL ROUTE ─────────────────────────────────────────────────────────
+@app.route('/terminal')
+@require_auth
+def terminal():
+    return render_template_string(DASHBOARD_HTML,
+        active='terminal', page='gaia_lw_terminal_v8.html',
+        spot=get_spot(), trial_days=get_trial_days())
+
+@app.route('/gaia_lw_terminal_v8.html')
+@require_auth
+def serve_terminal():
+    return send_from_directory(BASE_DIR, 'gaia_lw_terminal_v8.html')
 
 # ── MAIN ───────────────────────────────────────────────────────────────────────
 if __name__ == '__main__':
