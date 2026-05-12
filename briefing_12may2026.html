@@ -1,0 +1,525 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PivotAlphaDesk · GAIA Briefing · May 12, 2026</title>
+<link rel="stylesheet" href="briefing-styles.css">
+</head>
+<body>
+
+<div class="terminal-bar">
+  <div class="logo">Pivot<span>Alpha</span>Desk · GAIA Framework</div>
+  <div class="ts" style="color:#6e7681;font-size:11px;">
+    <span class="date">TUESDAY · MAY 12, 2026</span>
+    &nbsp;|&nbsp;<span class="time">07:52 ET</span>
+    &nbsp;|&nbsp;CPI DAY · PRE-MARKET
+  </div>
+  <div class="live-dot"><div class="dot"></div>LIVE</div>
+</div>
+
+<div class="amp-banner">
+  ⚡ SPX AMPLIFIED · ES DAMPENED · CPI 08:30 ET · SPX GP=NODE=7,415 · DO NOT TRADE BEFORE 10:00 AM
+  &nbsp;|&nbsp;<span>ES 7,410 · NQ 29,219 · CL 101.99 · SPX 7,412 · 1σ ES: 7,378–7,443</span>
+</div>
+
+<div class="data-banner">
+  ⚠️ CPI APR AT 08:30 ET — WAIT FOR SYSTEM READ BEFORE ANY TRADE · NO FIRST 30 MINUTES RULE ACTIVE
+  &nbsp;|&nbsp;<span>ES GP 7,185 · SPX GP 7,415 · NQ GP 29,040 · CL GP 91.75</span>
+</div>
+
+<div class="main">
+
+<!-- SNAPSHOT -->
+<div class="section-header damp">
+  <span class="num">01</span>
+  <span class="title">Pre-Market Snapshot · CPI Day</span>
+  <span class="sub">07:52 ET · May 12, 2026 · ES DAMPENED / SPX AMPLIFIED</span>
+</div>
+
+<div class="snapshot-grid">
+  <div class="snap-card es">
+    <div class="instrument">ES · ESM26 · DAMPENED</div>
+    <div class="spot warn">7,410.25</div>
+    <div class="rows">
+      <div class="row"><span class="lbl">EMA200</span><span class="val above">7,385.33 ↑ +25 pts</span></div>
+      <div class="row"><span class="lbl">VWAP</span><span class="val danger">7,417.48 ↓ below</span></div>
+      <div class="row"><span class="lbl">VAH / POC / VAL</span><span class="val warn">7,428 / 7,406 / 7,412</span></div>
+      <div class="row"><span class="lbl">Gamma Flip</span><span class="val above">7,185 ← 225 pts below</span></div>
+      <div class="row"><span class="lbl">Call Wall</span><span class="val warn">7,525</span></div>
+      <div class="row"><span class="lbl">Emergency Anchor</span><span class="val warn">7,400 ← near spot</span></div>
+      <div class="row"><span class="lbl">1σ Range</span><span class="val warn">7,378 – 7,443</span></div>
+    </div>
+    <span class="rf-badge rf-amp">RF -14 · Distribution · Below VWAP</span>
+  </div>
+
+  <div class="snap-card nq">
+    <div class="instrument">NQ · NQM26 · DAMPENED</div>
+    <div class="spot dn">29,219.50</div>
+    <div class="rows">
+      <div class="row"><span class="lbl">EMA200</span><span class="val above">28,942.59 ↑ +277 pts</span></div>
+      <div class="row"><span class="lbl">VWAP</span><span class="val danger">29,278.01 ↓ below</span></div>
+      <div class="row"><span class="lbl">VAH / POC / VAL</span><span class="val warn">29,331 / 29,165 / 29,224</span></div>
+      <div class="row"><span class="lbl">Gamma Flip</span><span class="val warn">29,040 ← 179 pts below</span></div>
+      <div class="row"><span class="lbl">Put Wall</span><span class="val danger">29,100 ← critical</span></div>
+      <div class="row"><span class="lbl">1σ Range</span><span class="val warn">29,002 – 29,436</span></div>
+    </div>
+    <span class="rf-badge rf-danger">RF -21 · Distribution · Weak structure</span>
+  </div>
+
+  <div class="snap-card cl">
+    <div class="instrument">CL · CLM26 · DAMPENED</div>
+    <div class="spot up">101.99</div>
+    <div class="rows">
+      <div class="row"><span class="lbl">EMA200</span><span class="val above">98.23 ↑ +3.76</span></div>
+      <div class="row"><span class="lbl">VWAP</span><span class="val above">100.30 ↑ above</span></div>
+      <div class="row"><span class="lbl">VAH / POC / VAL</span><span class="val warn">100.75 / 98.00 / 98.88</span></div>
+      <div class="row"><span class="lbl">Gamma Flip</span><span class="val above">91.75 ← far below</span></div>
+      <div class="row"><span class="lbl">Call Wall</span><span class="val warn">104 ← near 1σ hi</span></div>
+      <div class="row"><span class="lbl">Put Wall</span><span class="val warn">100 ← key support</span></div>
+    </div>
+    <span class="rf-badge rf-pos">RF +22 · P-Profile · Above VWAP</span>
+  </div>
+
+  <div class="snap-card spx">
+    <div class="instrument">SPX · CBOE · AMPLIFIED · IV 19.47%</div>
+    <div class="spot amp">7,412.95</div>
+    <div class="rows">
+      <div class="row"><span class="lbl">EMA200</span><span class="val above">7,229.88 ↑ +183 pts</span></div>
+      <div class="row"><span class="lbl">VAH / POC / VAL</span><span class="val warn">7,424 / 7,408 / 7,412</span></div>
+      <div class="row"><span class="lbl">GP = NODE = GF_INTRA</span><span class="val amp">7,415 ← AT SPOT ⚠️</span></div>
+      <div class="row"><span class="lbl">Call Wall GC1</span><span class="val warn">7,600 · OI 40,955</span></div>
+      <div class="row"><span class="lbl">Put Wall GF3</span><span class="val danger">7,175 · OI 19,019</span></div>
+      <div class="row"><span class="lbl">IV%</span><span class="val amp">19.47% ← elevated</span></div>
+    </div>
+    <span class="rf-badge rf-amp">⚡ AMPLIFIED · GP=NODE=7,415 · SPOT AT FLIP</span>
+  </div>
+</div>
+
+<!-- CPI CONTEXT -->
+<div class="context-alert warn">
+  <div class="ctx-title">⚠️ CPI DAY — PROTOCOL</div>
+  CPI April releases at <strong>08:30 ET</strong>. Previous 0.2% · Consensus 0.3%.
+  In AMPLIFIED regime, CPI creates large fast moves. The system needs time to recalibrate after the data.
+  <strong>Do not trade before 10:00 AM ET.</strong> Let the market show direction first.
+  Read Pressure Map DSI/VTS/Trade Permission at 08:35 AM — that defines the day.
+  <strong>Cool CPI</strong> → DSI rises, VTS falls → FAVORABLE → 7,450+ target.
+  <strong>Hot CPI</strong> → VTS rises to ARMING/ACTIVE → FRAGILE/DEFENSIVE → no trade until structure stabilizes.
+</div>
+
+<div class="context-alert amp">
+  <div class="ctx-title">⚡ KEY STRUCTURAL FACT — SPX GP = NODE = 7,415</div>
+  Spot is at <strong>7,412</strong> — only 3 points below the Gamma Flip.
+  This is the volatility trigger. The system is at the boundary.
+  <strong>Above 7,415</strong> → AMPLIFIED bullish → dealers amplify moves up → 7,500+ possible.
+  <strong>Below 7,415</strong> → AMPLIFIED bearish → dealers amplify moves down → 7,200–7,175 next structural support.
+  ES is DAMPENED with flip at 7,185 — ES has more cushion. SPX is more sensitive today.
+  NQ is the weakest — GP 29,040 only 179 pts below spot, Put Wall 29,100 is critical.
+</div>
+
+<!-- GAIA DHP -->
+<div class="section-header damp">
+  <span class="num">02</span>
+  <span class="title">GAIA DHP · Pre-Market State</span>
+  <span class="sub">Pre-open · NEUTRAL expected · CPI at 08:30 ET</span>
+</div>
+
+<div class="gaia-panel">
+  <div class="gaia-grid">
+    <div class="gaia-metric"><div class="lbl">DHP Pre-Open</div><div class="val" style="color:#e3b341">0M neutral</div></div>
+    <div class="gaia-metric"><div class="lbl">ES Regime</div><div class="val" style="color:#3fb950">DAMPENED</div></div>
+    <div class="gaia-metric"><div class="lbl">SPX Regime</div><div class="val" style="color:var(--amplified)">AMPLIFIED</div></div>
+    <div class="gaia-metric"><div class="lbl">SPX GP / NODE</div><div class="val" style="color:var(--amplified)">7,415 ⚠️</div></div>
+    <div class="gaia-metric"><div class="lbl">NQ Put Wall</div><div class="val" style="color:var(--blue)">29,100</div></div>
+    <div class="gaia-metric"><div class="lbl">CPI</div><div class="val" style="color:var(--red)">08:30 ET</div></div>
+  </div>
+  <div class="gaia-note">
+    <strong>CPI + AMPLIFIED = highest volatility setup of the week.</strong>
+    After CPI: wait for DHP to show direction. BLD is warning. ACC is signal.
+    NEUTRAL = do not operate. Read Pressure Map first.
+    <strong>10:00 AM ET = earliest valid entry time today.</strong>
+  </div>
+</div>
+
+<!-- ES -->
+<div class="section-header damp">
+  <span class="num">03</span>
+  <span class="title">ES · E-Mini S&P 500</span>
+  <span class="sub">ESM26 · DAMPENED · EA 7,400 near spot · 1σ 7,378–7,443</span>
+</div>
+
+<div class="instrument-grid">
+  <div class="inst-card">
+    <div class="inst-header">
+      <span class="inst-tag tag-es">ES</span>
+      <span style="color:#6e7681;font-size:10px;">PAD ZONES · MAY 12 · DAMPENED</span>
+      <span class="inst-spot warn">7,410.25</span>
+    </div>
+    <table class="pad-table">
+      <tr><th>Zone</th><th>Strike</th><th>Label</th><th>Note</th></tr>
+      <tr><td class="zone-call">▲ CW</td><td class="zone-call">7,525</td><td>Call Wall principal</td><td>Strong ceiling</td></tr>
+      <tr><td class="zone-anchor">📍 EA</td><td class="zone-anchor">7,400</td><td>Emergency Anchor ← NEAR</td><td>Key support today</td></tr>
+      <tr><td class="zone-put">▼ PW</td><td class="zone-put">7,200</td><td>Put Wall principal</td><td>Major floor</td></tr>
+      <tr><td class="zone-flip">◆ GP</td><td class="zone-flip">7,185</td><td>Gamma Flip ES</td><td>225 pts below — safe</td></tr>
+    </table>
+  </div>
+  <div class="inst-card">
+    <div class="inst-header">
+      <span class="inst-tag tag-es">ES</span>
+      <span style="color:#6e7681;font-size:10px;">TPO + CPI CONTEXT</span>
+    </div>
+    <div class="tpo-row">
+      <div class="tpo-chip warn">VAH 7,428</div>
+      <div class="tpo-chip warn">POC 7,406</div>
+      <div class="tpo-chip warn">VAL 7,412</div>
+      <div class="tpo-chip below">VWAP 7,417 ↓</div>
+      <div class="tpo-chip above">EMA200 7,385</div>
+      <div class="tpo-chip below">RF -14 · Distribution</div>
+    </div>
+    <div class="plan-box">
+      <div class="plan-title">📋 ES Read — May 12 · CPI Day</div>
+      <ul>
+        <li class="key">EA 7,400 = key intraday support. Hold → bullish. Lose → 7,378 sigma low.</li>
+        <li class="key">VWAP 7,417 = first resistance. Reclaim → structure improves.</li>
+        <li class="warn">Distribution profile RF -14 — overnight sellers dominant.</li>
+        <li class="bull">Cool CPI + DHP ACC.BULL → reclaim VWAP → 7,443 sigma hi → 7,525 CW</li>
+        <li class="bear">Hot CPI + DHP ACC.BEAR → lose EA 7,400 → 7,378 sigma lo → 7,200 PW</li>
+        <li class="amp">DAMPENED means ES moves slower than SPX after CPI — SPX leads.</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- NQ -->
+<div class="section-header damp">
+  <span class="num">04</span>
+  <span class="title">NQ · E-Mini Nasdaq 100</span>
+  <span class="sub">NQM26 · DAMPENED · Put Wall 29,100 critical · GP 29,040</span>
+</div>
+
+<div class="instrument-grid">
+  <div class="inst-card">
+    <div class="inst-header">
+      <span class="inst-tag tag-nq">NQ</span>
+      <span style="color:#6e7681;font-size:10px;">PAD ZONES · MAY 12</span>
+      <span class="inst-spot dn">29,219.50</span>
+    </div>
+    <table class="pad-table">
+      <tr><th>Zone</th><th>Strike</th><th>Label</th><th>Note</th></tr>
+      <tr><td class="zone-call">▲ CW</td><td class="zone-call">29,500</td><td>Call Wall</td><td>Ceiling</td></tr>
+      <tr><td class="zone-flip">◆ GP</td><td class="zone-flip">29,040</td><td>Gamma Flip ← NEAR</td><td>179 pts below</td></tr>
+      <tr><td class="zone-put">▼ PW</td><td class="zone-put">29,100</td><td>Put Wall ← CRITICAL</td><td>Break = accelerate</td></tr>
+      <tr><td class="zone-anchor">📍 EA</td><td class="zone-anchor">29,050</td><td>Emergency Anchor</td><td>Just above GP</td></tr>
+      <tr><td class="zone-put">▼ 1σ lo</td><td class="zone-put">29,002</td><td>Sigma Low</td><td>Near PW + GP cluster</td></tr>
+    </table>
+  </div>
+  <div class="inst-card">
+    <div class="inst-header">
+      <span class="inst-tag tag-nq">NQ</span>
+      <span style="color:#6e7681;font-size:10px;">WEAKEST INSTRUMENT TODAY</span>
+    </div>
+    <div class="tpo-row">
+      <div class="tpo-chip below">VAH 29,331</div>
+      <div class="tpo-chip warn">POC 29,165</div>
+      <div class="tpo-chip below">VWAP 29,278 ↓</div>
+      <div class="tpo-chip above">EMA200 28,942</div>
+      <div class="tpo-chip below">RF -21 · Weak</div>
+    </div>
+    <div class="plan-box">
+      <div class="plan-title">📋 NQ Read — May 12 · Most Fragile</div>
+      <ul>
+        <li class="warn">NQ is the weakest — distribution RF -21, below VWAP, near PW 29,100.</li>
+        <li class="key">29,100 PW + 29,050 EA + 29,040 GP = cluster of 3 critical levels in 60 pts.</li>
+        <li class="warn">1σ low 29,002 is just below that cluster — almost no margin.</li>
+        <li class="bull">Cool CPI → reclaim VWAP 29,278 → 29,331 VAH → 29,436 sigma hi</li>
+        <li class="bear">Hot CPI → lose PW 29,100 → GP 29,040 → sigma lo 29,002 → fast move</li>
+        <li class="amp">NQ leads on downside in AMPLIFIED — watch NQ first for direction signal.</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- CL -->
+<div class="section-header damp">
+  <span class="num">05</span>
+  <span class="title">CL · Crude Oil WTI</span>
+  <span class="sub">CLM26 · DAMPENED · CW 104 = sigma hi · PW 100 key support</span>
+</div>
+
+<div class="instrument-grid">
+  <div class="inst-card">
+    <div class="inst-header">
+      <span class="inst-tag tag-cl">CL</span>
+      <span style="color:#6e7681;font-size:10px;">PAD ZONES · MAY 12</span>
+      <span class="inst-spot up">101.99</span>
+    </div>
+    <table class="pad-table">
+      <tr><th>Zone</th><th>Strike</th><th>Label</th><th>Note</th></tr>
+      <tr><td class="zone-call">▲ CW</td><td class="zone-call">104</td><td>Call Wall = 1σ hi</td><td>Very strong ceiling</td></tr>
+      <tr><td class="zone-put">▼ PW</td><td class="zone-put">100</td><td>Put Wall ← structural</td><td>Round number + OI</td></tr>
+      <tr><td class="zone-anchor">📍 EA</td><td class="zone-anchor">95</td><td>Emergency Anchor</td><td>Far below</td></tr>
+      <tr><td class="zone-flip">◆ GP</td><td class="zone-flip">91.75</td><td>Gamma Flip</td><td>Far below — safe</td></tr>
+    </table>
+  </div>
+  <div class="inst-card">
+    <div class="inst-header">
+      <span class="inst-tag tag-cl">CL</span>
+      <span style="color:#6e7681;font-size:10px;">P-PROFILE · ABOVE VWAP</span>
+    </div>
+    <div class="tpo-row">
+      <div class="tpo-chip warn">VAH 100.75</div>
+      <div class="tpo-chip above">POC 98.00</div>
+      <div class="tpo-chip above">VWAP 100.30 ↑</div>
+      <div class="tpo-chip above">EMA200 98.23</div>
+      <div class="tpo-chip above">RF +22 · P-Profile</div>
+    </div>
+    <div class="plan-box">
+      <div class="plan-title">📋 CL Read — May 12 · Bullish structure</div>
+      <ul>
+        <li class="key">Only bullish instrument pre-market. P-profile, above VWAP, above EMA200.</li>
+        <li class="key">CW 104 coincides with 1σ hi — very strong double ceiling.</li>
+        <li class="key">PW 100 = key support. Hold above → bullish bias.</li>
+        <li class="bull">Hold 100 PW + DHP BULL → test CW 104 (difficult to break)</li>
+        <li class="bear">Hot CPI → risk-off → lose PW 100 → EA 95 → GP 91.75</li>
+        <li class="amp">CL correlated with risk-on/off. Watch ES direction for CL bias.</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- SPX -->
+<div class="section-header">
+  <span class="num">06</span>
+  <span class="title">SPX · S&P 500 Index</span>
+  <span class="sub">AMPLIFIED · GP=NODE=7,415 AT SPOT · IV 19.47% · GC1 7,600 OI 40,955</span>
+</div>
+
+<div class="instrument-grid">
+  <div class="inst-card">
+    <div class="inst-header">
+      <span class="inst-tag tag-spx">SPX</span>
+      <span style="color:#6e7681;font-size:10px;">PAD ZONES · MAY 12 · AMPLIFIED</span>
+      <span class="inst-spot amp">7,412.95</span>
+    </div>
+    <table class="pad-table">
+      <tr><th>Zone</th><th>Strike</th><th>OI</th><th>Label</th></tr>
+      <tr><td class="zone-call">▲ GC1</td><td class="zone-call">7,600</td><td>40,955</td><td>Call Wall ← massive OI</td></tr>
+      <tr><td class="zone-call">▲ GC2</td><td class="zone-call">7,515</td><td>23,089</td><td>Call Wall 2</td></tr>
+      <tr><td class="zone-call">▲ GC3</td><td class="zone-call">7,500</td><td>15,478</td><td>Gamma Ceiling</td></tr>
+      <tr><td class="zone-anchor">📍 TA</td><td class="zone-anchor">7,450</td><td>—</td><td>Tactical Anchor</td></tr>
+      <tr><td class="zone-flip">◆ GP=NODE</td><td class="zone-flip">7,415</td><td>Net GEX</td><td>Volatility Trigger ← AT SPOT</td></tr>
+      <tr><td class="zone-put">▼ GF1</td><td class="zone-put">7,215</td><td>9,210</td><td>Gamma Floor 1</td></tr>
+      <tr><td class="zone-put">▼ GF2</td><td class="zone-put">7,200</td><td>16,413</td><td>Gamma Floor 2</td></tr>
+      <tr><td class="zone-put">▼ GF3</td><td class="zone-put">7,175</td><td>19,019</td><td>Put Wall dominant</td></tr>
+      <tr><td class="zone-put">▼ EA</td><td class="zone-put">7,075</td><td>18,245</td><td>Emergency Anchor</td></tr>
+    </table>
+  </div>
+  <div class="inst-card">
+    <div class="inst-header">
+      <span class="inst-tag tag-spx">SPX</span>
+      <span style="color:#6e7681;font-size:10px;">AMPLIFIED · GP AT SPOT</span>
+    </div>
+    <div class="tpo-row">
+      <div class="tpo-chip amp">VAH 7,424</div>
+      <div class="tpo-chip amp">POC 7,408</div>
+      <div class="tpo-chip amp">VAL 7,412</div>
+      <div class="tpo-chip above">EMA200 7,229</div>
+      <div class="tpo-chip amp">IV 19.47%</div>
+      <div class="tpo-chip amp">RF +4 · AMPLIFIED</div>
+    </div>
+    <div class="plan-box">
+      <div class="plan-title">📋 SPX Read — May 12 · GP at spot = maximum sensitivity</div>
+      <ul>
+        <li class="amp">GP = NODE = 7,415 with spot at 7,412. Market is 3 points from the volatility trigger.</li>
+        <li class="key">IV 19.47% — elevated. Options are pricing significant post-CPI move.</li>
+        <li class="key">GC1 7,600 with 40,955 OI — the largest single level in SPX structure. Dominant ceiling.</li>
+        <li class="bull">Cool CPI → above GP 7,415 → AMPLIFIED bullish → TA 7,450 → 7,500–7,515</li>
+        <li class="bear">Hot CPI → below GP 7,415 → AMPLIFIED bearish → 7,215 GF1 → 7,175 PW → fast</li>
+        <li class="warn">Put Wall at 7,175 with 19K OI — if reached, the move will be extreme and fast.</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- EDGE -->
+<div class="section-header">
+  <span class="num">07</span>
+  <span class="title">GAIA Edge · 3-Scenario Framework</span>
+  <span class="sub">CPI determines direction · GP 7,415 is the binary level · No trade before 10:00 AM</span>
+</div>
+
+<div class="synth-box">
+  <span class="amp-note">⚡ CPI DAY SYNTHESIS — MAY 12, 2026:</span><br><br>
+  Today is binary. CPI at 08:30 ET determines the week's direction.
+  The structural setup is extreme: <strong>SPX GP = NODE = 7,415 with spot at 7,412 — 3 points from the volatility trigger.</strong>
+  ES is DAMPENED with GP 225 pts below — more cushion. SPX is AMPLIFIED sitting on its trigger.<br><br>
+  NQ is the most fragile — RF -21, distribution profile, below VWAP, with Put Wall 29,100 / EA 29,050 / GP 29,040 all within 60 points.
+  CL is the only bullish instrument — P-profile, above VWAP, risk-on tone.<br><br>
+  <strong>The rule today: do not trade before 10:00 AM ET.</strong>
+  Read the Pressure Map at 08:35 after CPI. DSI/VTS/Trade Permission will define the environment.
+  If Permission = DEFENSIVE → no trade all morning. If FAVORABLE → wait for DHP to show ACC direction.
+</div>
+
+<div class="edge-grid">
+  <div class="scenario-card base">
+    <div class="sc-header sc-base">📊 BASE SCENARIO</div>
+    <div class="pct" style="color:var(--cyan)">35%</div>
+    <div class="desc">
+      CPI in line with consensus (0.3%). Market digests — volatile but no directional resolution.
+      SPX oscillates around GP 7,415. ES holds EA 7,400. NQ tests PW 29,100 but holds.
+      DHP choppy, no clear ACC signal. Wait for structure to settle post-10:00 AM.
+      Wide swings, no clean trend. AMPLIFIED means both sides get tested.
+    </div>
+    <div class="levels">SPX: 7,375–7,450 | ES: 7,378–7,443 | NQ: 29,100–29,330</div>
+  </div>
+
+  <div class="scenario-card bull">
+    <div class="sc-header sc-bull">🟢 BULL SCENARIO</div>
+    <div class="pct" style="color:var(--green)">35%</div>
+    <div class="desc">
+      CPI cool (0.2% or below). Rates rally, risk-on. SPX breaks above GP 7,415 → AMPLIFIED bullish.
+      ES reclaims VWAP 7,417 → 7,443 sigma hi → 7,525 CW.
+      NQ leads — reclaim 29,278 VWAP → 29,436 sigma hi → 29,500 CW.
+      CL holds PW 100 → tests CW 104.
+      DHP builds ACC.BULL post-10:00 AM → first clean long setup.
+    </div>
+    <div class="levels">SPX target: 7,450 TA → 7,500 | ES: 7,443 → 7,525 | NQ: 29,436 → 29,500</div>
+  </div>
+
+  <div class="scenario-card bear">
+    <div class="sc-header sc-bear">🔴 BEAR SCENARIO</div>
+    <div class="pct" style="color:var(--red)">30%</div>
+    <div class="desc">
+      CPI hot (0.4%+). Hawkish fear. SPX drops below GP 7,415 → AMPLIFIED bearish → acceleration.
+      ES loses EA 7,400 → sigma lo 7,378 → PW 7,200 in sight.
+      NQ loses PW 29,100 → GP 29,040 → sigma lo 29,002 → very fast move.
+      CL loses PW 100 → risk-off.
+      AMPLIFIED means the bear scenario moves FASTER and FARTHER than expected.
+      Pressure Map will show FRAGILE/DEFENSIVE → no trade until structure stabilizes.
+    </div>
+    <div class="levels">SPX: 7,375 → 7,215 → 7,175 | ES: 7,378 → 7,200 | NQ: 29,100 → 29,002</div>
+  </div>
+</div>
+
+<!-- CALENDAR -->
+<div class="section-header damp">
+  <span class="num">08</span>
+  <span class="title">Economic Calendar · May 12, 2026</span>
+  <span class="sub">CPI 08:30 ET is the only event that matters today</span>
+</div>
+
+<table class="macro-table">
+  <tr><th>Time ET</th><th>Event</th><th>Previous</th><th>Consensus</th><th>Impact</th><th>PAD Note</th></tr>
+  <tr class="today-row">
+    <td><strong style="color:#ff8c42">08:30 AM ⚡</strong></td>
+    <td><strong style="color:#f0f6fc">CPI MoM APR ← KEY EVENT</strong></td>
+    <td>0.2%</td>
+    <td>0.3%</td>
+    <td class="imp-high">EXTREME ⚡</td>
+    <td class="pad-note">SPX GP at spot. Any surprise = large fast move. Read Pressure Map at 08:35.</td>
+  </tr>
+  <tr class="today-row">
+    <td>08:30 AM</td>
+    <td><strong style="color:#f0f6fc">Core CPI MoM APR</strong></td>
+    <td>0.3%</td>
+    <td>0.3%</td>
+    <td class="imp-high">HIGH</td>
+    <td class="pad-note">Fed's preferred measure. Hot = hawkish fear. Cool = rally fuel.</td>
+  </tr>
+  <tr>
+    <td>10:00 AM</td>
+    <td>Fed Williams Speech</td>
+    <td>—</td>
+    <td>—</td>
+    <td class="imp-med">MED</td>
+    <td class="pad-note">Post-CPI Fed reaction. Secondary to the data itself.</td>
+  </tr>
+</table>
+
+<!-- GAIA STRING -->
+<div class="section-header damp">
+  <span class="num">09</span>
+  <span class="title">GAIA String · SPX PAD Chart</span>
+  <span class="sub">AMPLIFIED · GP=NODE=7,415 · Copy → SPX PAD Chart → APPLY</span>
+</div>
+
+<div class="gaia-string-section">
+  <div class="gs-header">📋 SPX GAIA STRING · MAY 12, 2026 · AMPLIFIED · GP=NODE=7,415 · IV 19.47%</div>
+  <div class="gs-display">
+    <div class="gs-text" id="gaia-str">DATE:2026-05-12 ET|REGIME:AMPLIFIED|SPOT:7412.95|GC1:7600|GC2:7515|GC3:7500|GP:7415|NODE:7415|PIN:7415|TA:7450|GF1:7215|GF2:7200|GF3:7175|EA:7075|SIGMA_HI:7443.00|SIGMA_LO:7377.88|SIGMA_LBL:32.37 pts</div>
+    <button class="gs-copy" id="gs-btn" onclick="copyGS()">COPY →</button>
+  </div>
+  <div class="gs-steps">
+    1. Click <strong>COPY →</strong> &nbsp;·&nbsp;
+    2. Open <strong>SPX PAD Chart</strong> &nbsp;·&nbsp;
+    3. Paste in <strong>GAIA STRING</strong> input bar &nbsp;·&nbsp;
+    4. Click <strong>APPLY →</strong>
+  </div>
+</div>
+
+<!-- TWEETS -->
+<div class="section-header damp">
+  <span class="num">10</span>
+  <span class="title">Twitter · @PivotAlphaDesk</span>
+  <span class="sub">CPI Day · Publish 7:30–8:00 AM ET · Before data</span>
+</div>
+
+<div class="tweet-box">
+  <div class="tweet-header">
+    <div class="tweet-avatar">P</div>
+    <div><div class="tweet-name">PivotAlphaDesk</div><div class="tweet-handle">@PivotAlphaDesk</div></div>
+    <div class="tweet-label">TWEET 1 — OPERATIVE</div>
+  </div>
+  <div class="tweet-content">Pre-Market | TUE MAY 12 · CPI Day · ES Gamma
+
+CPI at 08:30 ET. Structure is at a binary level.
+
+⚡ Volatility Trigger: 7,415 (GP = Node · spot at 7,412)
+🔴 Bear target:       7,175 (Put Wall · 19K OI)
+🟢 Bull target:       7,450 → 7,500
+📍 ES:                7,410 · Below VWAP
+⚡ Regime:            SPX AMPLIFIED · GP at spot
+
+3 points separate DAMPENED from AMPLIFIED bearish.
+
+Above 7,415 → dealers amplify up.
+Below 7,415 → dealers amplify down.
+
+No trade before 10:00 AM ET.
+Read the structure first.
+
+Structure matters more than news.
+
+#ES_F #CPI #GammaLevels #SPX #OptionsFlow</div>
+  <div class="tweet-time">Ready to post · May 12, 2026 · 7:30–8:00 AM ET · Before CPI</div>
+</div>
+
+<div class="footer">
+  <span>PivotAlphaDesk</span> · GAIA Framework · May 12, 2026 · CPI Day Pre-Market Briefing<br>
+  For educational purposes only. Not financial advice. Trading futures involves substantial risk of loss.<br>
+  Source: CME · GAIA Analysis System · Nexa Processing Layer
+</div>
+
+</div>
+
+<script>
+function copyGS(){
+  var str=document.getElementById('gaia-str').textContent.trim();
+  var btn=document.getElementById('gs-btn');
+  navigator.clipboard.writeText(str).then(function(){
+    btn.textContent='✓ COPIED';btn.classList.add('copied');
+    setTimeout(function(){btn.textContent='COPY →';btn.classList.remove('copied');},2000);
+  }).catch(function(){
+    var range=document.createRange();
+    range.selectNode(document.getElementById('gaia-str'));
+    window.getSelection().removeAllRanges();
+    window.getSelection().addRange(range);
+    document.execCommand('copy');
+    window.getSelection().removeAllRanges();
+    btn.textContent='✓ COPIED';btn.classList.add('copied');
+    setTimeout(function(){btn.textContent='COPY →';btn.classList.remove('copied');},2000);
+  });
+}
+</script>
+</body>
+</html>
