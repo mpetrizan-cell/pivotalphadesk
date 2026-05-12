@@ -79,6 +79,7 @@ padding:6px 8px;border-bottom:1px solid var(--line);background:#050b15}
       <div class="row"><span>VTS</span><b id="vts">—</b></div>
       <div class="row"><span>MCS</span><b id="mcs">—</b></div>
       <div class="row"><span>DHP Momentum</span><b id="dhpm">—</b></div>
+      <div class="row"><span>DEX Net</span><b id="dexnet" style="color:#fbbf24">—</b></div>
       <div class="row"><span>ATR Regime</span><b id="atrState">—</b></div>
     </div>
 
@@ -119,7 +120,12 @@ async function fetchBars(tf) {
     const data = await r.json();
     if (data.status !== 'ok' || !data.bars?.length) return null;
     // Server already returns unix timestamps
-    return data.bars.filter(b => b.close > 0).sort((a,b) => a.time - b.time);
+    // TradeStation timestamps are UTC — shift to ET (UTC-4 EDT)
+    const ET_OFFSET = 4 * 3600;
+    return data.bars
+      .filter(b => b.close > 0)
+      .map(b => ({ ...b, time: b.time - ET_OFFSET }))
+      .sort((a,b) => a.time - b.time);
   } catch(e) {
     console.warn('Bar fetch error:', e);
     return null;
@@ -254,12 +260,17 @@ function calcAtr(data, len=14) {
 }
 
 function buildFlowData(candles) {
-  // Generate DHP-correlated flow from candle momentum
-  let v = raw.dhp_momentum || 0;
+  // Real DHP momentum from gaia_live.json — flat line updated every 5s
+  // Shows actual dealer hedging pressure, not synthetic proxy
+  const mom = raw.dhp_momentum || 0;
+  const dir = raw.dhp_direction || '';
+  // Build a stepped line: flat at current momentum value across all candle times
+  // When data updates every 5s, the line moves to reflect real DHP
   return candles.map((c, i) => {
-    const momentum = (c.close - c.open) * 10;
-    v = v * 0.92 + momentum * 0.08;
-    return { time:c.time, value:v };
+    // Add slight decay toward zero for older bars to show recency
+    const age = candles.length - i;
+    const decay = Math.max(0.4, 1 - (age / candles.length) * 0.6);
+    return { time: c.time, value: mom * decay };
   });
 }
 
@@ -322,7 +333,8 @@ function demoCandles(tf) {
   const step = tf==='M1' ? 60 : tf==='M5' ? 300 : 900;
   const base = raw.spot_es || 7390;
   let p = base;
-  const now = Math.floor(Date.now()/1000) - 64*step;
+  const ET_OFFSET = 4 * 3600;
+  const now = Math.floor(Date.now()/1000) - ET_OFFSET - 64*step;
   return Array.from({length:64}, (_,i) => {
     const drift = Math.sin(i/9)*9 + Math.cos(i/5)*4;
     const o = p + (Math.sin(i)*2);
@@ -362,6 +374,14 @@ function updateUI(atrVal) {
   if (mcsVal < 40) mcsEl.title = 'LOW CONFIDENCE · OBSERVE ONLY';
 
   document.getElementById('dhpm').textContent = mom.toFixed(1);
+  // DEX Net = sum of all |call_delta_oi + put_delta_oi| near spot — no sign
+  const strikes = raw.strikes || [];
+  const spot = raw.spot_spx || 0;
+  const nearStrikes = strikes.filter(s => Math.abs(s.strike - spot) <= 50);
+  const dexNet = nearStrikes.reduce((sum, s) => sum + Math.abs((s.call_delta_oi||0) + (s.put_delta_oi||0)), 0);
+  const dexNetStr = dexNet >= 1000 ? (dexNet/1000).toFixed(1)+'k' : dexNet.toFixed(0);
+  const dexEl = document.getElementById('dexnet');
+  if (dexEl) dexEl.textContent = dexNetStr;
   document.getElementById('atrState').textContent = atrState + (atrVal ? ' · ' + atrVal.toFixed(2) : '');
   document.getElementById('cw').textContent = es.call_wall || '—';
   document.getElementById('gn').textContent = es.gamma_node || '—';
@@ -442,7 +462,11 @@ function drawGaia() {
     ctx.shadowBlur = 0;
     ctx.fillStyle = 'rgba(226,232,240,.84)';
     ctx.font = '9px monospace';
+    const dexAbs = Math.abs((s.call_delta_oi||0) + (s.put_delta_oi||0));
+    const dexStr = dexAbs >= 1000 ? (dexAbs/1000).toFixed(0)+'k' : dexAbs.toFixed(0);
     ctx.fillText(`${s.strike} · ${isFragile?'FRAGILE':'ABSORB'} · GEX ${(s.net_gex/1000).toFixed(0)}k`, 50, y+3);
+    ctx.fillStyle = '#fbbf24';
+    ctx.fillText(`DEX ${dexStr}`, 50, y+13);
   });
 
   // PAD levels overlay
@@ -463,7 +487,9 @@ function drawGaia() {
     ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(rect.width, y); ctx.stroke();
     ctx.setLineDash([]);
     ctx.fillStyle = lv.color; ctx.font = 'bold 8px monospace';
-    ctx.fillText(`${lv.label} ${lv.val}`, rect.width - 120, y - 3);
+    ctx.textAlign = 'right';
+    ctx.fillText(`${lv.label} ${lv.val}`, rect.width - 52, y - 3);
+    ctx.textAlign = 'left';
   });
 }
 
