@@ -639,13 +639,13 @@ def bars():
 @require_auth
 def terminal():
     return render_template_string(DASHBOARD_HTML,
-        active='terminal', page='gaia_lw_terminal_v8.html',
+        active='terminal', page='gaia_structure_terminal_v9.html',
         spot=get_spot(), trial_days=get_trial_days())
 
-@app.route('/gaia_lw_terminal_v8.html')
+@app.route('/gaia_structure_terminal_v9.html')
 @require_auth
 def serve_terminal():
-    return send_from_directory(BASE_DIR, 'gaia_lw_terminal_v8.html')
+    return send_from_directory(BASE_DIR, 'gaia_structure_terminal_v9.html')
 
 # ── MAIN ───────────────────────────────────────────────────────────────────────
 if __name__ == '__main__':
