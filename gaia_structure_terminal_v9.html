@@ -1,0 +1,230 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>GAIA Structure Terminal v8f Clean Zones</title>
+<script src="https://unpkg.com/lightweight-charts@4.2.0/dist/lightweight-charts.standalone.production.js"></script>
+<style>
+:root{
+  --bg:#020611;--panel:#071020;--line:#1e293b;--txt:#e2e8f0;--muted:#64748b;
+  --cyan:#67e8f9;--violet:#e879f9;--red:#ef4444;--blue:#3b82f6;--yellow:#fbbf24;--green:#34d399;--teal:#14b8a6;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{width:100%;height:100%;overflow:hidden;background:var(--bg);color:var(--txt);font-family:ui-monospace,Consolas,monospace}
+.terminal{height:100vh;display:grid;grid-template-rows:42px 1fr 30px}
+.header{display:grid;grid-template-columns:1.6fr .7fr .7fr .8fr .95fr .9fr 1.15fr;gap:8px;padding:6px 8px;border-bottom:1px solid var(--line);background:#050b15}
+.box,.card,.bbox{border:1px solid var(--line);background:var(--panel);border-radius:8px}
+.box{padding:5px 9px;min-width:0}
+.lbl{font-size:7px;letter-spacing:.18em;color:var(--muted);text-transform:uppercase}
+.val{font-size:12px;font-weight:900;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.controls{display:flex;align-items:center;justify-content:flex-end;gap:7px}
+.btn{border:1px solid #334155;background:#071020;color:#94a3b8;border-radius:5px;padding:1px 8px;font-size:9px;cursor:pointer}
+.btn.active{border-color:var(--cyan);color:var(--cyan);background:#0d2330}
+.main{display:grid;grid-template-columns:245px 1fr 280px;min-height:0}
+.left,.right{padding:8px;background:#050b15;display:flex;flex-direction:column;gap:8px;min-height:0}
+.left{border-right:1px solid var(--line)}.right{border-left:1px solid var(--line)}
+.card{padding:8px}.card h3{font-size:8px;letter-spacing:.18em;color:#cbd5e1;margin-bottom:8px;text-transform:uppercase}
+.profile{flex:1;overflow:hidden}
+.gexRow{display:grid;grid-template-columns:36px 1fr 46px;gap:6px;align-items:center;height:24px;font-size:9px;border-bottom:1px solid rgba(30,41,59,.45)}
+.strike{font-weight:900;color:#cbd5e1}.barTrack{height:12px;background:#0f172a;border-left:1px solid #334155;border-right:1px solid #334155;border-radius:6px;position:relative;overflow:hidden}
+.bar{position:absolute;top:0;height:100%;border-radius:6px}.bar.pos{left:50%;background:linear-gradient(90deg,rgba(103,232,249,.25),rgba(103,232,249,.95));box-shadow:0 0 14px rgba(103,232,249,.45)}
+.bar.neg{right:50%;background:linear-gradient(270deg,rgba(239,68,68,.25),rgba(239,68,68,.95));box-shadow:0 0 14px rgba(239,68,68,.45)}
+.dexMini{position:absolute;top:4px;height:4px;border-radius:4px}.meta{font-size:8px;color:#94a3b8;text-align:right}
+.center{display:grid;grid-template-rows:1fr 150px;gap:6px;padding:6px;min-height:0}
+.wrap{position:relative;min-height:0}.chart{width:100%;height:100%;border:1px solid var(--line);border-radius:8px;overflow:hidden;background:#020611}
+#gaiaCanvas{position:absolute;inset:0;pointer-events:none;z-index:5}
+.row{display:flex;justify-content:space-between;gap:10px;font-size:10px;padding:4px 0;border-bottom:1px solid rgba(30,41,59,.55)}
+.row:last-child{border-bottom:0}.permission{height:10px;background:#0f172a;border-radius:6px;overflow:hidden;margin-top:8px}.permFill{height:100%;width:34%;background:linear-gradient(90deg,#ef4444,#fbbf24,#34d399)}
+.readout{font-size:10px;line-height:1.55;color:#cbd5e1}
+.bottom{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;padding:5px 8px;border-top:1px solid var(--line);background:#050b15}.bbox{padding:5px 8px;font-size:10px}
+.pill{display:inline-block;border:1px solid #334155;border-radius:4px;padding:1px 5px;font-size:8px;margin:0 4px 4px 0}
+</style>
+</head>
+<body>
+<div class="terminal">
+  <div class="header">
+    <div class="box"><div class="lbl">Terminal</div><div class="val">GAIA Structure Terminal v8f · Clean MAP Zones</div></div>
+    <div class="box"><div class="lbl">SPX</div><div class="val" id="spx"></div></div>
+    <div class="box"><div class="lbl">ES</div><div class="val" id="es"></div></div>
+    <div class="box"><div class="lbl">Regime</div><div class="val" id="regime"></div></div>
+    <div class="box"><div class="lbl">Permission</div><div class="val" id="permission"></div></div>
+    <div class="box"><div class="lbl">DEX</div><div class="val" id="dexHeader"></div></div>
+    <div class="box controls"><span class="lbl" id="tfmode">TF DEMO</span><button class="btn tf active" data-tf="M1">M1</button><button class="btn tf" data-tf="M5">M5</button><button class="btn tf" data-tf="M15">M15</button></div>
+  </div>
+
+  <div class="main">
+    <div class="left">
+      <div class="card"><h3>GEX / DEX Profile</h3>
+        <span class="pill" style="color:#67e8f9">GEX Absorb</span><span class="pill" style="color:#ef4444">GEX Fragile</span><span class="pill" style="color:#34d399">DEX Buy</span><span class="pill" style="color:#ef4444">DEX Sell</span>
+      </div>
+      <div class="card profile" id="gexProfile"></div>
+    </div>
+
+    <div class="center">
+      <div class="wrap"><div id="priceChart" class="chart"></div><canvas id="gaiaCanvas"></canvas></div>
+      <div class="wrap"><div id="flowChart" class="chart"></div></div>
+    </div>
+
+    <div class="right">
+      <div class="card"><h3>State Engine</h3>
+        <div class="row"><span>DSI</span><b id="dsi"></b></div>
+        <div class="row"><span>VTS</span><b id="vts"></b></div>
+        <div class="row"><span>MCS</span><b id="mcs"></b></div>
+        <div class="row"><span>CVX State</span><b id="cvx"></b></div>
+        <div class="row"><span>DEX Bias</span><b id="dexBias"></b></div>
+        <div class="permission"><div class="permFill" id="permFill"></div></div>
+      </div>
+
+      <div class="card"><h3>MAP / GAIA Zones</h3><div id="zoneRows"></div></div>
+
+      <div class="card" id="setupCard">
+        <h3>GEX Cascade Setup</h3>
+        <div id="setupRows"></div>
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-top:8px;padding-top:6px;border-top:1px solid #1e293b">
+          <span style="font-size:8px;letter-spacing:.12em;color:#64748b">SCORE</span>
+          <span id="setupScore" style="font-size:20px;font-weight:900">—</span>
+          <span id="setupLabel" style="font-size:9px;letter-spacing:.1em;color:#64748b">—</span>
+        </div>
+      </div>
+      <div class="card"><h3>Adaptive Readout</h3><div class="readout" id="readout"></div></div>
+    </div>
+  </div>
+
+  <div class="bottom">
+    <div class="bbox" id="bbox-structure"><span class="lbl">STRUCTURE</span> <b id="structure"></b></div>
+    <div class="bbox" id="bbox-dex"><span class="lbl">DEX ACTIVITY</span> <b id="dexActivity"></b></div>
+    <div class="bbox" id="bbox-alert"><span class="lbl">ALERT</span> <b id="alert"></b></div>
+  </div>
+</div>
+
+<script>
+const fallback={
+  spot_spx:7424.74, spot_es:7449.75, basis:25.01, dhp_momentum:-42.26, dhp_direction:'BUILDING_BEAR',
+  levels_es:{call_wall:7450,gamma_node:7450,gravity_pin:7425,put_wall:7425,gamma_flip:7380,tactical_anchor:7440,emergency_anchor:7400},
+  strikes:[
+    {strike:7380,net_gex:-126000,net_dex:-240,cvx:38,net_dhp:-80},
+    {strike:7390,net_gex:82000,net_dex:155,cvx:24,net_dhp:40},
+    {strike:7400,net_gex:277665,net_dex:6900,cvx:66,net_dhp:134},
+    {strike:7410,net_gex:92351,net_dex:1250,cvx:28,net_dhp:244},
+    {strike:7420,net_gex:458806,net_dex:2050,cvx:43,net_dhp:312},
+    {strike:7425,net_gex:622155,net_dex:3100,cvx:57,net_dhp:216},
+    {strike:7430,net_gex:274696,net_dex:519,cvx:36,net_dhp:173},
+    {strike:7440,net_gex:273712,net_dex:-90,cvx:26,net_dhp:19},
+    {strike:7450,net_gex:136396,net_dex:-350,cvx:42,net_dhp:2},
+    {strike:7460,net_gex:-98000,net_dex:-1100,cvx:62,net_dhp:-40},
+    {strike:7470,net_gex:-210000,net_dex:-1800,cvx:78,net_dhp:-120}
+  ]
+};
+let raw=fallback, tf='M1', priceChart, priceSeries, flowChart, dhpSeries, dexSeries, histSeries;
+
+function f2(v){return Number(v||0).toLocaleString(undefined,{minimumFractionDigits:2,maximumFractionDigits:2})}
+function fmt(v){const a=Math.abs(Number(v)||0),s=(Number(v)||0)>=0?'+':'-';return s+(a>=1e6?(a/1e6).toFixed(1)+'M':a>=1e3?(a/1e3).toFixed(1)+'K':a.toFixed(0))}
+function step(){return tf==='M1'?60:tf==='M5'?300:900}
+function totalDex(){return (raw.strikes||[]).reduce((a,s)=>a+(Number(s.net_dex)||0),0)}
+function zoneColor(k){k=String(k).toLowerCase(); if(k.includes('call'))return'#ef4444'; if(k.includes('put')||k.includes('floor'))return'#3b82f6'; if(k.includes('node'))return'#e879f9'; if(k.includes('gravity')||k.includes('pin')||k.includes('flip'))return'#fbbf24'; if(k.includes('tactical'))return'#14b8a6'; if(k.includes('emergency'))return'#2dd4bf'; return'#94a3b8'}
+function zoneLabel(k){k=String(k).toLowerCase(); if(k.includes('call'))return'CALL WALL'; if(k.includes('gamma_node'))return'GAMMA NODE'; if(k.includes('gravity'))return'GRAVITY PIN'; if(k.includes('gamma_flip'))return'GAMMA FLIP'; if(k.includes('put'))return'PUT WALL'; if(k.includes('floor'))return'GAMMA FLOOR'; if(k.includes('tactical'))return'TACTICAL ANCHOR'; if(k.includes('emergency'))return'EMERGENCY ANCHOR'; return k.replaceAll('_',' ').toUpperCase()}
+function getZones(){return Object.entries(raw.levels_es||{}).map(([k,v])=>({key:k,label:zoneLabel(k),price:Number(v),color:zoneColor(k)})).filter(z=>Number.isFinite(z.price)).sort((a,b)=>b.price-a.price)}
+
+function demoCandles(st){let p=raw.spot_es-5,now=Math.floor(Date.now()/1000)-72*st;return Array.from({length:72},(_,i)=>{const o=p+Math.sin(i*.9)*2,c=o+Math.cos(i*.63)*3+Math.sin(i/8)*.7,h=Math.max(o,c)+2,l=Math.min(o,c)-2;p=c;return{time:now+i*st,open:o,high:h,low:l,close:c}})}
+function flowData(st,seed){let v=seed||0,now=Math.floor(Date.now()/1000)-72*st;return Array.from({length:72},(_,i)=>{v+=Math.sin(i*.26)*3+Math.cos(i*.19)*2;return{time:now+i*st,value:v}})}
+function state(){const strikes=raw.strikes||[],avg=strikes.reduce((a,b)=>a+(b.cvx||0),0)/Math.max(1,strikes.length),dex=totalDex();const vts=Math.round(32+avg*.55+(raw.dhp_momentum<0?18:0)+(Math.abs(dex)>2500?8:0));const dsi=Math.max(0,Math.min(100,76-vts/3));const mcs=Math.max(0,Math.min(100,55+Math.sign(dex)*8));const regime=vts>65?'FRAGILE':dsi>72?'STABLE':'BALANCED';const permission=regime==='FRAGILE'?'DEFENSIVE':mcs>70?'FAVORABLE':'WATCH';const dexBias=dex>1500?'BUY HEDGE':dex<-1500?'SELL HEDGE':'MIXED';return{dsi:Math.round(dsi),vts,mcs:Math.round(mcs),regime,permission,avgCvx:Math.round(avg),dex,dexBias}}
+
+function build(){
+  priceChart=LightweightCharts.createChart(document.getElementById('priceChart'),{layout:{background:{color:'#020611'},textColor:'#cbd5e1'},grid:{vertLines:{color:'#111827'},horzLines:{color:'#111827'}},rightPriceScale:{borderColor:'#1e293b'},timeScale:{timeVisible:true,borderColor:'#1e293b'}});
+  priceSeries=priceChart.addCandlestickSeries({upColor:'#67e8f9',downColor:'#e879f9',borderUpColor:'#67e8f9',borderDownColor:'#e879f9',wickUpColor:'#67e8f9',wickDownColor:'#e879f9'});
+  flowChart=LightweightCharts.createChart(document.getElementById('flowChart'),{layout:{background:{color:'#020611'},textColor:'#94a3b8'},grid:{vertLines:{color:'#111827'},horzLines:{color:'#111827'}},rightPriceScale:{borderColor:'#1e293b'},timeScale:{timeVisible:true,borderColor:'#1e293b'}});
+  dhpSeries=flowChart.addLineSeries({color:'#67e8f9',lineWidth:2,title:'DHP'});
+  dexSeries=flowChart.addLineSeries({color:'#34d399',lineWidth:2,title:'DEX'});
+  histSeries=flowChart.addHistogramSeries({priceFormat:{type:'volume'},priceScaleId:''});
+  document.querySelectorAll('.tf').forEach(b=>b.onclick=()=>{document.querySelectorAll('.tf').forEach(x=>x.classList.remove('active'));b.classList.add('active');tf=b.dataset.tf;render()});
+  window.addEventListener('resize',resize); priceChart.timeScale().subscribeVisibleTimeRangeChange(draw); render(); resize();
+}
+function resize(){const p=document.getElementById('priceChart').getBoundingClientRect();priceChart.applyOptions({width:p.width,height:p.height});const f=document.getElementById('flowChart').getBoundingClientRect();flowChart.applyOptions({width:f.width,height:f.height});const c=document.getElementById('gaiaCanvas');c.width=p.width*devicePixelRatio;c.height=p.height*devicePixelRatio;c.style.width=p.width+'px';c.style.height=p.height+'px';draw()}
+function render(){
+  const st=step(),real=raw?.candles?.[tf],candles=Array.isArray(real)&&real.length?real:demoCandles(st);document.getElementById('tfmode').textContent=Array.isArray(real)&&real.length?'TF LIVE':'TF DEMO';
+  priceSeries.setData(candles); const dhp=raw?.flow?.dhp?.length?raw.flow.dhp:flowData(st,raw.dhp_momentum||0),dex=raw?.flow?.dex?.length?raw.flow.dex:flowData(st,totalDex()/100);
+  dhpSeries.setData(dhp); dexSeries.setData(dex); histSeries.setData(dex.map(x=>({time:x.time,value:Math.abs(x.value),color:x.value>=0?'rgba(52,211,153,.34)':'rgba(239,68,68,.34)'})));
+  priceChart.timeScale().fitContent(); flowChart.timeScale().fitContent(); renderProfile(); renderState(); draw();
+}
+function renderProfile(){const h=document.getElementById('gexProfile'),arr=[...(raw.strikes||[])].sort((a,b)=>b.strike-a.strike),maxG=Math.max(...arr.map(s=>Math.abs(s.net_gex||0)),1),maxD=Math.max(...arr.map(s=>Math.abs(s.net_dex||0)),1);h.innerHTML=arr.map(s=>{const gp=Math.max(2,Math.abs(s.net_gex)/maxG*50),dp=Math.max(2,Math.abs(s.net_dex||0)/maxD*24),pos=s.net_gex>=0,buy=(s.net_dex||0)>=0;return`<div class="gexRow"><div class="strike">${s.strike}</div><div class="barTrack"><div class="bar ${pos?'pos':'neg'}" style="width:${gp}%"></div><div class="dexMini ${buy?'pos':'neg'}" style="width:${dp}%;${buy?'left:50%':'right:50%'};background:${buy?'#34d399':'#ef4444'};box-shadow:0 0 10px ${buy?'#34d399':'#ef4444'}"></div></div><div class="meta">${fmt(s.net_gex)}</div></div>`}).join('')}
+
+function renderSetupTracker(state) {
+  const strikes = raw.strikes || [];
+  const spot    = raw.spot_spx || 0;
+  const lv      = raw.levels_es || {};
+  const node    = lv.gamma_node || lv.node || 0;
+  const flip    = lv.gamma_flip || lv.flip || 0;
+  const mom     = raw.dhp_momentum || 0;
+  const drift   = (raw.drift || raw.pressure_drift || '').toUpperCase();
+
+  // Count consecutive positive GEX strikes above node
+  const aboveNode = strikes.filter(s => s.strike >= node && s.net_gex > 0);
+  const cascadeCount = aboveNode.length;
+
+  // DEX at node strike
+  const nodeStrike = strikes.find(s => Math.abs(s.strike - node) <= 5);
+  const dexAtNode  = Math.abs(nodeStrike?.net_dex || 0);
+
+  // Node held = spot within 20pts above node
+  const nodeHeld = spot > node && (spot - node) < 40;
+
+  const conditions = [
+    { label: 'GEX cascade 5+ strikes', ok: cascadeCount >= 5, detail: cascadeCount + ' strikes' },
+    { label: 'DEX at Node >1K',        ok: dexAtNode > 1000,  detail: dexAtNode >= 1000 ? (dexAtNode/1000).toFixed(1)+'K' : dexAtNode.toFixed(0) },
+    { label: 'DSI > 85',               ok: state.dsi > 85,    detail: state.dsi+'%' },
+    { label: 'MCS > 80%',              ok: state.mcs > 80,    detail: state.mcs+'%' },
+    { label: 'Permission FAVORABLE',   ok: state.permission === 'FAVORABLE', detail: state.permission },
+    { label: 'Drift UPWARD STAB',      ok: drift.includes('UPWARD'), detail: drift || '—' },
+    { label: 'Node holds',             ok: nodeHeld, detail: nodeHeld ? node+' ✓' : '—' },
+  ];
+
+  const score  = conditions.filter(c => c.ok).length;
+  const color  = score >= 6 ? '#34d399' : score >= 4 ? '#fbbf24' : '#fb7185';
+  const label  = score >= 6 ? 'FULL SETUP' : score >= 4 ? 'PARTIAL · REDUCE SIZE' : 'NO SETUP';
+
+  const el = document.getElementById('setupRows');
+  if (el) {
+    el.innerHTML = conditions.map(c => `
+      <div class="row">
+        <span style="font-size:9px;color:#64748b">${c.label}</span>
+        <span style="font-size:9px;font-weight:700;color:${c.ok?'#34d399':'#fb7185'}">${c.ok?'✓':'✗'} ${c.detail}</span>
+      </div>`).join('');
+  }
+  const sc = document.getElementById('setupScore');
+  const sl = document.getElementById('setupLabel');
+  if (sc) { sc.textContent = score + '/7'; sc.style.color = color; }
+  if (sl) { sl.textContent = label; sl.style.color = color; }
+}
+
+function renderState(){const s=state();document.getElementById('spx').textContent=f2(raw.spot_spx);document.getElementById('es').textContent=f2(raw.spot_es);document.getElementById('regime').textContent=s.regime;document.getElementById('permission').textContent=s.permission;document.getElementById('dexHeader').textContent=s.dexBias+' '+fmt(s.dex);document.getElementById('dsi').textContent=s.dsi+'%';document.getElementById('vts').textContent=s.vts;document.getElementById('mcs').textContent=s.mcs+'%';document.getElementById('cvx').textContent=s.avgCvx>60?'AMPLIFIED':s.avgCvx>38?'ELEVATED':'DAMPENED';document.getElementById('dexBias').textContent=s.dexBias+' '+fmt(s.dex);document.getElementById('permFill').style.width=(s.permission==='FAVORABLE'?82:s.permission==='WATCH'?58:34)+'%';document.getElementById('zoneRows').innerHTML=getZones().map(z=>`<div class="row"><span style="color:${z.color};font-weight:800">${z.label}</span><b style="color:${z.color}">${Math.round(z.price)}</b></div>`).join('');
+  // STRUCTURE
+  const structEl=document.getElementById('structure');
+  structEl.textContent=s.regime+' / '+s.permission;
+  structEl.style.color=s.regime==='FRAGILE'?'#fb7185':s.regime==='STABLE'?'#34d399':'#60a5fa';
+  const bboxS=document.getElementById('bbox-structure');
+  if(bboxS) bboxS.style.borderColor=s.regime==='FRAGILE'?'rgba(251,113,133,.5)':s.regime==='STABLE'?'rgba(52,211,153,.4)':'rgba(96,165,250,.4)';
+
+  // DEX ACTIVITY
+  const dexActEl=document.getElementById('dexActivity');
+  dexActEl.textContent=s.dexBias+' · '+fmt(s.dex);
+  dexActEl.style.color=s.dexBias==='BUY HEDGE'?'#34d399':s.dexBias==='SELL HEDGE'?'#fb923c':'#94a3b8';
+  const bboxD=document.getElementById('bbox-dex');
+  if(bboxD) bboxD.style.borderColor=s.dexBias==='BUY HEDGE'?'rgba(52,211,153,.4)':s.dexBias==='SELL HEDGE'?'rgba(251,146,60,.4)':'rgba(148,163,184,.25)';
+
+  // ALERT semaphore
+  const alertEl=document.getElementById('alert');
+  const alertTxt=s.regime==='FRAGILE'?'Dealer structure deteriorating':s.permission==='DEFENSIVE'?'Reduce size · Wait clarity':s.permission==='WATCH'?'Monitor — structure shifting':'Structure intact · Absorption dominates';
+  const alertColor=s.regime==='FRAGILE'?'#fb7185':s.permission==='DEFENSIVE'?'#fb923c':s.permission==='WATCH'?'#fbbf24':'#60a5fa';
+  alertEl.textContent=alertTxt;
+  alertEl.style.color=alertColor;
+  const bboxA=document.getElementById('bbox-alert');
+  if(bboxA) bboxA.style.borderColor=s.regime==='FRAGILE'?'rgba(251,113,133,.5)':s.permission==='WATCH'?'rgba(251,191,36,.4)':'rgba(96,165,250,.35)';
+  renderSetupTracker(s);document.getElementById('readout').innerHTML='GEX = structural map.<br>DEX = active hedge direction.<br>DHP = flow acceleration.<br><br>Zones are now rendered explicitly from <b>levels_es</b>.'}
+function draw(){const canvas=document.getElementById('gaiaCanvas');if(!canvas||!priceSeries)return;const ctx=canvas.getContext('2d'),dpr=devicePixelRatio,r=canvas.getBoundingClientRect();ctx.setTransform(dpr,0,0,dpr,0,0);ctx.clearRect(0,0,r.width,r.height);const maxG=Math.max(...(raw.strikes||[]).map(s=>Math.abs(s.net_gex||0)),1),maxD=Math.max(...(raw.strikes||[]).map(s=>Math.abs(s.net_dex||0)),1);(raw.strikes||[]).forEach(s=>{const y=priceSeries.priceToCoordinate(s.strike+(raw.basis||25.01));if(y==null)return;const gs=Math.abs(s.net_gex)/maxG,ds=Math.abs(s.net_dex||0)/maxD,frag=s.net_gex<0||raw.dhp_momentum<-35,base=frag?'239,68,68':'103,232,249',dex=(s.net_dex||0)>=0?'52,211,153':'239,68,68';const len=170+gs*480,thick=8+gs*24,g=ctx.createLinearGradient(20,y,20+len,y);g.addColorStop(0,`rgba(${base},${.22+gs*.2})`);g.addColorStop(.6,`rgba(${base},${.08+gs*.13})`);g.addColorStop(1,'rgba(0,0,0,0)');ctx.fillStyle=g;ctx.shadowColor=`rgba(${base},.45)`;ctx.shadowBlur=16;roundRect(ctx,30,y-thick/2,len,thick,thick/2);ctx.fill();const dl=100+ds*420,dg=ctx.createLinearGradient(r.width-dl-30,y,r.width-30,y);dg.addColorStop(0,'rgba(0,0,0,0)');dg.addColorStop(1,`rgba(${dex},${.25+ds*.35})`);ctx.fillStyle=dg;ctx.shadowColor=`rgba(${dex},.7)`;ctx.shadowBlur=18;roundRect(ctx,r.width-dl-30,y-4,dl,8,4);ctx.fill();ctx.shadowBlur=0});getZones().forEach(z=>{const y=priceSeries.priceToCoordinate(z.price);if(y==null)return;ctx.strokeStyle=z.color;ctx.lineWidth=1.3;ctx.setLineDash(z.label.includes('NODE')||z.label.includes('PIN')||z.label.includes('FLIP')?[6,4]:[]);ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(r.width,y);ctx.stroke();ctx.setLineDash([]);const txt=`${z.label} ${Math.round(z.price)}`;ctx.font='10px ui-monospace,monospace';const tw=ctx.measureText(txt).width+14,x=Math.max(8,r.width-tw-10);ctx.fillStyle=z.color;roundRect(ctx,x,y-9,tw,18,4);ctx.fill();ctx.fillStyle='#020611';ctx.fillText(txt,x+7,y+4)})}
+function roundRect(ctx,x,y,w,h,rad){ctx.beginPath();ctx.moveTo(x+rad,y);ctx.arcTo(x+w,y,x+w,y+h,rad);ctx.arcTo(x+w,y+h,x,y+h,rad);ctx.arcTo(x,y+h,x,y,rad);ctx.arcTo(x,y,x+w,y,rad);ctx.closePath()}
+async function loadJson(){try{const r=await fetch('/gaia_live.json?t='+Date.now());if(r.ok){raw=await r.json();render()}}catch(e){}}
+build();loadJson();setInterval(loadJson,5000);
+</script>
+</body>
+</html>
