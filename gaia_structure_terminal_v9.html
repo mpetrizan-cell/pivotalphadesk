@@ -36,7 +36,7 @@ html,body{width:100%;height:100%;overflow:hidden;background:var(--bg);color:var(
 #gaiaCanvas{position:absolute;inset:0;pointer-events:none;z-index:5}
 .row{display:flex;justify-content:space-between;gap:10px;font-size:10px;padding:4px 0;border-bottom:1px solid rgba(30,41,59,.55)}
 .row:last-child{border-bottom:0}.permission{height:10px;background:#0f172a;border-radius:6px;overflow:hidden;margin-top:8px}.permFill{height:100%;width:34%;background:linear-gradient(90deg,#ef4444,#fbbf24,#34d399)}
-.readout{font-size:9px;line-height:1.5;color:#cbd5e1;overflow-y:auto;max-height:120px}
+.readout{font-size:10px;line-height:1.55;color:#cbd5e1}
 .bottom{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;padding:5px 8px;border-top:1px solid var(--line);background:#050b15}.bbox{padding:5px 8px;font-size:10px}
 .pill{display:inline-block;border:1px solid #334155;border-radius:4px;padding:1px 5px;font-size:8px;margin:0 4px 4px 0}
 </style>
@@ -44,13 +44,13 @@ html,body{width:100%;height:100%;overflow:hidden;background:var(--bg);color:var(
 <body>
 <div class="terminal">
   <div class="header">
-    <div class="box"><div class="lbl">Terminal</div><div class="val">GAIA Structure Terminal v9 · PivotAlphaDesk</div></div>
+    <div class="box"><div class="lbl">Terminal</div><div class="val">GAIA Structure Terminal v8f · Clean MAP Zones</div></div>
     <div class="box"><div class="lbl">SPX</div><div class="val" id="spx"></div></div>
     <div class="box"><div class="lbl">ES</div><div class="val" id="es"></div></div>
     <div class="box"><div class="lbl">Regime</div><div class="val" id="regime"></div></div>
     <div class="box"><div class="lbl">Permission</div><div class="val" id="permission"></div></div>
     <div class="box"><div class="lbl">DEX</div><div class="val" id="dexHeader"></div></div>
-    <div class="box controls"><span class="lbl">CHART</span><span class="val" id="tfmode" style="color:var(--violet)">SPX LINE</span></div>
+    <div class="box controls"><span class="lbl">CHART</span><span class="val" id="tfmode" style="color:#e879f9">SPX LINE</span></div>
   </div>
 
   <div class="main">
@@ -78,23 +78,14 @@ html,body{width:100%;height:100%;overflow:hidden;background:var(--bg);color:var(
 
       <div class="card"><h3>MAP / GAIA Zones</h3><div id="zoneRows"></div></div>
 
-      <div class="card" id="setupCard">
-        <h3>GEX Cascade Setup</h3>
-        <div id="setupRows"></div>
-        <div style="display:flex;justify-content:space-between;align-items:center;margin-top:8px;padding-top:6px;border-top:1px solid #1e293b">
-          <span style="font-size:8px;letter-spacing:.12em;color:#64748b">SCORE</span>
-          <span id="setupScore" style="font-size:20px;font-weight:900">—</span>
-          <span id="setupLabel" style="font-size:9px;letter-spacing:.1em;color:#64748b">—</span>
-        </div>
-      </div>
       <div class="card"><h3>Adaptive Readout</h3><div class="readout" id="readout"></div></div>
     </div>
   </div>
 
   <div class="bottom">
-    <div class="bbox" id="bbox-structure"><span class="lbl">STRUCTURE</span> <b id="structure"></b></div>
-    <div class="bbox" id="bbox-dex"><span class="lbl">DEX ACTIVITY</span> <b id="dexActivity"></b></div>
-    <div class="bbox" id="bbox-alert"><span class="lbl">ALERT</span> <b id="alert"></b></div>
+    <div class="bbox"><span class="lbl">STRUCTURE</span> <b id="structure"></b></div>
+    <div class="bbox"><span class="lbl">DEX ACTIVITY</span> <b id="dexActivity"></b></div>
+    <div class="bbox"><span class="lbl">ALERT</span> <b id="alert"></b></div>
   </div>
 </div>
 
@@ -104,8 +95,6 @@ const fallback={
   total_dhp:0, dhp_momentum:0, dhp_direction:'NEUTRAL',
   levels_es:{call_wall:7538,gamma_node:7538,gamma_flip:7578,gravity_pin:7548,put_wall:7518},
   strikes:[
-    {strike:7470,net_gex:60195,call_delta_oi:1792,put_delta_oi:26,net_dhp:177,call_dhp:188,put_dhp:-11},
-    {strike:7475,net_gex:44850,call_delta_oi:1792,put_delta_oi:26,net_dhp:177,call_dhp:188,put_dhp:-11},
     {strike:7480,net_gex:81514,call_delta_oi:1700,put_delta_oi:3,net_dhp:260,call_dhp:281,put_dhp:-20},
     {strike:7485,net_gex:190978,call_delta_oi:3056,put_delta_oi:2,net_dhp:225,call_dhp:255,put_dhp:-29},
     {strike:7490,net_gex:289754,call_delta_oi:2777,put_delta_oi:3,net_dhp:335,call_dhp:393,put_dhp:-58},
@@ -129,30 +118,13 @@ function zoneColor(k){k=String(k).toLowerCase(); if(k.includes('call'))return'#e
 function zoneLabel(k){k=String(k).toLowerCase(); if(k.includes('call'))return'CALL WALL'; if(k.includes('gamma_node'))return'GAMMA NODE'; if(k.includes('gravity'))return'GRAVITY PIN'; if(k.includes('gamma_flip'))return'GAMMA FLIP'; if(k.includes('put'))return'PUT WALL'; if(k.includes('floor'))return'GAMMA FLOOR'; if(k.includes('tactical'))return'TACTICAL ANCHOR'; if(k.includes('emergency'))return'EMERGENCY ANCHOR'; return k.replaceAll('_',' ').toUpperCase()}
 function getZones(){return Object.entries(raw.levels_es||{}).map(([k,v])=>({key:k,label:zoneLabel(k),price:Number(v),color:zoneColor(k)})).filter(z=>Number.isFinite(z.price)).sort((a,b)=>b.price-a.price)}
 
-function demoCandles(st){
-  const ET_OFFSET=4*3600;
-  let p=raw.spot_es||7450;
-  const now=Math.floor(Date.now()/1000)-ET_OFFSET-200*st;
-  return Array.from({length:200},(_,i)=>{
-    const o=p+Math.sin(i*.9)*2,c=o+Math.cos(i*.63)*3+Math.sin(i/8)*.7,h=Math.max(o,c)+2,l=Math.min(o,c)-2;
-    p=c; return{time:now+i*st,open:+o.toFixed(2),high:+h.toFixed(2),low:+l.toFixed(2),close:+c.toFixed(2)};
-  });
-}
-async function fetchBars(tf){
-  try{
-    const r=await fetch('/bars?symbol=ESM26&tf='+tf);
-    if(!r.ok) return null;
-    const data=await r.json();
-    if(data.status!=='ok'||!data.bars?.length) return null;
-    return data.bars.filter(b=>b.close>0).sort((a,b)=>a.time-b.time);
-  }catch(e){ return null; }
-}
+function demoCandles(st){let p=raw.spot_es-5,now=Math.floor(Date.now()/1000)-72*st;return Array.from({length:72},(_,i)=>{const o=p+Math.sin(i*.9)*2,c=o+Math.cos(i*.63)*3+Math.sin(i/8)*.7,h=Math.max(o,c)+2,l=Math.min(o,c)-2;p=c;return{time:now+i*st,open:o,high:h,low:l,close:c}})}
 function flowData(st,seed){let v=seed||0,now=Math.floor(Date.now()/1000)-72*st;return Array.from({length:72},(_,i)=>{v+=Math.sin(i*.26)*3+Math.cos(i*.19)*2;return{time:now+i*st,value:v}})}
 function state(){const strikes=raw.strikes||[],avg=strikes.reduce((a,b)=>a+(b.cvx||0),0)/Math.max(1,strikes.length),dex=totalDex();const vts=Math.round(32+avg*.55+(raw.dhp_momentum<0?18:0)+(Math.abs(dex)>2500?8:0));const dsi=Math.max(0,Math.min(100,76-vts/3));const mcs=Math.max(0,Math.min(100,55+Math.sign(dex)*8));const regime=vts>65?'FRAGILE':dsi>72?'STABLE':'BALANCED';const permission=regime==='FRAGILE'?'DEFENSIVE':mcs>70?'FAVORABLE':'WATCH';const dexBias=dex>1500?'BUY HEDGE':dex<-1500?'SELL HEDGE':'MIXED';return{dsi:Math.round(dsi),vts,mcs:Math.round(mcs),regime,permission,avgCvx:Math.round(avg),dex,dexBias}}
 
 function build(){
   priceChart=LightweightCharts.createChart(document.getElementById('priceChart'),{layout:{background:{color:'#020611'},textColor:'#cbd5e1'},grid:{vertLines:{color:'#111827'},horzLines:{color:'#111827'}},rightPriceScale:{borderColor:'#1e293b'},timeScale:{timeVisible:true,borderColor:'#1e293b'}});
-  priceSeries=priceChart.addLineSeries({color:'#e879f9',lineWidth:2,priceLineVisible:true,lastValueVisible:true,crosshairMarkerRadius:4});
+  priceSeries=priceChart.addLineSeries({color:'#e879f9',lineWidth:2,lastValueVisible:true,priceLineVisible:true});
   flowChart=LightweightCharts.createChart(document.getElementById('flowChart'),{layout:{background:{color:'#020611'},textColor:'#94a3b8'},grid:{vertLines:{color:'#111827'},horzLines:{color:'#111827'}},rightPriceScale:{borderColor:'#1e293b'},timeScale:{timeVisible:true,borderColor:'#1e293b'}});
   dhpSeries=flowChart.addLineSeries({color:'#67e8f9',lineWidth:2,title:'DHP'});
   dexSeries=flowChart.addLineSeries({color:'#34d399',lineWidth:2,title:'DEX'});
@@ -161,35 +133,19 @@ function build(){
   window.addEventListener('resize',resize); priceChart.timeScale().subscribeVisibleTimeRangeChange(draw); render(); resize();
 }
 function resize(){const p=document.getElementById('priceChart').getBoundingClientRect();priceChart.applyOptions({width:p.width,height:p.height});const f=document.getElementById('flowChart').getBoundingClientRect();flowChart.applyOptions({width:f.width,height:f.height});const c=document.getElementById('gaiaCanvas');c.width=p.width*devicePixelRatio;c.height=p.height*devicePixelRatio;c.style.width=p.width+'px';c.style.height=p.height+'px';draw()}
-
-function buildSpxLine(){
-  // Build SPX price line from real spot + historical approximation
-  const spot = raw.spot_spx || 7490;
-  const ET_OFFSET = 4*3600;
-  const now = Math.floor(Date.now()/1000) - ET_OFFSET;
-  // Use real candles from raw if available
-  if(raw.candles?.M1?.length){
-    const d = raw.candles.M1.map(c=>({time:c.time, value:c.close}));
-    d._live = true;
-    return d;
-  }
-  // Demo: smooth line anchored to real spot_spx
-  let p = spot - 50;
-  const bars = Array.from({length:200},(_,i)=>{
-    const wave = Math.sin(i/14)*12+Math.cos(i/8)*6;
-    p = p + wave*0.05 + (Math.random()-0.47)*1.2;
-    return {time: now - (200-i)*60, value: +p.toFixed(2)};
+function render(){
+  const spot=raw.spot_spx||7500;
+  const ET4=4*3600, nowL=Math.floor(Date.now()/1000)-ET4;
+  let p=spot-40;
+  const lineData=Array.from({length:200},(_,i)=>{
+    p=p+Math.sin(i/14)*0.5+Math.cos(i/8)*0.25+(Math.random()-0.47);
+    return{time:nowL-(200-i)*60,value:+p.toFixed(2)};
   });
-  // Force last point to real spot
-  bars[bars.length-1].value = spot;
-  return bars;
-}
-
-async function render(){
-  const st=step(),real=raw?.candles?.[tf],candles=Array.isArray(real)&&real.length?real:demoCandles(st);document.getElementById('tfmode').textContent=Array.isArray(real)&&real.length?'TF LIVE':'TF DEMO';
-  const cleanC=Array.isArray(candles)?candles.filter(c=>c&&c.time!=null&&c.value!=null):[];priceSeries.setData(cleanC); const dhpVal=raw.total_dhp||0; // real NET DHP in millions
+  lineData[199].value=spot;
+  document.getElementById('tfmode').textContent='SPX DEMO';
+  priceSeries.setData(lineData); const dhpVal=raw.total_dhp||0;
   const dexVal=(raw.strikes||[]).reduce((a,s)=>a+Math.abs((s.call_delta_oi||0)-(s.put_delta_oi||0)),0);
-  const ET2=4*3600, nowF=Math.floor(Date.now()/1000)-ET2;
+  const nowF=Math.floor(Date.now()/1000)-4*3600;
   const dhpLine=Array.from({length:200},(_,i)=>({time:nowF-(200-i)*60,value:+(dhpVal*(0.3+(i/200)*0.7)).toFixed(2)}));
   dhpLine[199].value=dhpVal;
   const dexLine=Array.from({length:200},(_,i)=>({time:nowF-(200-i)*60,value:+(dexVal*(0.3+(i/200)*0.7)/1000).toFixed(2)}));
@@ -200,93 +156,20 @@ async function render(){
   priceChart.timeScale().fitContent(); flowChart.timeScale().fitContent(); renderProfile(); renderState(); draw();
 }
 function renderProfile(){const h=document.getElementById('gexProfile'),arr=[...(raw.strikes||[])].sort((a,b)=>b.strike-a.strike),maxG=Math.max(...arr.map(s=>Math.abs(s.net_gex||0)),1),maxD=Math.max(...arr.map(s=>Math.abs(s.net_dex||0)),1);h.innerHTML=arr.map(s=>{const gp=Math.max(2,Math.abs(s.net_gex)/maxG*50),dp=Math.max(2,Math.abs(s.net_dex||0)/maxD*24),pos=s.net_gex>=0,buy=(s.net_dex||0)>=0;return`<div class="gexRow"><div class="strike">${s.strike}</div><div class="barTrack"><div class="bar ${pos?'pos':'neg'}" style="width:${gp}%"></div><div class="dexMini ${buy?'pos':'neg'}" style="width:${dp}%;${buy?'left:50%':'right:50%'};background:${buy?'#34d399':'#ef4444'};box-shadow:0 0 10px ${buy?'#34d399':'#ef4444'}"></div></div><div class="meta">${fmt(s.net_gex)}</div></div>`}).join('')}
-
-function renderSetupTracker(state) {
-  const strikes = raw.strikes || [];
-  const spot    = raw.spot_spx || 0;
-  const lv      = raw.levels_es || {};
-  const node    = lv.gamma_node || lv.node || 0;
-  const flip    = lv.gamma_flip || lv.flip || 0;
-  const mom     = raw.dhp_momentum || 0;
-  const drift   = (raw.drift || raw.pressure_drift || '').toUpperCase();
-
-  // Count consecutive positive GEX strikes above node
-  const aboveNode = strikes.filter(s => s.strike >= node && s.net_gex > 0);
-  const cascadeCount = aboveNode.length;
-
-  // DEX at node strike
-  const nodeStrike = strikes.find(s => Math.abs(s.strike - node) <= 5);
-  const dexAtNode  = Math.abs(nodeStrike?.net_dex || 0);
-
-  // Node held = spot within 20pts above node
-  const nodeHeld = spot > node && (spot - node) < 40;
-
-  const conditions = [
-    { label: 'GEX cascade 5+ strikes', ok: cascadeCount >= 5, detail: cascadeCount + ' strikes' },
-    { label: 'DEX at Node >1K',        ok: dexAtNode > 1000,  detail: dexAtNode >= 1000 ? (dexAtNode/1000).toFixed(1)+'K' : dexAtNode.toFixed(0) },
-    { label: 'DSI > 85',               ok: state.dsi > 85,    detail: state.dsi+'%' },
-    { label: 'MCS > 80%',              ok: state.mcs > 80,    detail: state.mcs+'%' },
-    { label: 'Permission FAVORABLE',   ok: state.permission === 'FAVORABLE', detail: state.permission },
-    { label: 'Drift UPWARD STAB',      ok: drift.includes('UPWARD'), detail: drift || '—' },
-    { label: 'Node holds',             ok: nodeHeld, detail: nodeHeld ? node+' ✓' : '—' },
-  ];
-
-  const score  = conditions.filter(c => c.ok).length;
-  const color  = score >= 6 ? '#34d399' : score >= 4 ? '#fbbf24' : '#fb7185';
-  const label  = score >= 6 ? 'FULL SETUP' : score >= 4 ? 'PARTIAL · REDUCE SIZE' : 'NO SETUP';
-
-  const el = document.getElementById('setupRows');
-  if (el) {
-    el.innerHTML = conditions.map(c => `
-      <div class="row">
-        <span style="font-size:9px;color:#64748b">${c.label}</span>
-        <span style="font-size:9px;font-weight:700;color:${c.ok?'#34d399':'#fb7185'}">${c.ok?'✓':'✗'} ${c.detail}</span>
-      </div>`).join('');
-  }
-  const sc = document.getElementById('setupScore');
-  const sl = document.getElementById('setupLabel');
-  if (sc) { sc.textContent = score + '/7'; sc.style.color = color; }
-  if (sl) { sl.textContent = label; sl.style.color = color; }
-}
-
-function renderState(){const s=state();document.getElementById('spx').textContent=f2(raw.spot_spx);document.getElementById('es').textContent=f2(raw.spot_es);
-  // Update live price in top bar
-  const liveEl=document.querySelector('.live-price')||document.querySelector('#livePrice');
-  if(liveEl) liveEl.textContent=f2(raw.spot_spx);document.getElementById('regime').textContent=s.regime;document.getElementById('permission').textContent=s.permission;document.getElementById('dexHeader').textContent=s.dexBias+' '+fmt(s.dex);document.getElementById('dsi').textContent=s.dsi+'%';document.getElementById('vts').textContent=s.vts;document.getElementById('mcs').textContent=s.mcs+'%';document.getElementById('cvx').textContent=s.avgCvx>60?'AMPLIFIED':s.avgCvx>38?'ELEVATED':'DAMPENED';document.getElementById('dexBias').textContent=s.dexBias+' '+fmt(s.dex);document.getElementById('permFill').style.width=(s.permission==='FAVORABLE'?82:s.permission==='WATCH'?58:34)+'%';document.getElementById('zoneRows').innerHTML=getZones().map(z=>`<div class="row"><span style="color:${z.color};font-weight:800">${z.label}</span><b style="color:${z.color}">${Math.round(z.price)}</b></div>`).join('');
-  // STRUCTURE
-  const structEl=document.getElementById('structure');
+function renderState(){const s=state();document.getElementById('spx').textContent=f2(raw.spot_spx);document.getElementById('es').textContent=f2(raw.spot_es);document.getElementById('regime').textContent=s.regime;document.getElementById('permission').textContent=s.permission;document.getElementById('dexHeader').textContent=s.dexBias+' '+fmt(s.dex);document.getElementById('dsi').textContent=s.dsi+'%';document.getElementById('vts').textContent=s.vts;document.getElementById('mcs').textContent=s.mcs+'%';document.getElementById('cvx').textContent=s.avgCvx>60?'AMPLIFIED':s.avgCvx>38?'ELEVATED':'DAMPENED';document.getElementById('dexBias').textContent=s.dexBias+' '+fmt(s.dex);document.getElementById('permFill').style.width=(s.permission==='FAVORABLE'?82:s.permission==='WATCH'?58:34)+'%';document.getElementById('zoneRows').innerHTML=getZones().map(z=>`<div class="row"><span style="color:${z.color};font-weight:800">${z.label}</span><b style="color:${z.color}">${Math.round(z.price)}</b></div>`).join('');const structEl=document.getElementById('structure');
   structEl.textContent=s.regime+' / '+s.permission;
   structEl.style.color=s.regime==='FRAGILE'?'#fb7185':s.regime==='STABLE'?'#34d399':'#60a5fa';
-  const bboxS=document.getElementById('bbox-structure');
-  if(bboxS) bboxS.style.borderColor=s.regime==='FRAGILE'?'rgba(251,113,133,.5)':s.regime==='STABLE'?'rgba(52,211,153,.4)':'rgba(96,165,250,.4)';
-
-  // DEX ACTIVITY
   const dexActEl=document.getElementById('dexActivity');
   dexActEl.textContent=s.dexBias+' · '+fmt(s.dex);
   dexActEl.style.color=s.dexBias==='BUY HEDGE'?'#34d399':s.dexBias==='SELL HEDGE'?'#fb923c':'#94a3b8';
-  const bboxD=document.getElementById('bbox-dex');
-  if(bboxD) bboxD.style.borderColor=s.dexBias==='BUY HEDGE'?'rgba(52,211,153,.4)':s.dexBias==='SELL HEDGE'?'rgba(251,146,60,.4)':'rgba(148,163,184,.25)';
-
-  // ALERT semaphore
   const alertEl=document.getElementById('alert');
   const alertTxt=s.regime==='FRAGILE'?'Dealer structure deteriorating':s.permission==='DEFENSIVE'?'Reduce size · Wait clarity':s.permission==='WATCH'?'Monitor — structure shifting':'Structure intact · Absorption dominates';
-  const alertColor=s.regime==='FRAGILE'?'#fb7185':s.permission==='DEFENSIVE'?'#fb923c':s.permission==='WATCH'?'#fbbf24':'#60a5fa';
   alertEl.textContent=alertTxt;
-  alertEl.style.color=alertColor;
-  const bboxA=document.getElementById('bbox-alert');
-  if(bboxA) bboxA.style.borderColor=s.regime==='FRAGILE'?'rgba(251,113,133,.5)':s.permission==='WATCH'?'rgba(251,191,36,.4)':'rgba(96,165,250,.35)';
-  renderSetupTracker(s);document.getElementById('readout').innerHTML='GEX = structural map.<br>DEX = active hedge direction.<br>DHP = flow acceleration.<br><br>Zones are now rendered explicitly from <b>levels_es</b>.'}
+  alertEl.style.color=s.regime==='FRAGILE'?'#fb7185':s.permission==='DEFENSIVE'?'#fb923c':s.permission==='WATCH'?'#fbbf24':'#60a5fa';document.getElementById('readout').innerHTML='GEX = structural map.<br>DEX = active hedge direction.<br>DHP = flow acceleration.<br><br>Zones are now rendered explicitly from <b>levels_es</b>.'}
 function draw(){const canvas=document.getElementById('gaiaCanvas');if(!canvas||!priceSeries)return;const ctx=canvas.getContext('2d'),dpr=devicePixelRatio,r=canvas.getBoundingClientRect();ctx.setTransform(dpr,0,0,dpr,0,0);ctx.clearRect(0,0,r.width,r.height);const maxG=Math.max(...(raw.strikes||[]).map(s=>Math.abs(s.net_gex||0)),1),maxD=Math.max(...(raw.strikes||[]).map(s=>Math.abs(s.net_dex||0)),1);(raw.strikes||[]).forEach(s=>{const y=priceSeries.priceToCoordinate(s.strike+(raw.basis||25.01));if(y==null)return;const gs=Math.abs(s.net_gex)/maxG,ds=Math.abs(s.net_dex||0)/maxD,frag=s.net_gex<0||raw.dhp_momentum<-35,base=frag?'239,68,68':'103,232,249',dex=(s.net_dex||0)>=0?'52,211,153':'239,68,68';const len=170+gs*480,thick=8+gs*24,g=ctx.createLinearGradient(20,y,20+len,y);g.addColorStop(0,`rgba(${base},${.22+gs*.2})`);g.addColorStop(.6,`rgba(${base},${.08+gs*.13})`);g.addColorStop(1,'rgba(0,0,0,0)');ctx.fillStyle=g;ctx.shadowColor=`rgba(${base},.45)`;ctx.shadowBlur=16;roundRect(ctx,30,y-thick/2,len,thick,thick/2);ctx.fill();const dl=100+ds*420,dg=ctx.createLinearGradient(r.width-dl-30,y,r.width-30,y);dg.addColorStop(0,'rgba(0,0,0,0)');dg.addColorStop(1,`rgba(${dex},${.25+ds*.35})`);ctx.fillStyle=dg;ctx.shadowColor=`rgba(${dex},.7)`;ctx.shadowBlur=18;roundRect(ctx,r.width-dl-30,y-4,dl,8,4);ctx.fill();ctx.shadowBlur=0});getZones().forEach(z=>{const y=priceSeries.priceToCoordinate(z.price);if(y==null)return;ctx.strokeStyle=z.color;ctx.lineWidth=1.3;ctx.setLineDash(z.label.includes('NODE')||z.label.includes('PIN')||z.label.includes('FLIP')?[6,4]:[]);ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(r.width,y);ctx.stroke();ctx.setLineDash([]);const txt=`${z.label} ${Math.round(z.price)}`;ctx.font='10px ui-monospace,monospace';const tw=ctx.measureText(txt).width+14,x=Math.max(8,r.width-tw-10);ctx.fillStyle=z.color;roundRect(ctx,x,y-9,tw,18,4);ctx.fill();ctx.fillStyle='#020611';ctx.fillText(txt,x+7,y+4)})}
 function roundRect(ctx,x,y,w,h,rad){ctx.beginPath();ctx.moveTo(x+rad,y);ctx.arcTo(x+w,y,x+w,y+h,rad);ctx.arcTo(x+w,y+h,x,y+h,rad);ctx.arcTo(x,y+h,x,y,rad);ctx.arcTo(x,y,x+w,y,rad);ctx.closePath()}
-async async function loadJson(){try{const r=await fetch('/gaia_live.json?t='+Date.now());if(r.ok){raw=await r.json();return true;}}catch(e){}return false;}
-async function boot(){
-  build();
-  await loadJson();
-  await render();
-  setInterval(async()=>{ await loadJson(); await render(); }, 5000);
-  setInterval(()=>{ render(); }, 60000);
-}
-boot();
+async function loadJson(){try{const r=await fetch('/gaia_live.json?t='+Date.now());if(r.ok){raw=await r.json();render()}}catch(e){}}
+build();loadJson();setInterval(loadJson,5000);
 </script>
 </body>
 </html>
