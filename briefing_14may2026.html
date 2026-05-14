@@ -1,0 +1,622 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PivotAlphaDesk · GAIA Briefing · May 14, 2026</title>
+<link rel="stylesheet" href="briefing-styles.css">
+</head>
+<body>
+
+<div class="terminal-bar">
+  <div class="logo">Pivot<span>Alpha</span>Desk · GAIA Framework</div>
+  <div class="ts">
+    <span class="date">THURSDAY · MAY 14, 2026</span>
+    &nbsp;|&nbsp;<span class="time">08:05 ET</span>
+    &nbsp;|&nbsp;RETAIL SALES DAY · PRE-MARKET
+  </div>
+  <div class="live-dot"><div class="dot"></div>LIVE</div>
+</div>
+
+<div class="amp-banner" style="background:rgba(240,133,58,.10);border-color:var(--amplified);color:var(--amp2);">
+  ⚡ SPX AMPLIFIED · ES DAMPENED · Retail Sales 0.4% miss · Claims 209K · ES 7,489 · NQ 29,558 · CL 101.05
+  &nbsp;|&nbsp;<span>SPX GP 7,400 · ES NODE 7,490 · 1σ SPX: 7,373–7,517</span>
+</div>
+
+<div class="data-banner">
+  ⚠️ RETAIL SALES 0.4% vs 0.5% · Ex-Autos 0.3% vs 0.6% · Claims 209K vs 205K · ALL MISS · Mixed macro — structure still bullish above GP 7,400
+</div>
+
+<div class="main">
+
+<!-- SNAPSHOT -->
+<div class="section-header damp">
+  <span class="num">01</span>
+  <span class="title">Pre-Market Snapshot · Retail Sales Day</span>
+  <span class="sub">08:05 ET · May 14, 2026 · ES DAMPENED / SPX AMPLIFIED · Data miss · Structure holds</span>
+</div>
+
+<div class="snapshot-grid">
+  <div class="snap-card es">
+    <div class="instrument">ES · ESM26 · DAMPENED</div>
+    <div class="spot up">7,489.25</div>
+    <div class="rows">
+      <div class="row"><span class="lbl">EMA200</span><span class="val above">7,426.45 ↑ +63 pts</span></div>
+      <div class="row"><span class="lbl">VWAP</span><span class="val above">7,483.83 ↑ above</span></div>
+      <div class="row"><span class="lbl">VAH / POC / VAL</span><span class="val above">7,487 / 7,477 / 7,438</span></div>
+      <div class="row"><span class="lbl">Gamma Node</span><span class="val warn">7,490 ← spot at NODE</span></div>
+      <div class="row"><span class="lbl">Call Wall</span><span class="val warn">7,500 ← 11 pts above</span></div>
+      <div class="row"><span class="lbl">Gamma Flip</span><span class="val above">7,400 ← 89 pts below</span></div>
+      <div class="row"><span class="lbl">Tactical Anchor</span><span class="val above">7,450 ← soporte</span></div>
+    </div>
+    <span class="rf-badge" style="background:rgba(248,81,73,.12);color:#fb7185;border:1px solid rgba(248,81,73,.3);">RF -5 · Balance estrecho overnight</span>
+  </div>
+
+  <div class="snap-card nq">
+    <div class="instrument">NQ · NQM26 · DAMPENED</div>
+    <div class="spot up">29,558.25</div>
+    <div class="rows">
+      <div class="row"><span class="lbl">EMA200</span><span class="val above">29,215.54 ↑ +342 pts</span></div>
+      <div class="row"><span class="lbl">VWAP</span><span class="val warn">29,591.94 ↓ below spot</span></div>
+      <div class="row"><span class="lbl">VAH / POC / VAL</span><span class="val warn">29,627 / 29,540 / 29,583</span></div>
+      <div class="row"><span class="lbl">Gamma Node</span><span class="val warn">29,560 ← spot at NODE</span></div>
+      <div class="row"><span class="lbl">Call Wall</span><span class="val warn">29,600 ← near spot</span></div>
+      <div class="row"><span class="lbl">Put Wall</span><span class="val above">29,500 ← floor</span></div>
+      <div class="row"><span class="lbl">Gamma Flip</span><span class="val above">29,500 ← 58 pts below</span></div>
+    </div>
+    <span class="rf-badge" style="background:rgba(248,81,73,.12);color:#fb7185;border:1px solid rgba(248,81,73,.3);">RF -10 · Distribución · Below VWAP</span>
+  </div>
+
+  <div class="snap-card cl">
+    <div class="instrument">CL · CLM26 · DAMPENED</div>
+    <div class="spot up">101.05</div>
+    <div class="rows">
+      <div class="row"><span class="lbl">EMA200</span><span class="val above">100.19 ↑ +0.86</span></div>
+      <div class="row"><span class="lbl">VWAP</span><span class="val warn">101.18 ↓ near spot</span></div>
+      <div class="row"><span class="lbl">VAH / POC / VAL</span><span class="val warn">101.60 / 100.80 / 101.30</span></div>
+      <div class="row"><span class="lbl">Gamma Node</span><span class="val warn">100.0 = GP = PW</span></div>
+      <div class="row"><span class="lbl">Call Wall</span><span class="val warn">105.0 · OI 8,531</span></div>
+      <div class="row"><span class="lbl">Tactical Anchor</span><span class="val warn">101.0 ← spot testing</span></div>
+    </div>
+    <span class="rf-badge" style="background:rgba(62,207,106,.15);color:#3ecf6a;border:1px solid rgba(62,207,106,.3);">RF +9 · Balanced · Near VWAP</span>
+  </div>
+
+  <div class="snap-card" style="border-color:#f0853a44;">
+    <div class="instrument" style="color:var(--amplified);">SPX · CBOE · AMPLIFIED</div>
+    <div class="spot amp">7,444.88</div>
+    <div class="rows">
+      <div class="row"><span class="lbl">EMA200</span><span class="val above">7,272.37 ↑ +172 pts</span></div>
+      <div class="row"><span class="lbl">VAH / POC / VAL</span><span class="val above">7,462 / 7,416 / 7,445</span></div>
+      <div class="row"><span class="lbl">Gamma Flip</span><span class="val above">7,400 ← 45 pts below</span></div>
+      <div class="row"><span class="lbl">Call Wall GC1</span><span class="val warn">7,600 · OI 33,758</span></div>
+      <div class="row"><span class="lbl">NODE</span><span class="val warn">7,600 = CW = imán</span></div>
+      <div class="row"><span class="lbl">1σ Range</span><span class="val warn">7,373 – 7,517 · IV 25.43%</span></div>
+    </div>
+    <span class="rf-badge" style="background:rgba(240,133,58,.12);color:var(--amplified);border:1px solid rgba(240,133,58,.3);">RF +14 · AMPLIFIED · Value migrating up</span>
+  </div>
+</div>
+
+<!-- GAIA DHP -->
+<div class="section-header damp">
+  <span class="num">02</span>
+  <span class="title">GAIA DHP · Pre-Open State</span>
+  <span class="sub">08:05 ET · Pressure Map FRAGILE · WATCH · Drift UPWARD STABILIZATION · MCS 47%</span>
+</div>
+
+<div class="gaia-panel">
+  <div class="gaia-grid">
+    <div class="gaia-metric"><div class="lbl">Market State</div><div class="val" style="color:#fb7185">FRAGILE</div></div>
+    <div class="gaia-metric"><div class="lbl">Permission</div><div class="val" style="color:#e3b341">WATCH</div></div>
+    <div class="gaia-metric"><div class="lbl">DSI</div><div class="val" style="color:#3fb950">84</div></div>
+    <div class="gaia-metric"><div class="lbl">MCS</div><div class="val" style="color:#e3b341">47%</div></div>
+    <div class="gaia-metric"><div class="lbl">Drift</div><div class="val" style="color:#3fb950;font-size:12px">UPWARD STAB</div></div>
+    <div class="gaia-metric"><div class="lbl">ES GP</div><div class="val" style="color:#3fb950">7,400 ← far below</div></div>
+  </div>
+  <div class="gaia-note" style="background:rgba(248,81,73,.05);border-color:rgba(248,81,73,.2);">
+    <strong style="color:#fb7185;">⚠️ FRAGILE structure with MCS 47% — LOW CONFIDENCE.</strong>
+    Retail Sales missed across the board. Market absorbed the news — ES still above VWAP and EMA200.
+    Drift UPWARD STABILIZATION suggests dealers absorbing, not fleeing.
+    <strong>KEY: NODE 7,490 = spot. This is the gravitational center today — price will oscillate here.</strong>
+    Call Wall 7,500 only 11 pts above — expect compression and potential squeeze if DHP turns ACC.BULL.
+    <strong>MCS 47% = reduce size. Wait for ACC confirmation before adding.</strong>
+  </div>
+</div>
+
+<!-- ES -->
+<div class="section-header damp">
+  <span class="num">03</span>
+  <span class="title">ES · E-Mini S&P 500</span>
+  <span class="sub">ESM26 · DAMPENED · Spot AT NODE 7,490 · CW 7,500 · GP 7,400 far below · RF -5</span>
+</div>
+
+<div class="instrument-grid">
+  <div class="inst-card">
+    <div class="inst-header">
+      <span class="inst-tag tag-es">ES</span>
+      <span style="color:#6e7681;font-size:10px;">PAD ZONES · MAY 14</span>
+      <span class="inst-spot up">7,489.25</span>
+    </div>
+    <table class="pad-table">
+      <tr><th>Zone</th><th>Strike</th><th>OI</th><th>Gamma</th><th>Label</th></tr>
+      <tr><td class="zone-call">▲ GC1</td><td class="zone-call">7,500</td><td>21,342</td><td>38</td><td>Call Wall ← 11 pts above</td></tr>
+      <tr><td class="zone-call">▲ GC2</td><td class="zone-call">7,550</td><td>11,888</td><td>8</td><td>Ceiling</td></tr>
+      <tr><td class="zone-call">▲ GC3</td><td class="zone-call">7,525</td><td>8,842</td><td>13</td><td>Containment</td></tr>
+      <tr><td class="zone-flip">◆ NODE</td><td class="zone-flip">7,490</td><td>Net GEX</td><td>6→0</td><td>Gamma Node ← SPOT HERE</td></tr>
+      <tr><td class="zone-flip">◆ GP</td><td class="zone-flip">7,500</td><td>—</td><td>—</td><td>Gravity Pin = CW cluster</td></tr>
+      <tr><td class="zone-anchor">📍 TA</td><td class="zone-anchor">7,450</td><td>—</td><td>17</td><td>Tactical Anchor</td></tr>
+      <tr><td class="zone-put">▼ GF2</td><td class="zone-put">7,400</td><td>12,727</td><td>18</td><td>Gamma Floor 2 = GP structural</td></tr>
+      <tr><td class="zone-put">▼ GF1</td><td class="zone-put">7,300</td><td>18,288</td><td>6</td><td>Put Wall — major floor</td></tr>
+      <tr><td class="zone-put">▼ EA</td><td class="zone-put">7,250</td><td>11,687</td><td>3</td><td>Emergency Anchor</td></tr>
+    </table>
+  </div>
+  <div class="inst-card">
+    <div class="inst-header">
+      <span class="inst-tag tag-es">ES</span>
+      <span style="color:#6e7681;font-size:10px;">TRADING PLAN · NODE AT SPOT</span>
+    </div>
+    <div class="tpo-row">
+      <div class="tpo-chip above">VAH 7,487</div>
+      <div class="tpo-chip above">POC 7,477</div>
+      <div class="tpo-chip warn">VAL 7,438</div>
+      <div class="tpo-chip above">VWAP 7,483 ↑</div>
+      <div class="tpo-chip above">EMA200 7,426</div>
+      <div class="tpo-chip" style="background:rgba(248,81,73,.12);color:#fb7185;border:1px solid rgba(248,81,73,.3);">RF -5 · Narrow</div>
+    </div>
+    <div class="plan-box">
+      <div class="plan-title">📋 ES Read — May 14 · Spot AT Node 7,490 · CW 7,500 compression</div>
+      <ul>
+        <li class="key">Spot sitting exactly on NODE 7,490 pre-market — gravitational center. Expect compression here.</li>
+        <li class="key">CW 7,500 only 11 pts above — DAMPENED means dealers absorb moves. Breakout above 7,500 needs real ACC.BULL.</li>
+        <li class="warn">RF -5 = negative imbalance overnight. Sellers present above. Confirm direction before committing.</li>
+        <li class="warn">MCS 47% — LOW CONFIDENCE. Reduce size until MCS > 65%.</li>
+        <li class="bull">Hold VWAP 7,483 + DHP ACC.BULL → NODE 7,490 → CW 7,500 → GC3 7,525 → GC2 7,550</li>
+        <li class="bear">Lose VWAP 7,483 → TA 7,450 → GF2 structural 7,400 → PW 7,300</li>
+        <li class="amp">NODE gamma 6→0 = imán weakening. Price can escape more easily today than yesterday.</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- NQ -->
+<div class="section-header damp">
+  <span class="num">04</span>
+  <span class="title">NQ · E-Mini Nasdaq 100</span>
+  <span class="sub">NQM26 · DAMPENED · Below VWAP · RF -10 · NODE 29,560 = spot · CW 29,600</span>
+</div>
+
+<div class="instrument-grid">
+  <div class="inst-card">
+    <div class="inst-header">
+      <span class="inst-tag tag-nq">NQ</span>
+      <span style="color:#6e7681;font-size:10px;">PAD ZONES · MAY 14</span>
+      <span class="inst-spot up">29,558.25</span>
+    </div>
+    <table class="pad-table">
+      <tr><th>Zone</th><th>Strike</th><th>OI</th><th>Gamma</th><th>Label</th></tr>
+      <tr><td class="zone-call">▲ GC1</td><td class="zone-call">29,600</td><td>614</td><td>0</td><td>Call Wall ← near spot</td></tr>
+      <tr><td class="zone-call">▲ GC2</td><td class="zone-call">29,900</td><td>464</td><td>0</td><td>Ceiling</td></tr>
+      <tr><td class="zone-flip">◆ NODE</td><td class="zone-flip">29,560</td><td>Net GEX</td><td>0→0</td><td>Gamma Node ← spot here</td></tr>
+      <tr><td class="zone-flip">◆ GP</td><td class="zone-flip">29,500</td><td>—</td><td>—</td><td>Gravity Pin = Put Wall</td></tr>
+      <tr><td class="zone-anchor">📍 TA</td><td class="zone-anchor">29,400</td><td>—</td><td>0</td><td>Tactical Anchor</td></tr>
+      <tr><td class="zone-put">▼ GF1</td><td class="zone-put">29,500</td><td>796</td><td>0</td><td>Put Wall = GP</td></tr>
+      <tr><td class="zone-put">▼ GF2</td><td class="zone-put">29,300</td><td>705</td><td>1</td><td>Gamma Floor 2</td></tr>
+      <tr><td class="zone-put">▼ EA</td><td class="zone-put">29,100</td><td>416</td><td>0</td><td>Emergency Anchor</td></tr>
+    </table>
+  </div>
+  <div class="inst-card">
+    <div class="inst-header">
+      <span class="inst-tag tag-nq">NQ</span>
+      <span style="color:#6e7681;font-size:10px;">DISTRIBUTION · BELOW VWAP</span>
+    </div>
+    <div class="tpo-row">
+      <div class="tpo-chip warn">VAH 29,627</div>
+      <div class="tpo-chip warn">POC 29,540</div>
+      <div class="tpo-chip warn">VAL 29,583</div>
+      <div class="tpo-chip warn">VWAP 29,591 ↓</div>
+      <div class="tpo-chip above">EMA200 29,215</div>
+      <div class="tpo-chip" style="background:rgba(248,81,73,.12);color:#fb7185;border:1px solid rgba(248,81,73,.3);">RF -10 · Distribution</div>
+    </div>
+    <div class="plan-box">
+      <div class="plan-title">📋 NQ Read — May 14 · Below VWAP · RF -10 distribution pressure</div>
+      <ul>
+        <li class="warn">NQ below VWAP 29,591 with RF -10 — sellers in control overnight. Weakest setup of the 4 instruments.</li>
+        <li class="key">NODE 29,560 = spot = CW 29,600 cluster — same magnetic structure as ES but with negative RF.</li>
+        <li class="key">GP = PW = 29,500 — only 58 pts below. Strong structural floor.</li>
+        <li class="bull">Reclaim VWAP 29,591 + DHP ACC.BULL → CW 29,600 → GC2 29,800 → GC3 29,900</li>
+        <li class="bear">Lose GP/PW 29,500 → GF2 29,300 → GF3/GF4 29,200–29,250 → EA 29,100</li>
+        <li class="amp">Gamma 0→0 at NODE = very low structural resistance. NQ can move fast in either direction.</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- CL -->
+<div class="section-header damp">
+  <span class="num">05</span>
+  <span class="title">CL · Crude Oil WTI</span>
+  <span class="sub">CLM26 · DAMPENED · Spot testing TA 101 · GP/PW 100 massive floor · EIA Gas 10:30 ET</span>
+</div>
+
+<div class="instrument-grid">
+  <div class="inst-card">
+    <div class="inst-header">
+      <span class="inst-tag tag-cl">CL</span>
+      <span style="color:#6e7681;font-size:10px;">PAD ZONES · MAY 14</span>
+      <span class="inst-spot up">101.05</span>
+    </div>
+    <table class="pad-table">
+      <tr><th>Zone</th><th>Strike</th><th>OI</th><th>Gamma</th><th>Label</th></tr>
+      <tr><td class="zone-call">▲ GC1</td><td class="zone-call">105.0</td><td>8,531</td><td>541</td><td>Call Wall — dominant</td></tr>
+      <tr><td class="zone-call">▲ GC2</td><td class="zone-call">102.0</td><td>3,438</td><td>286</td><td>Ceiling ← near spot</td></tr>
+      <tr><td class="zone-call">▲ GC3</td><td class="zone-call">103.0</td><td>2,915</td><td>290</td><td>Ceiling 2</td></tr>
+      <tr><td class="zone-flip">◆ NODE</td><td class="zone-flip">100.0</td><td>Net GEX</td><td>2,032</td><td>Gamma Node = GP = PW</td></tr>
+      <tr><td class="zone-anchor">📍 TA</td><td class="zone-anchor">101.0</td><td>—</td><td>360</td><td>Tactical Anchor ← spot testing</td></tr>
+      <tr><td class="zone-put">▼ GF1</td><td class="zone-put">100.0</td><td>48,390</td><td>1,007</td><td>Put Wall — massive 48K OI</td></tr>
+      <tr><td class="zone-put">▼ GF2</td><td class="zone-put">95.0</td><td>30,887</td><td>174</td><td>Gamma Floor 2</td></tr>
+      <tr><td class="zone-put">▼ EA</td><td class="zone-put">99.0</td><td>3,655</td><td>163</td><td>Emergency Anchor</td></tr>
+    </table>
+  </div>
+  <div class="inst-card">
+    <div class="inst-header">
+      <span class="inst-tag tag-cl">CL</span>
+      <span style="color:#6e7681;font-size:10px;">BALANCED · PW 100 MASSIVE · EIA GAS 10:30</span>
+    </div>
+    <div class="tpo-row">
+      <div class="tpo-chip above">VAH 101.60</div>
+      <div class="tpo-chip above">POC 100.80</div>
+      <div class="tpo-chip above">VAL 101.30</div>
+      <div class="tpo-chip warn">VWAP 101.18 ↓</div>
+      <div class="tpo-chip above">EMA200 100.19</div>
+      <div class="tpo-chip" style="background:rgba(62,207,106,.15);color:#3ecf6a;border:1px solid rgba(62,207,106,.3);">RF +9 · Balanced</div>
+    </div>
+    <div class="plan-box">
+      <div class="plan-title">📋 CL Read — May 14 · Spot testing TA 101 · PW 100 = fortress</div>
+      <ul>
+        <li class="key">PW 100.0 with 48,390 OI + gamma 1,007 — strongest structural level across all instruments today.</li>
+        <li class="key">Spot 101.05 testing TA 101 — this is the decision point. Hold → bull. Lose → test PW 100.</li>
+        <li class="warn">EIA Natural Gas Stocks 10:30 ET — could inject volatility into energy complex.</li>
+        <li class="bull">Hold TA 101 + buyers → GC2 102 → GC3 103 → CW 105</li>
+        <li class="bear">Lose TA 101 → EA 99 → PW 100 cluster — PW 100 with 48K OI is extremely hard to break</li>
+        <li class="amp">Retail Sales miss = less economic activity = mildly bearish CL demand outlook. Watch reaction.</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- SPX -->
+<div class="section-header">
+  <span class="num">06</span>
+  <span class="title">SPX · S&P 500 Index</span>
+  <span class="sub">AMPLIFIED · GP 7,400 below · NODE=CW=7,600 massive target · IV 25.43% elevated</span>
+</div>
+
+<div class="instrument-grid">
+  <div class="inst-card">
+    <div class="inst-header">
+      <span class="inst-tag tag-spx">SPX</span>
+      <span style="color:#6e7681;font-size:10px;">PAD ZONES · MAY 14 · AMPLIFIED</span>
+      <span class="inst-spot amp">7,444.88</span>
+    </div>
+    <table class="pad-table">
+      <tr><th>Zone</th><th>Strike</th><th>OI</th><th>Label</th></tr>
+      <tr><td class="zone-call">▲ GC1</td><td class="zone-call">7,600</td><td>33,758</td><td>Call Wall = NODE = imán</td></tr>
+      <tr><td class="zone-call">▲ GC2</td><td class="zone-call">7,525</td><td>30,658</td><td>Call Wall 2 — strong</td></tr>
+      <tr><td class="zone-call">▲ GC3</td><td class="zone-call">7,515</td><td>14,165</td><td>Gamma Ceiling</td></tr>
+      <tr><td class="zone-flip">◆ NODE</td><td class="zone-flip">7,600</td><td>Net GEX</td><td>Gamma Node = CW ← big target</td></tr>
+      <tr><td class="zone-flip">◆ GP Struct</td><td class="zone-flip">7,400</td><td>—</td><td>Gamma Flip Structural ← far below</td></tr>
+      <tr><td class="zone-anchor">📍 TA</td><td class="zone-anchor">7,350</td><td>—</td><td>Tactical Anchor</td></tr>
+      <tr><td class="zone-put">▼ GF3</td><td class="zone-put">7,300</td><td>13,067</td><td>Put Wall</td></tr>
+      <tr><td class="zone-put">▼ GF1</td><td class="zone-put">7,200</td><td>24,631</td><td>Gamma Floor 1</td></tr>
+      <tr><td class="zone-put">▼ EA</td><td class="zone-put">7,000</td><td>11,415</td><td>Emergency Anchor</td></tr>
+    </table>
+  </div>
+  <div class="inst-card">
+    <div class="inst-header">
+      <span class="inst-tag tag-spx">SPX</span>
+      <span style="color:#6e7681;font-size:10px;">AMPLIFIED · GP 7,400 BELOW · TARGET 7,600</span>
+    </div>
+    <div class="tpo-row">
+      <div class="tpo-chip above">VAH 7,462</div>
+      <div class="tpo-chip amp">POC 7,416</div>
+      <div class="tpo-chip above">VAL 7,445</div>
+      <div class="tpo-chip above">EMA200 7,272</div>
+      <div class="tpo-chip amp">IV 25.43% ↑</div>
+      <div class="tpo-chip" style="background:rgba(240,133,58,.12);color:var(--amplified);border:1px solid rgba(240,133,58,.3);">RF +14 · Value migrating up</div>
+    </div>
+    <div class="plan-box">
+      <div class="plan-title">📋 SPX Read — May 14 · AMPLIFIED · NODE=CW=7,600 is the big target</div>
+      <ul>
+        <li class="amp">AMPLIFIED with GP 7,400 far below (45 pts) — structure strongly bullish. Dealers amplify upside moves.</li>
+        <li class="key">NODE = CW = 7,600 — this is the magnetic target for the week. IV 25.43% elevated but declining trend.</li>
+        <li class="key">GC2 7,525 + GC3 7,515 cluster = first resistance wall. Price needs to digest this before 7,600.</li>
+        <li class="warn">Retail Sales miss could create early selling pressure — but AMPLIFIED structure means dips get bought fast.</li>
+        <li class="bull">Hold GP 7,400 + DHP ACC.BULL → GC3 7,515 → GC2 7,525 → NODE/CW 7,600</li>
+        <li class="bear">Lose GP 7,400 → AMPLIFIED DOWN → PW 7,300 → GF1 7,200 fast</li>
+        <li class="amp">IV 25.43% vs yesterday 16.11% — significantly higher. More expensive options = more dealer hedging = more AMPLIFIED moves.</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- EDGE -->
+<div class="section-header">
+  <span class="num">07</span>
+  <span class="title">GAIA Edge · 3-Scenario Framework</span>
+  <span class="sub">Retail Sales miss absorbed · FRAGILE WATCH · NODE at spot · MCS 47% · Reduce size</span>
+</div>
+
+<div class="synth-box">
+  <span style="color:#fb7185;font-weight:700;">⚠️ FRAGILE / WATCH SYNTHESIS — MAY 14, 2026:</span><br><br>
+  Retail Sales missed across the board — 0.4% vs 0.5%, Ex-Autos 0.3% vs 0.6%, Claims 209K vs 205K.
+  The market absorbed the news pre-market — ES still holding above VWAP. That absorption is the signal.
+  <strong>FRAGILE structure with Drift UPWARD STABILIZATION = dealers buying the dip in options, not panic-selling.</strong><br><br>
+  ES spot sitting exactly on NODE 7,490 — this is the gravitational center. SPX AMPLIFIED with GP 7,400 far below.
+  NODE = CW = 7,600 for SPX is the week's magnetic target. IV jumped to 25.43% — options more expensive today.
+  NQ shows distribution with RF -10 and below VWAP — the weak link in the chain.<br><br>
+  <strong>MCS 47% = LOW CONFIDENCE. Reduce size. Wait for ACC.BULL confirmation above 7,500 ES before pressing.</strong><br>
+  <strong>Structure matters more than news — and AMPLIFIED structure above GP 7,400 is bullish.</strong>
+</div>
+
+<!-- SETUP TRACKER -->
+<div class="section-header damp">
+  <span class="num">07b</span>
+  <span class="title">GEX Cascade Setup Tracker</span>
+  <span class="sub">Daily setup evaluation · Document when conditions met · Tweet if score ≥ 5/7</span>
+</div>
+
+<div class="inst-card" style="margin-bottom:14px;">
+  <table class="pad-table">
+    <tr><th>Condition</th><th>Value Today</th><th>Status</th></tr>
+    <tr><td>GEX positive cascade 5+ strikes above Node</td><td>COMPRESSION 7,450–7,495 · 9+ strikes</td><td style="color:#3ecf6a;font-weight:700;">✓ ACTIVE</td></tr>
+    <tr><td>DEX at Node &gt;1K</td><td>NODE 7,490 · DEX TBD at open</td><td style="color:#e3b341;font-weight:700;">⏳ VERIFY</td></tr>
+    <tr><td>DSI &gt; 85</td><td>DSI 84</td><td style="color:#fb7185;font-weight:700;">✗ 84 (close)</td></tr>
+    <tr><td>MCS &gt; 80%</td><td>MCS 47%</td><td style="color:#fb7185;font-weight:700;">✗ LOW CONF</td></tr>
+    <tr><td>Permission FAVORABLE</td><td>WATCH</td><td style="color:#fb7185;font-weight:700;">✗ WATCH</td></tr>
+    <tr><td>Drift UPWARD STABILIZATION</td><td>UPWARD STABILIZATION</td><td style="color:#3ecf6a;font-weight:700;">✓ ACTIVE</td></tr>
+    <tr><td>Node holds 30 min</td><td>Verify at 10:00 ET</td><td style="color:#e3b341;font-weight:700;">⏳ VERIFY AT OPEN</td></tr>
+  </table>
+  <div style="margin-top:10px;padding:8px;background:rgba(240,133,58,.06);border:1px solid rgba(240,133,58,.2);border-radius:3px;font-size:11px;">
+    <strong style="color:var(--amplified);">PRE-OPEN SCORE: 2/7 — NO SETUP YET.</strong>
+    MCS needs to recover above 65%+ and Permission must turn FAVORABLE before this triggers.
+    Monitor at 9:30 open — if DHP ACC.BULL + Node holds → score jumps to 5-6/7.
+  </div>
+</div>
+
+<div class="edge-grid">
+  <div class="scenario-card base">
+    <div class="sc-header sc-base">📊 BASE SCENARIO</div>
+    <div class="pct" style="color:var(--cyan)">45%</div>
+    <div class="desc">
+      ES oscillates around NODE 7,490. FRAGILE structure compresses price between VWAP 7,483 and CW 7,500.
+      DHP stays BLD — no clear direction. NQ leads lower toward VWAP 29,591.
+      MCS recovers slowly. Choppy session with multiple fake breakouts.
+      Retail Sales miss creates early hesitation — resolved after 10:00 AM.
+    </div>
+    <div class="levels">SPX: 7,400–7,515 | ES: 7,450–7,525 | NQ: 29,400–29,627 | CL: 100–103</div>
+  </div>
+
+  <div class="scenario-card bull">
+    <div class="sc-header sc-bull">🟢 BULL SCENARIO</div>
+    <div class="pct" style="color:var(--green)">35%</div>
+    <div class="desc">
+      MCS recovers above 65% at open. DHP ACC.BULL confirmed.
+      ES breaks CW 7,500 → DAMPENED squeeze toward GC3 7,525 → GC2 7,550.
+      SPX AMPLIFIED acceleration toward GC3 7,515 → GC2 7,525 → target 7,600 NODE.
+      NQ reclaims VWAP 29,591 → CW 29,600.
+      This is the week trend scenario — retail miss already priced in.
+    </div>
+    <div class="levels">SPX target: 7,515 → 7,525 → 7,600 | ES: 7,500 → 7,550 | NQ: 29,600 → 29,800</div>
+  </div>
+
+  <div class="scenario-card bear">
+    <div class="sc-header sc-bear">🔴 BEAR SCENARIO</div>
+    <div class="pct" style="color:var(--red)">20%</div>
+    <div class="desc">
+      Retail Sales miss triggers real selling at open. ES loses VWAP 7,483 → NODE 7,490 fails.
+      NQ accelerates lower — RF -10 already weak.
+      DHP ACC.BEAR → SPX AMPLIFIED DOWN → fast move to TA 7,350 → PW 7,300.
+      Fed Schmid 10:15 / Hammack + Bowman 1:00 PM as wildcard hawkish triggers.
+      CL loses TA 101 → tests PW 100 fortress.
+    </div>
+    <div class="levels">SPX: 7,400 GP → 7,350 TA → 7,300 PW | ES: 7,450 → 7,400 | NQ: 29,500 → 29,300</div>
+  </div>
+</div>
+
+<!-- CALENDAR -->
+<div class="section-header damp">
+  <span class="num">08</span>
+  <span class="title">Economic Calendar · May 14, 2026</span>
+  <span class="sub">All 8:30 data released — miss across board · 4 Fed speakers · EIA Gas 10:30</span>
+</div>
+
+<table class="macro-table">
+  <tr><th>Time ET</th><th>Event</th><th>Previous</th><th>Consensus</th><th>Actual</th><th>Impact</th><th>PAD Note</th></tr>
+  <tr class="today-row">
+    <td><strong style="color:#fb7185;">08:30 ✅</strong></td>
+    <td><strong>Initial Jobless Claims</strong></td>
+    <td>200K</td><td>205K</td>
+    <td style="color:#fb7185;font-weight:700;">209K ⬆ MISS</td>
+    <td class="imp-high">HIGH</td>
+    <td class="pad-note">Claims rising = labor softening. Mild bearish but not catastrophic.</td>
+  </tr>
+  <tr class="today-row">
+    <td><strong style="color:#fb7185;">08:30 ✅</strong></td>
+    <td><strong>Retail Sales MoM Apr</strong></td>
+    <td>1.7%</td><td>0.5%</td>
+    <td style="color:#fb7185;font-weight:700;">0.4% ⬇ MISS</td>
+    <td class="imp-high">HIGH</td>
+    <td class="pad-note">Consumer slowing. AMPLIFIED structure absorbs — watch DHP reaction at open.</td>
+  </tr>
+  <tr class="today-row">
+    <td><strong style="color:#fb7185;">08:30 ✅</strong></td>
+    <td><strong>Retail Sales Ex Autos</strong></td>
+    <td>1.9%</td><td>0.6%</td>
+    <td style="color:#fb7185;font-weight:700;">0.3% ⬇ BIG MISS</td>
+    <td class="imp-high">HIGH</td>
+    <td class="pad-note">Biggest miss of the day. Demand weakness confirmed across categories.</td>
+  </tr>
+  <tr class="today-row">
+    <td><strong style="color:#fb7185;">08:30 ✅</strong></td>
+    <td>Retail Sales Control Group</td>
+    <td>0.7%</td><td>0.4%</td>
+    <td style="color:#fb7185;font-weight:700;">0.3% MISS</td>
+    <td class="imp-high">HIGH</td>
+    <td class="pad-note">GDP input measure. Weak = Q2 growth pressure. Bearish bias for equities.</td>
+  </tr>
+  <tr>
+    <td>10:00 AM</td>
+    <td>Business Inventories MoM Mar</td>
+    <td>0.4%</td><td>0.8%</td><td>0.7%</td>
+    <td class="imp-low">LOW</td>
+    <td class="pad-note">Slight inventory build. Minimal market impact.</td>
+  </tr>
+  <tr>
+    <td>10:15 AM</td>
+    <td>Fed Schmid Speech</td>
+    <td>—</td><td>—</td><td>—</td>
+    <td class="imp-med">MED</td>
+    <td class="pad-note">First Fed speaker post-Retail miss. Tone sets mid-morning direction.</td>
+  </tr>
+  <tr>
+    <td>10:30 AM</td>
+    <td>EIA Natural Gas Stocks Change</td>
+    <td>63Bcf</td><td>85Bcf</td><td>—</td>
+    <td class="imp-med">MED</td>
+    <td class="pad-note">CL/energy catalyst. Large build expected — bearish NG, minor CL impact.</td>
+  </tr>
+  <tr>
+    <td>01:00 PM</td>
+    <td>Fed Hammack + Bowman Speeches</td>
+    <td>—</td><td>—</td><td>—</td>
+    <td class="imp-med">MED</td>
+    <td class="pad-note">Double Fed at same time — Power Hour setup. Watch DHP reaction 13:00–13:30.</td>
+  </tr>
+  <tr>
+    <td>05:45 PM</td>
+    <td>Fed Williams Speech</td>
+    <td>—</td><td>—</td><td>—</td>
+    <td class="imp-low">LOW</td>
+    <td class="pad-note">After close. Overnight positioning impact.</td>
+  </tr>
+  <tr>
+    <td>07:00 PM</td>
+    <td>Fed Barr Speech</td>
+    <td>—</td><td>—</td><td>—</td>
+    <td class="imp-low">LOW</td>
+    <td class="pad-note">After close. Minimal intraday impact.</td>
+  </tr>
+</table>
+
+<!-- GAIA STRING -->
+<div class="section-header damp">
+  <span class="num">09</span>
+  <span class="title">GAIA String · SPX PAD Chart</span>
+  <span class="sub">AMPLIFIED · GP 7,400 · NODE=CW=7,600 · IV 25.43% · Copy → SPX PAD Chart → APPLY</span>
+</div>
+
+<div class="gaia-string-section">
+  <div class="gs-header">📋 SPX GAIA STRING · MAY 14, 2026 · AMPLIFIED · GP 7,400 · NODE/CW 7,600 · IV 25.43%</div>
+  <div class="gs-display">
+    <div class="gs-text" id="gaia-str">DATE:2026-05-14 ET|REGIME:AMPLIFIED|SPOT:7444.88|GC1:7600|GC2:7525|GC3:7515|GP:7400|NODE:7600|PIN:7400|RT_HI:7517.10|RT_LO:7372.66|GF1:7200|GF2:7100|GF3:7300|GF4:7400|TA:7350|EA:7000|SIGMA_HI:7517.10|SIGMA_LO:7372.66|SIGMA_LBL:72.22 0.97pct</div>
+    <button class="gs-copy" id="gs-btn" onclick="copyGS()">COPY →</button>
+  </div>
+  <div class="gs-steps">
+    1. Click <strong>COPY →</strong> &nbsp;·&nbsp;
+    2. Open <strong>SPX PAD Chart</strong> &nbsp;·&nbsp;
+    3. Paste in <strong>GAIA STRING</strong> input bar &nbsp;·&nbsp;
+    4. Click <strong>APPLY →</strong>
+  </div>
+</div>
+
+<!-- TWEETS -->
+<div class="section-header damp">
+  <span class="num">10</span>
+  <span class="title">Twitter · @PivotAlphaDesk</span>
+  <span class="sub">Retail Sales miss absorbed · FRAGILE WATCH · Publish 8:30–9:00 AM ET</span>
+</div>
+
+<div class="tweet-box">
+  <div class="tweet-header">
+    <div class="tweet-avatar">P</div>
+    <div><div class="tweet-name">PivotAlphaDesk</div><div class="tweet-handle">@PivotAlphaDesk</div></div>
+    <div class="tweet-label">TWEET 1 — OPERATIVE</div>
+  </div>
+  <div class="tweet-content">Pre-Market | THU MAY 14 · ES Gamma
+
+Retail Sales missed. Market absorbed it.
+That's the structure talking.
+
+🟢 Support:  7,490 (Gamma Node · spot here)
+🔴 Ceiling:  7,500 (Call Wall · 11 pts above)
+📍 ES:       7,489 · Above VWAP · FRAGILE
+⚡ Regime:   ES DAMPENED · SPX AMPLIFIED
+
+MCS 47% → Reduce size · Wait ACC confirmation.
+Above 7,500 → squeeze toward 7,550.
+SPX target this week: NODE/CW 7,600.
+
+Fed: Schmid 10:15 · Hammack+Bowman 1:00 PM.
+
+Structure matters more than news.
+
+#ES_F #GammaLevels #SPX #OptionsFlow #RetailSales</div>
+  <div class="tweet-time">Ready to post · May 14, 2026 · 8:30–9:00 AM ET</div>
+</div>
+
+<div class="tweet-box" style="margin-top:10px;">
+  <div class="tweet-header">
+    <div class="tweet-avatar">P</div>
+    <div><div class="tweet-name">PivotAlphaDesk</div><div class="tweet-handle">@PivotAlphaDesk</div></div>
+    <div class="tweet-label">TWEET 2 — GAIA STRING</div>
+  </div>
+  <div class="tweet-content">GAIA Zones is now live on TradingView.
+
+Free SPX gamma levels — paste the daily string → zones load instantly.
+
+What you get:
+· Call Walls
+· Gamma Flip
+· Gamma Node
+· Put Wall
+· Tactical Anchor
+· 1σ daily range
+
+Today's string below 👇
+
+DATE:2026-05-14 ET|REGIME:AMPLIFIED|SPOT:7444.88|GC1:7600|GC2:7525|GC3:7515|GP:7400|NODE:7600|PIN:7400|GF1:7200|GF2:7100|GF3:7300|GF4:7400|TA:7350|EA:7000|SIGMA_HI:7517.10|SIGMA_LO:7372.66
+
+Search "GAIA Zones PivotAlphaDesk" on TradingView.
+
+#TradingView #GammaLevels #SPX #OptionsFlow</div>
+  <div class="tweet-time">Ready to post · May 14, 2026 · 8:30–9:00 AM ET</div>
+</div>
+
+<div class="footer">
+  <span>PivotAlphaDesk</span> · GAIA Framework · May 14, 2026 · Retail Sales Day Pre-Market Briefing<br>
+  For educational purposes only. Not financial advice. Trading futures involves substantial risk of loss.<br>
+  Source: CME · GAIA Analysis System · Nexa Processing Layer
+</div>
+
+</div>
+
+<script>
+function copyGS(){
+  var str=document.getElementById('gaia-str').textContent.trim();
+  var btn=document.getElementById('gs-btn');
+  navigator.clipboard.writeText(str).then(function(){
+    btn.textContent='✓ COPIED';btn.classList.add('copied');
+    setTimeout(function(){btn.textContent='COPY →';btn.classList.remove('copied');},2000);
+  }).catch(function(){
+    var range=document.createRange();
+    range.selectNode(document.getElementById('gaia-str'));
+    window.getSelection().removeAllRanges();
+    window.getSelection().addRange(range);
+    document.execCommand('copy');
+    window.getSelection().removeAllRanges();
+    btn.textContent='✓ COPIED';btn.classList.add('copied');
+    setTimeout(function(){btn.textContent='COPY →';btn.classList.remove('copied');},2000);
+  });
+}
+</script>
+</body>
+</html>
