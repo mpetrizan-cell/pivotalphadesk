@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1"/>
-<title>GAIA Structure Terminal v8f Clean Zones</title>
+<title>GAIA Structure Terminal v9 · PivotAlphaDesk</title>
 <script src="https://unpkg.com/lightweight-charts@4.2.0/dist/lightweight-charts.standalone.production.js"></script>
 <style>
 :root{
@@ -36,7 +36,7 @@ html,body{width:100%;height:100%;overflow:hidden;background:var(--bg);color:var(
 #gaiaCanvas{position:absolute;inset:0;pointer-events:none;z-index:5}
 .row{display:flex;justify-content:space-between;gap:10px;font-size:10px;padding:4px 0;border-bottom:1px solid rgba(30,41,59,.55)}
 .row:last-child{border-bottom:0}.permission{height:10px;background:#0f172a;border-radius:6px;overflow:hidden;margin-top:8px}.permFill{height:100%;width:34%;background:linear-gradient(90deg,#ef4444,#fbbf24,#34d399)}
-.readout{font-size:10px;line-height:1.55;color:#cbd5e1}
+.readout{font-size:9px;line-height:1.5;color:#cbd5e1;overflow-y:auto;max-height:120px}
 .bottom{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;padding:5px 8px;border-top:1px solid var(--line);background:#050b15}.bbox{padding:5px 8px;font-size:10px}
 .pill{display:inline-block;border:1px solid #334155;border-radius:4px;padding:1px 5px;font-size:8px;margin:0 4px 4px 0}
 </style>
@@ -44,7 +44,7 @@ html,body{width:100%;height:100%;overflow:hidden;background:var(--bg);color:var(
 <body>
 <div class="terminal">
   <div class="header">
-    <div class="box"><div class="lbl">Terminal</div><div class="val">GAIA Structure Terminal v8f · Clean MAP Zones</div></div>
+    <div class="box"><div class="lbl">Terminal</div><div class="val">GAIA Structure Terminal v9 · PivotAlphaDesk</div></div>
     <div class="box"><div class="lbl">SPX</div><div class="val" id="spx"></div></div>
     <div class="box"><div class="lbl">ES</div><div class="val" id="es"></div></div>
     <div class="box"><div class="lbl">Regime</div><div class="val" id="regime"></div></div>
@@ -126,7 +126,24 @@ function zoneColor(k){k=String(k).toLowerCase(); if(k.includes('call'))return'#e
 function zoneLabel(k){k=String(k).toLowerCase(); if(k.includes('call'))return'CALL WALL'; if(k.includes('gamma_node'))return'GAMMA NODE'; if(k.includes('gravity'))return'GRAVITY PIN'; if(k.includes('gamma_flip'))return'GAMMA FLIP'; if(k.includes('put'))return'PUT WALL'; if(k.includes('floor'))return'GAMMA FLOOR'; if(k.includes('tactical'))return'TACTICAL ANCHOR'; if(k.includes('emergency'))return'EMERGENCY ANCHOR'; return k.replaceAll('_',' ').toUpperCase()}
 function getZones(){return Object.entries(raw.levels_es||{}).map(([k,v])=>({key:k,label:zoneLabel(k),price:Number(v),color:zoneColor(k)})).filter(z=>Number.isFinite(z.price)).sort((a,b)=>b.price-a.price)}
 
-function demoCandles(st){let p=raw.spot_es-5,now=Math.floor(Date.now()/1000)-72*st;return Array.from({length:72},(_,i)=>{const o=p+Math.sin(i*.9)*2,c=o+Math.cos(i*.63)*3+Math.sin(i/8)*.7,h=Math.max(o,c)+2,l=Math.min(o,c)-2;p=c;return{time:now+i*st,open:o,high:h,low:l,close:c}})}
+function demoCandles(st){
+  const ET_OFFSET=4*3600;
+  let p=raw.spot_es||7450;
+  const now=Math.floor(Date.now()/1000)-ET_OFFSET-200*st;
+  return Array.from({length:200},(_,i)=>{
+    const o=p+Math.sin(i*.9)*2,c=o+Math.cos(i*.63)*3+Math.sin(i/8)*.7,h=Math.max(o,c)+2,l=Math.min(o,c)-2;
+    p=c; return{time:now+i*st,open:+o.toFixed(2),high:+h.toFixed(2),low:+l.toFixed(2),close:+c.toFixed(2)};
+  });
+}
+async function fetchBars(tf){
+  try{
+    const r=await fetch('/bars?symbol=ESM26&tf='+tf);
+    if(!r.ok) return null;
+    const data=await r.json();
+    if(data.status!=='ok'||!data.bars?.length) return null;
+    return data.bars.filter(b=>b.close>0).sort((a,b)=>a.time-b.time);
+  }catch(e){ return null; }
+}
 function flowData(st,seed){let v=seed||0,now=Math.floor(Date.now()/1000)-72*st;return Array.from({length:72},(_,i)=>{v+=Math.sin(i*.26)*3+Math.cos(i*.19)*2;return{time:now+i*st,value:v}})}
 function state(){const strikes=raw.strikes||[],avg=strikes.reduce((a,b)=>a+(b.cvx||0),0)/Math.max(1,strikes.length),dex=totalDex();const vts=Math.round(32+avg*.55+(raw.dhp_momentum<0?18:0)+(Math.abs(dex)>2500?8:0));const dsi=Math.max(0,Math.min(100,76-vts/3));const mcs=Math.max(0,Math.min(100,55+Math.sign(dex)*8));const regime=vts>65?'FRAGILE':dsi>72?'STABLE':'BALANCED';const permission=regime==='FRAGILE'?'DEFENSIVE':mcs>70?'FAVORABLE':'WATCH';const dexBias=dex>1500?'BUY HEDGE':dex<-1500?'SELL HEDGE':'MIXED';return{dsi:Math.round(dsi),vts,mcs:Math.round(mcs),regime,permission,avgCvx:Math.round(avg),dex,dexBias}}
 
@@ -141,7 +158,7 @@ function build(){
   window.addEventListener('resize',resize); priceChart.timeScale().subscribeVisibleTimeRangeChange(draw); render(); resize();
 }
 function resize(){const p=document.getElementById('priceChart').getBoundingClientRect();priceChart.applyOptions({width:p.width,height:p.height});const f=document.getElementById('flowChart').getBoundingClientRect();flowChart.applyOptions({width:f.width,height:f.height});const c=document.getElementById('gaiaCanvas');c.width=p.width*devicePixelRatio;c.height=p.height*devicePixelRatio;c.style.width=p.width+'px';c.style.height=p.height+'px';draw()}
-function render(){
+async function render(){
   const st=step(),real=raw?.candles?.[tf],candles=Array.isArray(real)&&real.length?real:demoCandles(st);document.getElementById('tfmode').textContent=Array.isArray(real)&&real.length?'TF LIVE':'TF DEMO';
   priceSeries.setData(candles); const dhp=raw?.flow?.dhp?.length?raw.flow.dhp:flowData(st,raw.dhp_momentum||0),dex=raw?.flow?.dex?.length?raw.flow.dex:flowData(st,totalDex()/100);
   dhpSeries.setData(dhp); dexSeries.setData(dex); histSeries.setData(dex.map(x=>({time:x.time,value:Math.abs(x.value),color:x.value>=0?'rgba(52,211,153,.34)':'rgba(239,68,68,.34)'})));
@@ -224,7 +241,7 @@ function renderState(){const s=state();document.getElementById('spx').textConten
 function draw(){const canvas=document.getElementById('gaiaCanvas');if(!canvas||!priceSeries)return;const ctx=canvas.getContext('2d'),dpr=devicePixelRatio,r=canvas.getBoundingClientRect();ctx.setTransform(dpr,0,0,dpr,0,0);ctx.clearRect(0,0,r.width,r.height);const maxG=Math.max(...(raw.strikes||[]).map(s=>Math.abs(s.net_gex||0)),1),maxD=Math.max(...(raw.strikes||[]).map(s=>Math.abs(s.net_dex||0)),1);(raw.strikes||[]).forEach(s=>{const y=priceSeries.priceToCoordinate(s.strike+(raw.basis||25.01));if(y==null)return;const gs=Math.abs(s.net_gex)/maxG,ds=Math.abs(s.net_dex||0)/maxD,frag=s.net_gex<0||raw.dhp_momentum<-35,base=frag?'239,68,68':'103,232,249',dex=(s.net_dex||0)>=0?'52,211,153':'239,68,68';const len=170+gs*480,thick=8+gs*24,g=ctx.createLinearGradient(20,y,20+len,y);g.addColorStop(0,`rgba(${base},${.22+gs*.2})`);g.addColorStop(.6,`rgba(${base},${.08+gs*.13})`);g.addColorStop(1,'rgba(0,0,0,0)');ctx.fillStyle=g;ctx.shadowColor=`rgba(${base},.45)`;ctx.shadowBlur=16;roundRect(ctx,30,y-thick/2,len,thick,thick/2);ctx.fill();const dl=100+ds*420,dg=ctx.createLinearGradient(r.width-dl-30,y,r.width-30,y);dg.addColorStop(0,'rgba(0,0,0,0)');dg.addColorStop(1,`rgba(${dex},${.25+ds*.35})`);ctx.fillStyle=dg;ctx.shadowColor=`rgba(${dex},.7)`;ctx.shadowBlur=18;roundRect(ctx,r.width-dl-30,y-4,dl,8,4);ctx.fill();ctx.shadowBlur=0});getZones().forEach(z=>{const y=priceSeries.priceToCoordinate(z.price);if(y==null)return;ctx.strokeStyle=z.color;ctx.lineWidth=1.3;ctx.setLineDash(z.label.includes('NODE')||z.label.includes('PIN')||z.label.includes('FLIP')?[6,4]:[]);ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(r.width,y);ctx.stroke();ctx.setLineDash([]);const txt=`${z.label} ${Math.round(z.price)}`;ctx.font='10px ui-monospace,monospace';const tw=ctx.measureText(txt).width+14,x=Math.max(8,r.width-tw-10);ctx.fillStyle=z.color;roundRect(ctx,x,y-9,tw,18,4);ctx.fill();ctx.fillStyle='#020611';ctx.fillText(txt,x+7,y+4)})}
 function roundRect(ctx,x,y,w,h,rad){ctx.beginPath();ctx.moveTo(x+rad,y);ctx.arcTo(x+w,y,x+w,y+h,rad);ctx.arcTo(x+w,y+h,x,y+h,rad);ctx.arcTo(x,y+h,x,y,rad);ctx.arcTo(x,y,x+w,y,rad);ctx.closePath()}
 async function loadJson(){try{const r=await fetch('/gaia_live.json?t='+Date.now());if(r.ok){raw=await r.json();render()}}catch(e){}}
-build();loadJson();setInterval(loadJson,5000);
+build();loadJson();setInterval(loadJson,5000);setInterval(()=>{render();},60000);
 </script>
 </body>
 </html>
