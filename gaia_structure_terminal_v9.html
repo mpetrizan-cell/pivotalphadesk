@@ -50,7 +50,7 @@ html,body{width:100%;height:100%;overflow:hidden;background:var(--bg);color:var(
     <div class="box"><div class="lbl">Regime</div><div class="val" id="regime"></div></div>
     <div class="box"><div class="lbl">Permission</div><div class="val" id="permission"></div></div>
     <div class="box"><div class="lbl">DEX</div><div class="val" id="dexHeader"></div></div>
-    <div class="box controls"><span class="lbl" id="tfmode">TF DEMO</span><button class="btn tf active" data-tf="M1">M1</button><button class="btn tf" data-tf="M5">M5</button><button class="btn tf" data-tf="M15">M15</button></div>
+    <div class="box controls"><span class="lbl">CHART</span><span class="val" id="tfmode" style="color:var(--violet)">SPX LINE</span></div>
   </div>
 
   <div class="main">
@@ -121,7 +121,7 @@ let raw=fallback, tf='M1', priceChart, priceSeries, flowChart, dhpSeries, dexSer
 function f2(v){return Number(v||0).toLocaleString(undefined,{minimumFractionDigits:2,maximumFractionDigits:2})}
 function fmt(v){const a=Math.abs(Number(v)||0),s=(Number(v)||0)>=0?'+':'-';return s+(a>=1e6?(a/1e6).toFixed(1)+'M':a>=1e3?(a/1e3).toFixed(1)+'K':a.toFixed(0))}
 function step(){return tf==='M1'?60:tf==='M5'?300:900}
-function totalDex(){return (raw.strikes||[]).reduce((a,s)=>a+(Number(s.net_dex)||0),0)}
+function totalDex(){return (raw.strikes||[]).reduce((a,s)=>a+((s.call_delta_oi||0)-(s.put_delta_oi||0)),0)}
 function zoneColor(k){k=String(k).toLowerCase(); if(k.includes('call'))return'#ef4444'; if(k.includes('put')||k.includes('floor'))return'#3b82f6'; if(k.includes('node'))return'#e879f9'; if(k.includes('gravity')||k.includes('pin')||k.includes('flip'))return'#fbbf24'; if(k.includes('tactical'))return'#14b8a6'; if(k.includes('emergency'))return'#2dd4bf'; return'#94a3b8'}
 function zoneLabel(k){k=String(k).toLowerCase(); if(k.includes('call'))return'CALL WALL'; if(k.includes('gamma_node'))return'GAMMA NODE'; if(k.includes('gravity'))return'GRAVITY PIN'; if(k.includes('gamma_flip'))return'GAMMA FLIP'; if(k.includes('put'))return'PUT WALL'; if(k.includes('floor'))return'GAMMA FLOOR'; if(k.includes('tactical'))return'TACTICAL ANCHOR'; if(k.includes('emergency'))return'EMERGENCY ANCHOR'; return k.replaceAll('_',' ').toUpperCase()}
 function getZones(){return Object.entries(raw.levels_es||{}).map(([k,v])=>({key:k,label:zoneLabel(k),price:Number(v),color:zoneColor(k)})).filter(z=>Number.isFinite(z.price)).sort((a,b)=>b.price-a.price)}
@@ -149,7 +149,7 @@ function state(){const strikes=raw.strikes||[],avg=strikes.reduce((a,b)=>a+(b.cv
 
 function build(){
   priceChart=LightweightCharts.createChart(document.getElementById('priceChart'),{layout:{background:{color:'#020611'},textColor:'#cbd5e1'},grid:{vertLines:{color:'#111827'},horzLines:{color:'#111827'}},rightPriceScale:{borderColor:'#1e293b'},timeScale:{timeVisible:true,borderColor:'#1e293b'}});
-  priceSeries=priceChart.addCandlestickSeries({upColor:'#67e8f9',downColor:'#e879f9',borderUpColor:'#67e8f9',borderDownColor:'#e879f9',wickUpColor:'#67e8f9',wickDownColor:'#e879f9'});
+  priceSeries=priceChart.addLineSeries({color:'#e879f9',lineWidth:2,priceLineVisible:true,lastValueVisible:true,crosshairMarkerRadius:4});
   flowChart=LightweightCharts.createChart(document.getElementById('flowChart'),{layout:{background:{color:'#020611'},textColor:'#94a3b8'},grid:{vertLines:{color:'#111827'},horzLines:{color:'#111827'}},rightPriceScale:{borderColor:'#1e293b'},timeScale:{timeVisible:true,borderColor:'#1e293b'}});
   dhpSeries=flowChart.addLineSeries({color:'#67e8f9',lineWidth:2,title:'DHP'});
   dexSeries=flowChart.addLineSeries({color:'#34d399',lineWidth:2,title:'DEX'});
@@ -158,10 +158,43 @@ function build(){
   window.addEventListener('resize',resize); priceChart.timeScale().subscribeVisibleTimeRangeChange(draw); render(); resize();
 }
 function resize(){const p=document.getElementById('priceChart').getBoundingClientRect();priceChart.applyOptions({width:p.width,height:p.height});const f=document.getElementById('flowChart').getBoundingClientRect();flowChart.applyOptions({width:f.width,height:f.height});const c=document.getElementById('gaiaCanvas');c.width=p.width*devicePixelRatio;c.height=p.height*devicePixelRatio;c.style.width=p.width+'px';c.style.height=p.height+'px';draw()}
+
+function buildSpxLine(){
+  // Build SPX price line from real spot + historical approximation
+  const spot = raw.spot_spx || 7490;
+  const ET_OFFSET = 4*3600;
+  const now = Math.floor(Date.now()/1000) - ET_OFFSET;
+  // Use real candles from raw if available
+  if(raw.candles?.M1?.length){
+    const d = raw.candles.M1.map(c=>({time:c.time, value:c.close}));
+    d._live = true;
+    return d;
+  }
+  // Demo: smooth line anchored to real spot_spx
+  let p = spot - 50;
+  const bars = Array.from({length:200},(_,i)=>{
+    const wave = Math.sin(i/14)*12+Math.cos(i/8)*6;
+    p = p + wave*0.05 + (Math.random()-0.47)*1.2;
+    return {time: now - (200-i)*60, value: +p.toFixed(2)};
+  });
+  // Force last point to real spot
+  bars[bars.length-1].value = spot;
+  bars._live = false;
+  return bars;
+}
+
 async function render(){
   const st=step(),real=raw?.candles?.[tf],candles=Array.isArray(real)&&real.length?real:demoCandles(st);document.getElementById('tfmode').textContent=Array.isArray(real)&&real.length?'TF LIVE':'TF DEMO';
-  priceSeries.setData(candles); const dhp=raw?.flow?.dhp?.length?raw.flow.dhp:flowData(st,raw.dhp_momentum||0),dex=raw?.flow?.dex?.length?raw.flow.dex:flowData(st,totalDex()/100);
-  dhpSeries.setData(dhp); dexSeries.setData(dex); histSeries.setData(dex.map(x=>({time:x.time,value:Math.abs(x.value),color:x.value>=0?'rgba(52,211,153,.34)':'rgba(239,68,68,.34)'})));
+  priceSeries.setData(candles); const dhpVal=raw.dhp_momentum||0;
+  const dexVal=(raw.strikes||[]).reduce((a,s)=>a+Math.abs((s.call_delta_oi||0)-(s.put_delta_oi||0)),0);
+  const ET2=4*3600, nowF=Math.floor(Date.now()/1000)-ET2;
+  const dhpLine=Array.from({length:200},(_,i)=>({time:nowF-(200-i)*60,value:+(dhpVal*(0.3+(i/200)*0.7)).toFixed(2)}));
+  dhpLine[199].value=dhpVal;
+  const dexLine=Array.from({length:200},(_,i)=>({time:nowF-(200-i)*60,value:+(dexVal*(0.3+(i/200)*0.7)/1000).toFixed(2)}));
+  dexLine[199].value=+(dexVal/1000).toFixed(2);
+  dhpSeries.setData(dhpLine);
+  dexSeries.setData(dexLine);
+  histSeries.setData(dexLine.map(x=>({time:x.time,value:Math.abs(x.value),color:'rgba(251,191,36,.3)'})));
   priceChart.timeScale().fitContent(); flowChart.timeScale().fitContent(); renderProfile(); renderState(); draw();
 }
 function renderProfile(){const h=document.getElementById('gexProfile'),arr=[...(raw.strikes||[])].sort((a,b)=>b.strike-a.strike),maxG=Math.max(...arr.map(s=>Math.abs(s.net_gex||0)),1),maxD=Math.max(...arr.map(s=>Math.abs(s.net_dex||0)),1);h.innerHTML=arr.map(s=>{const gp=Math.max(2,Math.abs(s.net_gex)/maxG*50),dp=Math.max(2,Math.abs(s.net_dex||0)/maxD*24),pos=s.net_gex>=0,buy=(s.net_dex||0)>=0;return`<div class="gexRow"><div class="strike">${s.strike}</div><div class="barTrack"><div class="bar ${pos?'pos':'neg'}" style="width:${gp}%"></div><div class="dexMini ${buy?'pos':'neg'}" style="width:${dp}%;${buy?'left:50%':'right:50%'};background:${buy?'#34d399':'#ef4444'};box-shadow:0 0 10px ${buy?'#34d399':'#ef4444'}"></div></div><div class="meta">${fmt(s.net_gex)}</div></div>`}).join('')}
@@ -214,7 +247,10 @@ function renderSetupTracker(state) {
   if (sl) { sl.textContent = label; sl.style.color = color; }
 }
 
-function renderState(){const s=state();document.getElementById('spx').textContent=f2(raw.spot_spx);document.getElementById('es').textContent=f2(raw.spot_es);document.getElementById('regime').textContent=s.regime;document.getElementById('permission').textContent=s.permission;document.getElementById('dexHeader').textContent=s.dexBias+' '+fmt(s.dex);document.getElementById('dsi').textContent=s.dsi+'%';document.getElementById('vts').textContent=s.vts;document.getElementById('mcs').textContent=s.mcs+'%';document.getElementById('cvx').textContent=s.avgCvx>60?'AMPLIFIED':s.avgCvx>38?'ELEVATED':'DAMPENED';document.getElementById('dexBias').textContent=s.dexBias+' '+fmt(s.dex);document.getElementById('permFill').style.width=(s.permission==='FAVORABLE'?82:s.permission==='WATCH'?58:34)+'%';document.getElementById('zoneRows').innerHTML=getZones().map(z=>`<div class="row"><span style="color:${z.color};font-weight:800">${z.label}</span><b style="color:${z.color}">${Math.round(z.price)}</b></div>`).join('');
+function renderState(){const s=state();document.getElementById('spx').textContent=f2(raw.spot_spx);document.getElementById('es').textContent=f2(raw.spot_es);
+  // Update live price in top bar
+  const liveEl=document.querySelector('.live-price')||document.querySelector('#livePrice');
+  if(liveEl) liveEl.textContent=f2(raw.spot_spx);document.getElementById('regime').textContent=s.regime;document.getElementById('permission').textContent=s.permission;document.getElementById('dexHeader').textContent=s.dexBias+' '+fmt(s.dex);document.getElementById('dsi').textContent=s.dsi+'%';document.getElementById('vts').textContent=s.vts;document.getElementById('mcs').textContent=s.mcs+'%';document.getElementById('cvx').textContent=s.avgCvx>60?'AMPLIFIED':s.avgCvx>38?'ELEVATED':'DAMPENED';document.getElementById('dexBias').textContent=s.dexBias+' '+fmt(s.dex);document.getElementById('permFill').style.width=(s.permission==='FAVORABLE'?82:s.permission==='WATCH'?58:34)+'%';document.getElementById('zoneRows').innerHTML=getZones().map(z=>`<div class="row"><span style="color:${z.color};font-weight:800">${z.label}</span><b style="color:${z.color}">${Math.round(z.price)}</b></div>`).join('');
   // STRUCTURE
   const structEl=document.getElementById('structure');
   structEl.textContent=s.regime+' / '+s.permission;
