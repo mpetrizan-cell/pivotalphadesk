@@ -45,8 +45,8 @@ TS_CLIENT_ID    = os.environ.get('TS_CLIENT_ID', 'HMVux6j6ncGeYOVFbWVXyB0lSVL4Wk
 TS_AUTH_URL     = 'https://signin.tradestation.com/oauth/token'
 TS_API_URL      = 'https://api.tradestation.com'
 _ts_token = {
-    'access_token':  os.environ.get('TS_ACCESS_TOKEN', ''),
-    'refresh_token': os.environ.get('TS_REFRESH_TOKEN', ''),
+    'access_token':  os.environ.get('TS_ACCESS_TOKEN', '').strip().replace('\n','').replace(' ',''),
+    'refresh_token': os.environ.get('TS_REFRESH_TOKEN', '').strip(),
     'saved_at':      time.time() if os.environ.get('TS_ACCESS_TOKEN') else 0,
     'expires_in':    int(os.environ.get('TS_EXPIRES_IN', '1200')),
 }
