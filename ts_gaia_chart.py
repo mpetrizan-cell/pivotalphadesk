@@ -505,9 +505,9 @@ def calculate_prediction_score(strikes_data, spot, confluence):
 
     confluence_strikes = {c["strike"]: c["strength"] for c in confluence}
 
-    max_gamma = max((max(s["call_gamma"], s["put_gamma"]) for s in strikes_data), default=0.00001)
-    max_doi   = max((max(abs(s["call_delta_oi"]), abs(s["put_delta_oi"])) for s in strikes_data), default=1)
-    max_oi    = max((s["call_oi"] + s["put_oi"] for s in strikes_data), default=1)
+    max_gamma = max((max(s["call_gamma"], s["put_gamma"]) for s in strikes_data), default=0.00001) or 0.00001
+    max_doi   = max((max(abs(s["call_delta_oi"]), abs(s["put_delta_oi"])) for s in strikes_data), default=1) or 1
+    max_oi    = max((s["call_oi"] + s["put_oi"] for s in strikes_data), default=1) or 1
 
     scores = {}
     for s in strikes_data:
