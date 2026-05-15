@@ -143,6 +143,18 @@ def get_valid_token():
         new_tokens = refresh_token(refresh_tok)
         if not new_tokens.get("access_token"):
             return None
+        # Push fresh token to Railway so /bars works
+        try:
+            push_to_railway({
+                "_token_update": True,
+                "access_token": new_tokens.get("access_token"),
+                "refresh_token": new_tokens.get("refresh_token", refresh_tok),
+                "saved_at": new_tokens.get("saved_at", 0),
+                "expires_in": new_tokens.get("expires_in", 1200),
+            })
+            log.info("Token pusheado a Railway OK")
+        except Exception as e:
+            log.warning(f"Token push error: {e}")
         save_tokens(new_tokens)
         log.info("Token refrescado OK.")
         return new_tokens["access_token"]
