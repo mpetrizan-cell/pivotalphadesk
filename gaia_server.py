@@ -47,7 +47,7 @@ TS_API_URL      = 'https://api.tradestation.com'
 _ts_token = {
     'access_token':  os.environ.get('TS_ACCESS_TOKEN', ''),
     'refresh_token': os.environ.get('TS_REFRESH_TOKEN', ''),
-    'saved_at':      float(os.environ.get('TS_SAVED_AT', '0')),
+    'saved_at':      time.time() if os.environ.get('TS_ACCESS_TOKEN') else 0,
     'expires_in':    int(os.environ.get('TS_EXPIRES_IN', '1200')),
 }
 _ts_lock = threading.Lock()
