@@ -108,7 +108,7 @@ const fallback={
     {strike:7530,net_gex:207203,call_delta_oi:216,put_delta_oi:14,net_dhp:2,call_dhp:18,put_dhp:-15},
   ]
 };
-let raw=fallback, tf='M1', priceChart, priceSeries, flowChart, dhpSeries, dexSeries, histSeries;
+let raw=fallback, tf='M1', priceChart, priceSeries, dhpOverlaySeries, flowChart, dhpSeries, dexSeries, histSeries;
 
 function f2(v){return Number(v||0).toLocaleString(undefined,{minimumFractionDigits:2,maximumFractionDigits:2})}
 function fmt(v){const a=Math.abs(Number(v)||0),s=(Number(v)||0)>=0?'+':'-';return s+(a>=1e6?(a/1e6).toFixed(1)+'M':a>=1e3?(a/1e3).toFixed(1)+'K':a.toFixed(0))}
@@ -125,6 +125,7 @@ function state(){const strikes=raw.strikes||[],avg=strikes.reduce((a,b)=>a+(b.cv
 function build(){
   priceChart=LightweightCharts.createChart(document.getElementById('priceChart'),{layout:{background:{color:'#020611'},textColor:'#cbd5e1'},grid:{vertLines:{color:'#111827'},horzLines:{color:'#111827'}},rightPriceScale:{borderColor:'#1e293b'},timeScale:{timeVisible:true,borderColor:'#1e293b'}});
   priceSeries=priceChart.addLineSeries({color:'#e879f9',lineWidth:2,lastValueVisible:true,priceLineVisible:true});
+  dhpOverlaySeries=priceChart.addLineSeries({color:'#67e8f9',lineWidth:1.5,lastValueVisible:true,priceLineVisible:false,lineStyle:2,title:'∑DHP'});
   flowChart=LightweightCharts.createChart(document.getElementById('flowChart'),{layout:{background:{color:'#020611'},textColor:'#94a3b8'},grid:{vertLines:{color:'#111827'},horzLines:{color:'#111827'}},rightPriceScale:{borderColor:'#1e293b'},timeScale:{timeVisible:true,borderColor:'#1e293b'}});
   dhpSeries=flowChart.addLineSeries({color:'#67e8f9',lineWidth:2,title:'DHP'});
   dexSeries=flowChart.addLineSeries({color:'#34d399',lineWidth:2,title:'DEX'});
@@ -133,6 +134,24 @@ function build(){
   window.addEventListener('resize',resize); priceChart.timeScale().subscribeVisibleTimeRangeChange(draw); render(); resize();
 }
 function resize(){const p=document.getElementById('priceChart').getBoundingClientRect();priceChart.applyOptions({width:p.width,height:p.height});const f=document.getElementById('flowChart').getBoundingClientRect();flowChart.applyOptions({width:f.width,height:f.height});const c=document.getElementById('gaiaCanvas');c.width=p.width*devicePixelRatio;c.height=p.height*devicePixelRatio;c.style.width=p.width+'px';c.style.height=p.height+'px';draw()}
+function buildDhpOverlay(lineData){
+  const strikes=(raw.strikes||[]).slice().sort((a,b)=>a.strike-b.strike);
+  if(!strikes.length||!lineData.length) return [];
+  // Cumulative net_dhp per strike sorted low→high
+  let cum=0;
+  const cumByStrike=strikes.map(s=>{ cum+=(s.net_dhp||0); return{strike:s.strike,cum}; });
+  const maxCum=Math.max(...cumByStrike.map(x=>Math.abs(x.cum)),1);
+  const spot=raw.spot_spx||7500;
+  const range=60; // price range for mapping
+  // Map total cumulative DHP progression onto time axis
+  const total=cum;
+  return lineData.map((pt,i)=>{
+    const t=i/Math.max(lineData.length-1,1);
+    const norm=(total*t)/maxCum;
+    return{time:pt.time, value:+(spot - range/2 + norm*range).toFixed(2)};
+  });
+}
+
 function render(){
   const spot=raw.spot_spx||7500;
   const ET4=4*3600, nowL=Math.floor(Date.now()/1000)-ET4;
@@ -143,7 +162,8 @@ function render(){
   });
   lineData[199].value=spot;
   document.getElementById('tfmode').textContent='SPX DEMO';
-  priceSeries.setData(lineData); const dhpVal=raw.total_dhp||0;
+  priceSeries.setData(lineData);
+  if(dhpOverlaySeries){ try{ dhpOverlaySeries.setData(buildDhpOverlay(lineData)); }catch(e){} } const dhpVal=raw.total_dhp||0;
   const dexVal=(raw.strikes||[]).reduce((a,s)=>a+Math.abs((s.call_delta_oi||0)-(s.put_delta_oi||0)),0);
   const nowF=Math.floor(Date.now()/1000)-4*3600;
   const dhpLine=Array.from({length:200},(_,i)=>({time:nowF-(200-i)*60,value:+(dhpVal*(0.3+(i/200)*0.7)).toFixed(2)}));
