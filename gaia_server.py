@@ -323,6 +323,15 @@ def push_data():
         data = request.get_json(force=True)
         if not data:
             return jsonify({'error': 'no data'}), 400
+        # Handle token update from ts_gaia_chart.py
+        if data.get('_token_update'):
+            with _ts_lock:
+                if data.get('access_token'):  _ts_token['access_token']  = data['access_token']
+                if data.get('refresh_token'): _ts_token['refresh_token'] = data['refresh_token']
+                if data.get('saved_at'):      _ts_token['saved_at']      = float(data['saved_at'])
+                if data.get('expires_in'):    _ts_token['expires_in']    = int(data['expires_in'])
+            log.info('TS token updated via /push')
+            return jsonify({'status': 'ok', 'token_updated': True})
         _live_data = data
         _last_push = time.time()
         return jsonify({'status': 'ok', 'timestamp': _last_push})
