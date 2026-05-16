@@ -590,6 +590,9 @@ def save_gaia_json(layers_output, spot, spot_es, confluence,
             "total_dhp":     total_dhp,
             "dhp_momentum":  momentum,
             "dhp_direction": momentum_dir,
+            "hiro_call":     round(hiro_call_accum / 1e6, 2),
+            "hiro_put":      round(hiro_put_accum  / 1e6, 2),
+            "hiro_total":    round((hiro_call_accum + hiro_put_accum) / 1e6, 2),
             "levels":        levels_0dte,
             "levels_es":     levels_es,
             "confluence":    confluence,
@@ -690,6 +693,12 @@ def main():
         "monthly": {"strikes": {}, "levels": {}, "strikes_data": []},
     }
 
+    # ── HIRO accumulators — reset at session start (9:30 ET)
+    import datetime as _dt
+    hiro_call_accum = 0.0
+    hiro_put_accum  = 0.0
+    hiro_reset_date = None  # tracks which trading day we're on
+
     cycle = 0
     consecutive_errors = 0
 
@@ -697,6 +706,17 @@ def main():
         cycle += 1
         now = time.time()
         log.info(f"--- Ciclo {cycle} ---")
+
+        # ── HIRO daily reset at 9:30 ET
+        try:
+            today = _dt.datetime.now(_dt.timezone.utc).strftime('%Y-%m-%d')
+            if hiro_reset_date != today:
+                hiro_call_accum = 0.0
+                hiro_put_accum  = 0.0
+                hiro_reset_date = today
+                log.info(f"HIRO reset for {today}")
+        except Exception:
+            pass
 
         try:
             # ── Token
@@ -747,6 +767,11 @@ def main():
                         strikes_data, total_dhp = calculate_gaia(raw, spot)
                         levels = calculate_levels(strikes_data, spot)
                         cache["0dte"] = {"strikes": raw, "levels": levels, "strikes_data": strikes_data}
+                        # ── HIRO accumulation (intraday, like SpotGamma)
+                        cycle_call = sum(s.get("call_dhp",0) for s in strikes_data)
+                        cycle_put  = sum(s.get("put_dhp",0) for s in strikes_data)
+                        hiro_call_accum += cycle_call
+                        hiro_put_accum  += cycle_put
                         log.info(f"0DTE actualizado — {len(raw)} strikes, DHP:{total_dhp}M")
                     else:
                         log.warning("0DTE stream vacío")
