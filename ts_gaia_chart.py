@@ -563,7 +563,8 @@ def calculate_dhp_momentum(current_dhp):
 # ── GUARDAR JSON ATOMICO ──────────────────────────────────────────────────────
 def save_gaia_json(layers_output, spot, spot_es, confluence,
                    total_dhp, momentum, momentum_dir,
-                   levels_0dte, expirations):
+                   levels_0dte, expirations,
+                   hiro_call_accum=0.0, hiro_put_accum=0.0):
     try:
         basis    = round(spot_es - spot, 2) if spot_es > 0 else 0.0
         levels_es = {k: round(v + basis, 2) for k, v in levels_0dte.items()} if basis != 0 else levels_0dte.copy()
@@ -820,7 +821,9 @@ def main():
                     save_gaia_json(
                         cache, spot, spot_es, confluence,
                         total_dhp, momentum, momentum_dir,
-                        cache["0dte"]["levels"], expirations
+                        cache["0dte"]["levels"], expirations,
+                        hiro_call_accum=hiro_call_accum,
+                        hiro_put_accum=hiro_put_accum
                     )
                     basis     = round(spot_es - spot, 2) if spot_es > 0 else 0.0
                     levels_es = {k: round(v + basis, 2) for k, v in cache["0dte"]["levels"].items()} if basis else cache["0dte"]["levels"].copy()
