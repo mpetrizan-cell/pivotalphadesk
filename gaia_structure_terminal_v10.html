@@ -97,22 +97,31 @@ html,body{width:100%;height:100%;overflow:hidden;background:var(--bg);color:var(
 
 <script>
 const fallback={
-  spot_spx:7500, spot_es:7523, basis:23,
-  total_dhp:0, dhp_momentum:0, dhp_direction:'NEUTRAL',
-  levels_es:{call_wall:7538,gamma_node:7538,gamma_flip:7578,gravity_pin:7548,put_wall:7518},
+  spot_spx:7408.50, spot_es:7431.25, basis:22.75,
+  total_dhp:-4807, dhp_momentum:-108, dhp_direction:'BUILDING_BEAR',
+  hiro_call:3520, hiro_put:-880, hiro_total:2640,
+  levels_es:{call_wall:7468,gamma_node:7460,gamma_flip:7390,gravity_pin:7460,put_wall:7410},
   strikes:[
-    {strike:7480,net_gex:81514,call_delta_oi:1700,put_delta_oi:3,net_dhp:260,call_dhp:281,put_dhp:-20},
-    {strike:7485,net_gex:190978,call_delta_oi:3056,put_delta_oi:2,net_dhp:225,call_dhp:255,put_dhp:-29},
-    {strike:7490,net_gex:289754,call_delta_oi:2777,put_delta_oi:3,net_dhp:335,call_dhp:393,put_dhp:-58},
-    {strike:7495,net_gex:50828,call_delta_oi:1161,put_delta_oi:166,net_dhp:300,call_dhp:386,put_dhp:-85},
-    {strike:7500,net_gex:824522,call_delta_oi:2886,put_delta_oi:50,net_dhp:634,call_dhp:842,put_dhp:-208},
-    {strike:7505,net_gex:615337,call_delta_oi:1243,put_delta_oi:18,net_dhp:278,call_dhp:473,put_dhp:-195},
-    {strike:7510,net_gex:339216,call_delta_oi:476,put_delta_oi:10,net_dhp:155,call_dhp:327,put_dhp:-171},
-    {strike:7515,net_gex:1716852,call_delta_oi:1954,put_delta_oi:170,net_dhp:30,call_dhp:143,put_dhp:-112},
-    {strike:7520,net_gex:456248,call_delta_oi:457,put_delta_oi:51,net_dhp:14,call_dhp:66,put_dhp:-52},
-    {strike:7525,net_gex:1203274,call_delta_oi:1176,put_delta_oi:13,net_dhp:11,call_dhp:44,put_dhp:-32},
-    {strike:7530,net_gex:207203,call_delta_oi:216,put_delta_oi:14,net_dhp:2,call_dhp:18,put_dhp:-15},
-  ]
+    {strike:7470,net_gex:49763,call_delta_oi:450,put_delta_oi:8,  net_dhp:0.4,call_dhp:0.5,put_dhp:-0.1},
+    {strike:7465,net_gex:37000,call_delta_oi:370,put_delta_oi:15, net_dhp:0.3,call_dhp:0.4,put_dhp:-0.1},
+    {strike:7460,net_gex:157448,call_delta_oi:1954,put_delta_oi:170,net_dhp:30,call_dhp:35,put_dhp:-5},
+    {strike:7455,net_gex:234312,call_delta_oi:1200,put_delta_oi:50,net_dhp:14,call_dhp:16,put_dhp:-2},
+    {strike:7450,net_gex:86989,call_delta_oi:2886,put_delta_oi:50,net_dhp:13,call_dhp:15,put_dhp:-2},
+    {strike:7445,net_gex:-3086,call_delta_oi:200,put_delta_oi:280,net_dhp:-1,call_dhp:2,put_dhp:-3},
+    {strike:7440,net_gex:86989,call_delta_oi:800,put_delta_oi:20,net_dhp:8,call_dhp:9,put_dhp:-1},
+    {strike:7435,net_gex:65500,call_delta_oi:700,put_delta_oi:15,net_dhp:7,call_dhp:8,put_dhp:-1},
+    {strike:7430,net_gex:52800,call_delta_oi:600,put_delta_oi:12,net_dhp:6,call_dhp:7,put_dhp:-1},
+    {strike:7425,net_gex:84609,call_delta_oi:500,put_delta_oi:10,net_dhp:5,call_dhp:6,put_dhp:-1},
+    {strike:7420,net_gex:15197,call_delta_oi:400,put_delta_oi:8, net_dhp:4,call_dhp:5,put_dhp:-1},
+    {strike:7415,net_gex:41934,call_delta_oi:300,put_delta_oi:6, net_dhp:3,call_dhp:4,put_dhp:-1},
+    {strike:7410,net_gex:-65650,call_delta_oi:100,put_delta_oi:800,net_dhp:-8,call_dhp:2,put_dhp:-10},
+    {strike:7405,net_gex:-30503,call_delta_oi:80,put_delta_oi:600,net_dhp:-6,call_dhp:1,put_dhp:-7},
+    {strike:7400,net_gex:73537,call_delta_oi:1176,put_delta_oi:13,net_dhp:3.8,call_dhp:4,put_dhp:-0.2},
+    {strike:7395,net_gex:-58491,call_delta_oi:50,put_delta_oi:500,net_dhp:-5,call_dhp:1,put_dhp:-6},
+    {strike:7390,net_gex:-46758,call_delta_oi:40,put_delta_oi:400,net_dhp:-4,call_dhp:0.5,put_dhp:-4.5},
+    {strike:7385,net_gex:2712, call_delta_oi:30,put_delta_oi:20,net_dhp:0.2,call_dhp:0.3,put_dhp:-0.1},
+  ],
+  confluence:[],layers:{},status:'fallback'
 };
 let raw=fallback, tf='M1', priceChart, priceSeries, dhpOverlaySeries, gfsCallSeries, gfsPutSeries, gfsNetSeries, flowChart, dhpSeries, dexSeries, histSeries;
 
@@ -217,18 +226,23 @@ function toggleLayer(l,btn){
 }
 
 function buildGfsData(lineData){
-  // Build GFS lines from hiro_ fields if available, else simulate from dhp
   const hCall = raw.hiro_call || 0;
   const hPut  = raw.hiro_put  || 0;
-  const hNet  = raw.hiro_total|| 0;
+  const hNet  = raw.hiro_total|| (hCall+hPut);
   const n = lineData.length;
+  if(!n) return{callData:[],putData:[],netData:[]};
   const callData=[], putData=[], netData=[];
+  // Simulate intraday accumulation
+  let cAcc=0, pAcc=0;
   for(let i=0;i<n;i++){
     const t = lineData[i].time;
-    const prog = i/(n-1);
-    callData.push({time:t, value:+(hCall*prog).toFixed(0)});
-    putData .push({time:t, value:+(hPut*prog).toFixed(0)});
-    netData .push({time:t, value:+(hNet*prog).toFixed(0)});
+    const prog = (i+1)/n;
+    const noise = (Math.random()-0.5)*Math.abs(hCall)*0.05;
+    cAcc = hCall * prog + noise;
+    pAcc = hPut  * prog - noise*0.3;
+    callData.push({time:t, value:+cAcc.toFixed(0)});
+    putData .push({time:t, value:+pAcc.toFixed(0)});
+    netData .push({time:t, value:+(cAcc+pAcc).toFixed(0)});
   }
   return{callData,putData,netData};
 }
