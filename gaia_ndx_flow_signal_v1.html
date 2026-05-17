@@ -1,0 +1,186 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>GAIA Flow Signal · NDX</title>
+<script src="https://unpkg.com/lightweight-charts@4.2.0/dist/lightweight-charts.standalone.production.js"></script>
+<style>
+:root{
+  --bg:#070a0e;--panel:#0d1319;--panel2:#101722;--line:#1e2d3d;--muted:#607080;
+  --txt:#e8f4f8;--cyan:#00d4ff;--teal:#00e5c4;--purple:#b45cff;--red:#ff4444;
+  --green:#00e676;--yellow:#f0b429;--white:#e6edf3;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{width:100%;height:100%;overflow:hidden;background:var(--bg);color:var(--txt);font-family:Inter,Arial,sans-serif}
+.app{height:100vh;display:grid;grid-template-rows:58px 86px 1fr 28px}
+.top{display:flex;align-items:center;justify-content:space-between;padding:0 18px;border-bottom:1px solid var(--line);background:#080d13}
+.brand{font-weight:900;letter-spacing:.04em;font-size:22px}.brand b{color:var(--purple)}.brand span{font-size:13px;color:#9aa7b4;margin-left:18px;font-weight:500}
+.tickers{display:flex;gap:28px;font-family:ui-monospace,Consolas,monospace;font-size:13px}.tick b{color:var(--teal)}.tick .neg{color:var(--red)}
+.toolbar{display:flex;gap:10px;align-items:center}.btn{border:1px solid var(--line);background:#0b1118;color:var(--txt);border-radius:5px;padding:8px 12px;font-size:12px}
+.kpis{display:grid;grid-template-columns:1.35fr repeat(7,1fr);border-bottom:1px solid var(--line);background:#090f16}
+.kpi{padding:12px 16px;border-right:1px solid var(--line)}.kpi:last-child{border-right:0}
+.lbl{font-size:11px;color:#9ca3af;text-transform:uppercase;letter-spacing:.06em}.val{font-size:22px;font-weight:800;margin-top:5px;color:var(--txt);font-family:ui-monospace,Consolas,monospace}
+.sub{font-size:12px;color:#9ca3af}.cyan{color:var(--cyan)}.green{color:var(--green)}.red{color:var(--red)}.yellow{color:var(--yellow)}.purple{color:var(--purple)}
+.main{display:grid;grid-template-columns:260px 1fr 276px;gap:12px;padding:12px;min-height:0}
+.card{border:1px solid var(--line);background:rgba(13,19,25,.95);border-radius:5px;min-height:0;overflow:hidden}
+.left{display:grid;grid-template-rows:30px 1fr 74px}.title{font-size:13px;font-weight:700;padding:10px 12px;border-bottom:1px solid var(--line);text-transform:uppercase;letter-spacing:.04em}
+.gexPanel{position:relative;padding:8px 10px;overflow:hidden}
+.gexChart{height:100%;position:relative;border-left:1px solid #243242;border-right:1px solid #243242;margin:0 26px;background:linear-gradient(90deg,rgba(255,68,68,.05),transparent 50%,rgba(0,230,118,.05))}
+.gexRow{position:absolute;left:0;right:0;height:16px;transform:translateY(-8px);display:flex;align-items:center}
+.gexLbl{position:absolute;left:-58px;width:54px;text-align:right;color:#9fb0c0;font-size:11px;font-family:ui-monospace,Consolas,monospace}
+.gexBar{position:absolute;height:10px;top:3px}.call{left:50%;background:linear-gradient(90deg,rgba(0,230,118,.25),rgba(0,230,118,.9));box-shadow:0 0 12px rgba(0,230,118,.4)}
+.put{right:50%;background:linear-gradient(270deg,rgba(255,68,68,.25),rgba(255,68,68,.9));box-shadow:0 0 12px rgba(255,68,68,.35)}
+.gexZero{position:absolute;top:0;bottom:0;left:50%;border-left:1px dashed rgba(0,229,196,.45)}
+.legend{border-top:1px solid var(--line);padding:8px 12px;color:#aab6c2;font-size:12px}.grad{height:11px;border-radius:2px;background:linear-gradient(90deg,#3b0764,#b21e4b,#ff4444,#f0b429);margin:8px 14px 4px}
+.center{display:grid;grid-template-rows:1fr;position:relative}.chartWrap{position:relative}
+#chart{width:100%;height:100%}.overlay{position:absolute;inset:0;pointer-events:none;z-index:3}.statusMsg{position:absolute;left:14px;top:42px;color:#9ca3af;font-family:ui-monospace,Consolas,monospace;font-size:12px;z-index:8;background:rgba(0,0,0,.55);padding:6px 8px;border:1px solid var(--line);border-radius:4px;display:none}
+.legendLine{position:absolute;left:64px;top:14px;z-index:8;display:flex;gap:20px;font-size:13px;font-weight:600}.box{display:inline-block;width:13px;height:13px;border:1px solid currentColor;border-radius:3px;margin-right:6px;vertical-align:-2px;background:rgba(255,255,255,.04)}
+.right{display:flex;flex-direction:column;gap:10px}
+.rCard{border:1px solid var(--line);background:rgba(13,19,25,.95);border-radius:5px;padding:13px}
+.rTitle{font-size:13px;text-transform:uppercase;margin-bottom:12px;color:#d5dde5}.switchRow{display:flex;justify-content:space-between;align-items:center;margin:14px 0;font-size:13px}
+.switch{width:34px;height:18px;border-radius:20px;background:#243040;position:relative;cursor:pointer}.switch.on{background:#2563eb}.switch:after{content:"";width:14px;height:14px;border-radius:50%;background:#fff;position:absolute;top:2px;left:2px;transition:.15s}.switch.on:after{left:18px}
+.metric{display:grid;grid-template-columns:1fr auto;gap:6px;border-top:1px solid var(--line);padding:12px 0}.metric:first-of-type{border-top:0}.mVal{font-size:20px;font-weight:800;font-family:ui-monospace,Consolas,monospace}.mTag{font-size:12px;text-transform:uppercase;font-weight:800}
+.level{display:flex;justify-content:space-between;border-top:1px solid var(--line);padding:8px 0;font-family:ui-monospace,Consolas,monospace}.level:first-child{border-top:0}
+.footer{border-top:1px solid var(--line);padding:6px 18px;font-size:12px;color:#8b98a5;display:flex;justify-content:space-between}
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="top">
+    <div class="brand">GAIA <b>FLOW</b> SIGNAL <span>PIVOTALPHA DESK</span></div>
+    <div class="tickers">
+      <div class="tick">NDX <b id="topNdx">--</b></div>
+      <div class="tick">NQ <b id="topNq">--</b></div>
+      <div class="tick">FLOW <b id="topFlow" class="neg">--</b></div>
+    </div>
+    <div class="toolbar"><button class="btn">Using GAIA</button><button class="btn" id="resetBtn">Reset</button></div>
+  </div>
+
+  <div class="kpis">
+    <div class="kpi"><div class="lbl">NDX Cash</div><div class="val cyan" id="kNdx">--</div><div class="sub">Nasdaq 100 Index</div></div>
+    <div class="kpi"><div class="lbl">NQM26</div><div class="val cyan" id="kNq">--</div><div class="sub" id="basis">Basis --</div></div>
+    <div class="kpi"><div class="lbl">Net DHP</div><div class="val" id="kNet">--</div><div class="sub" id="kDir">--</div></div>
+    <div class="kpi"><div class="lbl">DHP Call</div><div class="val green" id="kCall">--</div><div class="sub">Buy pressure</div></div>
+    <div class="kpi"><div class="lbl">DHP Put</div><div class="val red" id="kPut">--</div><div class="sub">Sell pressure</div></div>
+    <div class="kpi"><div class="lbl">Gamma Flip</div><div class="val yellow" id="kFlip">--</div></div>
+    <div class="kpi"><div class="lbl">Call Wall</div><div class="val green" id="kCW">--</div></div>
+    <div class="kpi"><div class="lbl">Put Wall</div><div class="val red" id="kPW">--</div></div>
+  </div>
+
+  <div class="main">
+    <div class="card left">
+      <div class="title">GEX Exposure by Strike</div>
+      <div class="gexPanel"><div class="gexChart" id="gexChart"><div class="gexZero"></div></div></div>
+      <div class="legend"><div style="display:flex;justify-content:space-between"><span class="red">PUTS ◄</span><span>0</span><span class="green">► CALLS</span></div><div class="grad"></div><div style="text-align:center">GEX Intensity</div></div>
+    </div>
+
+    <div class="card center chartWrap">
+      <canvas id="heat" class="overlay"></canvas>
+      <div class="legendLine">
+        <span style="color:var(--white)"><i class="box"></i>Price</span>
+        <span style="color:var(--purple)" data-toggle-label="net"><i class="box"></i>GAIA Flow</span>
+        <span style="color:var(--cyan)" data-toggle-label="call"><i class="box"></i>DHP Call</span>
+        <span style="color:var(--red)" data-toggle-label="put"><i class="box"></i>DHP Put</span>
+      </div>
+      <div class="statusMsg" id="statusMsg">GAIA Flow Signal requires history[]</div>
+      <div id="chart"></div>
+    </div>
+
+    <div class="right">
+      <div class="rCard"><div class="rTitle">Display Layers</div>
+        <div class="switchRow"><span class="purple">GAIA Flow</span><span class="switch on" data-layer="net"></span></div>
+        <div class="switchRow"><span class="cyan">DHP Call</span><span class="switch on" data-layer="call"></span></div>
+        <div class="switchRow"><span class="red">DHP Put</span><span class="switch on" data-layer="put"></span></div>
+        <div class="switchRow"><span>Price</span><span class="switch on" data-layer="price"></span></div>
+      </div>
+      <div class="rCard"><div class="rTitle">Live Metrics</div>
+        <div class="metric"><div><div class="lbl purple">GAIA Flow</div><div class="mVal purple" id="mNet">--</div></div><div class="mTag" id="mState">--</div></div>
+        <div class="metric"><div><div class="lbl cyan">DHP Call</div><div class="mVal cyan" id="mCall">--</div></div><div class="mTag green">BUY PRESSURE</div></div>
+        <div class="metric"><div><div class="lbl red">DHP Put</div><div class="mVal red" id="mPut">--</div></div><div class="mTag red">SELL PRESSURE</div></div>
+        <div class="metric"><div class="lbl">Flow Slope</div><div class="mTag" id="mSlope">--</div></div>
+        <div class="metric"><div class="lbl">Flow State</div><div class="mTag purple" id="mDiv">--</div></div>
+      </div>
+      <div class="rCard"><div class="rTitle">Key Levels</div><div id="levels"></div></div>
+    </div>
+  </div>
+  <div class="footer"><span>Not financial advice. For informational purposes only.</span><span id="lastTs">--</span></div>
+</div>
+
+<script>
+let chart, priceSeries, netSeries, callSeries, putSeries, zeroSeries, levelSeries=[];
+let raw=null, show={price:true,net:true,call:true,put:true};
+const fmt=(v,d=2)=>Number(v||0).toLocaleString('en-US',{maximumFractionDigits:d,minimumFractionDigits:d});
+const fmtM=v=>{v=Number(v||0); const s=v>0?'+':''; return s+v.toFixed(2)+'M'};
+function ema(arr,len){let k=2/(len+1),out=[],prev=null; for(const v of arr){prev=prev==null?v:prev+k*(v-prev); out.push(prev)} return out}
+function normLine(hist,key,scale=1){return hist.map(p=>({time:p.t,value:Number(p[key]||0)*scale}))}
+function init(){
+  chart=LightweightCharts.createChart(document.getElementById('chart'),{
+    layout:{background:{color:'#07101a'},textColor:'#d8e2ea'},grid:{vertLines:{color:'#13202d'},horzLines:{color:'#13202d'}},
+    rightPriceScale:{borderColor:'#263747'},leftPriceScale:{visible:true,borderColor:'#263747'},
+    timeScale:{timeVisible:true,secondsVisible:false,borderColor:'#263747'},crosshair:{mode:1}
+  });
+  priceSeries=chart.addLineSeries({color:'#e6edf3',lineWidth:2,priceScaleId:'right',title:'Price'});
+  netSeries=chart.addLineSeries({color:'#b45cff',lineWidth:2,priceScaleId:'left',title:'GAIA Flow'});
+  callSeries=chart.addLineSeries({color:'#00d4ff',lineWidth:1.6,priceScaleId:'left',title:'DHP Call'});
+  putSeries=chart.addLineSeries({color:'#ff4444',lineWidth:1.6,priceScaleId:'left',title:'DHP Put'});
+  zeroSeries=chart.addLineSeries({color:'rgba(220,220,220,.55)',lineWidth:1,priceScaleId:'left',lineStyle:2,lastValueVisible:false,priceLineVisible:false});
+  window.addEventListener('resize',resize); resize();
+  document.querySelectorAll('.switch').forEach(s=>s.onclick=()=>{let k=s.dataset.layer;show[k]=!show[k];s.classList.toggle('on',show[k]);renderSeries();});
+  document.getElementById('resetBtn').onclick=()=>chart.timeScale().fitContent();
+}
+function resize(){const r=document.getElementById('chart').getBoundingClientRect(); chart.applyOptions({width:r.width,height:r.height}); const c=document.getElementById('heat'); c.width=r.width*devicePixelRatio;c.height=r.height*devicePixelRatio;c.style.width=r.width+'px';c.style.height=r.height+'px'; drawHeat();}
+function levels0(){return raw?.layers?.['0dte']?.levels||{}}
+function strikes0(){return raw?.layers?.['0dte']?.strikes||[]}
+function clearLevels(){levelSeries.forEach(s=>chart.removeSeries(s));levelSeries=[]}
+function renderLevels(){
+  clearLevels(); const lv=levels0(); const map=[['CALL WALL','call_wall','#00e676'],['PUT WALL','put_wall','#ff4444'],['NODE','gamma_node','#b45cff'],['GAMMA FLIP','gamma_flip','#f0b429'],['GRAVITY PIN','gravity_pin','#fff']];
+  const html=[]; const h=raw?.history||[]; if(!h.length) return;
+  const t0=h[0].t, t1=h[h.length-1].t;
+  map.forEach(([name,k,color])=>{ if(!lv[k])return; const s=chart.addLineSeries({color,lineWidth:1,priceScaleId:'right',lineStyle:name.includes('FLIP')?2:0,lastValueVisible:true,priceLineVisible:false,title:name}); s.setData([{time:t0,value:lv[k]},{time:t1,value:lv[k]}]); levelSeries.push(s); html.push(`<div class="level"><span style="color:${color}">${name}</span><b style="color:${color}">${fmt(lv[k],0)}</b></div>`); });
+  document.getElementById('levels').innerHTML=html.join('');
+}
+function renderSeries(){
+  const h=raw?.history||[]; const has=h.length>=2; document.getElementById('statusMsg').style.display=has?'none':'block';
+  if(!has){ priceSeries.setData([]);netSeries.setData([]);callSeries.setData([]);putSeries.setData([]);zeroSeries.setData([]); return; }
+  const price=h.map(p=>({time:p.t,value:p.spot}));
+  const total=h.map(p=>Number(p.total_dhp||0));
+  const sm=ema(total,8);
+  const net=h.map((p,i)=>({time:p.t,value:sm[i]}));
+  const call=normLine(h,'call_pressure'); const put=normLine(h,'put_pressure');
+  const zero=h.map(p=>({time:p.t,value:0}));
+  priceSeries.setData(show.price?price:[]); netSeries.setData(show.net?net:[]); callSeries.setData(show.call?call:[]); putSeries.setData(show.put?put:[]); zeroSeries.setData(zero);
+  renderLevels(); drawHeat(); chart.timeScale().fitContent();
+}
+function drawHeat(){
+  const c=document.getElementById('heat'); if(!c||!raw||!priceSeries)return; const ctx=c.getContext('2d'),dpr=devicePixelRatio,r=c.getBoundingClientRect(); ctx.setTransform(dpr,0,0,dpr,0,0); ctx.clearRect(0,0,r.width,r.height);
+  const arr=strikes0(); if(!arr.length)return; const max=Math.max(...arr.map(s=>Math.max(Math.abs(s.call_gex||0),Math.abs(s.put_gex||0))),1);
+  arr.forEach(s=>{let y=priceSeries.priceToCoordinate(s.strike); if(y==null)return; const intensity=Math.max(Math.abs(s.call_gex||0),Math.abs(s.put_gex||0))/max; const isPut=Math.abs(s.put_gex||0)>Math.abs(s.call_gex||0); const col=isPut?'255,68,68':'0,230,118'; const h=8+intensity*26; const grad=ctx.createLinearGradient(80,y,r.width-80,y); grad.addColorStop(0,`rgba(${col},0)`); grad.addColorStop(.28,`rgba(${col},${0.08+0.22*intensity})`); grad.addColorStop(.55,`rgba(${col},${0.16+0.38*intensity})`); grad.addColorStop(1,`rgba(${col},0)`); ctx.fillStyle=grad; ctx.shadowColor=`rgba(${col},${0.25+0.35*intensity})`; ctx.shadowBlur=18; ctx.fillRect(80,y-h/2,r.width-160,h); ctx.shadowBlur=0; });
+}
+function renderGex(){
+  const arr=strikes0(); const lv=levels0(); const spot=raw?.spot_ndx||0; const box=document.getElementById('gexChart'); box.querySelectorAll('.gexRow,.spotBadge').forEach(e=>e.remove());
+  if(!arr.length)return; const prices=arr.map(s=>s.strike); const min=Math.min(...prices), maxP=Math.max(...prices); const maxG=Math.max(...arr.map(s=>Math.max(Math.abs(s.call_gex||0),Math.abs(s.put_gex||0))),1); const H=box.clientHeight||500;
+  arr.forEach(s=>{const y=(1-(s.strike-min)/(maxP-min))*H; const row=document.createElement('div'); row.className='gexRow'; row.style.top=y+'px'; const callW=Math.abs(s.call_gex||0)/maxG*92; const putW=Math.abs(s.put_gex||0)/maxG*92; let label=s.strike; row.innerHTML=`<span class="gexLbl">${fmt(s.strike,0)}</span><span class="gexBar put" style="width:${putW}px"></span><span class="gexBar call" style="width:${callW}px"></span>`; box.appendChild(row);});
+  if(spot){const y=(1-(spot-min)/(maxP-min))*H; const sp=document.createElement('div'); sp.className='spotBadge'; sp.style.cssText=`position:absolute;left:-70px;right:-70px;top:${y}px;border-top:1px solid #e6edf3;`; sp.innerHTML=`<span style="position:absolute;left:-2px;top:-11px;background:#f2e7ff;color:#210c2e;padding:2px 4px;border-radius:2px;font-size:11px;font-weight:800">${fmt(spot,2)}</span>`; box.appendChild(sp);}
+}
+function updateKpis(){
+  const h=raw.history||[], last=h[h.length-1]||{}; const lv=levels0();
+  const call=(last.call_pressure!=null?last.call_pressure:strikes0().reduce((a,s)=>a+Number(s.call_dhp||0),0));
+  const put=(last.put_pressure!=null?last.put_pressure:strikes0().reduce((a,s)=>a+Number(s.put_dhp||0),0));
+  const net=raw.total_dhp||last.total_dhp||0;
+  [['topNdx',raw.spot_ndx],['kNdx',raw.spot_ndx],['topNq',raw.spot_nq],['kNq',raw.spot_nq]].forEach(([id,v])=>document.getElementById(id).textContent=v?fmt(v,2):'--');
+  document.getElementById('basis').textContent='Basis '+fmt(raw.basis||0,2);
+  document.getElementById('kNet').textContent=fmtM(net); document.getElementById('kNet').className='val '+(net>=0?'green':'red'); document.getElementById('topFlow').textContent=fmtM(net);
+  document.getElementById('kDir').textContent=raw.dhp_direction||'--'; document.getElementById('kCall').textContent=fmtM(call); document.getElementById('kPut').textContent=fmtM(put);
+  document.getElementById('kFlip').textContent=lv.gamma_flip?fmt(lv.gamma_flip,0):'--'; document.getElementById('kCW').textContent=lv.call_wall?fmt(lv.call_wall,0):'--'; document.getElementById('kPW').textContent=lv.put_wall?fmt(lv.put_wall,0):'--';
+  document.getElementById('mNet').textContent=fmtM(net); document.getElementById('mCall').textContent=fmtM(call); document.getElementById('mPut').textContent=fmtM(put);
+  let slope=h.length>=2?Number(h[h.length-1].total_dhp)-Number(h[h.length-2].total_dhp):0; document.getElementById('mSlope').textContent=slope>0?'RISING ↑':slope<0?'FALLING ↓':'FLAT';
+  document.getElementById('mSlope').className='mTag '+(slope>=0?'green':'red'); document.getElementById('mState').textContent=net>=0?'BUY HEDGE':'SELL HEDGE';
+  if(h.length>8){let priceSlope=h[h.length-1].spot-h[h.length-8].spot, flowSlope=h[h.length-1].total_dhp-h[h.length-8].total_dhp; document.getElementById('mDiv').textContent=(priceSlope*flowSlope<0)?'DIVERGING':'CONFIRMING';}
+  document.getElementById('lastTs').textContent=raw.timestamp||'--';
+}
+async function load(){try{const r=await fetch('gaia_ndx_live.json?t='+Date.now()); if(!r.ok) return; raw=await r.json(); updateKpis(); renderGex(); renderSeries();}catch(e){document.getElementById('statusMsg').style.display='block';document.getElementById('statusMsg').textContent='JSON not available';}}
+init(); load(); setInterval(load,5000);
+</script>
+</body>
+</html>
