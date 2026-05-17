@@ -123,6 +123,7 @@ const fallback={
   ],
   confluence:[],layers:{},status:'fallback'
 };
+const spxHistory=[];
 let raw=fallback, tf='M1', priceChart, priceSeries, dhpOverlaySeries, gfsCallSeries, gfsPutSeries, gfsNetSeries, flowChart, dhpSeries, dexSeries, histSeries;
 
 function f2(v){return Number(v||0).toLocaleString(undefined,{minimumFractionDigits:2,maximumFractionDigits:2})}
@@ -188,35 +189,7 @@ function buildHiro(lineData){
   }));
 }
 
-function buildSpxLine(){ return []; } // replaced by Yahoo
 
-async function fetchYahooPrice(){
-  const proxies = [
-    u => `https://api.allorigins.win/raw?url=${encodeURIComponent(u)}`,
-    u => `https://corsproxy.io/?${encodeURIComponent(u)}`,
-    u => `https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(u)}`
-  ];
-  const url = 'https://query1.finance.yahoo.com/v8/finance/chart/%5EGSPC?interval=5m&range=1d';
-  for(const p of proxies){
-    try{
-      const r = await fetch(p(url));
-      if(!r.ok) continue;
-      const d = await r.json();
-      const result = d?.chart?.result?.[0];
-      if(!result) continue;
-      const closes = result.indicators?.quote?.[0]?.close || [];
-      const times  = result.timestamp || [];
-      const ET_OFFSET = 4*3600;
-      const pts = [];
-      for(let i=0;i<times.length;i++){
-        if(closes[i]==null) continue;
-        pts.push({time: times[i]-ET_OFFSET, value: +closes[i].toFixed(2)});
-      }
-      if(pts.length) return pts;
-    }catch(e){}
-  }
-  return null;
-}
 
 const layers={calls:true,puts:true,net:true,zones:true};
 function toggleLayer(l,btn){
@@ -254,23 +227,19 @@ function updateGfsData(){
   gfsNetSeries .setData(layers.net  ?netData :[]);
 }
 
-async function render(){
-  const yahooData = await fetchYahooPrice();
+function render(){
   const spot=raw.spot_spx||7500;
-  let lineData;
-  if(yahooData && yahooData.length){
-    lineData = yahooData;
-    document.getElementById('tfmode').textContent='SPX LIVE';
-  } else {
-    const ET4=4*3600, nowL=Math.floor(Date.now()/1000)-ET4;
-    let p=spot-40;
-    lineData=Array.from({length:200},(_,i)=>{
-      p=p+Math.sin(i/14)*0.5+Math.cos(i/8)*0.25+(Math.random()-0.47);
-      return{time:nowL-(200-i)*60,value:+p.toFixed(2)};
-    });
-    lineData[lineData.length-1].value=spot;
-    document.getElementById('tfmode').textContent='SPX DEMO';
+  const ET4=4*3600, nowT=Math.floor(Date.now()/1000)-ET4;
+  if(spot>0&&spxHistory.length===0||spxHistory[spxHistory.length-1]?.value!==spot){
+    spxHistory.push({time:nowT, value:+spot.toFixed(2)});
   }
+  if(spxHistory.length>400) spxHistory.shift();
+  let lineData=spxHistory.length>1?spxHistory:(()=>{
+    let p=spot-20;
+    return Array.from({length:50},(_,i)=>({time:nowT-(50-i)*5,value:+(p+=(Math.random()-.48)).toFixed(2)}));
+  })();
+  const el=document.getElementById('tfmode');
+  if(el) el.textContent=spxHistory.length>1?'SPX LIVE':'SPX DEMO';
   priceSeries.setData(lineData);
   updateGfsData();
   if(dhpOverlaySeries){ try{ dhpOverlaySeries.setData(buildHiro(lineData)); }catch(e){} } const dhpVal=raw.total_dhp||0;
