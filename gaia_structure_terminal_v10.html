@@ -259,12 +259,16 @@ const FALLBACK = {
 };
 
 /* ── STATE ── */
-const spxHistory = [];
+const spxHistory  = [];  // {time, value} SPX price
+const gfsCallHist = [];  // {time, value} GFS Calls accumulated
+const gfsPutHist  = [];  // {time, value} GFS Puts accumulated
+const gfsNetHist  = [];  // {time, value} GFS Net accumulated
+const dhpHist     = [];  // {time, value} total_dhp accumulated
 let raw = FALLBACK;
 let lastLineData = [];
 const layers = {calls:true, puts:true, net:true, zones:true};
 let priceChart, priceSeries, gfsCallSeries, gfsPutSeries, gfsNetSeries;
-let flowChart, dhpHistSeries, dhpLineSeries;
+let flowChart, dhpLineSeries;
 
 /* ── FORMATTERS ── */
 const f2 = v => Number(v||0).toLocaleString(undefined,{minimumFractionDigits:2,maximumFractionDigits:2});
@@ -309,37 +313,17 @@ function totalDex(){
   return (raw.strikes||[]).reduce((a,s)=>a+((s.call_delta_oi||0)-(s.put_delta_oi||0)),0);
 }
 
-/* ── GFS DATA (GAIA Flow Signal — accumulated call/put/net DHP by strike) ── */
-function buildGfsData(lineData){
-  const strikes = raw.strikes||[];
-  // Sum call_dhp and put_dhp across all strikes for scaled signal
-  const sumCall = strikes.reduce((a,s)=>a+(s.call_dhp||0), 0);
-  const sumPut  = strikes.reduce((a,s)=>a+(s.put_dhp||0),  0);
-  const hCall = Math.abs(sumCall)>0.5 ? sumCall : (raw.hiro_call||0);
-  const hPut  = Math.abs(sumPut) >0.5 ? sumPut  : (raw.hiro_put ||0);
-  const n = lineData.length;
-  if(!n) return {callData:[], putData:[], netData:[]};
-  const callData=[], putData=[], netData=[];
-  for(let i=0;i<n;i++){
-    const t    = lineData[i].time;
-    const prog = (i+1)/n;
-    const jitter = (Math.random()-0.5)*Math.abs(hCall)*0.04;
-    const cAcc = +(hCall * prog + jitter).toFixed(2);
-    const pAcc = +(hPut  * prog - jitter*0.3).toFixed(2);
-    callData.push({time:t, value:cAcc});
-    putData .push({time:t, value:pAcc});
-    netData .push({time:t, value:+(cAcc+pAcc).toFixed(2)});
-  }
-  return {callData, putData, netData};
-}
-
+/* ── GFS DATA (GAIA Flow Signal) ── 
+   Real accumulated values from JSON each 5s — no simulation.
+   Each poll: sum call_dhp / put_dhp across all strikes = snapshot.
+   We store snapshots in history arrays, same pattern as spxHistory.
+   Left axis shows actual delta-notional units.                    */
 function updateGfsData(){
-  if(!gfsCallSeries || !lastLineData.length) return;
-  const {callData,putData,netData} = buildGfsData(lastLineData);
+  if(!gfsCallSeries || !gfsCallHist.length) return;
   try{
-    gfsCallSeries.setData(layers.calls ? callData : []);
-    gfsPutSeries .setData(layers.puts  ? putData  : []);
-    gfsNetSeries .setData(layers.net   ? netData  : []);
+    gfsCallSeries.setData(layers.calls ? gfsCallHist : []);
+    gfsPutSeries .setData(layers.puts  ? gfsPutHist  : []);
+    gfsNetSeries .setData(layers.net   ? gfsNetHist  : []);
   }catch(e){}
 }
 
@@ -365,26 +349,46 @@ function computeState(){
   const regime     = vts>65?'FRAGILE':dsi>72?'STABLE':'BALANCED';
   const permission = regime==='FRAGILE'?'DEFENSIVE':mcs>70?'FAVORABLE':'WATCH';
   const dexBias    = dex>1500?'BUY HEDGE':dex<-1500?'SELL HEDGE':'MIXED';
-  // GFS derived from sum call/put dhp
-  const gfsCalls = strikes.reduce((a,s)=>a+(s.call_dhp||0), 0);
-  const gfsPuts  = strikes.reduce((a,s)=>a+(s.put_dhp||0),  0);
-  const gfsTotal = gfsCalls + gfsPuts;
+  // GFS: use latest accumulated value if available, else sum from strikes
+  const gfsCalls = gfsCallHist.length ? gfsCallHist[gfsCallHist.length-1].value
+                 : strikes.reduce((a,s)=>a+(s.call_dhp||0), 0);
+  const gfsPuts  = gfsPutHist.length  ? gfsPutHist[gfsPutHist.length-1].value
+                 : strikes.reduce((a,s)=>a+(s.put_dhp||0),  0);
+  const gfsTotal = +(gfsCalls+gfsPuts).toFixed(2);
   return {dsi:Math.round(dsi), vts, mcs:Math.round(mcs), regime, permission, dexBias, dex, gfsCalls, gfsPuts, gfsTotal};
 }
 
 /* ── RENDER ── */
 function render(){
-  const spot   = raw.spot_spx || 7500;
-  const nowET  = Math.floor(Date.now()/1000) - 4*3600; // approx ET offset
+  const spot  = raw.spot_spx || 7500;
+  const nowET = Math.floor(Date.now()/1000) - 4*3600;
 
-  // Accumulate SPX history (dedup by value and time)
-  const last = spxHistory[spxHistory.length-1];
-  if(spot>0 && (!last || last.value!==spot)){
+  // ── Accumulate SPX price history ──
+  const lastSpx = spxHistory[spxHistory.length-1];
+  if(spot>0 && (!lastSpx || lastSpx.value!==spot)){
     spxHistory.push({time:nowET, value:+spot.toFixed(2)});
   }
   if(spxHistory.length>400) spxHistory.shift();
 
-  // Line data: real history or brief demo seed
+  // ── Accumulate GFS signal history (real values each 5s poll) ──
+  const strikes  = raw.strikes||[];
+  const gfsCalls = +strikes.reduce((a,s)=>a+(s.call_dhp||0), 0).toFixed(2);
+  const gfsPuts  = +strikes.reduce((a,s)=>a+(s.put_dhp||0),  0).toFixed(2);
+  const gfsNet   = +(gfsCalls+gfsPuts).toFixed(2);
+  const dhpVal   = raw.total_dhp||0;
+
+  // Only push if value changed (same dedup pattern as SPX)
+  const lastC = gfsCallHist[gfsCallHist.length-1];
+  if(!lastC || lastC.value!==gfsCalls){
+    gfsCallHist.push({time:nowET, value:gfsCalls});
+    gfsPutHist .push({time:nowET, value:gfsPuts});
+    gfsNetHist .push({time:nowET, value:gfsNet});
+    dhpHist    .push({time:nowET, value:+dhpVal.toFixed(2)});
+  }
+  // Cap history
+  if(gfsCallHist.length>400){ gfsCallHist.shift(); gfsPutHist.shift(); gfsNetHist.shift(); dhpHist.shift(); }
+
+  // ── Line data for price chart ──
   let lineData;
   if(spxHistory.length>2){
     lineData = spxHistory;
@@ -398,34 +402,33 @@ function render(){
   lastLineData = lineData;
 
   try{ priceSeries.setData(lineData); }catch(e){}
-  updateGfsData();
 
-  // DHP subchart — histogram of net_dhp per strike + cumulative line
-  const strikes = raw.strikes||[];
-  const nowF = Math.floor(Date.now()/1000) - 4*3600;
-  const dhpVal = raw.total_dhp||0;
-
-  // Histogram: net_dhp per strike mapped to time axis using lineData times
-  // For demo: use time spread of lineData
-  const n = lineData.length;
-  const histData = strikes.slice().sort((a,b)=>a.strike-b.strike).map((s,i)=>{
-    const t = lineData[Math.min(i, n-1)].time;
-    const v = s.net_dhp||0;
-    return {time:t, value:v, color: v>=0 ? 'rgba(245,158,11,.55)' : 'rgba(59,130,246,.55)'};
-  });
-  // Deduplicate timestamps for LightweightCharts
-  const seen=new Set(), dedupHist=[];
-  for(const pt of histData){
-    if(!seen.has(pt.time)){seen.add(pt.time);dedupHist.push(pt);}
-  }
-  if(dedupHist.length>1){
-    try{ dhpHistSeries.setData(dedupHist); }catch(e){}
+  // ── GFS lines — use real accumulated history ──
+  // In DEMO mode (< 3 real points), seed with flat line at current value
+  const useGfsHist = gfsCallHist.length>2;
+  if(useGfsHist){
+    updateGfsData();
+  } else {
+    // Seed: flat line across demo time range so chart is not empty
+    const seed = lineData.map(pt=>({time:pt.time, value:gfsCalls}));
+    const seedP = lineData.map(pt=>({time:pt.time, value:gfsPuts}));
+    const seedN = lineData.map(pt=>({time:pt.time, value:gfsNet}));
+    try{
+      gfsCallSeries.setData(layers.calls ? seed  : []);
+      gfsPutSeries .setData(layers.puts  ? seedP : []);
+      gfsNetSeries .setData(layers.net   ? seedN : []);
+    }catch(e){}
   }
 
-  // DHP cumulative line
-  const dhpLine = lineData.map((pt,i)=>({time:pt.time, value:+(dhpVal*(0.2+(i/n)*0.8)).toFixed(2)}));
-  dhpLine[dhpLine.length-1].value = dhpVal;
-  try{ dhpLineSeries.setData(dhpLine); }catch(e){}
+  // ── DHP subchart — Opción B: single line total_dhp over time ──
+  const useDhpHist = dhpHist.length>2;
+  if(useDhpHist){
+    try{ dhpLineSeries.setData(dhpHist); }catch(e){}
+  } else {
+    // Seed flat line at current total_dhp
+    const dhpSeed = lineData.map(pt=>({time:pt.time, value:+dhpVal.toFixed(2)}));
+    try{ dhpLineSeries.setData(dhpSeed); }catch(e){}
+  }
 
   // Sync timescales
   try{ priceChart.timeScale().fitContent(); }catch(e){}
@@ -663,22 +666,25 @@ function build(){
     priceScaleId:'left', title:'NET', priceFormat:gfsFmt
   });
 
-  // DHP subchart
-  const flowOpts = {...chartOpts,
-    layout:{...chartOpts.layout, textColor:'#94a3b8'},
-    rightPriceScale:{...chartOpts.rightPriceScale, scaleMargins:{top:.1,bottom:.1}}
+  // DHP subchart — Opción B: single line total_dhp over time
+  // Clean scale, no histogram competing for axis space
+  const flowOpts = {
+    layout:{background:{color:'#020611'},textColor:'#94a3b8'},
+    grid:{vertLines:{color:'#0d1929'},horzLines:{color:'#0d1929'}},
+    rightPriceScale:{borderColor:'#1e293b', scaleMargins:{top:.15,bottom:.15}},
+    timeScale:{timeVisible:true,secondsVisible:false,borderColor:'#1e293b'}
   };
   flowChart = LightweightCharts.createChart(document.getElementById('flowChart'), flowOpts);
 
-  dhpHistSeries = flowChart.addHistogramSeries({
-    color:'rgba(245,158,11,.5)',
-    priceFormat:{type:'custom',formatter:v=>Math.abs(v)>=1e3?(v/1e3).toFixed(1)+'K':v.toFixed(1)},
-    priceScaleId:'right'
-  });
   dhpLineSeries = flowChart.addLineSeries({
-    color:'#67e8f9', lineWidth:1.5,
-    lastValueVisible:true, priceLineVisible:false,
-    priceFormat:{type:'custom',formatter:v=>Math.abs(v)>=1e6?(v/1e6).toFixed(1)+'M':Math.abs(v)>=1e3?(v/1e3).toFixed(1)+'K':v.toFixed(0)}
+    color:'#67e8f9', lineWidth:2,
+    lastValueVisible:true, priceLineVisible:true,
+    priceLineColor:'rgba(103,232,249,.3)',
+    priceFormat:{type:'custom', formatter:v=>
+      Math.abs(v)>=1e6?(v/1e6).toFixed(1)+'M':
+      Math.abs(v)>=1e3?(v/1e3).toFixed(1)+'K':
+      v.toFixed(0)},
+    title:'DHP'
   });
 
   // Sync zoom/scroll
