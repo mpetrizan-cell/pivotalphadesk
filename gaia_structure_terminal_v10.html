@@ -124,7 +124,7 @@ const fallback={
   confluence:[],layers:{},status:'fallback'
 };
 const spxHistory=[];
-let raw=fallback, tf='M1', priceChart, priceSeries, dhpOverlaySeries, gfsCallSeries, gfsPutSeries, gfsNetSeries, flowChart, dhpSeries, dexSeries, histSeries;
+let raw=fallback, lastCandles=[], tf='M1', priceChart, priceSeries, dhpOverlaySeries, gfsCallSeries, gfsPutSeries, gfsNetSeries, flowChart, dhpSeries, dexSeries, histSeries;
 
 function f2(v){return Number(v||0).toLocaleString(undefined,{minimumFractionDigits:2,maximumFractionDigits:2})}
 function fmt(v){const a=Math.abs(Number(v)||0),s=(Number(v)||0)>=0?'+':'-';return s+(a>=1e6?(a/1e6).toFixed(1)+'M':a>=1e3?(a/1e3).toFixed(1)+'K':a.toFixed(0))}
@@ -136,7 +136,21 @@ function getZones(){return Object.entries(raw.levels_es||{}).map(([k,v])=>({key:
 
 function demoCandles(st){let p=raw.spot_es-5,now=Math.floor(Date.now()/1000)-72*st;return Array.from({length:72},(_,i)=>{const o=p+Math.sin(i*.9)*2,c=o+Math.cos(i*.63)*3+Math.sin(i/8)*.7,h=Math.max(o,c)+2,l=Math.min(o,c)-2;p=c;return{time:now+i*st,open:o,high:h,low:l,close:c}})}
 function flowData(st,seed){let v=seed||0,now=Math.floor(Date.now()/1000)-72*st;return Array.from({length:72},(_,i)=>{v+=Math.sin(i*.26)*3+Math.cos(i*.19)*2;return{time:now+i*st,value:v}})}
-function state(){const strikes=raw.strikes||[],avg=strikes.reduce((a,b)=>a+(b.cvx||0),0)/Math.max(1,strikes.length),dex=totalDex();const vts=Math.round(32+avg*.55+(raw.dhp_momentum<0?18:0)+(Math.abs(dex)>2500?8:0));const dsi=Math.max(0,Math.min(100,76-vts/3));const mcs=Math.max(0,Math.min(100,55+Math.sign(dex)*8));const regime=vts>65?'FRAGILE':dsi>72?'STABLE':'BALANCED';const permission=regime==='FRAGILE'?'DEFENSIVE':mcs>70?'FAVORABLE':'WATCH';const dexBias=dex>1500?'BUY HEDGE':dex<-1500?'SELL HEDGE':'MIXED';return{dsi:Math.round(dsi),vts,mcs:Math.round(mcs),regime,permission,avgCvx:Math.round(avg),dex,dexBias}}
+function state(){
+  const strikes=raw.strikes||[], dex=totalDex();
+  // Use net_dhp (exists in JSON) — s.cvx does NOT exist in gaia_live.json
+  const totalNetDhp=strikes.reduce((a,b)=>a+(b.net_dhp||0),0);
+  const avgNetDhp=totalNetDhp/Math.max(1,strikes.length);
+  const dhpPressure=Math.min(60,Math.abs(avgNetDhp)*4);
+  const vts=Math.round(32+dhpPressure+(raw.dhp_momentum<0?18:0)+(Math.abs(dex)>2500?8:0));
+  const dsi=Math.max(0,Math.min(100,76-vts/3));
+  const mcs=Math.max(0,Math.min(100,55+Math.sign(dex)*8));
+  const regime=vts>65?'FRAGILE':dsi>72?'STABLE':'BALANCED';
+  const permission=regime==='FRAGILE'?'DEFENSIVE':mcs>70?'FAVORABLE':'WATCH';
+  const dexBias=dex>1500?'BUY HEDGE':dex<-1500?'SELL HEDGE':'MIXED';
+  const cvxScore=Math.max(0,Math.min(100,50+avgNetDhp*2));
+  return{dsi:Math.round(dsi),vts,mcs:Math.round(mcs),regime,permission,avgCvx:Math.round(cvxScore),dex,dexBias};
+}
 
 function build(){
   priceChart=LightweightCharts.createChart(document.getElementById('priceChart'),{layout:{background:{color:'#020611'},textColor:'#cbd5e1'},grid:{vertLines:{color:'#111827'},horzLines:{color:'#111827'}},rightPriceScale:{borderColor:'#1e293b'},timeScale:{timeVisible:true,borderColor:'#1e293b'}});
@@ -199,13 +213,17 @@ function toggleLayer(l,btn){
 }
 
 function buildGfsData(lineData){
-  const hCall = raw.hiro_call || 0;
-  const hPut  = raw.hiro_put  || 0;
-  const hNet  = raw.hiro_total|| (hCall+hPut);
+  // hiro_call/put/total from JSON are small decimals (e.g. 0.04, -0.06)
+  // Scale them up using sum of call_dhp/put_dhp across all strikes for proper display
+  const strikes = raw.strikes||[];
+  const sumCallDhp = strikes.reduce((a,s)=>a+(s.call_dhp||0),0);
+  const sumPutDhp  = strikes.reduce((a,s)=>a+(s.put_dhp||0),0);
+  // Use scaled sums — fallback to hiro_* if strikes empty
+  const hCall = Math.abs(sumCallDhp) > 0.1 ? sumCallDhp : (raw.hiro_call||0);
+  const hPut  = Math.abs(sumPutDhp)  > 0.1 ? sumPutDhp  : (raw.hiro_put ||0);
   const n = lineData.length;
   if(!n) return{callData:[],putData:[],netData:[]};
   const callData=[], putData=[], netData=[];
-  // Simulate intraday accumulation
   let cAcc=0, pAcc=0;
   for(let i=0;i<n;i++){
     const t = lineData[i].time;
@@ -213,9 +231,9 @@ function buildGfsData(lineData){
     const noise = (Math.random()-0.5)*Math.abs(hCall)*0.05;
     cAcc = hCall * prog + noise;
     pAcc = hPut  * prog - noise*0.3;
-    callData.push({time:t, value:+cAcc.toFixed(0)});
-    putData .push({time:t, value:+pAcc.toFixed(0)});
-    netData .push({time:t, value:+(cAcc+pAcc).toFixed(0)});
+    callData.push({time:t, value:+cAcc.toFixed(2)});
+    putData .push({time:t, value:+pAcc.toFixed(2)});
+    netData .push({time:t, value:+(cAcc+pAcc).toFixed(2)});
   }
   return{callData,putData,netData};
 }
@@ -240,6 +258,7 @@ function render(){
   })();
   const el=document.getElementById('tfmode');
   if(el) el.textContent=spxHistory.length>1?'SPX LIVE':'SPX DEMO';
+  lastCandles = lineData;  // FIX: assign before updateGfsData() is called
   priceSeries.setData(lineData);
   updateGfsData();
   if(dhpOverlaySeries){ try{ dhpOverlaySeries.setData(buildHiro(lineData)); }catch(e){} } const dhpVal=raw.total_dhp||0;
@@ -254,7 +273,20 @@ function render(){
   histSeries.setData(dexLine.map(x=>({time:x.time,value:Math.abs(x.value),color:'rgba(251,191,36,.3)'})));
   priceChart.timeScale().fitContent(); flowChart.timeScale().fitContent(); renderProfile(); renderState(); draw();
 }
-function renderProfile(){const h=document.getElementById('gexProfile'),arr=[...(raw.strikes||[])].sort((a,b)=>b.strike-a.strike),maxG=Math.max(...arr.map(s=>Math.abs(s.net_gex||0)),1),maxD=Math.max(...arr.map(s=>Math.abs(s.net_dex||0)),1);h.innerHTML=arr.map(s=>{const gp=Math.max(2,Math.abs(s.net_gex)/maxG*50),dp=Math.max(2,Math.abs(s.net_dex||0)/maxD*24),pos=s.net_gex>=0,buy=(s.net_dex||0)>=0;return`<div class="gexRow"><div class="strike">${s.strike}</div><div class="barTrack"><div class="bar ${pos?'pos':'neg'}" style="width:${gp}%"></div><div class="dexMini ${buy?'pos':'neg'}" style="width:${dp}%;${buy?'left:50%':'right:50%'};background:${buy?'#34d399':'#ef4444'};box-shadow:0 0 10px ${buy?'#34d399':'#ef4444'}"></div></div><div class="meta">${fmt(s.net_gex)}</div></div>`}).join('')}
+function renderProfile(){
+  const h=document.getElementById('gexProfile');
+  const arr=[...(raw.strikes||[])].sort((a,b)=>b.strike-a.strike);
+  // net_dex computed from fields that actually exist in gaia_live.json
+  arr.forEach(s=>{ s._net_dex = (s.call_delta_oi||0) - (s.put_delta_oi||0); });
+  const maxG=Math.max(...arr.map(s=>Math.abs(s.net_gex||0)),1);
+  const maxD=Math.max(...arr.map(s=>Math.abs(s._net_dex||0)),1);
+  h.innerHTML=arr.map(s=>{
+    const gp=Math.max(2,Math.abs(s.net_gex)/maxG*50);
+    const dp=Math.max(2,Math.abs(s._net_dex||0)/maxD*24);
+    const pos=s.net_gex>=0, buy=(s._net_dex||0)>=0;
+    return`<div class="gexRow"><div class="strike">${s.strike}</div><div class="barTrack"><div class="bar ${pos?'pos':'neg'}" style="width:${gp}%"></div><div class="dexMini ${buy?'pos':'neg'}" style="width:${dp}%;${buy?'left:50%':'right:50%'};background:${buy?'#34d399':'#ef4444'};box-shadow:0 0 10px ${buy?'#34d399':'#ef4444'}"></div></div><div class="meta">${fmt(s.net_gex)}</div></div>`;
+  }).join('');
+}
 function renderState(){const s=state();document.getElementById('spx').textContent=f2(raw.spot_spx);document.getElementById('es').textContent=f2(raw.spot_es);document.getElementById('regime').textContent=s.regime;document.getElementById('permission').textContent=s.permission;document.getElementById('dexHeader').textContent=s.dexBias+' '+fmt(s.dex);document.getElementById('dsi').textContent=s.dsi+'%';document.getElementById('vts').textContent=s.vts;document.getElementById('mcs').textContent=s.mcs+'%';document.getElementById('cvx').textContent=s.avgCvx>60?'AMPLIFIED':s.avgCvx>38?'ELEVATED':'DAMPENED';document.getElementById('dexBias').textContent=s.dexBias+' '+fmt(s.dex);document.getElementById('permFill').style.width=(s.permission==='FAVORABLE'?82:s.permission==='WATCH'?58:34)+'%';document.getElementById('zoneRows').innerHTML=getZones().map(z=>`<div class="row"><span style="color:${z.color};font-weight:800">${z.label}</span><b style="color:${z.color}">${Math.round(z.price)}</b></div>`).join('');const structEl=document.getElementById('structure');
   structEl.textContent=s.regime+' / '+s.permission;
   structEl.style.color=s.regime==='FRAGILE'?'#fb7185':s.regime==='STABLE'?'#34d399':'#60a5fa';
@@ -265,8 +297,53 @@ function renderState(){const s=state();document.getElementById('spx').textConten
   const alertTxt=s.regime==='FRAGILE'?'Dealer structure deteriorating':s.permission==='DEFENSIVE'?'Reduce size · Wait clarity':s.permission==='WATCH'?'Monitor — structure shifting':'Structure intact · Absorption dominates';
   alertEl.textContent=alertTxt;
   alertEl.style.color=s.regime==='FRAGILE'?'#fb7185':s.permission==='DEFENSIVE'?'#fb923c':s.permission==='WATCH'?'#fbbf24':'#60a5fa';document.getElementById('readout').innerHTML='GEX = structural map.<br>DEX = active hedge direction.<br>DHP = flow acceleration.<br><br>Zones are now rendered explicitly from <b>levels_es</b>.'}
-function draw(){const canvas=document.getElementById('gaiaCanvas');if(!canvas||!priceSeries)return;const ctx=canvas.getContext('2d'),dpr=devicePixelRatio,r=canvas.getBoundingClientRect();ctx.setTransform(dpr,0,0,dpr,0,0);ctx.clearRect(0,0,r.width,r.height);const maxG=Math.max(...(raw.strikes||[]).map(s=>Math.abs(s.net_gex||0)),1),maxD=Math.max(...(raw.strikes||[]).map(s=>Math.abs(s.net_dex||0)),1);(raw.strikes||[]).forEach(s=>{const y=priceSeries.priceToCoordinate(s.strike+(raw.basis||25.01));if(y==null)return;const gs=Math.abs(s.net_gex)/maxG,ds=Math.abs(s.net_dex||0)/maxD,frag=s.net_gex<0||raw.dhp_momentum<-35,base=frag?'239,68,68':'103,232,249',dex=(s.net_dex||0)>=0?'52,211,153':'239,68,68';const len=170+gs*480,thick=8+gs*24,g=ctx.createLinearGradient(20,y,20+len,y);g.addColorStop(0,`rgba(${base},${.22+gs*.2})`);g.addColorStop(.6,`rgba(${base},${.08+gs*.13})`);g.addColorStop(1,'rgba(0,0,0,0)');ctx.fillStyle=g;ctx.shadowColor=`rgba(${base},.45)`;ctx.shadowBlur=16;roundRect(ctx,30,y-thick/2,len,thick,thick/2);ctx.fill();const dl=100+ds*420,dg=ctx.createLinearGradient(r.width-dl-30,y,r.width-30,y);dg.addColorStop(0,'rgba(0,0,0,0)');dg.addColorStop(1,`rgba(${dex},${.25+ds*.35})`);ctx.fillStyle=dg;ctx.shadowColor=`rgba(${dex},.7)`;ctx.shadowBlur=18;roundRect(ctx,r.width-dl-30,y-4,dl,8,4);ctx.fill();ctx.shadowBlur=0});getZones().forEach(z=>{const y=priceSeries.priceToCoordinate(z.price);if(y==null)return;ctx.strokeStyle=z.color;ctx.lineWidth=1.3;ctx.setLineDash(z.label.includes('NODE')||z.label.includes('PIN')||z.label.includes('FLIP')?[6,4]:[]);ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(r.width,y);ctx.stroke();ctx.setLineDash([]);const txt=`${z.label} ${Math.round(z.price)}`;ctx.font='10px ui-monospace,monospace';const tw=ctx.measureText(txt).width+14,x=Math.max(8,r.width-tw-10);ctx.fillStyle=z.color;roundRect(ctx,x,y-9,tw,18,4);ctx.fill();ctx.fillStyle='#020611';ctx.fillText(txt,x+7,y+4)})}
-function roundRect(ctx,x,y,w,h,rad){ctx.beginPath();ctx.moveTo(x+rad,y);ctx.arcTo(x+w,y,x+w,y+h,rad);ctx.arcTo(x+w,y+h,x,y+h,rad);ctx.arcTo(x,y+h,x,y,rad);ctx.arcTo(x,y,x+w,y,rad);ctx.closePath()}
+function draw(){
+  const canvas=document.getElementById('gaiaCanvas');
+  if(!canvas||!priceSeries)return;
+  const ctx=canvas.getContext('2d'),dpr=devicePixelRatio,r=canvas.getBoundingClientRect();
+  ctx.setTransform(dpr,0,0,dpr,0,0);
+  ctx.clearRect(0,0,r.width,r.height);
+  const strikes=raw.strikes||[];
+  // Compute _net_dex if not already done (draw may run before renderProfile)
+  strikes.forEach(s=>{ if(s._net_dex===undefined) s._net_dex=(s.call_delta_oi||0)-(s.put_delta_oi||0); });
+  const maxG=Math.max(...strikes.map(s=>Math.abs(s.net_gex||0)),1);
+  const maxD=Math.max(...strikes.map(s=>Math.abs(s._net_dex||0)),1);
+  strikes.forEach(s=>{
+    const y=priceSeries.priceToCoordinate(s.strike+(raw.basis||9.5));
+    if(y==null)return;
+    const gs=Math.abs(s.net_gex||0)/maxG, ds=Math.abs(s._net_dex||0)/maxD;
+    const frag=s.net_gex<0||raw.dhp_momentum<-35;
+    const base=frag?'239,68,68':'103,232,249';
+    const dex=(s._net_dex||0)>=0?'52,211,153':'239,68,68';
+    const len=170+gs*480, thick=8+gs*24;
+    const g=ctx.createLinearGradient(20,y,20+len,y);
+    g.addColorStop(0,`rgba(${base},${.22+gs*.2})`);
+    g.addColorStop(.6,`rgba(${base},${.08+gs*.13})`);
+    g.addColorStop(1,'rgba(0,0,0,0)');
+    ctx.fillStyle=g; ctx.shadowColor=`rgba(${base},.45)`; ctx.shadowBlur=16;
+    roundRect(ctx,30,y-thick/2,len,thick,thick/2); ctx.fill();
+    const dl=100+ds*420;
+    const dg=ctx.createLinearGradient(r.width-dl-30,y,r.width-30,y);
+    dg.addColorStop(0,'rgba(0,0,0,0)');
+    dg.addColorStop(1,`rgba(${dex},${.25+ds*.35})`);
+    ctx.fillStyle=dg; ctx.shadowColor=`rgba(${dex},.7)`; ctx.shadowBlur=18;
+    roundRect(ctx,r.width-dl-30,y-4,dl,8,4); ctx.fill();
+    ctx.shadowBlur=0;
+  });
+  getZones().forEach(z=>{
+    const y=priceSeries.priceToCoordinate(z.price);
+    if(y==null)return;
+    ctx.strokeStyle=z.color; ctx.lineWidth=1.3;
+    ctx.setLineDash(z.label.includes('NODE')||z.label.includes('PIN')||z.label.includes('FLIP')?[6,4]:[]);
+    ctx.beginPath(); ctx.moveTo(0,y); ctx.lineTo(r.width,y); ctx.stroke();
+    ctx.setLineDash([]);
+    const txt=`${z.label} ${Math.round(z.price)}`;
+    ctx.font='10px ui-monospace,monospace';
+    const tw=ctx.measureText(txt).width+14, x=Math.max(8,r.width-tw-10);
+    ctx.fillStyle=z.color; roundRect(ctx,x,y-9,tw,18,4); ctx.fill();
+    ctx.fillStyle='#020611'; ctx.fillText(txt,x+7,y+4);
+  });
+}function roundRect(ctx,x,y,w,h,rad){ctx.beginPath();ctx.moveTo(x+rad,y);ctx.arcTo(x+w,y,x+w,y+h,rad);ctx.arcTo(x+w,y+h,x,y+h,rad);ctx.arcTo(x,y+h,x,y,rad);ctx.arcTo(x,y,x+w,y,rad);ctx.closePath()}
 async function loadJson(){try{const r=await fetch('/gaia_live.json?t='+Date.now());if(r.ok){raw=await r.json();render()}}catch(e){}}
 build();loadJson();setInterval(loadJson,5000);
 </script>
