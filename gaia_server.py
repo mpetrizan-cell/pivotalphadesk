@@ -45,9 +45,9 @@ TS_CLIENT_ID    = os.environ.get('TS_CLIENT_ID', 'HMVux6j6ncGeYOVFbWVXyB0lSVL4Wk
 TS_AUTH_URL     = 'https://signin.tradestation.com/oauth/token'
 TS_API_URL      = 'https://api.tradestation.com'
 _ts_token = {
-    'access_token':  os.environ.get('TS_ACCESS_TOKEN', '').strip().replace('\n','').replace(' ',''),
-    'refresh_token': os.environ.get('TS_REFRESH_TOKEN', '').strip(),
-    'saved_at':      time.time() if os.environ.get('TS_ACCESS_TOKEN') else 0,
+    'access_token':  os.environ.get('TS_ACCESS_TOKEN', ''),
+    'refresh_token': os.environ.get('TS_REFRESH_TOKEN', ''),
+    'saved_at':      float(os.environ.get('TS_SAVED_AT', '0')),
     'expires_in':    int(os.environ.get('TS_EXPIRES_IN', '1200')),
 }
 _ts_lock = threading.Lock()
@@ -323,15 +323,6 @@ def push_data():
         data = request.get_json(force=True)
         if not data:
             return jsonify({'error': 'no data'}), 400
-        # Handle token update from ts_gaia_chart.py
-        if data.get('_token_update'):
-            with _ts_lock:
-                if data.get('access_token'):  _ts_token['access_token']  = data['access_token']
-                if data.get('refresh_token'): _ts_token['refresh_token'] = data['refresh_token']
-                if data.get('saved_at'):      _ts_token['saved_at']      = float(data['saved_at'])
-                if data.get('expires_in'):    _ts_token['expires_in']    = int(data['expires_in'])
-            log.info('TS token updated via /push')
-            return jsonify({'status': 'ok', 'token_updated': True})
         _live_data = data
         _last_push = time.time()
         return jsonify({'status': 'ok', 'timestamp': _last_push})
@@ -643,18 +634,31 @@ def bars():
         log.warning(f'/bars error: {e}')
         return jsonify({'error': str(e)}), 500
 
+
+@app.route('/ndx_flow')
+@require_auth
+def ndx_flow():
+    return render_template_string(DASHBOARD_HTML,
+        active='ndx', page='gaia_ndx_flow_signal_v1.html',
+        spot=get_spot_ndx(), trial_days=get_trial_days())
+
+@app.route('/gaia_ndx_flow_signal_v1.html')
+@require_auth
+def serve_ndx_flow_signal():
+    return send_from_directory(BASE_DIR, 'gaia_ndx_flow_signal_v1.html')
+
 # ── LW TERMINAL ROUTE ─────────────────────────────────────────────────────────
 @app.route('/terminal')
 @require_auth
 def terminal():
     return render_template_string(DASHBOARD_HTML,
-        active='terminal', page='gaia_structure_terminal_v10.html',
+        active='terminal', page='gaia_structure_terminal_v9.html',
         spot=get_spot(), trial_days=get_trial_days())
 
-@app.route('/gaia_structure_terminal_v10.html')
+@app.route('/gaia_structure_terminal_v9.html')
 @require_auth
 def serve_terminal():
-    return send_from_directory(BASE_DIR, 'gaia_structure_terminal_v10.html')
+    return send_from_directory(BASE_DIR, 'gaia_structure_terminal_v9.html')
 
 # ── MAIN ───────────────────────────────────────────────────────────────────────
 if __name__ == '__main__':
