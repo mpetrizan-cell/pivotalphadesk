@@ -39,7 +39,6 @@ REFRESH_MONTHLY  = 300
 BASIS_NQ_NDX_DEFAULT = 150.0
 
 DHP_HISTORY_SIZE = 10
-FLOW_HISTORY_SIZE = 1500  # rolling history for GAIA Flow Signal
 
 # ── RAILWAY ───────────────────────────────────────────────────────────────────
 RAILWAY_URL   = "https://web-production-49e7.up.railway.app"
@@ -58,7 +57,6 @@ log = logging.getLogger("GAIA_NDX")
 
 # ── DHP HISTORY ───────────────────────────────────────────────────────────────
 dhp_history = deque(maxlen=DHP_HISTORY_SIZE)
-flow_history = deque(maxlen=FLOW_HISTORY_SIZE)
 
 # ── TOKEN — comparte con SPX backend ─────────────────────────────────────────
 def load_tokens():
@@ -342,10 +340,8 @@ def calculate_gaia(strikes, spot):
             "put_iv":   s["put_iv"],
         })
 
-    total_call_dhp_m = round(total_call_dhp / 1e6, 2)
-    total_put_dhp_m  = round(total_put_dhp  / 1e6, 2)
-    total_dhp = round(total_call_dhp_m + total_put_dhp_m, 2)
-    return results, total_dhp, total_call_dhp_m, total_put_dhp_m
+    total_dhp = round((total_call_dhp + total_put_dhp) / 1e6, 2)
+    return results, total_dhp
 
 # ── NIVELES PAD ───────────────────────────────────────────────────────────────
 def calculate_levels(strikes_data, spot):
@@ -430,35 +426,9 @@ def calculate_dhp_momentum(current_dhp):
 
     return momentum, direction
 
-
-# ── GAIA FLOW SIGNAL HISTORY ──────────────────────────────────────────────────
-def append_flow_history(spot_ndx, spot_nq, total_dhp, call_pressure, put_pressure, momentum):
-    """Rolling temporal memory used by the frontend to build GAIA Flow Signal.
-
-    This is intentionally stored in the backend output so the chart never has to
-    invent a synthetic HIRO-like line. Each point is one real backend cycle.
-    """
-    t = int(time.time())
-    last = flow_history[-1] if flow_history else None
-    flow_delta = round(total_dhp - float(last.get("total_dhp", total_dhp)), 4) if last else 0.0
-    price_delta = round(spot_ndx - float(last.get("spot", spot_ndx)), 4) if last else 0.0
-
-    flow_history.append({
-        "t": t,
-        "spot": round(float(spot_ndx), 4),
-        "spot_nq": round(float(spot_nq), 4) if spot_nq else None,
-        "total_dhp": round(float(total_dhp), 4),
-        "call_pressure": round(float(call_pressure), 4),
-        "put_pressure": round(float(put_pressure), 4),
-        "dhp_momentum": round(float(momentum), 4),
-        "flow_delta": flow_delta,
-        "price_delta": price_delta,
-    })
-    return list(flow_history)
-
 # ── GUARDAR JSON ──────────────────────────────────────────────────────────────
 def save_ndx_json(layers_data, spot_ndx, spot_nq, basis, confluence,
-                   total_dhp, momentum, momentum_dir, flow_history_out):
+                   total_dhp, momentum, momentum_dir):
     try:
         output = {
             "timestamp":     datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S"),
@@ -469,7 +439,6 @@ def save_ndx_json(layers_data, spot_ndx, spot_nq, basis, confluence,
             "dhp_momentum":  momentum,
             "dhp_direction": momentum_dir,
             "confluence":    confluence,
-            "history":       flow_history_out,
             "layers": {
                 "0dte":    layers_data.get("0dte",    {}),
                 "weekly":  layers_data.get("weekly",  {}),
@@ -612,31 +581,25 @@ def main():
                 try:
                     raw = read_stream_ndx(token, expirations["0dte"], spot_ndx)
                     if raw:
-                        strikes_data, total_dhp, call_pressure, put_pressure = calculate_gaia(raw, spot_ndx)
+                        strikes_data, total_dhp = calculate_gaia(raw, spot_ndx)
                         levels = calculate_levels(strikes_data, spot_ndx)
                         cache["0dte"] = {"strikes": raw, "levels": levels, "strikes_data": strikes_data}
                         log.info(f"0DTE actualizado — {len(raw)} strikes, DHP:{total_dhp}M")
                     else:
                         total_dhp = 0.0
-                        call_pressure = 0.0
-                        put_pressure = 0.0
                         log.warning("0DTE stream vacío")
                 except Exception as e:
                     log.error(f"Error 0DTE stream: {e}")
                     total_dhp = 0.0
-                    call_pressure = 0.0
-                    put_pressure = 0.0
             else:
                 total_dhp = 0.0
-                call_pressure = 0.0
-                put_pressure = 0.0
 
             # ── CAPA WEEKLY — REST cada 60s
             if expirations["weekly"] and spot_ndx > 0 and (now - last_weekly) >= REFRESH_WEEKLY:
                 try:
                     raw_w = read_rest_ndx(token, expirations["weekly"], spot_ndx)
                     if raw_w:
-                        sd_w, _, _, _ = calculate_gaia(raw_w, spot_ndx)
+                        sd_w, _ = calculate_gaia(raw_w, spot_ndx)
                         lv_w    = calculate_levels(sd_w, spot_ndx)
                         cache["weekly"] = {"strikes": raw_w, "levels": lv_w, "strikes_data": sd_w}
                         log.info(f"Weekly actualizado — {len(raw_w)} strikes")
@@ -649,7 +612,7 @@ def main():
                 try:
                     raw_m = read_rest_ndx(token, expirations["monthly"], spot_ndx)
                     if raw_m:
-                        sd_m, _, _, _ = calculate_gaia(raw_m, spot_ndx)
+                        sd_m, _ = calculate_gaia(raw_m, spot_ndx)
                         lv_m    = calculate_levels(sd_m, spot_ndx)
                         cache["monthly"] = {"strikes": raw_m, "levels": lv_m, "strikes_data": sd_m}
                         log.info(f"Monthly actualizado — {len(raw_m)} strikes")
@@ -666,19 +629,6 @@ def main():
 
             # ── DHP MOMENTUM
             momentum, momentum_dir = calculate_dhp_momentum(total_dhp)
-
-            # ── GAIA FLOW SIGNAL HISTORY
-            if spot_ndx > 0:
-                flow_history_out = append_flow_history(
-                    spot_ndx=spot_ndx,
-                    spot_nq=spot_nq,
-                    total_dhp=total_dhp,
-                    call_pressure=locals().get("call_pressure", 0.0),
-                    put_pressure=locals().get("put_pressure", 0.0),
-                    momentum=momentum,
-                )
-            else:
-                flow_history_out = []
 
             # ── GUARDAR JSON + PUSH
             if spot_ndx > 0:
@@ -701,7 +651,7 @@ def main():
                     },
                 }
                 save_ndx_json(layers_output, spot_ndx, spot_nq, basis,
-                              confluence, total_dhp, momentum, momentum_dir, flow_history_out)
+                              confluence, total_dhp, momentum, momentum_dir)
                 push_to_railway({
                     "timestamp":     datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S"),
                     "spot_ndx":      spot_ndx,
@@ -711,7 +661,6 @@ def main():
                     "dhp_momentum":  momentum,
                     "dhp_direction": momentum_dir,
                     "confluence":    confluence,
-                    "history":       flow_history_out,
                     "layers":        layers_output,
                     "status":        "live"
                 })
