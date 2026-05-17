@@ -8,344 +8,698 @@
 <style>
 :root{
   --bg:#020611;--panel:#071020;--line:#1e293b;--txt:#e2e8f0;--muted:#64748b;
-  --cyan:#67e8f9;--violet:#e879f9;--red:#ef4444;--blue:#3b82f6;--yellow:#fbbf24;--green:#34d399;--teal:#14b8a6;
+  --cyan:#67e8f9;--violet:#e879f9;--red:#ef4444;--blue:#3b82f6;
+  --yellow:#fbbf24;--green:#34d399;--teal:#14b8a6;
+  --amber:#f59e0b;--chartreuse:#a3e635;
 }
 *{box-sizing:border-box;margin:0;padding:0}
 html,body{width:100%;height:100%;overflow:hidden;background:var(--bg);color:var(--txt);font-family:ui-monospace,Consolas,monospace}
+
+/* ── LAYOUT ── */
 .terminal{height:100vh;display:grid;grid-template-rows:42px 1fr 30px}
-.header{display:grid;grid-template-columns:1.6fr .7fr .7fr .8fr .95fr .9fr 1.15fr;gap:8px;padding:6px 8px;border-bottom:1px solid var(--line);background:#050b15}
-.box,.card,.bbox{border:1px solid var(--line);background:var(--panel);border-radius:8px}
-.box{padding:5px 9px;min-width:0}
-.lbl{font-size:7px;letter-spacing:.18em;color:var(--muted);text-transform:uppercase}
-.val{font-size:12px;font-weight:900;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.controls{display:flex;align-items:center;justify-content:flex-end;gap:7px}
-.btn{border:1px solid #334155;background:#071020;color:#94a3b8;border-radius:5px;padding:1px 8px;font-size:9px;cursor:pointer}
-.btn.active{border-color:var(--cyan);color:var(--cyan);background:#0d2330}
-.main{display:grid;grid-template-columns:245px 1fr 280px;min-height:0}
-.left,.right{padding:8px;background:#050b15;display:flex;flex-direction:column;gap:8px;min-height:0}
-.left{border-right:1px solid var(--line)}.right{border-left:1px solid var(--line)}
-.card{padding:8px}.card h3{font-size:8px;letter-spacing:.18em;color:#cbd5e1;margin-bottom:8px;text-transform:uppercase}
-.profile{flex:1;overflow:hidden}
-.gexRow{display:grid;grid-template-columns:36px 1fr 46px;gap:6px;align-items:center;height:24px;font-size:9px;border-bottom:1px solid rgba(30,41,59,.45)}
-.strike{font-weight:900;color:#cbd5e1}.barTrack{height:12px;background:#0f172a;border-left:1px solid #334155;border-right:1px solid #334155;border-radius:6px;position:relative;overflow:hidden}
-.bar{position:absolute;top:0;height:100%;border-radius:6px}.bar.pos{left:50%;background:linear-gradient(90deg,rgba(103,232,249,.25),rgba(103,232,249,.95));box-shadow:0 0 14px rgba(103,232,249,.45)}
-.bar.neg{right:50%;background:linear-gradient(270deg,rgba(239,68,68,.25),rgba(239,68,68,.95));box-shadow:0 0 14px rgba(239,68,68,.45)}
-.dexMini{position:absolute;top:4px;height:4px;border-radius:4px}.meta{font-size:8px;color:#94a3b8;text-align:right}
-.center{display:grid;grid-template-rows:1fr 150px;gap:6px;padding:6px;min-height:0}
-.wrap{position:relative;min-height:0}.chart{width:100%;height:100%;border:1px solid var(--line);border-radius:8px;overflow:hidden;background:#020611}
+.header{display:grid;grid-template-columns:1.8fr .75fr .75fr .85fr 1fr 1fr 1.4fr;gap:6px;padding:5px 8px;border-bottom:1px solid var(--line);background:#050b15;align-items:center}
+.main{display:grid;grid-template-columns:230px 1fr 300px;min-height:0}
+.center{display:grid;grid-template-rows:1fr 140px;gap:5px;padding:5px;min-height:0}
+.bottom{display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:6px;padding:4px 8px;border-top:1px solid var(--line);background:#050b15}
+
+/* ── BASE COMPONENTS ── */
+.box,.card,.bbox{border:1px solid var(--line);background:var(--panel);border-radius:6px}
+.box{padding:4px 8px;min-width:0}
+.lbl{font-size:7px;letter-spacing:.16em;color:var(--muted);text-transform:uppercase;display:block}
+.val{font-size:12px;font-weight:900;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;line-height:1.3}
+.bbox{padding:4px 8px;font-size:10px}
+
+/* ── PANELS ── */
+.left,.right{padding:6px;background:#050b15;display:flex;flex-direction:column;gap:6px;min-height:0;overflow:hidden}
+.left{border-right:1px solid var(--line)}
+.right{border-left:1px solid var(--line)}
+.card{padding:7px;overflow:hidden}
+.card h3{font-size:7px;letter-spacing:.18em;color:#94a3b8;margin-bottom:6px;text-transform:uppercase}
+
+/* ── GEX PROFILE ── */
+.profile-wrap{flex:1;overflow-y:auto;overflow-x:hidden}
+.profile-wrap::-webkit-scrollbar{width:3px}.profile-wrap::-webkit-scrollbar-track{background:#0f172a}.profile-wrap::-webkit-scrollbar-thumb{background:#1e293b}
+.gexRow{display:grid;grid-template-columns:34px 1fr 40px;gap:4px;align-items:center;height:22px;font-size:8.5px;border-bottom:1px solid rgba(30,41,59,.4)}
+.gexRow.atm{background:rgba(248,250,252,.04)}
+.strike{font-weight:900;color:#cbd5e1}
+.barTrack{height:10px;background:#0f172a;border-radius:5px;position:relative;overflow:hidden}
+.bar{position:absolute;top:0;height:100%;border-radius:5px}
+.bar.pos{left:50%;background:linear-gradient(90deg,rgba(103,232,249,.2),rgba(103,232,249,.9));box-shadow:0 0 10px rgba(103,232,249,.4)}
+.bar.neg{right:50%;background:linear-gradient(270deg,rgba(239,68,68,.2),rgba(239,68,68,.9));box-shadow:0 0 10px rgba(239,68,68,.4)}
+.dexMini{position:absolute;top:3px;height:4px;border-radius:3px}
+.meta{font-size:7.5px;color:#94a3b8;text-align:right}
+
+/* ── CHART ── */
+.wrap{position:relative;min-height:0}
+.chart{width:100%;height:100%;border:1px solid var(--line);border-radius:6px;overflow:hidden;background:#020611}
 #gaiaCanvas{position:absolute;inset:0;pointer-events:none;z-index:5}
-.row{display:flex;justify-content:space-between;gap:10px;font-size:10px;padding:4px 0;border-bottom:1px solid rgba(30,41,59,.55)}
-.row:last-child{border-bottom:0}.permission{height:10px;background:#0f172a;border-radius:6px;overflow:hidden;margin-top:8px}.permFill{height:100%;width:34%;background:linear-gradient(90deg,#ef4444,#fbbf24,#34d399)}
-.readout{font-size:10px;line-height:1.55;color:#cbd5e1}
-.bottom{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;padding:5px 8px;border-top:1px solid var(--line);background:#050b15}.bbox{padding:5px 8px;font-size:10px}
-.pill{display:inline-block;border:1px solid #334155;border-radius:4px;padding:1px 5px;font-size:8px;margin:0 4px 4px 0}
+.chart-legend{position:absolute;top:5px;left:8px;z-index:10;display:flex;gap:10px;align-items:center}
+.chart-legend span{font-size:8px;letter-spacing:.05em}
+
+/* ── TOGGLES ── */
+.toggles{position:absolute;top:5px;right:8px;z-index:10;display:flex;gap:4px}
+.tog{border:1px solid #334155;background:#071020;color:#64748b;border-radius:4px;padding:1px 7px;font-size:8px;cursor:pointer;font-family:inherit;letter-spacing:.06em;transition:all .15s}
+.tog.on{background:#0d1f2d}
+.tog.on.calls{border-color:var(--amber);color:var(--amber)}
+.tog.on.puts{border-color:var(--blue);color:var(--blue)}
+.tog.on.net{border-color:var(--chartreuse);color:var(--chartreuse)}
+.tog.on.zones{border-color:var(--cyan);color:var(--cyan)}
+
+/* ── STATE ENGINE ── */
+.state-row{display:flex;justify-content:space-between;align-items:center;font-size:10px;padding:3px 0;border-bottom:1px solid rgba(30,41,59,.5)}
+.state-row:last-child{border-bottom:0}
+.state-row .lk{color:#94a3b8;font-size:9px}
+.state-row b{font-size:11px}
+.perm-bar{height:8px;background:#0f172a;border-radius:4px;overflow:hidden;margin-top:6px}
+.perm-fill{height:100%;background:linear-gradient(90deg,#ef4444,#fbbf24,#34d399);transition:width .4s}
+
+/* ── PAD ZONES TABLE (double column SPX | ES) ── */
+.zones-table{width:100%;border-collapse:collapse;font-size:9px}
+.zones-table th{font-size:7px;letter-spacing:.12em;color:#64748b;text-align:right;padding:0 3px 4px;font-weight:400}
+.zones-table th:first-child{text-align:left}
+.zones-table td{padding:2px 3px;border-bottom:1px solid rgba(30,41,59,.4);text-align:right;font-size:9.5px;font-weight:700}
+.zones-table td:first-child{text-align:left;font-size:8.5px;font-weight:600}
+.zones-table tr.atm-row td{background:rgba(248,250,252,.04)}
+
+/* ── READOUT ── */
+.readout{font-size:9.5px;line-height:1.6;color:#cbd5e1}
+
+/* ── FOOTER BAR ── */
+.footer-bar{display:flex;gap:4px;padding:3px 8px;border-top:1px solid var(--line);background:#050b15;font-size:9px;align-items:center;overflow:hidden}
+.footer-bar span{white-space:nowrap}
+.footer-sep{color:#1e293b;padding:0 4px}
+
+/* ── PILLS ── */
+.pill{display:inline-block;border:1px solid #334155;border-radius:3px;padding:0 5px;font-size:7.5px;margin:0 3px 3px 0}
+
+/* ── DHP SUBCHART FOOTER BAR ── */
+.dhp-bar{background:#050b15;border-top:1px solid var(--line);padding:2px 8px;display:flex;gap:16px;font-size:8px;color:#64748b;align-items:center}
+.dhp-bar b{font-size:9px}
 </style>
 </head>
 <body>
 <div class="terminal">
+
+  <!-- ══ HEADER ══ -->
   <div class="header">
-    <div class="box"><div class="lbl">Terminal</div><div class="val">GAIA Terminal v10 · PivotAlphaDesk</div></div>
-    <div class="box"><div class="lbl">SPX</div><div class="val" id="spx"></div></div>
-    <div class="box"><div class="lbl">ES</div><div class="val" id="es"></div></div>
-    <div class="box"><div class="lbl">Regime</div><div class="val" id="regime"></div></div>
-    <div class="box"><div class="lbl">Permission</div><div class="val" id="permission"></div></div>
-    <div class="box"><div class="lbl">DEX</div><div class="val" id="dexHeader"></div></div>
-    <div class="box controls"><span class="lbl">CHART</span><span class="val" id="tfmode" style="color:#e879f9">SPX LINE</span></div>
+    <div class="box">
+      <span class="lbl">GAIA Terminal v10 · PivotAlphaDesk</span>
+      <div class="val" style="color:var(--cyan);font-size:11px" id="timestamp">—</div>
+    </div>
+    <div class="box">
+      <span class="lbl">SPX</span>
+      <div class="val" id="hd-spx" style="color:#f8fafc">—</div>
+    </div>
+    <div class="box">
+      <span class="lbl">ES M26</span>
+      <div class="val" id="hd-es" style="color:#f8fafc">—</div>
+    </div>
+    <div class="box">
+      <span class="lbl">Regime</span>
+      <div class="val" id="hd-regime">—</div>
+    </div>
+    <div class="box">
+      <span class="lbl">Permission</span>
+      <div class="val" id="hd-perm">—</div>
+    </div>
+    <div class="box">
+      <span class="lbl">GFS Signal</span>
+      <div class="val" id="hd-gfs">—</div>
+    </div>
+    <div class="box" style="display:flex;align-items:center;justify-content:space-between;gap:4px">
+      <span class="val" id="tfmode" style="color:var(--violet);font-size:10px">SPX LIVE</span>
+      <div style="display:flex;gap:3px">
+        <button class="tog on calls" id="tg-calls" onclick="toggleLayer('calls',this)">CALLS</button>
+        <button class="tog on puts"  id="tg-puts"  onclick="toggleLayer('puts',this)">PUTS</button>
+        <button class="tog on net"   id="tg-net"   onclick="toggleLayer('net',this)">NET</button>
+        <button class="tog on zones" id="tg-zones" onclick="toggleLayer('zones',this)">ZONES</button>
+      </div>
+    </div>
   </div>
 
+  <!-- ══ MAIN ══ -->
   <div class="main">
+
+    <!-- LEFT: GEX/DEX Profile -->
     <div class="left">
-      <div class="card"><h3>GEX / DEX Profile</h3>
-        <span class="pill" style="color:#67e8f9">GEX Absorb</span><span class="pill" style="color:#ef4444">GEX Fragile</span><span class="pill" style="color:#34d399">DEX Buy</span><span class="pill" style="color:#ef4444">DEX Sell</span>
+      <div class="card" style="flex-shrink:0">
+        <h3>GEX / DEX Profile · SPX</h3>
+        <span class="pill" style="color:var(--cyan)">GEX Absorb</span>
+        <span class="pill" style="color:var(--red)">GEX Fragile</span>
+        <span class="pill" style="color:var(--green)">DEX Buy</span>
+        <span class="pill" style="color:var(--red)">DEX Sell</span>
       </div>
-      <div class="card profile" id="gexProfile"></div>
+      <div class="card profile-wrap" id="gexProfile"></div>
     </div>
 
+    <!-- CENTER: Main chart + DHP subchart -->
     <div class="center">
-      <div class="wrap"><div id="priceChart" class="chart"></div><canvas id="gaiaCanvas"></canvas>
-      <div style="position:absolute;top:6px;left:10px;z-index:10;display:flex;gap:8px;font-family:monospace">
-        <span style="font-size:8px;color:#f59e0b">■ CALLS</span>
-        <span style="font-size:8px;color:#3b82f6">■ PUTS</span>
-        <span style="font-size:8px;color:#a3e635">— GFS NET</span>
-        <span style="font-size:8px;color:#f8fafc">— SPX</span>
-      </div></div>
-      <div class="wrap"><div id="flowChart" class="chart"></div></div>
+      <div class="wrap">
+        <div id="priceChart" class="chart"></div>
+        <canvas id="gaiaCanvas"></canvas>
+        <div class="chart-legend">
+          <span style="color:var(--amber)">■ GFS CALLS</span>
+          <span style="color:var(--blue)">■ GFS PUTS</span>
+          <span style="color:var(--chartreuse)">╌ GFS NET</span>
+          <span style="color:#f8fafc">— SPX</span>
+        </div>
+        <div class="toggles" id="zone-pills"></div>
+      </div>
+      <!-- DHP subchart -->
+      <div class="wrap">
+        <div id="flowChart" class="chart"></div>
+        <div class="dhp-bar" id="dhpBar">
+          <span>DHP MOMENTUM <b id="dhp-mom" style="color:var(--cyan)">—</b></span>
+          <span>GFS NET <b id="gfs-net-val" style="color:var(--chartreuse)">—</b></span>
+          <span>GFS CALLS <b id="gfs-calls-val" style="color:var(--amber)">—</b></span>
+          <span>GFS PUTS <b id="gfs-puts-val" style="color:var(--blue)">—</b></span>
+          <span>DIRECTION <b id="dhp-dir" style="color:var(--yellow)">—</b></span>
+        </div>
+      </div>
     </div>
 
+    <!-- RIGHT: State Engine + PAD Zones + Readout -->
     <div class="right">
-      <div class="card"><h3>State Engine</h3>
-        <div class="row"><span>DSI</span><b id="dsi"></b></div>
-        <div class="row"><span>VTS</span><b id="vts"></b></div>
-        <div class="row"><span>MCS</span><b id="mcs"></b></div>
-        <div class="row"><span>CVX State</span><b id="cvx"></b></div>
-        <div class="row"><span>DEX Bias</span><b id="dexBias"></b></div>
-        <div class="permission"><div class="permFill" id="permFill"></div></div>
+
+      <div class="card" style="flex-shrink:0">
+        <h3>State Engine</h3>
+        <div class="state-row"><span class="lk">DSI</span><b id="s-dsi">—</b></div>
+        <div class="state-row"><span class="lk">VTS</span><b id="s-vts">—</b></div>
+        <div class="state-row"><span class="lk">MCS</span><b id="s-mcs">—</b></div>
+        <div class="state-row"><span class="lk">DHP Snapshot</span><b id="s-dhp">—</b></div>
+        <div class="state-row"><span class="lk">GFS Signal Total</span><b id="s-gfs-total">—</b></div>
+        <div class="state-row"><span class="lk">GFS Signal Calls</span><b id="s-gfs-calls">—</b></div>
+        <div class="state-row"><span class="lk">GFS Signal Puts</span><b id="s-gfs-puts">—</b></div>
+        <div class="state-row"><span class="lk">DEX Bias</span><b id="s-dex">—</b></div>
+        <div class="perm-bar"><div class="perm-fill" id="permFill" style="width:34%"></div></div>
       </div>
 
-      <div class="card"><h3>MAP / GAIA Zones</h3><div id="zoneRows"></div></div>
+      <div class="card" style="flex-shrink:0">
+        <h3>PAD Levels · SPX + ES Execution</h3>
+        <table class="zones-table">
+          <thead>
+            <tr><th>Zone</th><th>SPX</th><th>ES Exec</th></tr>
+          </thead>
+          <tbody id="zoneRows"></tbody>
+        </table>
+      </div>
 
-      <div class="card"><h3>Adaptive Readout</h3><div class="readout" id="readout"></div></div>
+      <div class="card" style="flex:1;overflow:auto">
+        <h3>Adaptive Readout</h3>
+        <div class="readout" id="readout">—</div>
+      </div>
+
     </div>
   </div>
 
+  <!-- ══ FOOTER ══ -->
   <div class="bottom">
-    <div class="bbox"><span class="lbl">STRUCTURE</span> <b id="structure"></b></div>
-    <div class="bbox"><span class="lbl">DEX ACTIVITY</span> <b id="dexActivity"></b></div>
-    <div class="bbox"><span class="lbl">ALERT</span> <b id="alert"></b></div>
+    <div class="bbox"><span class="lbl">Structure</span><b id="ft-structure">—</b></div>
+    <div class="bbox"><span class="lbl">GFS Signal</span><b id="ft-gfs">—</b></div>
+    <div class="bbox"><span class="lbl">DEX Activity</span><b id="ft-dex">—</b></div>
+    <div class="bbox"><span class="lbl">Alert</span><b id="ft-alert">—</b></div>
   </div>
-</div>
+
+</div><!-- .terminal -->
 
 <script>
-const fallback={
+/* ═══════════════════════════════════════════════════════════
+   GAIA Terminal v10 · PivotAlphaDesk
+   Price: spot_spx from gaia_live.json only (no Yahoo Finance)
+   GFS = GAIA Flow Signal (renamed from HIRO)
+   ═══════════════════════════════════════════════════════════ */
+
+/* ── FALLBACK DATA (used until /gaia_live.json loads) ── */
+const FALLBACK = {
   spot_spx:7408.50, spot_es:7431.25, basis:22.75,
   total_dhp:-4807, dhp_momentum:-108, dhp_direction:'BUILDING_BEAR',
   hiro_call:3520, hiro_put:-880, hiro_total:2640,
   levels_es:{call_wall:7468,gamma_node:7460,gamma_flip:7390,gravity_pin:7460,put_wall:7410},
   strikes:[
-    {strike:7470,net_gex:49763,call_delta_oi:450,put_delta_oi:8,  net_dhp:0.4,call_dhp:0.5,put_dhp:-0.1},
-    {strike:7465,net_gex:37000,call_delta_oi:370,put_delta_oi:15, net_dhp:0.3,call_dhp:0.4,put_dhp:-0.1},
-    {strike:7460,net_gex:157448,call_delta_oi:1954,put_delta_oi:170,net_dhp:30,call_dhp:35,put_dhp:-5},
-    {strike:7455,net_gex:234312,call_delta_oi:1200,put_delta_oi:50,net_dhp:14,call_dhp:16,put_dhp:-2},
-    {strike:7450,net_gex:86989,call_delta_oi:2886,put_delta_oi:50,net_dhp:13,call_dhp:15,put_dhp:-2},
-    {strike:7445,net_gex:-3086,call_delta_oi:200,put_delta_oi:280,net_dhp:-1,call_dhp:2,put_dhp:-3},
-    {strike:7440,net_gex:86989,call_delta_oi:800,put_delta_oi:20,net_dhp:8,call_dhp:9,put_dhp:-1},
-    {strike:7435,net_gex:65500,call_delta_oi:700,put_delta_oi:15,net_dhp:7,call_dhp:8,put_dhp:-1},
-    {strike:7430,net_gex:52800,call_delta_oi:600,put_delta_oi:12,net_dhp:6,call_dhp:7,put_dhp:-1},
-    {strike:7425,net_gex:84609,call_delta_oi:500,put_delta_oi:10,net_dhp:5,call_dhp:6,put_dhp:-1},
-    {strike:7420,net_gex:15197,call_delta_oi:400,put_delta_oi:8, net_dhp:4,call_dhp:5,put_dhp:-1},
-    {strike:7415,net_gex:41934,call_delta_oi:300,put_delta_oi:6, net_dhp:3,call_dhp:4,put_dhp:-1},
-    {strike:7410,net_gex:-65650,call_delta_oi:100,put_delta_oi:800,net_dhp:-8,call_dhp:2,put_dhp:-10},
-    {strike:7405,net_gex:-30503,call_delta_oi:80,put_delta_oi:600,net_dhp:-6,call_dhp:1,put_dhp:-7},
-    {strike:7400,net_gex:73537,call_delta_oi:1176,put_delta_oi:13,net_dhp:3.8,call_dhp:4,put_dhp:-0.2},
-    {strike:7395,net_gex:-58491,call_delta_oi:50,put_delta_oi:500,net_dhp:-5,call_dhp:1,put_dhp:-6},
-    {strike:7390,net_gex:-46758,call_delta_oi:40,put_delta_oi:400,net_dhp:-4,call_dhp:0.5,put_dhp:-4.5},
-    {strike:7385,net_gex:2712, call_delta_oi:30,put_delta_oi:20,net_dhp:0.2,call_dhp:0.3,put_dhp:-0.1},
+    {strike:7470,net_gex:49763, call_delta_oi:450, put_delta_oi:8,   call_dhp:0.5,  put_dhp:-0.1, net_dhp:0.4},
+    {strike:7465,net_gex:37000, call_delta_oi:370, put_delta_oi:15,  call_dhp:0.4,  put_dhp:-0.1, net_dhp:0.3},
+    {strike:7460,net_gex:157448,call_delta_oi:1954,put_delta_oi:170, call_dhp:35,   put_dhp:-5,   net_dhp:30},
+    {strike:7455,net_gex:234312,call_delta_oi:1200,put_delta_oi:50,  call_dhp:16,   put_dhp:-2,   net_dhp:14},
+    {strike:7450,net_gex:86989, call_delta_oi:2886,put_delta_oi:50,  call_dhp:15,   put_dhp:-2,   net_dhp:13},
+    {strike:7445,net_gex:-3086, call_delta_oi:200, put_delta_oi:280, call_dhp:2,    put_dhp:-3,   net_dhp:-1},
+    {strike:7440,net_gex:86989, call_delta_oi:800, put_delta_oi:20,  call_dhp:9,    put_dhp:-1,   net_dhp:8},
+    {strike:7435,net_gex:65500, call_delta_oi:700, put_delta_oi:15,  call_dhp:8,    put_dhp:-1,   net_dhp:7},
+    {strike:7430,net_gex:52800, call_delta_oi:600, put_delta_oi:12,  call_dhp:7,    put_dhp:-1,   net_dhp:6},
+    {strike:7425,net_gex:84609, call_delta_oi:500, put_delta_oi:10,  call_dhp:6,    put_dhp:-1,   net_dhp:5},
+    {strike:7420,net_gex:15197, call_delta_oi:400, put_delta_oi:8,   call_dhp:5,    put_dhp:-1,   net_dhp:4},
+    {strike:7415,net_gex:41934, call_delta_oi:300, put_delta_oi:6,   call_dhp:4,    put_dhp:-1,   net_dhp:3},
+    {strike:7410,net_gex:-65650,call_delta_oi:100, put_delta_oi:800, call_dhp:2,    put_dhp:-10,  net_dhp:-8},
+    {strike:7405,net_gex:-30503,call_delta_oi:80,  put_delta_oi:600, call_dhp:1,    put_dhp:-7,   net_dhp:-6},
+    {strike:7400,net_gex:73537, call_delta_oi:1176,put_delta_oi:13,  call_dhp:4,    put_dhp:-0.2, net_dhp:3.8},
+    {strike:7395,net_gex:-58491,call_delta_oi:50,  put_delta_oi:500, call_dhp:1,    put_dhp:-6,   net_dhp:-5},
+    {strike:7390,net_gex:-46758,call_delta_oi:40,  put_delta_oi:400, call_dhp:0.5,  put_dhp:-4.5, net_dhp:-4},
+    {strike:7385,net_gex:2712,  call_delta_oi:30,  put_delta_oi:20,  call_dhp:0.3,  put_dhp:-0.1, net_dhp:0.2},
   ],
-  confluence:[],layers:{},status:'fallback'
+  confluence:[], status:'fallback'
 };
-const spxHistory=[];
-let raw=fallback, lastCandles=[], tf='M1', priceChart, priceSeries, dhpOverlaySeries, gfsCallSeries, gfsPutSeries, gfsNetSeries, flowChart, dhpSeries, dexSeries, histSeries;
 
-function f2(v){return Number(v||0).toLocaleString(undefined,{minimumFractionDigits:2,maximumFractionDigits:2})}
-function fmt(v){const a=Math.abs(Number(v)||0),s=(Number(v)||0)>=0?'+':'-';return s+(a>=1e6?(a/1e6).toFixed(1)+'M':a>=1e3?(a/1e3).toFixed(1)+'K':a.toFixed(0))}
-function step(){return tf==='M1'?60:tf==='M5'?300:900}
-function totalDex(){return (raw.strikes||[]).reduce((a,s)=>a+((s.call_delta_oi||0)-(s.put_delta_oi||0)),0)}
-function zoneColor(k){k=String(k).toLowerCase(); if(k.includes('call'))return'#ef4444'; if(k.includes('put')||k.includes('floor'))return'#3b82f6'; if(k.includes('node'))return'#e879f9'; if(k.includes('gravity')||k.includes('pin')||k.includes('flip'))return'#fbbf24'; if(k.includes('tactical'))return'#14b8a6'; if(k.includes('emergency'))return'#2dd4bf'; return'#94a3b8'}
-function zoneLabel(k){k=String(k).toLowerCase(); if(k.includes('call'))return'CALL WALL'; if(k.includes('gamma_node'))return'GAMMA NODE'; if(k.includes('gravity'))return'GRAVITY PIN'; if(k.includes('gamma_flip'))return'GAMMA FLIP'; if(k.includes('put'))return'PUT WALL'; if(k.includes('floor'))return'GAMMA FLOOR'; if(k.includes('tactical'))return'TACTICAL ANCHOR'; if(k.includes('emergency'))return'EMERGENCY ANCHOR'; return k.replaceAll('_',' ').toUpperCase()}
-function getZones(){return Object.entries(raw.levels_es||{}).map(([k,v])=>({key:k,label:zoneLabel(k),price:Number(v),color:zoneColor(k)})).filter(z=>Number.isFinite(z.price)).sort((a,b)=>b.price-a.price)}
+/* ── STATE ── */
+const spxHistory = [];
+let raw = FALLBACK;
+let lastLineData = [];
+const layers = {calls:true, puts:true, net:true, zones:true};
+let priceChart, priceSeries, gfsCallSeries, gfsPutSeries, gfsNetSeries;
+let flowChart, dhpHistSeries, dhpLineSeries;
 
-function demoCandles(st){let p=raw.spot_es-5,now=Math.floor(Date.now()/1000)-72*st;return Array.from({length:72},(_,i)=>{const o=p+Math.sin(i*.9)*2,c=o+Math.cos(i*.63)*3+Math.sin(i/8)*.7,h=Math.max(o,c)+2,l=Math.min(o,c)-2;p=c;return{time:now+i*st,open:o,high:h,low:l,close:c}})}
-function flowData(st,seed){let v=seed||0,now=Math.floor(Date.now()/1000)-72*st;return Array.from({length:72},(_,i)=>{v+=Math.sin(i*.26)*3+Math.cos(i*.19)*2;return{time:now+i*st,value:v}})}
-function state(){
-  const strikes=raw.strikes||[], dex=totalDex();
-  // Use net_dhp (exists in JSON) — s.cvx does NOT exist in gaia_live.json
-  const totalNetDhp=strikes.reduce((a,b)=>a+(b.net_dhp||0),0);
-  const avgNetDhp=totalNetDhp/Math.max(1,strikes.length);
-  const dhpPressure=Math.min(60,Math.abs(avgNetDhp)*4);
-  const vts=Math.round(32+dhpPressure+(raw.dhp_momentum<0?18:0)+(Math.abs(dex)>2500?8:0));
-  const dsi=Math.max(0,Math.min(100,76-vts/3));
-  const mcs=Math.max(0,Math.min(100,55+Math.sign(dex)*8));
-  const regime=vts>65?'FRAGILE':dsi>72?'STABLE':'BALANCED';
-  const permission=regime==='FRAGILE'?'DEFENSIVE':mcs>70?'FAVORABLE':'WATCH';
-  const dexBias=dex>1500?'BUY HEDGE':dex<-1500?'SELL HEDGE':'MIXED';
-  const cvxScore=Math.max(0,Math.min(100,50+avgNetDhp*2));
-  return{dsi:Math.round(dsi),vts,mcs:Math.round(mcs),regime,permission,avgCvx:Math.round(cvxScore),dex,dexBias};
+/* ── FORMATTERS ── */
+const f2 = v => Number(v||0).toLocaleString(undefined,{minimumFractionDigits:2,maximumFractionDigits:2});
+const fK  = v => { const a=Math.abs(Number(v)||0), s=(Number(v)||0)>=0?'+':'-';
+  return s+(a>=1e9?(a/1e9).toFixed(1)+'B':a>=1e6?(a/1e6).toFixed(1)+'M':a>=1e3?(a/1e3).toFixed(1)+'K':a.toFixed(0)); };
+const fM  = v => { const a=Math.abs(Number(v)||0), s=(Number(v)||0)>=0?'+':'-';
+  return s+(a>=1e9?(a/1e9).toFixed(2)+'B':a>=1e6?(a/1e6).toFixed(2)+'M':a>=1e3?(a/1e3).toFixed(1)+'K':a.toFixed(0)); };
+
+/* ── ZONES ── */
+function zoneColor(k){
+  k=String(k).toLowerCase();
+  if(k.includes('call'))  return '#ef4444';
+  if(k.includes('node'))  return '#e879f9';
+  if(k.includes('gravity')||k.includes('pin')) return '#fbbf24';
+  if(k.includes('flip'))  return '#fbbf24';
+  if(k.includes('put')||k.includes('floor'))   return '#3b82f6';
+  if(k.includes('tactical'))  return '#14b8a6';
+  if(k.includes('emergency')) return '#2dd4bf';
+  return '#94a3b8';
+}
+function zoneLabel(k){
+  k=String(k).toLowerCase();
+  if(k.includes('call_wall'))  return '▲ Call Wall';
+  if(k.includes('gamma_node')) return '◆ Gamma Node';
+  if(k.includes('gravity'))    return '◆ Gravity Pin';
+  if(k.includes('gamma_flip')) return '◆ Gamma Flip';
+  if(k.includes('put_wall'))   return '▼ Put Wall';
+  if(k.includes('floor'))      return '▼ Gamma Floor';
+  if(k.includes('tactical'))   return '⬡ Tact. Anchor';
+  if(k.includes('emergency'))  return '⬡ Emrg. Anchor';
+  return k.replaceAll('_',' ').toUpperCase();
+}
+function getZones(){
+  return Object.entries(raw.levels_es||{})
+    .map(([k,v])=>({key:k, label:zoneLabel(k), spx: Math.round(Number(v)-(raw.basis||9.5)), es: Math.round(Number(v)), color:zoneColor(k)}))
+    .filter(z=>Number.isFinite(z.es))
+    .sort((a,b)=>b.es-a.es);
 }
 
-function build(){
-  priceChart=LightweightCharts.createChart(document.getElementById('priceChart'),{layout:{background:{color:'#020611'},textColor:'#cbd5e1'},grid:{vertLines:{color:'#111827'},horzLines:{color:'#111827'}},rightPriceScale:{borderColor:'#1e293b'},timeScale:{timeVisible:true,borderColor:'#1e293b'}});
-  priceSeries=priceChart.addLineSeries({color:'#f8fafc',lineWidth:2,lastValueVisible:true,priceLineVisible:true,priceScaleId:'right'});
-  // GFS lines — left axis, K/M formatter
-  const gfsFmt={type:'custom',formatter:v=>Math.abs(v)>=1e9?(v/1e9).toFixed(1)+'B':Math.abs(v)>=1e6?(v/1e6).toFixed(1)+'M':Math.abs(v)>=1e3?(v/1e3).toFixed(0)+'K':v.toFixed(0)};
-  gfsCallSeries=priceChart.addLineSeries({color:'#f59e0b',lineWidth:1.5,lastValueVisible:true,priceLineVisible:false,priceScaleId:'left',title:'CALLS',priceFormat:gfsFmt});
-  gfsPutSeries =priceChart.addLineSeries({color:'#3b82f6',lineWidth:1.5,lastValueVisible:true,priceLineVisible:false,priceScaleId:'left',title:'PUTS',priceFormat:gfsFmt});
-  gfsNetSeries =priceChart.addLineSeries({color:'#a3e635',lineWidth:2,lineStyle:2,lastValueVisible:true,priceLineVisible:false,priceScaleId:'left',title:'NET',priceFormat:gfsFmt});
-  dhpOverlaySeries=priceChart.addLineSeries({color:'#67e8f9',lineWidth:1.5,lastValueVisible:true,priceLineVisible:false,lineStyle:2,title:'HIRO'});
-  flowChart=LightweightCharts.createChart(document.getElementById('flowChart'),{layout:{background:{color:'#020611'},textColor:'#94a3b8'},grid:{vertLines:{color:'#111827'},horzLines:{color:'#111827'}},rightPriceScale:{borderColor:'#1e293b'},timeScale:{timeVisible:true,borderColor:'#1e293b'}});
-  dhpSeries=flowChart.addLineSeries({color:'#67e8f9',lineWidth:2,title:'DHP'});
-  dexSeries=flowChart.addLineSeries({color:'#34d399',lineWidth:2,title:'DEX'});
-  histSeries=flowChart.addHistogramSeries({priceFormat:{type:'volume'},priceScaleId:''});
-  document.querySelectorAll('.tf').forEach(b=>b.onclick=()=>{document.querySelectorAll('.tf').forEach(x=>x.classList.remove('active'));b.classList.add('active');tf=b.dataset.tf;render()});
-  window.addEventListener('resize',resize); priceChart.timeScale().subscribeVisibleTimeRangeChange(draw); render(); resize();
-}
-function resize(){const p=document.getElementById('priceChart').getBoundingClientRect();priceChart.applyOptions({width:p.width,height:p.height});const f=document.getElementById('flowChart').getBoundingClientRect();flowChart.applyOptions({width:f.width,height:f.height});const c=document.getElementById('gaiaCanvas');c.width=p.width*devicePixelRatio;c.height=p.height*devicePixelRatio;c.style.width=p.width+'px';c.style.height=p.height+'px';draw()}
-function buildHiro(lineData){
-  // HIRO = Hedging Impact on Real-time Options
-  // For each strike: net_gex × (1 / distance_to_spot) × sign
-  // Sum = net dealer hedging pressure mapped to price axis
-  const strikes = (raw.strikes||[]);
-  const spot = raw.spot_spx || 7500;
-  if(!strikes.length || !lineData.length) return [];
-
-  // Calculate HIRO value = weighted GEX pressure
-  let hiro = 0;
-  strikes.forEach(s => {
-    const dist = Math.abs(s.strike - spot) + 1; // avoid div by zero
-    const weight = 1 / (dist * dist); // inverse square — closer strikes matter more
-    hiro += (s.net_gex || 0) * weight;
-  });
-
-  // Normalize HIRO to price axis
-  // Scale so HIRO oscillates meaningfully around spot
-  const maxHiro = strikes.reduce((a,s) => {
-    const dist = Math.abs(s.strike - spot) + 1;
-    return a + Math.abs(s.net_gex||0) / (dist*dist);
-  }, 0) || 1;
-
-  const normalized = hiro / maxHiro; // -1 to +1
-  const priceOffset = normalized * 40; // ±40 pts around spot
-  const hiroPrice = spot + priceOffset;
-
-  // Return as flat line at hiroPrice — updates every 5s with real data
-  return lineData.map(pt => ({
-    time: pt.time,
-    value: +hiroPrice.toFixed(2)
-  }));
+/* ── DEX TOTAL ── */
+function totalDex(){
+  return (raw.strikes||[]).reduce((a,s)=>a+((s.call_delta_oi||0)-(s.put_delta_oi||0)),0);
 }
 
-
-
-const layers={calls:true,puts:true,net:true,zones:true};
-function toggleLayer(l,btn){
-  layers[l]=!layers[l];
-  btn.classList.toggle('active',layers[l]);
-  updateGfsData();
-}
-
+/* ── GFS DATA (GAIA Flow Signal — accumulated call/put/net DHP by strike) ── */
 function buildGfsData(lineData){
-  // hiro_call/put/total from JSON are small decimals (e.g. 0.04, -0.06)
-  // Scale them up using sum of call_dhp/put_dhp across all strikes for proper display
   const strikes = raw.strikes||[];
-  const sumCallDhp = strikes.reduce((a,s)=>a+(s.call_dhp||0),0);
-  const sumPutDhp  = strikes.reduce((a,s)=>a+(s.put_dhp||0),0);
-  // Use scaled sums — fallback to hiro_* if strikes empty
-  const hCall = Math.abs(sumCallDhp) > 0.1 ? sumCallDhp : (raw.hiro_call||0);
-  const hPut  = Math.abs(sumPutDhp)  > 0.1 ? sumPutDhp  : (raw.hiro_put ||0);
+  // Sum call_dhp and put_dhp across all strikes for scaled signal
+  const sumCall = strikes.reduce((a,s)=>a+(s.call_dhp||0), 0);
+  const sumPut  = strikes.reduce((a,s)=>a+(s.put_dhp||0),  0);
+  const hCall = Math.abs(sumCall)>0.5 ? sumCall : (raw.hiro_call||0);
+  const hPut  = Math.abs(sumPut) >0.5 ? sumPut  : (raw.hiro_put ||0);
   const n = lineData.length;
-  if(!n) return{callData:[],putData:[],netData:[]};
+  if(!n) return {callData:[], putData:[], netData:[]};
   const callData=[], putData=[], netData=[];
-  let cAcc=0, pAcc=0;
   for(let i=0;i<n;i++){
-    const t = lineData[i].time;
+    const t    = lineData[i].time;
     const prog = (i+1)/n;
-    const noise = (Math.random()-0.5)*Math.abs(hCall)*0.05;
-    cAcc = hCall * prog + noise;
-    pAcc = hPut  * prog - noise*0.3;
-    callData.push({time:t, value:+cAcc.toFixed(2)});
-    putData .push({time:t, value:+pAcc.toFixed(2)});
+    const jitter = (Math.random()-0.5)*Math.abs(hCall)*0.04;
+    const cAcc = +(hCall * prog + jitter).toFixed(2);
+    const pAcc = +(hPut  * prog - jitter*0.3).toFixed(2);
+    callData.push({time:t, value:cAcc});
+    putData .push({time:t, value:pAcc});
     netData .push({time:t, value:+(cAcc+pAcc).toFixed(2)});
   }
-  return{callData,putData,netData};
-}
-function updateGfsData(){
-  if(!gfsCallSeries||!lastCandles||!lastCandles.length) return;
-  const {callData,putData,netData}=buildGfsData(lastCandles);
-  gfsCallSeries.setData(layers.calls?callData:[]);
-  gfsPutSeries .setData(layers.puts ?putData :[]);
-  gfsNetSeries .setData(layers.net  ?netData :[]);
+  return {callData, putData, netData};
 }
 
+function updateGfsData(){
+  if(!gfsCallSeries || !lastLineData.length) return;
+  const {callData,putData,netData} = buildGfsData(lastLineData);
+  try{
+    gfsCallSeries.setData(layers.calls ? callData : []);
+    gfsPutSeries .setData(layers.puts  ? putData  : []);
+    gfsNetSeries .setData(layers.net   ? netData  : []);
+  }catch(e){}
+}
+
+/* ── TOGGLE ── */
+function toggleLayer(l, btn){
+  layers[l] = !layers[l];
+  btn.classList.toggle('on', layers[l]);
+  if(l==='zones') draw();
+  else updateGfsData();
+}
+
+/* ── STATE ENGINE — uses real JSON fields ── */
+function computeState(){
+  const strikes = raw.strikes||[];
+  const dex     = totalDex();
+  // Use net_dhp per strike (real JSON field)
+  const totalNetDhp = strikes.reduce((a,s)=>a+(s.net_dhp||0), 0);
+  const avgNetDhp   = totalNetDhp / Math.max(1, strikes.length);
+  const dhpPressure = Math.min(60, Math.abs(avgNetDhp)*4);
+  const vts = Math.round(32 + dhpPressure + (raw.dhp_momentum<0?18:0) + (Math.abs(dex)>2500?8:0));
+  const dsi = Math.max(0, Math.min(100, 76 - vts/3));
+  const mcs = Math.max(0, Math.min(100, 55 + Math.sign(dex)*8));
+  const regime     = vts>65?'FRAGILE':dsi>72?'STABLE':'BALANCED';
+  const permission = regime==='FRAGILE'?'DEFENSIVE':mcs>70?'FAVORABLE':'WATCH';
+  const dexBias    = dex>1500?'BUY HEDGE':dex<-1500?'SELL HEDGE':'MIXED';
+  // GFS derived from sum call/put dhp
+  const gfsCalls = strikes.reduce((a,s)=>a+(s.call_dhp||0), 0);
+  const gfsPuts  = strikes.reduce((a,s)=>a+(s.put_dhp||0),  0);
+  const gfsTotal = gfsCalls + gfsPuts;
+  return {dsi:Math.round(dsi), vts, mcs:Math.round(mcs), regime, permission, dexBias, dex, gfsCalls, gfsPuts, gfsTotal};
+}
+
+/* ── RENDER ── */
 function render(){
-  const spot=raw.spot_spx||7500;
-  const ET4=4*3600, nowT=Math.floor(Date.now()/1000)-ET4;
-  if(spot>0&&spxHistory.length===0||spxHistory[spxHistory.length-1]?.value!==spot){
-    spxHistory.push({time:nowT, value:+spot.toFixed(2)});
+  const spot   = raw.spot_spx || 7500;
+  const nowET  = Math.floor(Date.now()/1000) - 4*3600; // approx ET offset
+
+  // Accumulate SPX history (dedup by value and time)
+  const last = spxHistory[spxHistory.length-1];
+  if(spot>0 && (!last || last.value!==spot)){
+    spxHistory.push({time:nowET, value:+spot.toFixed(2)});
   }
   if(spxHistory.length>400) spxHistory.shift();
-  let lineData=spxHistory.length>1?spxHistory:(()=>{
-    let p=spot-20;
-    return Array.from({length:50},(_,i)=>({time:nowT-(50-i)*5,value:+(p+=(Math.random()-.48)).toFixed(2)}));
-  })();
-  const el=document.getElementById('tfmode');
-  if(el) el.textContent=spxHistory.length>1?'SPX LIVE':'SPX DEMO';
-  lastCandles = lineData;  // FIX: assign before updateGfsData() is called
-  priceSeries.setData(lineData);
+
+  // Line data: real history or brief demo seed
+  let lineData;
+  if(spxHistory.length>2){
+    lineData = spxHistory;
+    const el=document.getElementById('tfmode'); if(el) el.textContent='SPX LIVE';
+  } else {
+    let p=spot-15;
+    lineData = Array.from({length:60},(_,i)=>({time:nowET-(60-i)*5, value:+(p+=(Math.random()-.47)).toFixed(2)}));
+    lineData[lineData.length-1].value = spot;
+    const el=document.getElementById('tfmode'); if(el) el.textContent='SPX DEMO';
+  }
+  lastLineData = lineData;
+
+  try{ priceSeries.setData(lineData); }catch(e){}
   updateGfsData();
-  if(dhpOverlaySeries){ try{ dhpOverlaySeries.setData(buildHiro(lineData)); }catch(e){} } const dhpVal=raw.total_dhp||0;
-  const dexVal=(raw.strikes||[]).reduce((a,s)=>a+Math.abs((s.call_delta_oi||0)-(s.put_delta_oi||0)),0);
-  const nowF=Math.floor(Date.now()/1000)-4*3600;
-  const dhpLine=Array.from({length:200},(_,i)=>({time:nowF-(200-i)*60,value:+(dhpVal*(0.3+(i/200)*0.7)).toFixed(2)}));
-  dhpLine[199].value=dhpVal;
-  const dexLine=Array.from({length:200},(_,i)=>({time:nowF-(200-i)*60,value:+(dexVal*(0.3+(i/200)*0.7)/1000).toFixed(2)}));
-  dexLine[199].value=+(dexVal/1000).toFixed(2);
-  dhpSeries.setData(dhpLine);
-  dexSeries.setData(dexLine);
-  histSeries.setData(dexLine.map(x=>({time:x.time,value:Math.abs(x.value),color:'rgba(251,191,36,.3)'})));
-  priceChart.timeScale().fitContent(); flowChart.timeScale().fitContent(); renderProfile(); renderState(); draw();
+
+  // DHP subchart — histogram of net_dhp per strike + cumulative line
+  const strikes = raw.strikes||[];
+  const nowF = Math.floor(Date.now()/1000) - 4*3600;
+  const dhpVal = raw.total_dhp||0;
+
+  // Histogram: net_dhp per strike mapped to time axis using lineData times
+  // For demo: use time spread of lineData
+  const n = lineData.length;
+  const histData = strikes.slice().sort((a,b)=>a.strike-b.strike).map((s,i)=>{
+    const t = lineData[Math.min(i, n-1)].time;
+    const v = s.net_dhp||0;
+    return {time:t, value:v, color: v>=0 ? 'rgba(245,158,11,.55)' : 'rgba(59,130,246,.55)'};
+  });
+  // Deduplicate timestamps for LightweightCharts
+  const seen=new Set(), dedupHist=[];
+  for(const pt of histData){
+    if(!seen.has(pt.time)){seen.add(pt.time);dedupHist.push(pt);}
+  }
+  if(dedupHist.length>1){
+    try{ dhpHistSeries.setData(dedupHist); }catch(e){}
+  }
+
+  // DHP cumulative line
+  const dhpLine = lineData.map((pt,i)=>({time:pt.time, value:+(dhpVal*(0.2+(i/n)*0.8)).toFixed(2)}));
+  dhpLine[dhpLine.length-1].value = dhpVal;
+  try{ dhpLineSeries.setData(dhpLine); }catch(e){}
+
+  // Sync timescales
+  try{ priceChart.timeScale().fitContent(); }catch(e){}
+  try{ flowChart.timeScale().fitContent(); }catch(e){}
+
+  renderProfile();
+  renderState();
+  draw();
 }
+
+/* ── PROFILE PANEL ── */
 function renderProfile(){
-  const h=document.getElementById('gexProfile');
-  const arr=[...(raw.strikes||[])].sort((a,b)=>b.strike-a.strike);
-  // net_dex computed from fields that actually exist in gaia_live.json
-  arr.forEach(s=>{ s._net_dex = (s.call_delta_oi||0) - (s.put_delta_oi||0); });
-  const maxG=Math.max(...arr.map(s=>Math.abs(s.net_gex||0)),1);
-  const maxD=Math.max(...arr.map(s=>Math.abs(s._net_dex||0)),1);
-  h.innerHTML=arr.map(s=>{
-    const gp=Math.max(2,Math.abs(s.net_gex)/maxG*50);
-    const dp=Math.max(2,Math.abs(s._net_dex||0)/maxD*24);
-    const pos=s.net_gex>=0, buy=(s._net_dex||0)>=0;
-    return`<div class="gexRow"><div class="strike">${s.strike}</div><div class="barTrack"><div class="bar ${pos?'pos':'neg'}" style="width:${gp}%"></div><div class="dexMini ${buy?'pos':'neg'}" style="width:${dp}%;${buy?'left:50%':'right:50%'};background:${buy?'#34d399':'#ef4444'};box-shadow:0 0 10px ${buy?'#34d399':'#ef4444'}"></div></div><div class="meta">${fmt(s.net_gex)}</div></div>`;
+  const el = document.getElementById('gexProfile');
+  if(!el) return;
+  const spot = raw.spot_spx||0;
+  const arr  = [...(raw.strikes||[])].sort((a,b)=>b.strike-a.strike);
+  // Compute _net_dex = call_delta_oi - put_delta_oi (net_dex doesn't exist in JSON)
+  arr.forEach(s=>{ s._nd = (s.call_delta_oi||0)-(s.put_delta_oi||0); });
+  const maxG = Math.max(...arr.map(s=>Math.abs(s.net_gex||0)), 1);
+  const maxD = Math.max(...arr.map(s=>Math.abs(s._nd||0)), 1);
+  el.innerHTML = arr.map(s=>{
+    const gp  = Math.max(2, Math.abs(s.net_gex||0)/maxG*48);
+    const dp  = Math.max(2, Math.abs(s._nd||0)/maxD*22);
+    const pos = (s.net_gex||0)>=0;
+    const buy = (s._nd||0)>=0;
+    const atm = Math.abs(s.strike-spot)<8?'atm':'';
+    return `<div class="gexRow ${atm}">
+      <div class="strike">${s.strike}</div>
+      <div class="barTrack">
+        <div class="bar ${pos?'pos':'neg'}" style="width:${gp}%"></div>
+        <div class="dexMini" style="width:${dp}%;${buy?'left:50%':'right:50%'};background:${buy?'#34d399':'#ef4444'};box-shadow:0 0 8px ${buy?'#34d399':'#ef4444'}"></div>
+      </div>
+      <div class="meta">${fK(s.net_gex)}</div>
+    </div>`;
   }).join('');
 }
-function renderState(){const s=state();document.getElementById('spx').textContent=f2(raw.spot_spx);document.getElementById('es').textContent=f2(raw.spot_es);document.getElementById('regime').textContent=s.regime;document.getElementById('permission').textContent=s.permission;document.getElementById('dexHeader').textContent=s.dexBias+' '+fmt(s.dex);document.getElementById('dsi').textContent=s.dsi+'%';document.getElementById('vts').textContent=s.vts;document.getElementById('mcs').textContent=s.mcs+'%';document.getElementById('cvx').textContent=s.avgCvx>60?'AMPLIFIED':s.avgCvx>38?'ELEVATED':'DAMPENED';document.getElementById('dexBias').textContent=s.dexBias+' '+fmt(s.dex);document.getElementById('permFill').style.width=(s.permission==='FAVORABLE'?82:s.permission==='WATCH'?58:34)+'%';document.getElementById('zoneRows').innerHTML=getZones().map(z=>`<div class="row"><span style="color:${z.color};font-weight:800">${z.label}</span><b style="color:${z.color}">${Math.round(z.price)}</b></div>`).join('');const structEl=document.getElementById('structure');
-  structEl.textContent=s.regime+' / '+s.permission;
-  structEl.style.color=s.regime==='FRAGILE'?'#fb7185':s.regime==='STABLE'?'#34d399':'#60a5fa';
-  const dexActEl=document.getElementById('dexActivity');
-  dexActEl.textContent=s.dexBias+' · '+fmt(s.dex);
-  dexActEl.style.color=s.dexBias==='BUY HEDGE'?'#34d399':s.dexBias==='SELL HEDGE'?'#fb923c':'#94a3b8';
-  const alertEl=document.getElementById('alert');
-  const alertTxt=s.regime==='FRAGILE'?'Dealer structure deteriorating':s.permission==='DEFENSIVE'?'Reduce size · Wait clarity':s.permission==='WATCH'?'Monitor — structure shifting':'Structure intact · Absorption dominates';
-  alertEl.textContent=alertTxt;
-  alertEl.style.color=s.regime==='FRAGILE'?'#fb7185':s.permission==='DEFENSIVE'?'#fb923c':s.permission==='WATCH'?'#fbbf24':'#60a5fa';document.getElementById('readout').innerHTML='GEX = structural map.<br>DEX = active hedge direction.<br>DHP = flow acceleration.<br><br>Zones are now rendered explicitly from <b>levels_es</b>.'}
+
+/* ── STATE + ZONES PANEL ── */
+function renderState(){
+  const s   = computeState();
+  const sum = s.gfsCalls+s.gfsPuts;
+
+  // Header
+  const regColor  = s.regime==='FRAGILE'?'#fb7185':s.regime==='STABLE'?'#34d399':'#60a5fa';
+  const permColor = s.permission==='FAVORABLE'?'#34d399':s.permission==='DEFENSIVE'?'#fb7185':'#fbbf24';
+  const dexColor  = s.dexBias==='BUY HEDGE'?'#34d399':s.dexBias==='SELL HEDGE'?'#fb7185':'#94a3b8';
+
+  set('hd-spx',   f2(raw.spot_spx));
+  set('hd-es',    f2(raw.spot_es));
+  set('hd-regime', s.regime,     regColor);
+  set('hd-perm',   s.permission, permColor);
+  set('hd-gfs',    fK(sum),      sum>=0?'#a3e635':'#fb7185');
+
+  // Timestamp
+  const now = new Date();
+  const etStr = now.toLocaleTimeString('en-US',{timeZone:'America/New_York',hour:'2-digit',minute:'2-digit',second:'2-digit'});
+  set('timestamp', `${now.toLocaleDateString('en-US',{timeZone:'America/New_York',month:'short',day:'2-digit',year:'numeric'})} ${etStr} ET`);
+
+  // State engine
+  set('s-dsi',       s.dsi+'%',             s.dsi>70?'#34d399':s.dsi>50?'#fbbf24':'#fb7185');
+  set('s-vts',       s.vts,                 s.vts>65?'#fb7185':s.vts>45?'#fbbf24':'#34d399');
+  set('s-mcs',       s.mcs+'%',             '#94a3b8');
+  set('s-dhp',       fM(raw.total_dhp),     (raw.total_dhp||0)>=0?'#34d399':'#fb7185');
+  set('s-gfs-total', fM(sum),               sum>=0?'#a3e635':'#fb7185');
+  set('s-gfs-calls', fM(s.gfsCalls),        '#f59e0b');
+  set('s-gfs-puts',  fM(s.gfsPuts),         '#3b82f6');
+  set('s-dex',       s.dexBias+' '+fK(s.dex), dexColor);
+  document.getElementById('permFill').style.width = (s.permission==='FAVORABLE'?82:s.permission==='WATCH'?55:30)+'%';
+
+  // Zones table — dual column SPX | ES
+  const zones = getZones();
+  const spot  = raw.spot_spx||0;
+  document.getElementById('zoneRows').innerHTML = zones.map(z=>{
+    const atm = Math.abs(z.spx-spot)<15 ? 'atm-row' : '';
+    return `<tr class="${atm}">
+      <td style="color:${z.color}">${z.label}</td>
+      <td style="color:${z.color}">${z.spx.toLocaleString()}</td>
+      <td style="color:${z.color};opacity:.8">${z.es.toLocaleString()}</td>
+    </tr>`;
+  }).join('');
+
+  // DHP subchart bar
+  set('dhp-mom',      fM(raw.dhp_momentum),   (raw.dhp_momentum||0)>=0?'#67e8f9':'#fb7185');
+  set('gfs-net-val',  fM(sum),                sum>=0?'#a3e635':'#fb7185');
+  set('gfs-calls-val',fM(s.gfsCalls),         '#f59e0b');
+  set('gfs-puts-val', fM(s.gfsPuts),          '#3b82f6');
+  set('dhp-dir', raw.dhp_direction||'NEUTRAL', dirColor(raw.dhp_direction));
+
+  // Readout
+  const callsDom = s.gfsCalls > Math.abs(s.gfsPuts);
+  const rText = `GEX = structural map.<br>GFS = GAIA Flow Signal · intraday.<br>DEX = hedge direction bias.<br><br>`
+    + `GFS Calls <b style="color:#f59e0b">${fM(s.gfsCalls)}</b> ${callsDom?'dominating':'receding'}.<br>`
+    + `GFS Puts <b style="color:#3b82f6">${fM(s.gfsPuts)}</b> ${!callsDom?'dominant':'bearish pressure'}.<br>`
+    + `Net <b style="color:#a3e635">${fM(sum)}</b> → ${sum>=0?'Calls lead — dealer buy hedge':'Puts lead — dealer sell hedge'}.`;
+  document.getElementById('readout').innerHTML = rText;
+
+  // Footer
+  set('ft-structure', s.regime+' / '+s.permission, regColor);
+  set('ft-gfs',       'GFS NET '+fM(sum)+' · '+(callsDom?'CALLS DOM':'PUTS DOM'), callsDom?'#a3e635':'#3b82f6');
+  set('ft-dex',       s.dexBias+' · '+fK(s.dex), dexColor);
+  const alertTxt = s.regime==='FRAGILE'?'Dealer structure deteriorating'
+    :s.permission==='DEFENSIVE'?'Reduce size · Wait clarity'
+    :s.permission==='WATCH'?'Monitor — structure shifting'
+    :'Structure intact · Absorption dominates';
+  const alertColor = s.regime==='FRAGILE'?'#fb7185':s.permission==='DEFENSIVE'?'#fb923c':s.permission==='WATCH'?'#fbbf24':'#60a5fa';
+  set('ft-alert', alertTxt, alertColor);
+}
+
+function dirColor(d){
+  if(!d) return '#94a3b8';
+  d=d.toUpperCase();
+  if(d.includes('BULL')) return '#34d399';
+  if(d.includes('BEAR')) return '#fb7185';
+  return '#fbbf24';
+}
+function set(id, val, color){
+  const el=document.getElementById(id); if(!el) return;
+  el.textContent=val;
+  if(color) el.style.color=color;
+}
+
+/* ── CANVAS DRAW — GEX heatmap + zone lines ── */
 function draw(){
   const canvas=document.getElementById('gaiaCanvas');
-  if(!canvas||!priceSeries)return;
-  const ctx=canvas.getContext('2d'),dpr=devicePixelRatio,r=canvas.getBoundingClientRect();
+  if(!canvas||!priceSeries) return;
+  const ctx=canvas.getContext('2d'), dpr=devicePixelRatio, r=canvas.getBoundingClientRect();
   ctx.setTransform(dpr,0,0,dpr,0,0);
   ctx.clearRect(0,0,r.width,r.height);
+
   const strikes=raw.strikes||[];
-  // Compute _net_dex if not already done (draw may run before renderProfile)
-  strikes.forEach(s=>{ if(s._net_dex===undefined) s._net_dex=(s.call_delta_oi||0)-(s.put_delta_oi||0); });
+  strikes.forEach(s=>{ if(s._nd===undefined) s._nd=(s.call_delta_oi||0)-(s.put_delta_oi||0); });
   const maxG=Math.max(...strikes.map(s=>Math.abs(s.net_gex||0)),1);
-  const maxD=Math.max(...strikes.map(s=>Math.abs(s._net_dex||0)),1);
+  const maxD=Math.max(...strikes.map(s=>Math.abs(s._nd||0)),1);
+
+  // GEX heatmap bars (left side, from SPX price using basis offset)
   strikes.forEach(s=>{
     const y=priceSeries.priceToCoordinate(s.strike+(raw.basis||9.5));
-    if(y==null)return;
-    const gs=Math.abs(s.net_gex||0)/maxG, ds=Math.abs(s._net_dex||0)/maxD;
-    const frag=s.net_gex<0||raw.dhp_momentum<-35;
-    const base=frag?'239,68,68':'103,232,249';
-    const dex=(s._net_dex||0)>=0?'52,211,153':'239,68,68';
-    const len=170+gs*480, thick=8+gs*24;
+    if(y==null||y<0||y>r.height) return;
+    const gs  = Math.abs(s.net_gex||0)/maxG;
+    const ds  = Math.abs(s._nd||0)/maxD;
+    const frag= (s.net_gex||0)<0 || (raw.dhp_momentum||0)<-35;
+    const base= frag?'239,68,68':'103,232,249';
+    const dCol= (s._nd||0)>=0?'52,211,153':'239,68,68';
+    const len = 140+gs*460, thick=6+gs*20;
+    // Call/put GEX bar
     const g=ctx.createLinearGradient(20,y,20+len,y);
-    g.addColorStop(0,`rgba(${base},${.22+gs*.2})`);
-    g.addColorStop(.6,`rgba(${base},${.08+gs*.13})`);
+    g.addColorStop(0,`rgba(${base},${.18+gs*.22})`);
+    g.addColorStop(.65,`rgba(${base},${.06+gs*.1})`);
     g.addColorStop(1,'rgba(0,0,0,0)');
-    ctx.fillStyle=g; ctx.shadowColor=`rgba(${base},.45)`; ctx.shadowBlur=16;
-    roundRect(ctx,30,y-thick/2,len,thick,thick/2); ctx.fill();
-    const dl=100+ds*420;
-    const dg=ctx.createLinearGradient(r.width-dl-30,y,r.width-30,y);
+    ctx.fillStyle=g; ctx.shadowColor=`rgba(${base},.4)`; ctx.shadowBlur=14;
+    rrect(ctx,28,y-thick/2,len,thick,thick/2); ctx.fill();
+    // DEX mini bar (right side)
+    const dl=80+ds*380;
+    const dg=ctx.createLinearGradient(r.width-dl-28,y,r.width-28,y);
     dg.addColorStop(0,'rgba(0,0,0,0)');
-    dg.addColorStop(1,`rgba(${dex},${.25+ds*.35})`);
-    ctx.fillStyle=dg; ctx.shadowColor=`rgba(${dex},.7)`; ctx.shadowBlur=18;
-    roundRect(ctx,r.width-dl-30,y-4,dl,8,4); ctx.fill();
+    dg.addColorStop(1,`rgba(${dCol},${.22+ds*.32})`);
+    ctx.fillStyle=dg; ctx.shadowColor=`rgba(${dCol},.6)`; ctx.shadowBlur=16;
+    rrect(ctx,r.width-dl-28,y-3,dl,6,3); ctx.fill();
     ctx.shadowBlur=0;
   });
+
+  // Zone lines
+  if(!layers.zones) return;
   getZones().forEach(z=>{
-    const y=priceSeries.priceToCoordinate(z.price);
-    if(y==null)return;
-    ctx.strokeStyle=z.color; ctx.lineWidth=1.3;
-    ctx.setLineDash(z.label.includes('NODE')||z.label.includes('PIN')||z.label.includes('FLIP')?[6,4]:[]);
+    const y=priceSeries.priceToCoordinate(z.es);
+    if(y==null||y<0||y>r.height) return;
+    ctx.strokeStyle=z.color; ctx.lineWidth=1.2;
+    const dashed = z.label.includes('Node')||z.label.includes('Pin')||z.label.includes('Flip')||z.label.includes('Anchor');
+    ctx.setLineDash(dashed?[6,4]:[]);
     ctx.beginPath(); ctx.moveTo(0,y); ctx.lineTo(r.width,y); ctx.stroke();
     ctx.setLineDash([]);
-    const txt=`${z.label} ${Math.round(z.price)}`;
-    ctx.font='10px ui-monospace,monospace';
-    const tw=ctx.measureText(txt).width+14, x=Math.max(8,r.width-tw-10);
-    ctx.fillStyle=z.color; roundRect(ctx,x,y-9,tw,18,4); ctx.fill();
-    ctx.fillStyle='#020611'; ctx.fillText(txt,x+7,y+4);
+    const txt=`${z.label.replace(/[▲▼◆⬡]/,'').trim()} ${z.es}`;
+    ctx.font='9px ui-monospace,monospace';
+    const tw=ctx.measureText(txt).width+12, x=Math.max(6,r.width-tw-8);
+    ctx.fillStyle=z.color; rrect(ctx,x,y-8,tw,16,3); ctx.fill();
+    ctx.fillStyle='#020611'; ctx.fillText(txt,x+6,y+3.5);
   });
-}function roundRect(ctx,x,y,w,h,rad){ctx.beginPath();ctx.moveTo(x+rad,y);ctx.arcTo(x+w,y,x+w,y+h,rad);ctx.arcTo(x+w,y+h,x,y+h,rad);ctx.arcTo(x,y+h,x,y,rad);ctx.arcTo(x,y,x+w,y,rad);ctx.closePath()}
-async function loadJson(){try{const r=await fetch('/gaia_live.json?t='+Date.now());if(r.ok){raw=await r.json();render()}}catch(e){}}
-build();loadJson();setInterval(loadJson,5000);
+}
+function rrect(ctx,x,y,w,h,r){
+  ctx.beginPath();ctx.moveTo(x+r,y);ctx.arcTo(x+w,y,x+w,y+h,r);
+  ctx.arcTo(x+w,y+h,x,y+h,r);ctx.arcTo(x,y+h,x,y,r);ctx.arcTo(x,y,x+w,y,r);ctx.closePath();
+}
+
+/* ── RESIZE ── */
+function resize(){
+  try{
+    const p=document.getElementById('priceChart').getBoundingClientRect();
+    priceChart.applyOptions({width:p.width,height:p.height});
+    const f=document.getElementById('flowChart').getBoundingClientRect();
+    flowChart.applyOptions({width:f.width,height:f.height});
+    const c=document.getElementById('gaiaCanvas');
+    c.width=p.width*devicePixelRatio; c.height=p.height*devicePixelRatio;
+    c.style.width=p.width+'px'; c.style.height=p.height+'px';
+    draw();
+  }catch(e){}
+}
+
+/* ── BUILD CHARTS ── */
+function build(){
+  const chartOpts={
+    layout:{background:{color:'#020611'},textColor:'#cbd5e1'},
+    grid:{vertLines:{color:'#0d1929'},horzLines:{color:'#0d1929'}},
+    rightPriceScale:{borderColor:'#1e293b'},
+    timeScale:{timeVisible:true,secondsVisible:false,borderColor:'#1e293b'}
+  };
+
+  // Main price chart
+  priceChart = LightweightCharts.createChart(document.getElementById('priceChart'), chartOpts);
+  priceChart.applyOptions({leftPriceScale:{visible:true,borderColor:'#1e293b'}});
+
+  // SPX price line — right axis
+  priceSeries = priceChart.addLineSeries({
+    color:'#f8fafc', lineWidth:2,
+    lastValueVisible:true, priceLineVisible:true, priceScaleId:'right'
+  });
+
+  // GFS lines — left axis with K/M formatter
+  const gfsFmt = {type:'custom', formatter:v=>
+    Math.abs(v)>=1e9?(v/1e9).toFixed(1)+'B':Math.abs(v)>=1e6?(v/1e6).toFixed(1)+'M':
+    Math.abs(v)>=1e3?(v/1e3).toFixed(0)+'K':v.toFixed(0)};
+
+  gfsCallSeries = priceChart.addLineSeries({
+    color:'#f59e0b', lineWidth:1.5,
+    lastValueVisible:true, priceLineVisible:false,
+    priceScaleId:'left', title:'CALLS', priceFormat:gfsFmt
+  });
+  gfsPutSeries = priceChart.addLineSeries({
+    color:'#3b82f6', lineWidth:1.5,
+    lastValueVisible:true, priceLineVisible:false,
+    priceScaleId:'left', title:'PUTS', priceFormat:gfsFmt
+  });
+  gfsNetSeries = priceChart.addLineSeries({
+    color:'#a3e635', lineWidth:2, lineStyle:2,
+    lastValueVisible:true, priceLineVisible:false,
+    priceScaleId:'left', title:'NET', priceFormat:gfsFmt
+  });
+
+  // DHP subchart
+  const flowOpts = {...chartOpts,
+    layout:{...chartOpts.layout, textColor:'#94a3b8'},
+    rightPriceScale:{...chartOpts.rightPriceScale, scaleMargins:{top:.1,bottom:.1}}
+  };
+  flowChart = LightweightCharts.createChart(document.getElementById('flowChart'), flowOpts);
+
+  dhpHistSeries = flowChart.addHistogramSeries({
+    color:'rgba(245,158,11,.5)',
+    priceFormat:{type:'custom',formatter:v=>Math.abs(v)>=1e3?(v/1e3).toFixed(1)+'K':v.toFixed(1)},
+    priceScaleId:'right'
+  });
+  dhpLineSeries = flowChart.addLineSeries({
+    color:'#67e8f9', lineWidth:1.5,
+    lastValueVisible:true, priceLineVisible:false,
+    priceFormat:{type:'custom',formatter:v=>Math.abs(v)>=1e6?(v/1e6).toFixed(1)+'M':Math.abs(v)>=1e3?(v/1e3).toFixed(1)+'K':v.toFixed(0)}
+  });
+
+  // Sync zoom/scroll
+  priceChart.timeScale().subscribeVisibleTimeRangeChange(()=>draw());
+  window.addEventListener('resize', resize);
+  resize();
+  render();
+}
+
+/* ── DATA FETCH ── */
+async function loadJson(){
+  try{
+    const res = await fetch('/gaia_live.json?t='+Date.now());
+    if(res.ok){ raw = await res.json(); render(); }
+  }catch(e){ /* use fallback */ }
+}
+
+/* ── BOOT ── */
+build();
+loadJson();
+setInterval(loadJson, 5000);
 </script>
 </body>
 </html>
