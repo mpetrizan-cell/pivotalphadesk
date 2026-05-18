@@ -32,6 +32,7 @@ TOKEN_FILE       = "ts_tokens.json"
 TOKEN_URL        = "https://signin.tradestation.com/oauth/token"
 API_BASE         = "https://api.tradestation.com/v3"
 OUTPUT_FILE      = "gaia_live.json"
+HISTORY_FILE     = "gaia_history_intraday.json"
 LOG_FILE         = "gaia_live.log"
 
 SPX_SYMBOL       = "$SPXW.X"
@@ -700,6 +701,20 @@ def main():
     hiro_put_accum  = 0.0
     hiro_reset_date = None  # tracks which trading day we're on
 
+    # ── Intraday history — persists across backend restarts via local file
+    intraday_history = []
+    _today_str = _dt.datetime.now(_dt.timezone.utc).strftime('%Y-%m-%d')
+    try:
+        with open(HISTORY_FILE, 'r') as _f:
+            _saved = json.load(_f)
+            if _saved.get("date") == _today_str:
+                intraday_history = _saved.get("history", [])
+                log.info(f"Historia intraday recuperada: {len(intraday_history)} puntos")
+            else:
+                log.info("Historia intraday: día nuevo, arrancando limpio")
+    except Exception:
+        log.info("Historia intraday: archivo no encontrado, arrancando limpio")
+
     cycle = 0
     consecutive_errors = 0
 
@@ -715,7 +730,8 @@ def main():
                 hiro_call_accum = 0.0
                 hiro_put_accum  = 0.0
                 hiro_reset_date = today
-                log.info(f"HIRO reset for {today}")
+                intraday_history = []
+                log.info(f"HIRO + historia reset for {today}")
         except Exception:
             pass
 
@@ -828,6 +844,25 @@ def main():
                     basis     = round(spot_es - spot, 2) if spot_es > 0 else 0.0
                     levels_es = {k: round(v + basis, 2) for k, v in cache["0dte"]["levels"].items()} if basis else cache["0dte"]["levels"].copy()
 
+                    # ── Append intraday snapshot
+                    _snap = {
+                        "t": int(datetime.utcnow().timestamp()),
+                        "s": round(spot, 2),
+                        "c": round(hiro_call_accum, 2),
+                        "p": round(hiro_put_accum,  2),
+                        "n": round(hiro_call_accum + hiro_put_accum, 2),
+                        "d": round(total_dhp, 2)
+                    }
+                    intraday_history.append(_snap)
+                    if len(intraday_history) > 480:  # max ~40 min at 5s intervals
+                        intraday_history = intraday_history[-480:]
+                    # Save to local file — survives backend restart
+                    try:
+                        with open(HISTORY_FILE, 'w') as _hf:
+                            json.dump({"date": today, "history": intraday_history}, _hf)
+                    except Exception as _he:
+                        log.warning(f"No se pudo guardar historia: {_he}")
+
                     push_to_railway({
                         "timestamp":     datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S"),
                         "expiration":    expirations.get("0dte", ""),
@@ -849,7 +884,8 @@ def main():
                             "weekly":  {"expiration": expirations.get("weekly"),  "levels": cache["weekly"]["levels"]},
                             "monthly": {"expiration": expirations.get("monthly"), "levels": cache["monthly"]["levels"]},
                         },
-                        "status": "live"
+                        "status": "live",
+                        "history": intraday_history[-480:]
                     })
                     consecutive_errors = 0
                 except Exception as e:
