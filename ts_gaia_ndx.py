@@ -252,6 +252,10 @@ def read_stream_ndx(token, expiration, spot):
                 continue
 
             strikes = _parse_option_line(data, strikes)
+            if lines_read == 0:
+                # Log raw fields on first line to diagnose OI field name
+                log.info(f"NDX stream sample fields: {list(data.keys())}")
+                log.info(f"NDX OI fields: DailyOI={data.get('DailyOpenInterest')} OI={data.get('OpenInterest')} TotalVol={data.get('TotalVolume')}")
             lines_read += 1
 
     except Exception as e:
@@ -276,7 +280,13 @@ def read_rest_ndx(token, expiration, spot):
 def _parse_option_line(data, strikes):
     side   = data.get("Side", "")
     volume = int(data.get("Volume", 0) or 0)
-    oi     = int(data.get("DailyOpenInterest", 0) or 0)
+    # DailyOpenInterest can be null/0 for NDXP — fallback to OpenInterest
+    oi = int(data.get("DailyOpenInterest", 0) or 0)
+    if oi == 0:
+        oi = int(data.get("OpenInterest", 0) or 0)
+    if oi == 0:
+        # Last fallback — some TS streams use TotalVolume as OI proxy
+        oi = int(data.get("TotalVolume", 0) or 0)
     gamma  = float(data.get("Gamma", 0) or 0)
     delta  = float(data.get("Delta", 0) or 0)
     iv     = float(data.get("ImpliedVolatility", 0) or 0)
