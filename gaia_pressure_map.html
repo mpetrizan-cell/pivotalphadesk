@@ -40,12 +40,12 @@ body{background:var(--bg);color:var(--txt);font-family:ui-monospace,SFMono-Regul
 .metric{background:var(--panel2);padding:9px 10px;}
 .metric small{display:block;color:var(--muted);font-size:8px;letter-spacing:.14em;margin-bottom:2px;}
 .metric b{font-size:13px;font-weight:900;}
-.main{display:grid;grid-template-columns:1fr 310px;gap:14px;padding:14px;align-items:start;}
+.main{display:grid;grid-template-columns:1fr 310px;gap:14px;padding:14px;align-items:start;min-height:0;}
 .map-card{border:1px solid var(--line);background:var(--panel);border-radius:12px;overflow:hidden;}
 .map-head{display:flex;justify-content:space-between;align-items:center;padding:10px 14px;border-bottom:1px solid var(--line);background:var(--panel2);}
 .map-head b{font-size:10px;letter-spacing:.18em;}
 .map-head span{font-size:8px;color:var(--muted);letter-spacing:.1em;}
-.field{position:relative;height:620px;overflow:hidden;
+.field{position:relative;min-height:620px;height:auto;overflow:visible;
   background:radial-gradient(circle at 50% 45%,rgba(51,65,85,.5),transparent 60%),linear-gradient(#071020,#020510);}
 .field::before{content:"";position:absolute;inset:0;opacity:.16;
   background-image:linear-gradient(rgba(148,163,184,.1) 1px,transparent 1px),linear-gradient(90deg,rgba(148,163,184,.05) 1px,transparent 1px);
@@ -359,20 +359,26 @@ function adaptRaw(raw){
   return{raw,zones,schema,drift};
 }
 
-const PTOP=50,PBOT=470;
+const ROW_HEIGHT = 38; // px per strike row
 function fmt(v){const s=v>=0?'+':'-';const a=Math.abs(v);return s+(a>=1e6?(a/1e6).toFixed(1)+'M':a>=1e3?(a/1e3).toFixed(1)+'K':a.toFixed(0));}
 function f2(v){return Number(v).toLocaleString(undefined,{minimumFractionDigits:2,maximumFractionDigits:2});}
 function cluster(v){return`${Math.floor(v/5)*5}–${Math.ceil(v/5)*5}`;}
 function sColor(v){if(v==='STABLE'||v==='FAVORABLE') return'var(--green)';if(v==='EXPANSIVE'||v==='EXTREME'||v==='ACTIVE') return'var(--violet)';if(v==='FRAGILE'||v==='DEFENSIVE'||v==='ARMING') return'var(--red)';if(v==='WATCH') return'var(--amber)';return'var(--amber)';}
 function pColor(p){if(p==='DEFENSIVE') return'var(--red)';if(p==='FRAGILE') return'var(--rose)';if(p==='FAVORABLE') return'var(--green)';if(p==='EXPANSIVE') return'var(--violet)';return'var(--amber)';}
 function pPct(p){return p==='DEFENSIVE'?8:p==='FRAGILE'?22:p==='BALANCED'?50:p==='FAVORABLE'?78:p==='EXPANSIVE'?92:50;}
-
 function renderField(model){
   const field=document.getElementById('field');
   document.getElementById('no-data').style.display='none';
   field.querySelectorAll('.zone,.flow-p').forEach(e=>e.remove());
   const{raw,zones,schema}=model;
   const spot=raw.spot_spx;
+
+  // Dynamic height based on number of strikes
+  const PTOP=50, PBOT=Math.max(400, zones.length * ROW_HEIGHT);
+  const totalH = PTOP + PBOT + 60;
+  field.style.minHeight = totalH + 'px';
+  field.style.height = 'auto';
+
   const ss=zones.map(z=>z.strike),minS=Math.min(...ss),maxS=Math.max(...ss),range=maxS-minS||1;
   function yp(s){return PTOP+((maxS-s)/range)*PBOT;}
   const sy=yp(spot);
