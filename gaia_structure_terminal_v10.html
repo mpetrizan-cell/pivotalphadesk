@@ -695,38 +695,10 @@ function build(){
 }
 
 /* ── DATA FETCH ── */
-let historySeeded = false;  // only seed once per session
-
 async function loadJson(){
   try{
     const res = await fetch('/gaia_live.json?t='+Date.now());
-    if(res.ok){
-      raw = await res.json();
-
-      // ── Seed history from backend on first load / tab change ──
-      // raw.history = [{t, s, c, p, n, d}] built by ts_gaia_chart.py
-      if(!historySeeded && raw.history?.length > 2){
-        historySeeded = true;
-        // Clear any demo data
-        spxHistory.length  = 0;
-        gfsCallHist.length = 0;
-        gfsPutHist.length  = 0;
-        gfsNetHist.length  = 0;
-        dhpHist.length     = 0;
-        // Load real intraday history
-        raw.history.forEach(h=>{
-          spxHistory .push({time:h.t, value:+h.s});
-          gfsCallHist.push({time:h.t, value:+h.c});
-          gfsPutHist .push({time:h.t, value:+h.p});
-          gfsNetHist .push({time:h.t, value:+h.n});
-          dhpHist    .push({time:h.t, value:+h.d});
-        });
-        const el=document.getElementById('tfmode');
-        if(el) el.textContent='SPX LIVE';
-      }
-
-      render();
-    }
+    if(res.ok){ raw = await res.json(); render(); }
   }catch(e){ /* use fallback */ }
 }
 
