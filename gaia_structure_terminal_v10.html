@@ -645,47 +645,25 @@ function build(){
     lastValueVisible:true, priceLineVisible:true, priceScaleId:'right'
   });
 
-  // GFS lines — left axis with K/M formatter + FIXED SCALE
-  // Fixed scale prevents GFS lines from overlapping price when toggling
+  // GFS lines — left axis with K/M formatter
   const gfsFmt = {type:'custom', formatter:v=>
     Math.abs(v)>=1e9?(v/1e9).toFixed(1)+'B':Math.abs(v)>=1e6?(v/1e6).toFixed(1)+'M':
     Math.abs(v)>=1e3?(v/1e3).toFixed(0)+'K':v.toFixed(0)};
 
-  // Apply fixed scale to left axis — GFS always occupies top/bottom 40% of chart
-  priceChart.applyOptions({
-    leftPriceScale:{
-      visible:true,
-      borderColor:'#1e293b',
-      scaleMargins:{top:0.05, bottom:0.05},
-      autoScale:false,
-      mode: 2  // Logarithmic=false, percentage=false, indexedTo100=false, normal=0, log=1, percentage=2... use 0
-    }
-  });
-  // Override with manual min/max after series added — set via series options
-  const gfsScaleOpts = {
-    autoscaleInfoProvider: () => ({
-      priceRange: { minValue: -5000, maxValue: 5000 },
-      margins: { above: 0.1, below: 0.1 }
-    })
-  };
-
   gfsCallSeries = priceChart.addLineSeries({
     color:'#f59e0b', lineWidth:1.5,
     lastValueVisible:true, priceLineVisible:false,
-    priceScaleId:'left', title:'CALLS', priceFormat:gfsFmt,
-    autoscaleInfoProvider: () => ({priceRange:{minValue:-5000,maxValue:5000},margins:{above:.1,below:.1}})
+    priceScaleId:'left', title:'CALLS', priceFormat:gfsFmt
   });
   gfsPutSeries = priceChart.addLineSeries({
     color:'#3b82f6', lineWidth:1.5,
     lastValueVisible:true, priceLineVisible:false,
-    priceScaleId:'left', title:'PUTS', priceFormat:gfsFmt,
-    autoscaleInfoProvider: () => ({priceRange:{minValue:-5000,maxValue:5000},margins:{above:.1,below:.1}})
+    priceScaleId:'left', title:'PUTS', priceFormat:gfsFmt
   });
   gfsNetSeries = priceChart.addLineSeries({
     color:'#a3e635', lineWidth:2, lineStyle:2,
     lastValueVisible:true, priceLineVisible:false,
-    priceScaleId:'left', title:'NET', priceFormat:gfsFmt,
-    autoscaleInfoProvider: () => ({priceRange:{minValue:-5000,maxValue:5000},margins:{above:.1,below:.1}})
+    priceScaleId:'left', title:'NET', priceFormat:gfsFmt
   });
 
   // DHP subchart — Opción B: single line total_dhp over time
