@@ -13,7 +13,7 @@
   --yellow:#fde68a;--slate:#94a3b8;
 }
 *{box-sizing:border-box;margin:0;padding:0;}
-body{background:var(--bg);color:var(--txt);font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;min-height:100vh;}
+body{background:var(--bg);color:var(--txt);font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;min-height:100vh;overflow:hidden;}
 .header{border-bottom:1px solid var(--line);background:var(--panel);}
 .top{display:flex;gap:16px;align-items:center;justify-content:space-between;padding:12px 18px;border-bottom:1px solid var(--line);}
 .brand{display:flex;gap:12px;align-items:center;}
@@ -40,12 +40,16 @@ body{background:var(--bg);color:var(--txt);font-family:ui-monospace,SFMono-Regul
 .metric{background:var(--panel2);padding:9px 10px;}
 .metric small{display:block;color:var(--muted);font-size:8px;letter-spacing:.14em;margin-bottom:2px;}
 .metric b{font-size:13px;font-weight:900;}
-.main{display:grid;grid-template-columns:1fr 310px;gap:14px;padding:14px;align-items:start;min-height:0;}
-.map-card{border:1px solid var(--line);background:var(--panel);border-radius:12px;overflow:hidden;}
+.main{display:grid;grid-template-columns:1fr 310px;gap:14px;padding:14px;align-items:start;height:calc(100vh - 120px);min-height:0;}
+.map-card{border:1px solid var(--line);background:var(--panel);border-radius:12px;overflow:hidden;height:100%;display:flex;flex-direction:column;}
+.map-card-scroll{flex:1;overflow-y:auto;overflow-x:hidden;}
+.map-card-scroll::-webkit-scrollbar{width:4px;}.map-card-scroll::-webkit-scrollbar-track{background:#0a1628;}.map-card-scroll::-webkit-scrollbar-thumb{background:#1e293b;border-radius:2px;}
+.right-panel-wrap{position:sticky;top:14px;height:calc(100vh - 148px);overflow-y:auto;overflow-x:hidden;display:flex;flex-direction:column;gap:12px;}
+.right-panel-wrap::-webkit-scrollbar{width:3px;}.right-panel-wrap::-webkit-scrollbar-track{background:transparent;}.right-panel-wrap::-webkit-scrollbar-thumb{background:#1e293b;}
 .map-head{display:flex;justify-content:space-between;align-items:center;padding:10px 14px;border-bottom:1px solid var(--line);background:var(--panel2);}
 .map-head b{font-size:10px;letter-spacing:.18em;}
 .map-head span{font-size:8px;color:var(--muted);letter-spacing:.1em;}
-.field{position:relative;min-height:620px;height:auto;overflow:visible;
+.field{position:relative;min-height:400px;height:auto;overflow:visible;
   background:radial-gradient(circle at 50% 45%,rgba(51,65,85,.5),transparent 60%),linear-gradient(#071020,#020510);}
 .field::before{content:"";position:absolute;inset:0;opacity:.16;
   background-image:linear-gradient(rgba(148,163,184,.1) 1px,transparent 1px),linear-gradient(90deg,rgba(148,163,184,.05) 1px,transparent 1px);
@@ -158,6 +162,7 @@ body{background:var(--bg);color:var(--txt);font-family:ui-monospace,SFMono-Regul
       <div><b>DYNAMIC SPATIAL PRESSURE FIELD · SPX → ES · GAIA ENGINE v2</b><br><span>DEX · GEX · Convexity · Confluence · MCS · Phase B+C</span></div>
       <span id="layers-lbl">0DTE / WEEKLY / MONTHLY</span>
     </div>
+    <div class="map-card-scroll">
     <div class="field" id="field">
       <div class="atmo1"></div><div class="atmo2"></div><div class="trigger-halo"></div>
       <div class="spot-line" id="spot-line" style="top:50%"></div>
@@ -172,9 +177,11 @@ body{background:var(--bg);color:var(--txt);font-family:ui-monospace,SFMono-Regul
         <div class="no-data-txt">WAITING FOR DATA<br>RUN ts_gaia_chart.py</div>
       </div>
     </div>
+    </div>
     <div class="ts-footer" id="ts-footer">——</div>
   </div>
-  <div class="side">
+  <div class="right-panel-wrap">
+    <div class="side">
     <div class="side-card">
       <h3>GAIA Engine Output · Schema v1</h3>
       <div class="srow"><span>Market State</span><b id="s-state">—</b></div>
@@ -219,8 +226,8 @@ body{background:var(--bg);color:var(--txt);font-family:ui-monospace,SFMono-Regul
         </div>
       </div>
     </div>
-  </div>
-</div>
+  </div><!-- .right-panel-wrap -->
+</div><!-- .main -->
 
 <script>
 // GAIA ENGINE v2 — Phase B+C — Schema v1
