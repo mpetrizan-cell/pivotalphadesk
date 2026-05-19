@@ -645,25 +645,47 @@ function build(){
     lastValueVisible:true, priceLineVisible:true, priceScaleId:'right'
   });
 
-  // GFS lines — left axis with K/M formatter
+  // GFS lines — left axis with K/M formatter + FIXED SCALE
+  // Fixed scale prevents GFS lines from overlapping price when toggling
   const gfsFmt = {type:'custom', formatter:v=>
     Math.abs(v)>=1e9?(v/1e9).toFixed(1)+'B':Math.abs(v)>=1e6?(v/1e6).toFixed(1)+'M':
     Math.abs(v)>=1e3?(v/1e3).toFixed(0)+'K':v.toFixed(0)};
 
+  // Apply fixed scale to left axis — GFS always occupies top/bottom 40% of chart
+  priceChart.applyOptions({
+    leftPriceScale:{
+      visible:true,
+      borderColor:'#1e293b',
+      scaleMargins:{top:0.05, bottom:0.05},
+      autoScale:false,
+      mode: 2  // Logarithmic=false, percentage=false, indexedTo100=false, normal=0, log=1, percentage=2... use 0
+    }
+  });
+  // Override with manual min/max after series added — set via series options
+  const gfsScaleOpts = {
+    autoscaleInfoProvider: () => ({
+      priceRange: { minValue: -5000, maxValue: 5000 },
+      margins: { above: 0.1, below: 0.1 }
+    })
+  };
+
   gfsCallSeries = priceChart.addLineSeries({
     color:'#f59e0b', lineWidth:1.5,
     lastValueVisible:true, priceLineVisible:false,
-    priceScaleId:'left', title:'CALLS', priceFormat:gfsFmt
+    priceScaleId:'left', title:'CALLS', priceFormat:gfsFmt,
+    autoscaleInfoProvider: () => ({priceRange:{minValue:-5000,maxValue:5000},margins:{above:.1,below:.1}})
   });
   gfsPutSeries = priceChart.addLineSeries({
     color:'#3b82f6', lineWidth:1.5,
     lastValueVisible:true, priceLineVisible:false,
-    priceScaleId:'left', title:'PUTS', priceFormat:gfsFmt
+    priceScaleId:'left', title:'PUTS', priceFormat:gfsFmt,
+    autoscaleInfoProvider: () => ({priceRange:{minValue:-5000,maxValue:5000},margins:{above:.1,below:.1}})
   });
   gfsNetSeries = priceChart.addLineSeries({
     color:'#a3e635', lineWidth:2, lineStyle:2,
     lastValueVisible:true, priceLineVisible:false,
-    priceScaleId:'left', title:'NET', priceFormat:gfsFmt
+    priceScaleId:'left', title:'NET', priceFormat:gfsFmt,
+    autoscaleInfoProvider: () => ({priceRange:{minValue:-5000,maxValue:5000},margins:{above:.1,below:.1}})
   });
 
   // DHP subchart — Opción B: single line total_dhp over time
@@ -695,10 +717,38 @@ function build(){
 }
 
 /* ── DATA FETCH ── */
+let historySeeded = false;  // only seed once per session
+
 async function loadJson(){
   try{
     const res = await fetch('/gaia_live.json?t='+Date.now());
-    if(res.ok){ raw = await res.json(); render(); }
+    if(res.ok){
+      raw = await res.json();
+
+      // ── Seed history from backend on first load / tab change ──
+      // raw.history = [{t, s, c, p, n, d}] built by ts_gaia_chart.py
+      if(!historySeeded && raw.history?.length > 2){
+        historySeeded = true;
+        // Clear any demo data
+        spxHistory.length  = 0;
+        gfsCallHist.length = 0;
+        gfsPutHist.length  = 0;
+        gfsNetHist.length  = 0;
+        dhpHist.length     = 0;
+        // Load real intraday history
+        raw.history.forEach(h=>{
+          spxHistory .push({time:h.t, value:+h.s});
+          gfsCallHist.push({time:h.t, value:+h.c});
+          gfsPutHist .push({time:h.t, value:+h.p});
+          gfsNetHist .push({time:h.t, value:+h.n});
+          dhpHist    .push({time:h.t, value:+h.d});
+        });
+        const el=document.getElementById('tfmode');
+        if(el) el.textContent='SPX LIVE';
+      }
+
+      render();
+    }
   }catch(e){ /* use fallback */ }
 }
 
