@@ -35,6 +35,8 @@ _live_data_ndx = {}
 _last_push_ndx = 0
 _live_data_etf = {}
 _last_push_etf = 0
+_live_data_nvda = {}
+_last_push_nvda = 0
 
 logging.basicConfig(level=logging.INFO,
     format='%(asctime)s [%(levelname)s] %(message)s')
@@ -372,7 +374,31 @@ def push_etf_data():
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
-# ── ROUTES ─────────────────────────────────────────────────────────────────────
+# ── PUSH NVDA (llamado desde ts_gaia_nvda.py local) ───────────────────────────
+@app.route('/push_nvda', methods=['POST'])
+def push_nvda_data():
+    global _live_data_nvda, _last_push_nvda
+    token = request.headers.get('X-Push-Token', '')
+    if token != PUSH_TOKEN:
+        return jsonify({'error': 'unauthorized'}), 401
+    try:
+        data = request.get_json(force=True)
+        if not data:
+            return jsonify({'error': 'no data'}), 400
+        _live_data_nvda = data
+        _last_push_nvda = time.time()
+        return jsonify({'status': 'ok', 'timestamp': _last_push_nvda})
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+@app.route('/gaia_nvda_live.json')
+def gaia_nvda_live():
+    if not _live_data_nvda:
+        return jsonify({'status': 'waiting', 'symbol': 'NVDA'})
+    age = time.time() - _last_push_nvda
+    return jsonify({**_live_data_nvda, 'data_age_seconds': round(age, 1)})
+
+
 @app.route('/')
 def index():
     if is_authenticated():
