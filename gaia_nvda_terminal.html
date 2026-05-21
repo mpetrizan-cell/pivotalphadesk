@@ -432,7 +432,7 @@ function render(){
 function renderProfile(){
   const el = document.getElementById('gexProfile');
   if(!el) return;
-  const spot = raw.spot_spx||0;
+  const spot = raw.spot||raw.spot_spx||0;
   const arr  = [...(raw.strikes||[])].sort((a,b)=>b.strike-a.strike);
   // Compute _net_dex = call_delta_oi - put_delta_oi (net_dex doesn't exist in JSON)
   arr.forEach(s=>{ s._nd = (s.call_delta_oi||0)-(s.put_delta_oi||0); });
