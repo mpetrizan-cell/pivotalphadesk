@@ -552,7 +552,7 @@ def main():
                     except Exception as _he:
                         log.warning(f"No se pudo guardar historia NVDA: {_he}")
 
-                    push_to_railway({
+                    payload = {
                         "timestamp":     datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S"),
                         "symbol":        "NVDA",
                         "spot":          spot,
@@ -572,7 +572,13 @@ def main():
                         },
                         "status":  "live",
                         "history": intraday_history[-480:]
-                    })
+                    }
+                    push_to_railway(payload)
+                    try:
+                        with open(OUTPUT_FILE, 'w') as _jf:
+                            json.dump(payload, _jf)
+                    except Exception as _je:
+                        log.warning(f"No se pudo escribir JSON local: {_je}")
                     consecutive_errors = 0
                     log.info(f"Cycle {cycle} | NVDA ${spot:.2f} | DHP {total_dhp:.0f} | {momentum_dir}")
                 except Exception as e:
