@@ -669,6 +669,19 @@ def bars():
         log.warning(f'/bars error: {e}')
         return jsonify({'error': str(e)}), 500
 
+# ── LW TERMINAL NDX ROUTE ─────────────────────────────────────────────────────
+@app.route('/ndx_terminal')
+@require_auth
+def ndx_terminal():
+    return render_template_string(DASHBOARD_HTML,
+        active='terminal', page='gaia_ndx_terminal_v10.html',
+        spot=get_spot(), trial_days=get_trial_days())
+
+@app.route('/gaia_ndx_terminal_v10.html')
+@require_auth
+def serve_ndx_terminal():
+    return send_from_directory(BASE_DIR, 'gaia_ndx_terminal_v10.html')
+
 # ── LW TERMINAL ROUTE ─────────────────────────────────────────────────────────
 @app.route('/terminal')
 @require_auth
