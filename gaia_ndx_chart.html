@@ -265,6 +265,13 @@ function buildGexChart(strikes,spot,levels){
   setTimeout(()=>{const sl=c.parentElement;const sp=c.querySelector('.spot-line');if(sp&&sl){sl.scrollTop=Math.max(0,sp.offsetTop-sl.clientHeight/2);}},50);
 }
 
+// OI format — NDX has low OI (1-500 contracts), show units not thousands
+function fmtOI(v){
+  if(v>=1000) return (v/1000).toFixed(1)+'k';
+  if(v>0) return v.toFixed(0);
+  return '—';
+}
+
 function buildBook(strikes,spot){
   if(!strikes||strikes.length===0)return;
   const sorted=[...strikes].sort((a,b)=>b.strike-a.strike);let html='';
@@ -277,7 +284,7 @@ function buildBook(strikes,spot){
       if(l==='monthly')return`<span class="layer-dot ld-m" title="Monthly"></span>`;
       return'';
     }).join('');
-    html+=`<tr class="${isSp?'spot-row':''}"><td class="sc">${s.strike.toLocaleString()}</td><td class="call-val">${((s.call_oi||0)/1000).toFixed(1)}k</td><td class="put-val">${((s.put_oi||0)/1000).toFixed(1)}k</td><td class="call-val">${parseFloat(s.call_gex||0).toFixed(2)}M</td><td class="put-val">${parseFloat(s.put_gex||0).toFixed(2)}M</td><td class="${ngc}">${(s.net_gex||0)>0?'+':''}${parseFloat(s.net_gex||0).toFixed(2)}M</td><td style="color:var(--text2)">${((s.call_iv||0)*100).toFixed(1)}%</td><td style="color:var(--text2)">${((s.put_iv||0)*100).toFixed(1)}%</td><td class="${ndc}">${(s.net_dhp||0)>0?'+':''}${parseFloat(s.net_dhp||0).toFixed(2)}M</td><td>${layers}</td></tr>`;
+    html+=`<tr class="${isSp?'spot-row':''}"><td class="sc">${s.strike.toLocaleString()}</td><td class="call-val">${fmtOI(s.call_oi||0)}</td><td class="put-val">${fmtOI(s.put_oi||0)}</td><td class="call-val">${parseFloat(s.call_gex||0).toFixed(2)}M</td><td class="put-val">${parseFloat(s.put_gex||0).toFixed(2)}M</td><td class="${ngc}">${(s.net_gex||0)>0?'+':''}${parseFloat(s.net_gex||0).toFixed(2)}M</td><td style="color:var(--text2)">${((s.call_iv||0)*100).toFixed(1)}%</td><td style="color:var(--text2)">${((s.put_iv||0)*100).toFixed(1)}%</td><td class="${ndc}">${(s.net_dhp||0)>0?'+':''}${parseFloat(s.net_dhp||0).toFixed(2)}M</td><td>${layers}</td></tr>`;
   });
   document.getElementById('book-tbody').innerHTML=html;
 }
