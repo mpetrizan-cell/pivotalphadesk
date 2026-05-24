@@ -255,6 +255,9 @@ iframe{width:100%;height:100%;border:none;}
   <a href="/terminal" class="tab {% if active == 'terminal' %}active{% endif %}" style="{% if active == 'terminal' %}background:rgba(103,232,249,0.12);border-color:#67e8f9;color:#67e8f9;{% endif %}">
     LW Terminal
   </a>
+  <a href="/ndx_terminal" class="tab {% if active == 'ndx_terminal' %}active{% endif %}" style="{% if active == 'ndx_terminal' %}background:rgba(103,232,249,0.12);border-color:#67e8f9;color:#67e8f9;{% endif %}">
+    NDX Terminal
+  </a>
 </div>
 <div class="frame-wrap">
   <iframe src="/{{ page }}" id="gaia-frame"></iframe>
@@ -674,7 +677,7 @@ def bars():
 @require_auth
 def ndx_terminal():
     return render_template_string(DASHBOARD_HTML,
-        active='terminal', page='gaia_ndx_terminal_v10.html',
+        active='ndx_terminal', page='gaia_ndx_terminal_v10.html',
         spot=get_spot(), trial_days=get_trial_days())
 
 @app.route('/gaia_ndx_terminal_v10.html')
