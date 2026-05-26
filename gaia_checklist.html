@@ -14,8 +14,6 @@
 }
 *{box-sizing:border-box;margin:0;padding:0;}
 body{background:var(--bg);color:var(--txt);font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;min-height:100vh;overflow-x:hidden;}
-
-/* HEADER */
 .header{background:var(--panel);border-bottom:2px solid var(--cyan);padding:10px 20px;display:flex;justify-content:space-between;align-items:center;}
 .brand{display:flex;align-items:center;gap:12px;}
 .logo{width:36px;height:36px;border:1px solid var(--amber);color:var(--amber);display:grid;place-items:center;border-radius:7px;font-weight:900;font-size:11px;}
@@ -25,713 +23,572 @@ body{background:var(--bg);color:var(--txt);font-family:ui-monospace,SFMono-Regul
 .live-badge{display:flex;align-items:center;gap:6px;font-size:9px;letter-spacing:.15em;}
 .live-dot{width:7px;height:7px;border-radius:50%;background:var(--green);animation:blink 2s infinite;}
 @keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
-.spot-display{text-align:right;}
 .spot-price{font-size:24px;font-weight:900;letter-spacing:.08em;}
 .spot-sub{font-size:9px;color:var(--muted);margin-top:2px;}
-
-/* SCORE BAR */
-.score-bar{background:var(--panel2);border-bottom:1px solid var(--line);padding:12px 20px;display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:12px;align-items:center;}
+.score-bar{background:var(--panel2);border-bottom:1px solid var(--line);padding:12px 20px;display:grid;grid-template-columns:160px 1fr 220px 160px;gap:16px;align-items:center;}
 .score-main{text-align:center;}
-.score-num{font-size:48px;font-weight:900;line-height:1;transition:color .3s;}
+.score-num{font-size:52px;font-weight:900;line-height:1;transition:color .3s;}
 .score-label{font-size:8px;color:var(--muted);letter-spacing:.18em;margin-top:4px;}
-.score-verdict{font-size:14px;font-weight:900;letter-spacing:.12em;margin-top:6px;padding:4px 12px;border:1px solid;border-radius:4px;display:inline-block;}
-.score-meter{background:var(--panel);border-radius:8px;padding:10px 14px;}
-.meter-track{height:8px;background:#0f172a;border-radius:4px;margin:6px 0;position:relative;overflow:hidden;}
-.meter-fill{height:100%;border-radius:4px;transition:width .5s ease,background .3s;}
-.meter-labels{display:flex;justify-content:space-between;font-size:7px;color:var(--muted);letter-spacing:.1em;}
-.score-breakdown{display:flex;flex-direction:column;gap:4px;}
-.layer-score{display:flex;justify-content:space-between;align-items:center;font-size:9px;padding:3px 0;border-bottom:1px solid rgba(255,255,255,.04);}
-.layer-score:last-child{border-bottom:none;}
-.layer-name{color:var(--muted);letter-spacing:.08em;}
-.layer-val{font-weight:900;}
-
-/* DIRECTION */
-.direction-panel{background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:10px 14px;text-align:center;}
-.dir-label{font-size:8px;color:var(--muted);letter-spacing:.15em;margin-bottom:6px;}
-.dir-long{color:var(--green);font-size:16px;font-weight:900;letter-spacing:.1em;}
-.dir-short{color:var(--red);font-size:16px;font-weight:900;letter-spacing:.1em;}
-.dir-neutral{color:var(--amber);font-size:16px;font-weight:900;letter-spacing:.1em;}
-.dir-sub{font-size:8px;color:var(--muted);margin-top:4px;}
-
-/* MAIN */
-.main{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;padding:14px;max-width:1600px;margin:0 auto;}
-
-/* CHECKLIST LAYER */
+.score-verdict{font-size:13px;font-weight:900;letter-spacing:.1em;margin-top:6px;padding:4px 12px;border:1px solid;border-radius:4px;display:inline-block;}
+.meter-wrap{padding:8px 0;}
+.meter-track{height:10px;background:#0f172a;border-radius:5px;margin:8px 0;overflow:hidden;}
+.meter-fill{height:100%;border-radius:5px;transition:width .5s ease,background .3s;}
+.meter-labels{display:flex;justify-content:space-between;font-size:7px;color:var(--muted);}
+.breakdown{display:flex;flex-direction:column;gap:3px;}
+.brow{display:flex;justify-content:space-between;font-size:9px;padding:3px 0;border-bottom:1px solid rgba(255,255,255,.04);}
+.brow:last-child{border-bottom:none;}
+.brow-name{color:var(--muted);}
+.direction-panel{background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:12px;text-align:center;}
+.dir-lbl{font-size:8px;color:var(--muted);letter-spacing:.15em;margin-bottom:8px;}
+.dir-val{font-size:18px;font-weight:900;letter-spacing:.1em;}
+.dir-sub{font-size:8px;color:var(--muted);margin-top:6px;line-height:1.5;}
+.main{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;padding:12px;max-width:1600px;margin:0 auto;}
 .layer-card{background:var(--panel);border:1px solid var(--line);border-radius:10px;overflow:hidden;}
 .layer-header{background:var(--panel2);padding:8px 14px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:center;}
-.layer-title{font-size:9px;font-weight:900;letter-spacing:.18em;}
+.layer-title{font-size:9px;font-weight:900;letter-spacing:.15em;}
 .layer-pts{font-size:11px;font-weight:900;}
-.check-item{display:flex;align-items:flex-start;gap:10px;padding:8px 14px;border-bottom:1px solid rgba(255,255,255,.03);transition:background .2s;}
+.check-item{display:flex;align-items:flex-start;gap:10px;padding:8px 14px;border-bottom:1px solid rgba(255,255,255,.03);}
 .check-item:last-child{border-bottom:none;}
-.check-item.pass{background:rgba(52,211,153,.05);}
-.check-item.fail{background:rgba(248,113,113,.03);}
-.check-item.manual{background:rgba(251,191,36,.03);}
+.check-item.pass{background:rgba(52,211,153,.06);}
+.check-item.fail{background:rgba(248,113,113,.04);}
+.check-item.warn{background:rgba(251,191,36,.04);}
 .check-icon{width:18px;height:18px;border-radius:4px;display:grid;place-items:center;flex-shrink:0;font-size:10px;margin-top:1px;}
-.check-icon.pass{background:rgba(52,211,153,.2);color:var(--green);}
-.check-icon.fail{background:rgba(248,113,113,.15);color:var(--red);}
-.check-icon.neutral{background:rgba(100,116,139,.15);color:var(--slate);}
-.check-icon.manual-icon{background:rgba(251,191,36,.15);color:var(--amber);cursor:pointer;}
+.pass .check-icon{background:rgba(52,211,153,.2);color:var(--green);}
+.fail .check-icon{background:rgba(248,113,113,.15);color:var(--red);}
+.warn .check-icon{background:rgba(251,191,36,.15);color:var(--amber);}
+.neutral-item .check-icon{background:rgba(100,116,139,.1);color:var(--slate);}
 .check-body{flex:1;}
-.check-txt{font-size:9px;color:var(--txt);line-height:1.5;}
+.check-txt{font-size:9px;line-height:1.5;}
 .check-detail{font-size:8px;color:var(--muted);margin-top:2px;}
-.check-pts{font-size:9px;font-weight:900;flex-shrink:0;margin-top:1px;}
+.check-pts{font-size:10px;font-weight:900;flex-shrink:0;margin-top:1px;}
 .check-pts.pos{color:var(--green);}
 .check-pts.zero{color:var(--muted);}
-
-/* MANUAL TOGGLE */
-.manual-btn{cursor:pointer;user-select:none;}
-.manual-btn:hover .check-icon{opacity:.8;}
-
-/* METRICS STRIP */
-.metrics-strip{background:var(--panel2);border-top:1px solid var(--line);padding:8px 20px;display:flex;gap:20px;flex-wrap:wrap;font-size:8px;}
+.manual-item{cursor:pointer;user-select:none;}
+.manual-item:hover{background:rgba(255,255,255,.03);}
+.metrics-strip{background:var(--panel2);border-top:1px solid var(--line);padding:8px 20px;display:flex;gap:20px;flex-wrap:wrap;}
 .m-item{display:flex;flex-direction:column;gap:2px;}
-.m-lbl{color:var(--muted);letter-spacing:.12em;}
+.m-lbl{font-size:7px;color:var(--muted);letter-spacing:.12em;}
 .m-val{font-size:11px;font-weight:900;}
-
-/* FOOTER */
-.footer{background:var(--panel2);border-top:1px solid var(--line);padding:6px 20px;display:flex;justify-content:space-between;font-size:8px;color:var(--muted);letter-spacing:.1em;}
+.footer{background:var(--panel2);border-top:1px solid var(--line);padding:5px 20px;display:flex;justify-content:space-between;font-size:8px;color:var(--muted);}
 </style>
 </head>
 <body>
-
 <div class="header">
   <div class="brand">
     <div class="logo">PAD</div>
-    <div>
-      <div class="brand-txt">GAIA TRADE CHECKLIST</div>
-      <div class="brand-sub">SPX · ES · DEALER PRESSURE ENGINE v2</div>
-    </div>
+    <div><div class="brand-txt">GAIA TRADE CHECKLIST</div><div class="brand-sub">SPX · ES · DEALER PRESSURE ENGINE v2</div></div>
   </div>
   <div class="header-right">
-    <div class="live-badge">
-      <div class="live-dot" id="liveDot"></div>
-      <span id="liveLabel" style="color:var(--green)">LIVE</span>
-    </div>
-    <div class="spot-display">
-      <div class="spot-price" id="spotPrice">—</div>
-      <div class="spot-sub" id="spotSub">ES — · BASIS —</div>
-    </div>
+    <div class="live-badge"><div class="live-dot" id="liveDot"></div><span id="liveLabel" style="color:var(--green)">LIVE</span></div>
+    <div><div class="spot-price" id="spotPrice">—</div><div class="spot-sub" id="spotSub">ES — · BASIS —</div></div>
   </div>
 </div>
 
-<!-- SCORE BAR -->
 <div class="score-bar">
   <div class="score-main">
     <div class="score-num" id="scoreNum" style="color:var(--muted)">0</div>
-    <div class="score-label">TOTAL SCORE / 85</div>
+    <div class="score-label">TOTAL / 85</div>
     <div class="score-verdict" id="scoreVerdict" style="color:var(--muted);border-color:var(--muted)">WAITING</div>
   </div>
-  <div class="score-meter">
-    <div class="meter-labels"><span>NO TRADE</span><span>CONVICTION</span></div>
+  <div class="meter-wrap">
+    <div class="meter-labels"><span>NO TRADE</span><span>0</span><span>30</span><span>50</span><span>65</span><span>80</span><span>85 CONV.</span></div>
     <div class="meter-track"><div class="meter-fill" id="meterFill" style="width:0%;background:var(--muted)"></div></div>
-    <div style="font-size:8px;color:var(--muted);letter-spacing:.1em;margin-top:4px;" id="meterLabel">—</div>
+    <div style="font-size:8px;color:var(--muted);margin-top:4px;" id="meterLabel">—</div>
   </div>
-  <div class="score-breakdown" id="layerBreakdown">
-    <div class="layer-score"><span class="layer-name">ESTRUCTURA GEX</span><span class="layer-val" id="ls1">—</span></div>
-    <div class="layer-score"><span class="layer-name">DEX BEHAVIOR</span><span class="layer-val" id="ls2">—</span></div>
-    <div class="layer-score"><span class="layer-name">DHP MOMENTUM</span><span class="layer-val" id="ls3">—</span></div>
-    <div class="layer-score"><span class="layer-name">GFS LINES</span><span class="layer-val" id="ls4">—</span></div>
-    <div class="layer-score"><span class="layer-name">PRESSURE MAP</span><span class="layer-val" id="ls5">—</span></div>
-    <div class="layer-score"><span class="layer-name">CONFLUENCIA</span><span class="layer-val" id="ls6">—</span></div>
+  <div class="breakdown">
+    <div class="brow"><span class="brow-name">① ESTRUCTURA GEX</span><span id="ls1" style="color:var(--cyan)">—</span></div>
+    <div class="brow"><span class="brow-name">② DEX BEHAVIOR</span><span id="ls2" style="color:var(--amber)">—</span></div>
+    <div class="brow"><span class="brow-name">③ DHP MOMENTUM</span><span id="ls3" style="color:var(--violet)">—</span></div>
+    <div class="brow"><span class="brow-name">④ GFS LINES</span><span id="ls4" style="color:var(--orange)">—</span></div>
+    <div class="brow"><span class="brow-name">⑤ PRESSURE MAP</span><span id="ls5" style="color:var(--green)">—</span></div>
+    <div class="brow"><span class="brow-name">⑥ CONFLUENCIA</span><span id="ls6" style="color:var(--rose)">—</span></div>
   </div>
   <div class="direction-panel">
-    <div class="dir-label">SIGNAL</div>
-    <div id="dirSignal" class="dir-neutral">NEUTRAL</div>
+    <div class="dir-lbl">SIGNAL</div>
+    <div id="dirSignal" class="dir-val" style="color:var(--amber)">NEUTRAL</div>
     <div class="dir-sub" id="dirSub">Waiting for data</div>
   </div>
 </div>
 
-<!-- CHECKLIST -->
 <div class="main">
-
-  <!-- CAPA 1: ESTRUCTURA GEX -->
-  <div class="layer-card">
-    <div class="layer-header">
-      <span class="layer-title" style="color:var(--cyan)">① ESTRUCTURA GEX · GAIA CHART</span>
-      <span class="layer-pts" id="pts1" style="color:var(--cyan)">0/11</span>
-    </div>
-    <div id="layer1"></div>
-  </div>
-
-  <!-- CAPA 2: DEX BEHAVIOR -->
-  <div class="layer-card">
-    <div class="layer-header">
-      <span class="layer-title" style="color:var(--amber)">② DEX BEHAVIOR · GEX STRUCTURE</span>
-      <span class="layer-pts" id="pts2" style="color:var(--amber)">0/14</span>
-    </div>
-    <div id="layer2"></div>
-  </div>
-
-  <!-- CAPA 3: DHP MOMENTUM -->
-  <div class="layer-card">
-    <div class="layer-header">
-      <span class="layer-title" style="color:var(--violet)">③ DHP MOMENTUM · LW TERMINAL</span>
-      <span class="layer-pts" id="pts3" style="color:var(--violet)">0/8</span>
-    </div>
-    <div id="layer3"></div>
-  </div>
-
-  <!-- CAPA 4: GFS LINES -->
-  <div class="layer-card">
-    <div class="layer-header">
-      <span class="layer-title" style="color:var(--orange)">④ GFS LINES · LW TERMINAL</span>
-      <span class="layer-pts" id="pts4" style="color:var(--orange)">0/19</span>
-    </div>
-    <div id="layer4"></div>
-  </div>
-
-  <!-- CAPA 5: PRESSURE MAP -->
-  <div class="layer-card">
-    <div class="layer-header">
-      <span class="layer-title" style="color:var(--green)">⑤ PRESSURE MAP · DSI/VTS/MCS</span>
-      <span class="layer-pts" id="pts5" style="color:var(--green)">0/19</span>
-    </div>
-    <div id="layer5"></div>
-  </div>
-
-  <!-- CAPA 6: CONFLUENCIA -->
-  <div class="layer-card">
-    <div class="layer-header">
-      <span class="layer-title" style="color:var(--rose)">⑥ CONFLUENCIA · GATILLO FINAL</span>
-      <span class="layer-pts" id="pts6" style="color:var(--rose)">0/14</span>
-    </div>
-    <div id="layer6"></div>
-  </div>
-
+  <div class="layer-card"><div class="layer-header"><span class="layer-title" style="color:var(--cyan)">① ESTRUCTURA GEX</span><span class="layer-pts" id="pts1" style="color:var(--cyan)">0/11</span></div><div id="layer1"></div></div>
+  <div class="layer-card"><div class="layer-header"><span class="layer-title" style="color:var(--amber)">② DEX BEHAVIOR</span><span class="layer-pts" id="pts2" style="color:var(--amber)">0/14</span></div><div id="layer2"></div></div>
+  <div class="layer-card"><div class="layer-header"><span class="layer-title" style="color:var(--violet)">③ DHP MOMENTUM</span><span class="layer-pts" id="pts3" style="color:var(--violet)">0/8</span></div><div id="layer3"></div></div>
+  <div class="layer-card"><div class="layer-header"><span class="layer-title" style="color:var(--orange)">④ GFS LINES</span><span class="layer-pts" id="pts4" style="color:var(--orange)">0/19</span></div><div id="layer4"></div></div>
+  <div class="layer-card"><div class="layer-header"><span class="layer-title" style="color:var(--green)">⑤ PRESSURE MAP</span><span class="layer-pts" id="pts5" style="color:var(--green)">0/19</span></div><div id="layer5"></div></div>
+  <div class="layer-card"><div class="layer-header"><span class="layer-title" style="color:var(--rose)">⑥ CONFLUENCIA</span><span class="layer-pts" id="pts6" style="color:var(--rose)">0/14</span></div><div id="layer6"></div></div>
 </div>
 
-<!-- METRICS STRIP -->
 <div class="metrics-strip">
   <div class="m-item"><span class="m-lbl">REGIME</span><span class="m-val" id="ms-regime">—</span></div>
   <div class="m-item"><span class="m-lbl">GAMMA FLIP</span><span class="m-val" id="ms-flip" style="color:var(--violet)">—</span></div>
   <div class="m-item"><span class="m-lbl">CALL WALL</span><span class="m-val" id="ms-cw" style="color:var(--red)">—</span></div>
   <div class="m-item"><span class="m-lbl">PUT WALL</span><span class="m-val" id="ms-pw" style="color:var(--cyan)">—</span></div>
   <div class="m-item"><span class="m-lbl">NODE</span><span class="m-val" id="ms-node" style="color:var(--violet)">—</span></div>
-  <div class="m-item"><span class="m-lbl">DHP DIR</span><span class="m-val" id="ms-dhp">—</span></div>
-  <div class="m-item"><span class="m-lbl">GFS NET</span><span class="m-val" id="ms-gfs">—</span></div>
+  <div class="m-item"><span class="m-lbl">DHP DIR</span><span class="m-val" id="ms-dhpdir">—</span></div>
+  <div class="m-item"><span class="m-lbl">DHP MOM</span><span class="m-val" id="ms-dhpmom">—</span></div>
   <div class="m-item"><span class="m-lbl">HIRO CALL</span><span class="m-val" id="ms-hcall" style="color:var(--amber)">—</span></div>
   <div class="m-item"><span class="m-lbl">HIRO PUT</span><span class="m-val" id="ms-hput" style="color:var(--cyan)">—</span></div>
+  <div class="m-item"><span class="m-lbl">HIRO NET</span><span class="m-val" id="ms-hnet">—</span></div>
   <div class="m-item"><span class="m-lbl">TOTAL DHP</span><span class="m-val" id="ms-tdhp">—</span></div>
+  <div class="m-item"><span class="m-lbl">PRED SCORE</span><span class="m-val" id="ms-pred">—</span></div>
   <div class="m-item"><span class="m-lbl">TIMESTAMP</span><span class="m-val" id="ms-ts" style="color:var(--muted)">—</span></div>
 </div>
-
 <div class="footer">
   <span>GAIA TRADE CHECKLIST · SPX + ES · PivotAlphaDesk</span>
   <span id="footerTs">—</span>
 </div>
 
 <script>
-// ── MANUAL STATE ─────────────────────────────────────────────────────────────
-const manualState = {
-  inPADZone: false,
-  noMacro: false,
-  dhpConfirms: false,
-  gfsConfirms: false,
-};
+// ── MANUAL STATE ──────────────────────────────────────────────────────────────
+const M = { inPADZone:false, noMacro:false, dhpConfirms:false, gfsConfirms:false };
+function toggleM(k){ M[k]=!M[k]; lastRaw && run(lastRaw); }
 
 // ── FETCH ─────────────────────────────────────────────────────────────────────
-async function fetchData() {
-  try {
-    const r = await fetch('/gaia_live.json?t=' + Date.now());
-    if (!r.ok) throw new Error('fetch failed');
-    return await r.json();
-  } catch(e) {
-    return null;
-  }
+async function fetchData(){
+  try{ const r=await fetch('/gaia_live.json?t='+Date.now()); if(!r.ok) throw 0; return await r.json(); }
+  catch{ return null; }
 }
 
-// ── HELPERS ──────────────────────────────────────────────────────────────────
-const fmt = v => v != null ? Number(v).toLocaleString('en-US', {minimumFractionDigits:2, maximumFractionDigits:2}) : '—';
-const fmtM = v => v != null ? (v >= 0 ? '+' : '') + Number(v).toFixed(1) + 'M' : '—';
-const fmtK = v => v != null ? (v >= 0 ? '+' : '') + (Math.abs(v) >= 1000 ? (v/1000).toFixed(1)+'K' : Number(v).toFixed(0)) : '—';
+// ── FORMAT ────────────────────────────────────────────────────────────────────
+const f2 = v => v!=null ? Number(v).toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2}) : '—';
+const fM  = v => v!=null ? (v>=0?'+':'')+Number(v).toFixed(2)+'M' : '—';
+const fK  = v => v!=null ? (v>=0?'+':'')+(Math.abs(v)>=1000?(v/1000).toFixed(1)+'K':Number(v).toFixed(0)) : '—';
+const fN  = v => v!=null ? (v>=0?'+':'')+Number(v).toFixed(1) : '—';
 
-function makeItem(icon, cls, txt, detail, pts, ptsCls) {
+// ── ITEM BUILDERS ─────────────────────────────────────────────────────────────
+function item(pass, txt, detail, pts){
+  const cls = pass===true?'pass':pass===false?'fail':pass==='warn'?'warn':'neutral-item';
+  const icon = pass===true?'✓':pass===false?'✗':pass==='warn'?'⚠':'—';
+  const earned = pass===true ? pts : 0;
   return `<div class="check-item ${cls}">
-    <div class="check-icon ${cls === 'pass' ? 'pass' : cls === 'fail' ? 'fail' : 'neutral'}">${icon}</div>
-    <div class="check-body">
-      <div class="check-txt">${txt}</div>
-      ${detail ? `<div class="check-detail">${detail}</div>` : ''}
-    </div>
-    <div class="check-pts ${ptsCls}">${pts > 0 ? '+' + pts : pts === 0 ? '0' : pts}</div>
+    <div class="check-icon">${icon}</div>
+    <div class="check-body"><div class="check-txt">${txt}</div>${detail?`<div class="check-detail">${detail}</div>`:''}</div>
+    <div class="check-pts ${earned>0?'pos':'zero'}">${earned>0?'+'+earned:'0'}</div>
+  </div>`;
+}
+function manual(key, txt, detail, pts){
+  const on = M[key];
+  return `<div class="check-item ${on?'pass':'neutral-item'} manual-item" onclick="toggleM('${key}')">
+    <div class="check-icon">${on?'✓':'○'}</div>
+    <div class="check-body"><div class="check-txt">${txt}</div>${detail?`<div class="check-detail">${detail}</div>`:''}</div>
+    <div class="check-pts ${on?'pos':'zero'}">${on?'+'+pts:'0'}</div>
   </div>`;
 }
 
-function makeManual(id, txt, detail, pts) {
-  const on = manualState[id];
-  return `<div class="check-item manual manual-btn" onclick="toggleManual('${id}')">
-    <div class="check-icon manual-icon">${on ? '✓' : '○'}</div>
-    <div class="check-body">
-      <div class="check-txt">${txt}</div>
-      ${detail ? `<div class="check-detail">${detail}</div>` : ''}
-    </div>
-    <div class="check-pts ${on ? 'pos' : 'zero'}">${on ? '+' + pts : '0'}</div>
-  </div>`;
-}
+// ── PREV STATE ────────────────────────────────────────────────────────────────
+let lastRaw=null, prevHiroNet=null, prevSpot=null;
 
-function toggleManual(id) {
-  manualState[id] = !manualState[id];
-  lastRaw && evaluate(lastRaw);
-}
-
-// ── EVALUATE ─────────────────────────────────────────────────────────────────
-let lastRaw = null;
-let prevGfsNet = null;
-let prevPrice = null;
-
-function evaluate(raw) {
+// ── MAIN EVAL ─────────────────────────────────────────────────────────────────
+function run(raw){
   lastRaw = raw;
+  const spot    = raw.spot_spx || 0;
+  const spotES  = raw.spot_es  || 0;
+  const basis   = raw.basis    || 0;
+  const levels  = raw.levels   || {};
+  const levES   = raw.levels_es || {};
+  const strikes = raw.strikes  || [];
+  const flip    = levels.gamma_flip  || 0;
+  const cw      = levels.call_wall   || 0;
+  const pw      = levels.put_wall    || 0;
+  const node    = levels.gamma_node  || 0;
+  const conf    = raw.confluence     || [];
+  const dhpDir  = raw.dhp_direction  || 'NEUTRAL';
+  const dhpMom  = raw.dhp_momentum   || 0;
+  const totalDhp= raw.total_dhp      || 0;  // raw units
+  const hiroCall= raw.hiro_call      || 0;  // millions
+  const hiroPut = raw.hiro_put       || 0;
+  const hiroNet = raw.hiro_total     || 0;
 
-  const spot     = raw.spot_spx || 0;
-  const spotES   = raw.spot_es  || 0;
-  const basis    = raw.basis    || 0;
-  const levels   = raw.levels   || {};
-  const levelsES = raw.levels_es || {};
-  const strikes  = raw.strikes  || [];
-  const dhpDir   = raw.dhp_direction || 'NEUTRAL';
-  const dhpMom   = raw.dhp_momentum  || 0;
-  const totalDhp = raw.total_dhp     || 0;
-  const hiroCal  = raw.hiro_call     || 0;
-  const hiroPut  = raw.hiro_put      || 0;
-  const hiroNet  = raw.hiro_total    || 0;
-  const flip     = levels.gamma_flip || 0;
-  const callWall = levels.call_wall  || 0;
-  const putWall  = levels.put_wall   || 0;
-  const node     = levels.gamma_node || 0;
+  // Strike helpers
+  const nearest = (lvl) => strikes.reduce((b,s)=>Math.abs(s.strike-lvl)<Math.abs(b.strike-lvl)?s:b, strikes[0]||{});
+  const atm   = nearest(spot);
+  const cwS   = nearest(cw);
+  const pwS   = nearest(pw);
+  const nodeS = nearest(node);
 
-  // GFS from hiro
-  const gfsNet   = hiroNet;
-  const gfsCalls = hiroCal;
+  // Distances
+  const distCW   = Math.abs(spot - cw);
+  const distPW   = Math.abs(spot - pw);
+  const distNode = Math.abs(spot - node);
+  const nearCW   = distCW <= 15;
+  const nearPW   = distPW <= 15;
+  const nearNode = distNode <= 10;
+
+  // Regime
+  const aboveFlip = spot > flip;
+
+  // Confluence helpers
+  const confAt = (lvl) => conf.find(c=>Number(c.strike)===Number(lvl))?.strength || 0;
+  const confCW = confAt(cw), confPW = confAt(pw), confNode = confAt(node);
+
+  // DHP flags
+  const isAccBull  = dhpDir === 'ACCELERATING_BULL';
+  const isBldBull  = dhpDir === 'BUILDING_BULL';
+  const isAccBear  = dhpDir === 'ACCELERATING_BEAR';
+  const isBldBear  = dhpDir === 'BUILDING_BEAR';
+  const isNeutral  = dhpDir === 'NEUTRAL';
+  const isBull     = isAccBull || isBldBull;
+  const isBear     = isAccBear || isBldBear;
+
+  // GFS / HIRO
+  const gfsNet   = hiroNet;   // millions
+  const gfsCalls = hiroCall;
   const gfsPuts  = hiroPut;
 
-  // Find nearest strike
-  const nearStrikes = [...strikes].sort((a,b) => Math.abs(a.strike - spot) - Math.abs(b.strike - spot));
-  const atm = nearStrikes[0] || {};
-  const atm2 = nearStrikes[1] || {};
+  // Crosses (compare with previous)
+  const hiroNetCrossUp = prevHiroNet!==null && prevHiroNet<=0 && gfsNet>0;
+  const hiroNetCrossDn = prevHiroNet!==null && prevHiroNet>=0 && gfsNet<0;
 
-  // Confluence at key levels
-  const confAtCW = raw.confluence?.find(c => Number(c.strike) === Number(callWall))?.strength || 0;
-  const confAtPW = raw.confluence?.find(c => Number(c.strike) === Number(putWall))?.strength  || 0;
-  const confAtNode = raw.confluence?.find(c => Number(c.strike) === Number(node))?.strength   || 0;
+  // Price direction
+  const priceUp   = prevSpot!==null && spot > prevSpot;
+  const priceDown = prevSpot!==null && spot < prevSpot;
 
-  // GEX at ATM
-  const atmGex = atm.net_gex || 0;
-  const atmDhp = atm.net_dhp || 0;
+  // Divergences
+  const divergBull = priceDown && gfsNet > 0.1;   // price falls, hiro positive → fade drop
+  const divergBear = priceUp   && gfsNet < -0.1;  // price rises, hiro negative → fade rally
 
-  // Price vs levels
-  const aboveFlip = spot > flip;
-  const nearCW = Math.abs(spot - callWall) <= 15;
-  const nearPW = Math.abs(spot - putWall)  <= 15;
-  const nearNode = Math.abs(spot - node)   <= 10;
+  prevHiroNet = gfsNet;
+  prevSpot    = spot;
 
-  // GFS crosses (need prev)
-  const gfsCross = prevGfsNet !== null && Math.sign(gfsNet) !== Math.sign(prevGfsNet);
-  const gfsCrossUp = gfsCross && gfsNet > 0;
-  const gfsCrossDn = gfsCross && gfsNet < 0;
+  // Prediction score ATM
+  const predScore = atm.prediction_score || 0;
 
-  // Price vs GFS Net direction
-  const priceFalling = prevPrice !== null && spot < prevPrice;
-  const priceRising  = prevPrice !== null && spot > prevPrice;
-  const divergLong   = priceFalling && gfsNet > 0;  // price falls, gfs positive → fade drop
-  const divergShort  = priceRising  && gfsNet < 0;  // price rises, gfs negative → fade rally
+  // Net DHPs
+  const atmNetDhp = atm.net_dhp || 0;
+  const cwNetDhp  = cwS.net_dhp || 0;
+  const pwNetDhp  = pwS.net_dhp || 0;
 
-  prevGfsNet = gfsNet;
-  prevPrice  = spot;
+  // DEX at CW — call_delta_oi in hundreds
+  const dexCW = cwS.call_delta_oi || 0;
+  const dexPW = pwS.put_delta_oi  || 0;
 
-  // ── LAYER 1: ESTRUCTURA GEX ─────────────────────────────────────────────
-  let l1 = 0, l1html = '';
+  // Absorption: strikes with net_gex > 0
+  const posGex = strikes.filter(s=>(s.net_gex||0)>0).length;
+  const absPct = Math.round(posGex / Math.max(strikes.length,1) * 100);
+  const fragPct= 100 - absPct;
 
-  const c1 = aboveFlip;
-  l1 += c1 ? 2 : 0;
-  l1html += makeItem(c1?'✓':'✗', c1?'pass':'fail',
-    'Precio sobre Gamma Flip → DAMPENED',
-    `SPX ${fmt(spot)} ${aboveFlip ? '>' : '<'} Flip ${fmt(flip)}`,
-    c1?2:0, c1?'pos':'zero');
+  // ── LAYER 1: ESTRUCTURA GEX (max 11) ──────────────────────────────────────
+  let l1=0, h1='';
 
-  const c2 = atmGex > 0;
-  l1 += c2 ? 2 : 0;
-  l1html += makeItem(c2?'✓':'✗', c2?'pass':'fail',
-    'GEX positivo en strike ATM → soporte activo',
-    `GEX ATM: ${fmtK(atmGex)} en strike ${atm.strike}`,
-    c2?2:0, c2?'pos':'zero');
+  const c1a = aboveFlip;
+  l1 += c1a?2:0;
+  h1 += item(c1a, 'Precio sobre Gamma Flip → DAMPENED',
+    `SPX ${f2(spot)} ${aboveFlip?'>':'<'} Flip ${f2(flip)}`, 2);
 
-  const c3 = confAtNode >= 3;
-  l1 += c3 ? 3 : 0;
-  l1html += makeItem(c3?'✓':'✗', c3?'pass':'',
-    'Confluencia ≥ 3x en Gamma Node',
-    `Node ${node}: ${confAtNode}x layers`,
-    c3?3:0, c3?'pos':'zero');
+  const c1b = (atm.net_gex||0) > 0;
+  l1 += c1b?2:0;
+  h1 += item(c1b, 'GEX positivo en strike ATM → soporte activo',
+    `GEX ATM(${atm.strike}): ${fK(atm.net_gex)}`, 2);
 
-  const c4 = confAtCW >= 2;
-  l1 += c4 ? 2 : 0;
-  l1html += makeItem(c4?'✓':'—', c4?'pass':'',
-    'Confluencia ≥ 2x en Call Wall',
-    `CW ${callWall}: ${confAtCW}x layers`,
-    c4?2:0, c4?'pos':'zero');
+  const c1c = confNode >= 3;
+  l1 += c1c?3:0;
+  h1 += item(c1c, 'Confluencia ≥ 3x en Gamma Node',
+    `Node ${node}: ${confNode}x layers`, 3);
 
-  const c5 = !aboveFlip && atmGex < 0;
-  l1 += c5 ? 2 : 0;
-  l1html += makeItem(c5?'⚠':'—', c5?'fail':'',
-    'GEX negativo + bajo Flip → zona frágil',
-    c5 ? 'AMPLIFIED + GEX negativo: volatilidad esperada' : 'No aplica',
-    c5?2:0, c5?'pos':'zero');
+  const c1d = confCW >= 2;
+  l1 += c1d?2:0;
+  h1 += item(c1d, 'Confluencia ≥ 2x en Call Wall',
+    `CW ${cw}: ${confCW}x layers`, 2);
 
-  document.getElementById('layer1').innerHTML = l1html;
-  document.getElementById('pts1').textContent = l1 + '/11';
+  const c1e = predScore >= 50;
+  l1 += c1e?2:0;
+  h1 += item(c1e, 'Prediction Score ATM ≥ 50 → setup favorable',
+    `Score: ${predScore.toFixed(1)}`, 2);
 
-  // ── LAYER 2: DEX BEHAVIOR ───────────────────────────────────────────────
-  let l2 = 0, l2html = '';
+  document.getElementById('layer1').innerHTML = h1;
+  document.getElementById('pts1').textContent = l1+'/11';
 
-  // DEX at call wall
-  const cwStrike = strikes.find(s => Number(s.strike) === Number(callWall));
-  const dexAtCW = cwStrike ? (cwStrike.call_delta_oi || 0) : 0;
-  const pwStrike = strikes.find(s => Number(s.strike) === Number(putWall));
-  const buyHedge = totalDhp > 0;
+  // ── LAYER 2: DEX BEHAVIOR (max 14) ────────────────────────────────────────
+  let l2=0, h2='';
 
-  const d1 = nearCW && dexAtCW > 1000;
-  l2 += d1 ? 2 : 0;
-  l2html += makeItem(d1?'✓':'—', d1?'pass':'',
-    'DEX alto en Call Wall → pared activa',
-    `DEX CW ${callWall}: ${fmtK(dexAtCW)}`,
-    d1?2:0, d1?'pos':'zero');
+  // DEX at CW alto → pared activa (threshold 300 para SPX realista)
+  const d2a = nearCW && dexCW > 300;
+  l2 += d2a?2:0;
+  h2 += item(d2a, 'DEX alto en Call Wall → pared activa',
+    `delta_OI CW(${cwS.strike}): ${f2(dexCW)}`, 2);
 
-  const d2 = buyHedge && priceFalling;
-  l2 += d2 ? 3 : 0;
-  l2html += makeItem(d2?'✓':'—', d2?'pass':'',
-    'BUY HEDGE activo durante caída → soporte mecánico',
-    `Total DHP: ${fmtM(totalDhp)} · Price: ${priceFalling ? '↓' : priceRising ? '↑' : '→'}`,
-    d2?3:0, d2?'pos':'zero');
+  // net_dhp negativo en CW → dealers vendiendo ahí
+  const d2b = cwNetDhp < -20;
+  l2 += d2b?2:0;
+  h2 += item(d2b, 'net_DHP negativo en Call Wall → presión vendedora',
+    `net_dhp CW: ${fN(cwNetDhp)}`, 2);
 
-  const d3 = !buyHedge && priceRising;
-  l2 += d3 ? 3 : 0;
-  l2html += makeItem(d3?'⚠':'—', d3?'fail':'',
-    'SELL HEDGE activo durante subida → resistencia real',
-    `Total DHP negativo con precio subiendo`,
-    d3?3:0, d3?'pos':'zero');
+  // totalDhp > 200 → dealers comprando ES (BUY HEDGE)
+  const d2c = totalDhp > 200;
+  l2 += d2c?3:0;
+  h2 += item(d2c, 'Total DHP > 200 → dealers comprando ES (BUY HEDGE)',
+    `Total DHP: ${fN(totalDhp)}`, 3);
 
-  const d4 = totalDhp > 50;
-  l2 += d4 ? 3 : 0;
-  l2html += makeItem(d4?'✓':'—', d4?'pass':'',
-    'Total DHP positivo alto → dealers comprando ES',
-    `DHP: ${fmtM(totalDhp)}`,
-    d4?3:0, d4?'pos':'zero');
+  // totalDhp < -200 → dealers vendiendo ES (SELL HEDGE)
+  const d2d = totalDhp < -200;
+  l2 += d2d?2:0;
+  h2 += item(d2d==='warn'?'warn':d2d, 'Total DHP < -200 → dealers vendiendo ES (SELL HEDGE)',
+    `Total DHP: ${fN(totalDhp)}`, 2);
 
-  const d5 = nearCW && cwStrike && dexAtCW < 500;
-  l2 += d5 ? 3 : 0;
-  l2html += makeItem(d5?'⚡':'—', d5?'pass':'',
-    'DEX consumiendo en Call Wall → breakout posible',
-    `DEX bajando: ${fmtK(dexAtCW)} (threshold: <500)`,
-    d5?3:0, d5?'pos':'zero');
+  // DEX consumiendo en CW mientras precio sube → breakout posible
+  const d2e = nearCW && dexCW > 0 && dexCW < 300 && priceUp;
+  l2 += d2e?3:0;
+  h2 += item(d2e, 'DEX consumiendo en CW + precio subiendo → breakout posible',
+    `delta_OI: ${f2(dexCW)} (threshold <300)`, 3);
 
-  document.getElementById('layer2').innerHTML = l2html;
-  document.getElementById('pts2').textContent = l2 + '/14';
+  // net_dhp positivo en PW durante caída → Put support activo
+  const d2f = nearPW && pwNetDhp > 10 && priceDown;
+  l2 += d2f?2:0;
+  h2 += item(d2f, 'net_DHP positivo en Put Wall durante caída → soporte Put activo',
+    `net_dhp PW(${pwS.strike}): ${fN(pwNetDhp)}`, 2);
 
-  // ── LAYER 3: DHP MOMENTUM ───────────────────────────────────────────────
-  let l3 = 0, l3html = '';
+  document.getElementById('layer2').innerHTML = h2;
+  document.getElementById('pts2').textContent = l2+'/14';
 
-  const isAccBull = dhpDir === 'ACCELERATING_BULL';
-  const isBldBull = dhpDir === 'BUILDING_BULL';
-  const isAccBear = dhpDir === 'ACCELERATING_BEAR';
-  const isBldBear = dhpDir === 'BUILDING_BEAR';
-  const isNeutral = dhpDir === 'NEUTRAL';
+  // ── LAYER 3: DHP MOMENTUM (max 8) ─────────────────────────────────────────
+  let l3=0, h3='';
 
-  const p1 = isNeutral;
-  l3html += makeItem(p1?'⚠':'—', p1?'fail':'',
-    'DHP NEUTRAL → no operar, esperar señal',
-    `Direction: ${dhpDir}`,
-    0, 'zero');
+  h3 += item(isNeutral?'warn':null, 'DHP NEUTRAL → no operar, esperar señal',
+    `Direction: ${dhpDir}`, 0);
 
-  const p2 = isBldBull;
-  l3 += p2 ? 2 : 0;
-  l3html += makeItem(p2?'✓':'—', p2?'pass':'',
-    'DHP BUILDING BULL → preparar long',
-    `Momentum: ${dhpMom.toFixed(1)}`,
-    p2?2:0, p2?'pos':'zero');
+  const p3b = isBldBull;
+  l3 += p3b?2:0;
+  h3 += item(p3b, 'DHP BUILDING BULL → preparar LONG',
+    `Momentum: ${fN(dhpMom)}`, 2);
 
-  const p3 = isAccBull;
-  l3 += p3 ? 3 : 0;
-  l3html += makeItem(p3?'✓':'—', p3?'pass':'',
-    'DHP ACC.BULL → señal LONG confirmada',
-    `Direction: ${dhpDir}`,
-    p3?3:0, p3?'pos':'zero');
+  const p3c = isAccBull;
+  l3 += p3c?3:0;
+  h3 += item(p3c, 'DHP ACC.BULL → señal LONG confirmada ⚡',
+    `Direction: ${dhpDir}`, 3);
 
-  const p4 = isBldBear;
-  l3 += p4 ? 2 : 0;
-  l3html += makeItem(p4?'⚠':'—', p4?'fail':'',
-    'DHP BUILDING BEAR → preparar short',
-    `Direction: ${dhpDir}`,
-    p4?2:0, p4?'pos':'zero');
+  const p3d = isBldBear;
+  l3 += p3d?2:0;
+  h3 += item(p3d?'warn':null, 'DHP BUILDING BEAR → preparar SHORT',
+    `Momentum: ${fN(dhpMom)}`, 2);
 
-  const p5 = isAccBear;
-  l3 += p5 ? 3 : 0;
-  l3html += makeItem(p5?'⚠':'—', p5?'fail':'',
-    'DHP ACC.BEAR → señal SHORT confirmada',
-    `Direction: ${dhpDir}`,
-    p5?3:0, p5?'pos':'zero');
+  const p3e = isAccBear;
+  l3 += p3e?3:0;
+  h3 += item(p3e?'warn':null, 'DHP ACC.BEAR → señal SHORT confirmada ⚡',
+    `Direction: ${dhpDir}`, 3);
 
-  document.getElementById('layer3').innerHTML = l3html;
-  document.getElementById('pts3').textContent = l3 + '/8';
+  document.getElementById('layer3').innerHTML = h3;
+  document.getElementById('pts3').textContent = l3+'/8';
 
-  // ── LAYER 4: GFS LINES ──────────────────────────────────────────────────
-  let l4 = 0, l4html = '';
+  // ── LAYER 4: GFS LINES / HIRO (max 19) ────────────────────────────────────
+  let l4=0, h4='';
 
-  const g1 = !nearCW || gfsCalls < hiroPut;
-  l4 += g1 ? 2 : 0;
-  l4html += makeItem(g1?'✓':'—', g1?'pass':'',
-    'Precio no rompe línea Calls → Call Wall activo',
-    `GFS Calls: ${fmtM(gfsCalls)}`,
-    g1?2:0, g1?'pos':'zero');
+  // Calls > Puts en magnitud → flujo call dominante
+  const g4a = hiroCall > Math.abs(hiroPut);
+  l4 += g4a?2:0;
+  h4 += item(g4a, 'HIRO Calls domina → flujo call positivo',
+    `Calls: ${fM(hiroCall)} · Puts: ${fM(hiroPut)}`, 2);
 
-  const g2 = nearPW && gfsPuts < 0;
-  l4 += g2 ? 2 : 0;
-  l4html += makeItem(g2?'✓':'—', g2?'pass':'',
-    'Precio apoyándose en línea Puts → Put support activo',
-    `GFS Puts: ${fmtM(gfsPuts)} · PW: ${putWall}`,
-    g2?2:0, g2?'pos':'zero');
+  // Puts dominan
+  const g4b = Math.abs(hiroPut) > hiroCall;
+  l4 += g4b?2:0;
+  h4 += item(g4b?'warn':null, 'HIRO Puts domina → presión put bajista',
+    `Puts: ${fM(hiroPut)} · Calls: ${fM(hiroCall)}`, 2);
 
-  const g3 = gfsNet > 0;
-  l4 += g3 ? 3 : 0;
-  l4html += makeItem(g3?'✓':'✗', g3?'pass':'fail',
-    'GFS Net positivo → sesgo LONG acumulado',
-    `GFS Net: ${fmtM(gfsNet)}`,
-    g3?3:0, g3?'pos':'zero');
+  // HIRO Net positivo → sesgo LONG acumulado
+  const g4c = gfsNet > 0.05;
+  l4 += g4c?3:0;
+  h4 += item(g4c, 'HIRO Net positivo → sesgo LONG acumulado',
+    `Net: ${fM(gfsNet)}`, 3);
 
-  const g4 = gfsNet < 0;
-  l4 += g4 ? 3 : 0;
-  l4html += makeItem(g4?'⚠':'—', g4?'fail':'',
-    'GFS Net negativo → sesgo SHORT acumulado',
-    `GFS Net: ${fmtM(gfsNet)}`,
-    g4?3:0, g4?'pos':'zero');
+  // HIRO Net negativo → sesgo SHORT acumulado
+  const g4d = gfsNet < -0.05;
+  l4 += g4d?3:0;
+  h4 += item(g4d?'warn':null, 'HIRO Net negativo → sesgo SHORT acumulado',
+    `Net: ${fM(gfsNet)}`, 3);
 
-  const g5 = gfsCrossUp;
-  l4 += g5 ? 3 : 0;
-  l4html += makeItem(g5?'⚡':'—', g5?'pass':'',
-    'GFS Net cruza 0 hacia arriba → señal LONG',
-    g5 ? 'Cruce detectado este ciclo' : 'Sin cruce reciente',
-    g5?3:0, g5?'pos':'zero');
+  // Cruce HIRO Net 0 hacia arriba
+  l4 += hiroNetCrossUp?3:0;
+  h4 += item(hiroNetCrossUp, 'HIRO Net cruza 0 → arriba → señal LONG ⚡',
+    hiroNetCrossUp?'Cruce detectado':'Sin cruce', 3);
 
-  const g6 = gfsCrossDn;
-  l4 += g6 ? 3 : 0;
-  l4html += makeItem(g6?'⚡':'—', g6?'fail':'',
-    'GFS Net cruza 0 hacia abajo → señal SHORT',
-    g6 ? 'Cruce detectado este ciclo' : 'Sin cruce reciente',
-    g6?3:0, g6?'pos':'zero');
+  // Cruce HIRO Net 0 hacia abajo
+  l4 += hiroNetCrossDn?3:0;
+  h4 += item(hiroNetCrossDn?'warn':null, 'HIRO Net cruza 0 → abajo → señal SHORT ⚡',
+    hiroNetCrossDn?'Cruce detectado':'Sin cruce', 3);
 
-  const g7 = divergLong;
-  l4 += g7 ? 3 : 0;
-  l4html += makeItem(g7?'⚡':'—', g7?'pass':'',
-    'Divergencia: precio cae, GFS Net positivo → fade drop',
-    g7 ? 'DIVERGENCIA ALCISTA detectada' : 'Sin divergencia',
-    g7?3:0, g7?'pos':'zero');
+  // Divergencia alcista
+  l4 += divergBull?3:0;
+  h4 += item(divergBull, 'Divergencia: precio cae, HIRO positivo → fade drop',
+    divergBull?'DIVERGENCIA ALCISTA':'Sin divergencia', 3);
 
-  const g8 = divergShort;
-  l4 += g8 ? 3 : 0;
-  l4html += makeItem(g8?'⚡':'—', g8?'fail':'',
-    'Divergencia: precio sube, GFS Net negativo → fade rally',
-    g8 ? 'DIVERGENCIA BAJISTA detectada' : 'Sin divergencia',
-    g8?3:0, g8?'pos':'zero');
+  // Divergencia bajista
+  l4 += divergBear?3:0;
+  h4 += item(divergBear?'warn':null, 'Divergencia: precio sube, HIRO negativo → fade rally',
+    divergBear?'DIVERGENCIA BAJISTA':'Sin divergencia', 3);
 
-  document.getElementById('layer4').innerHTML = l4html;
-  document.getElementById('pts4').textContent = l4 + '/19';
+  document.getElementById('layer4').innerHTML = h4;
+  document.getElementById('pts4').textContent = l4+'/19 (acum.)';
 
-  // ── LAYER 5: PRESSURE MAP ───────────────────────────────────────────────
-  // We calculate DSI/VTS/MCS from strikes locally
-  let l5 = 0, l5html = '';
+  // ── LAYER 5: PRESSURE MAP (max 19) ────────────────────────────────────────
+  let l5=0, h5='';
 
-  // Simple proxy metrics from available data
-  const posGexCount = strikes.filter(s => (s.net_gex||0) > 0).length;
-  const negGexCount = strikes.filter(s => (s.net_gex||0) < 0).length;
-  const totalCount  = strikes.length || 1;
-  const absPct = Math.round(posGexCount / totalCount * 100);
-  const fragPct = 100 - absPct;
+  // DSI proxy: % strikes con GEX positivo
+  const m5a = absPct > 80;
+  l5 += m5a?2:0;
+  h5 += item(m5a, 'DSI alto → estructura estable (Abs > 80%)',
+    `Absorción: ${absPct}% · Fragile: ${fragPct}%`, 2);
 
-  // Proxy DSI from absorption %
-  const dsiProxy = Math.min(100, Math.round(absPct * 1.1));
-  // Proxy VTS from negative GEX concentration
-  const vtsProxy = Math.min(100, Math.round(fragPct * 0.8 + (nearPW ? 20 : 0)));
+  // Abs < 50 → estructura frágil
+  const m5b = absPct < 50;
+  l5 += m5b?2:0;
+  h5 += item(m5b?'warn':null, 'Abs < 50% → estructura frágil, riesgo expansión',
+    `Absorción: ${absPct}%`, 2);
 
-  const m1 = dsiProxy > 80;
-  l5 += m1 ? 2 : 0;
-  l5html += makeItem(m1?'✓':'✗', m1?'pass':'fail',
-    'DSI > 80 → estructura estable, dealers absorbiendo',
-    `DSI proxy: ${dsiProxy}% (Abs: ${absPct}%)`,
-    m1?2:0, m1?'pos':'zero');
+  // VTS proxy: % strikes con GEX negativo < 20%
+  const vtsProxy = fragPct;
+  const m5c = vtsProxy < 20;
+  l5 += m5c?2:0;
+  h5 += item(m5c, 'VTS bajo → trigger lejos, entorno controlado',
+    `Fragile %: ${vtsProxy}%`, 2);
 
-  const m2 = vtsProxy < 30;
-  l5 += m2 ? 2 : 0;
-  l5html += makeItem(m2?'✓':'—', m2?'pass':'',
-    'VTS < 30 → trigger lejos, entorno controlado',
-    `VTS proxy: ${vtsProxy}`,
-    m2?2:0, m2?'pos':'zero');
+  // ATM net_dhp indica dirección local
+  const m5d = atmNetDhp > 10 && aboveFlip;
+  l5 += m5d?2:0;
+  h5 += item(m5d, 'net_DHP ATM positivo sobre Flip → soporte local',
+    `net_dhp ATM: ${fN(atmNetDhp)}`, 2);
 
-  const m3 = absPct > 80;
-  l5 += m3 ? 2 : 0;
-  l5html += makeItem(m3?'✓':'✗', m3?'pass':'fail',
-    'Absorption > 80% → dealers en control',
-    `Absorción: ${absPct}% · Fragile: ${fragPct}%`,
-    m3?2:0, m3?'pos':'zero');
+  // Drift alcista: totalDhp > 0 + aboveFlip
+  const m5e = totalDhp > 100 && aboveFlip;
+  l5 += m5e?2:0;
+  h5 += item(m5e, 'Drift UPWARD: DHP>100 + sobre Flip',
+    `DHP: ${fN(totalDhp)} · Flip: ${flip}`, 2);
 
-  const m4 = nearNode && posGexCount > negGexCount;
-    l5 += m4 ? 3 : 0;
-  l5html += makeItem(m4?'✓':'—', m4?'pass':'',
-    'Zona ABSORPTION en strike de entry',
-    `Node: ${node} · Precio: ${fmt(spot)}`,
-    m4?3:0, m4?'pos':'zero');
+  // Drift bajista
+  const m5f = totalDhp < -100 && !aboveFlip;
+  l5 += m5f?2:0;
+  h5 += item(m5f?'warn':null, 'Drift DOWNWARD: DHP<-100 + bajo Flip',
+    `DHP: ${fN(totalDhp)}`, 2);
 
-  const m5 = totalDhp > 0 && aboveFlip;
-  l5 += m5 ? 2 : 0;
-  l5html += makeItem(m5?'✓':'—', m5?'pass':'',
-    'Drift UPWARD STABILIZATION → sesgo alcista',
-    `DHP: ${fmtM(totalDhp)} · Above Flip: ${aboveFlip}`,
-    m5?2:0, m5?'pos':'zero');
+  // Confluencia Put Wall ≥ 2
+  const m5g = confPW >= 2;
+  l5 += m5g?2:0;
+  h5 += item(m5g, 'Confluencia ≥ 2x en Put Wall → piso sólido',
+    `PW ${pw}: ${confPW}x layers`, 2);
 
-  const m6 = !aboveFlip && totalDhp < 0;
-  l5 += m6 ? 2 : 0;
-  l5html += makeItem(m6?'⚠':'—', m6?'fail':'',
-    'Drift DOWNWARD FRAGILITY → sesgo bajista',
-    `DHP negativo + bajo Flip`,
-    m6?2:0, m6?'pos':'zero');
+  // Prediction score ATM < 40 → zona de baja convicción
+  const m5h = predScore >= 45;
+  l5 += m5h?2:0;
+  h5 += item(m5h, 'Prediction Score ATM ≥ 45 → zona de convicción',
+    `Score: ${predScore.toFixed(1)}`, 2);
 
-  const m7 = nearPW && posGexCount < negGexCount;
-  l5 += m7 ? 2 : 0;
-  l5html += makeItem(m7?'⚠':'—', m7?'fail':'',
-    'Zona FRAGILE cerca → invalidación posible',
-    `Put Wall: ${putWall} · Precio: ${fmt(spot)}`,
-    m7?2:0, m7?'pos':'zero');
+  // Precio cerca del Node (imán)
+  const m5i = nearNode;
+  l5 += m5i?3:0;
+  h5 += item(m5i, 'Precio cerca del Gamma Node → zona magnética',
+    `Node: ${node} · Spot: ${f2(spot)} · Dist: ${distNode.toFixed(0)}pts`, 3);
 
-  const m8 = confAtPW >= 2;
-  l5 += m8 ? 2 : 0;
-  l5html += makeItem(m8?'✓':'—', m8?'pass':'',
-    'Confluencia ≥ 2x en Put Wall → piso sólido',
-    `PW ${putWall}: ${confAtPW}x layers`,
-    m8?2:0, m8?'pos':'zero');
+  document.getElementById('layer5').innerHTML = h5;
+  document.getElementById('pts5').textContent = l5+'/19';
 
-  document.getElementById('layer5').innerHTML = l5html;
-  document.getElementById('pts5').textContent = l5 + '/19';
+  // ── LAYER 6: CONFLUENCIA FINAL (max 14) ───────────────────────────────────
+  let l6=0, h6='';
 
-  // ── LAYER 6: CONFLUENCIA FINAL ──────────────────────────────────────────
-  let l6 = 0, l6html = '';
+  h6 += manual('inPADZone', 'Precio en zona PAD mapeada pre-market',
+    'Verificar vs GAIA String del día', 2);
+  if(M.inPADZone) l6+=2;
 
-  l6html += makeManual('inPADZone',
-    'Precio en zona PAD mapeada pre-market',
-    'Verificar manualmente vs GAIA String del día',
-    2);
-  if (manualState.inPADZone) l6 += 2;
+  h6 += manual('noMacro', 'Sin dato macro en próximos 30 min',
+    'Verificar calendario económico', 2);
+  if(M.noMacro) l6+=2;
 
-  l6html += makeManual('noMacro',
-    'Sin dato macro en próximos 30 min',
-    'Verificar calendario económico',
-    2);
-  if (manualState.noMacro) l6 += 2;
+  h6 += manual('dhpConfirms', 'DHP confirma dirección del trade',
+    'BLD o ACC en la dirección del setup', 3);
+  if(M.dhpConfirms) l6+=3;
 
-  l6html += makeManual('dhpConfirms',
-    'DHP confirma dirección del trade',
-    'BLD o ACC en la dirección del setup',
-    3);
-  if (manualState.dhpConfirms) l6 += 3;
+  h6 += manual('gfsConfirms', 'HIRO Net confirma dirección del trade',
+    'Net positivo para long, negativo para short', 3);
+  if(M.gfsConfirms) l6+=3;
 
-  l6html += makeManual('gfsConfirms',
-    'GFS Net confirma dirección del trade',
-    'Net en la misma dirección que el trade',
-    3);
-  if (manualState.gfsConfirms) l6 += 3;
+  // Auto: DHP ACC + HIRO alineados = máxima convicción
+  const cf6e = (isAccBull && gfsNet>0.05) || (isAccBear && gfsNet<-0.05);
+  l6 += cf6e?4:0;
+  h6 += item(cf6e, 'DHP ACC + HIRO Net alineados → máxima convicción 💎',
+    `DHP: ${dhpDir} · HIRO: ${fM(gfsNet)}`, 4);
 
-  const cf5 = gfsNet !== 0 && ((gfsNet > 0 && isAccBull) || (gfsNet < 0 && isAccBear));
-  l6 += cf5 ? 4 : 0;
-  l6html += makeItem(cf5?'💎':'—', cf5?'pass':'',
-    'DHP ACC + GFS Net alineados → máxima convicción',
-    `DHP: ${dhpDir} · GFS: ${fmtM(gfsNet)}`,
-    cf5?4:0, cf5?'pos':'zero');
+  document.getElementById('layer6').innerHTML = h6;
+  document.getElementById('pts6').textContent = l6+'/14';
 
-  document.getElementById('layer6').innerHTML = l6html;
-  document.getElementById('pts6').textContent = l6 + '/14';
-
-  // ── TOTAL SCORE ──────────────────────────────────────────────────────────
-  const total = l1 + l2 + l3 + l4 + l5 + l6;
-  const pct = Math.min(100, Math.round(total / 85 * 100));
-
-  document.getElementById('scoreNum').textContent = total;
-  document.getElementById('ls1').textContent = l1 + '/11';
-  document.getElementById('ls2').textContent = l2 + '/14';
-  document.getElementById('ls3').textContent = l3 + '/8';
-  document.getElementById('ls4').textContent = l4 + '/19';
-  document.getElementById('ls5').textContent = l5 + '/19';
-  document.getElementById('ls6').textContent = l6 + '/14';
+  // ── TOTAL ─────────────────────────────────────────────────────────────────
+  const total = l1+l2+l3+l4+l5+l6;
+  const pct   = Math.min(100, Math.round(total/85*100));
 
   let verdict, vColor, fillColor;
-  if (total <= 30)      { verdict = '❌ NO TRADE';         vColor = 'var(--muted)';  fillColor = 'var(--slate)'; }
-  else if (total <= 50) { verdict = '⚠️ SETUP DÉBIL';      vColor = 'var(--amber)';  fillColor = 'var(--amber)'; }
-  else if (total <= 65) { verdict = '🟡 SETUP VÁLIDO';     vColor = 'var(--yellow)'; fillColor = 'var(--yellow)'; }
-  else if (total <= 80) { verdict = '🟢 SETUP SÓLIDO';     vColor = 'var(--green)';  fillColor = 'var(--green)'; }
-  else                  { verdict = '💎 ALTA CONVICCIÓN';  vColor = 'var(--cyan)';   fillColor = 'var(--cyan)'; }
+  if(total<=30)      {verdict='❌ NO TRADE';        vColor='var(--muted)';  fillColor='#475569';}
+  else if(total<=50) {verdict='⚠️ SETUP DÉBIL';     vColor='var(--amber)';  fillColor='#d97706';}
+  else if(total<=65) {verdict='🟡 SETUP VÁLIDO';    vColor='var(--yellow)'; fillColor='#ca8a04';}
+  else if(total<=80) {verdict='🟢 SETUP SÓLIDO';    vColor='var(--green)';  fillColor='#059669';}
+  else               {verdict='💎 ALTA CONVICCIÓN'; vColor='var(--cyan)';   fillColor='#0891b2';}
 
-  const scoreEl = document.getElementById('scoreNum');
-  scoreEl.style.color = vColor;
-  const verdEl = document.getElementById('scoreVerdict');
-  verdEl.textContent = verdict;
-  verdEl.style.color = vColor;
-  verdEl.style.borderColor = vColor;
-  document.getElementById('meterFill').style.width = pct + '%';
+  document.getElementById('scoreNum').textContent   = total;
+  document.getElementById('scoreNum').style.color   = vColor;
+  document.getElementById('scoreVerdict').textContent    = verdict;
+  document.getElementById('scoreVerdict').style.color    = vColor;
+  document.getElementById('scoreVerdict').style.borderColor = vColor;
+  document.getElementById('meterFill').style.width      = pct+'%';
   document.getElementById('meterFill').style.background = fillColor;
-  document.getElementById('meterLabel').textContent = `${pct}% · ${verdict}`;
+  document.getElementById('meterLabel').textContent     = `${total}/85 · ${pct}% · ${verdict}`;
+  document.getElementById('ls1').textContent = l1+'/11';
+  document.getElementById('ls2').textContent = l2+'/14';
+  document.getElementById('ls3').textContent = l3+'/8';
+  document.getElementById('ls4').textContent = l4+'/19';
+  document.getElementById('ls5').textContent = l5+'/19';
+  document.getElementById('ls6').textContent = l6+'/14';
 
   // Direction signal
-  const longScore  = l3 * (isAccBull || isBldBull ? 1 : 0) + (gfsNet > 0 ? 5 : 0) + (buyHedge ? 3 : 0);
-  const shortScore = l3 * (isAccBear || isBldBear ? 1 : 0) + (gfsNet < 0 ? 5 : 0) + (!buyHedge ? 3 : 0);
-  const dirEl = document.getElementById('dirSignal');
+  const longPts  = (isBull?5:0) + (gfsNet>0.05?4:0) + (totalDhp>200?3:0) + (divergBull?3:0);
+  const shortPts = (isBear?5:0) + (gfsNet<-0.05?4:0) + (totalDhp<-200?3:0) + (divergBear?3:0);
+  const dirEl  = document.getElementById('dirSignal');
   const dirSub = document.getElementById('dirSub');
-  if (total <= 30) {
-    dirEl.textContent = 'NEUTRAL'; dirEl.className = 'dir-neutral';
-    dirSub.textContent = 'Score insuficiente';
-  } else if (longScore > shortScore) {
-    dirEl.textContent = '▲ LONG'; dirEl.className = 'dir-long';
-    dirSub.textContent = `DHP: ${dhpDir} · GFS: ${fmtM(gfsNet)}`;
-  } else if (shortScore > longScore) {
-    dirEl.textContent = '▼ SHORT'; dirEl.className = 'dir-short';
-    dirSub.textContent = `DHP: ${dhpDir} · GFS: ${fmtM(gfsNet)}`;
+  if(total<=30){
+    dirEl.textContent='NEUTRAL'; dirEl.style.color='var(--amber)';
+    dirSub.textContent='Score insuficiente — no operar';
+  } else if(longPts>shortPts){
+    dirEl.textContent='▲ LONG'; dirEl.style.color='var(--green)';
+    dirSub.textContent=`DHP: ${dhpDir}\nHIRO Net: ${fM(gfsNet)}`;
+  } else if(shortPts>longPts){
+    dirEl.textContent='▼ SHORT'; dirEl.style.color='var(--red)';
+    dirSub.textContent=`DHP: ${dhpDir}\nHIRO Net: ${fM(gfsNet)}`;
   } else {
-    dirEl.textContent = 'NEUTRAL'; dirEl.className = 'dir-neutral';
-    dirSub.textContent = 'Sin señal clara';
+    dirEl.textContent='NEUTRAL'; dirEl.style.color='var(--amber)';
+    dirSub.textContent='Sin señal clara';
   }
 
   // Metrics strip
-  document.getElementById('spotPrice').textContent = fmt(spot);
-  document.getElementById('spotSub').textContent = `ES ${fmt(spotES)} · BASIS ${basis >= 0 ? '+' : ''}${basis.toFixed(2)}`;
-  document.getElementById('ms-regime').textContent = aboveFlip ? 'DAMPENED' : 'AMPLIFIED';
-  document.getElementById('ms-regime').style.color = aboveFlip ? 'var(--green)' : 'var(--orange)';
-  document.getElementById('ms-flip').textContent = fmt(flip);
-  document.getElementById('ms-cw').textContent = fmt(callWall);
-  document.getElementById('ms-pw').textContent = fmt(putWall);
-  document.getElementById('ms-node').textContent = fmt(node);
-  document.getElementById('ms-dhp').textContent = dhpDir.replace('_',' ');
-  document.getElementById('ms-dhp').style.color = (isAccBull||isBldBull) ? 'var(--green)' : (isAccBear||isBldBear) ? 'var(--red)' : 'var(--amber)';
-  document.getElementById('ms-gfs').textContent = fmtM(gfsNet);
-  document.getElementById('ms-gfs').style.color = gfsNet > 0 ? 'var(--green)' : gfsNet < 0 ? 'var(--red)' : 'var(--amber)';
-  document.getElementById('ms-hcall').textContent = fmtM(gfsCalls);
-  document.getElementById('ms-hput').textContent = fmtM(gfsPuts);
-  document.getElementById('ms-tdhp').textContent = fmtM(totalDhp);
-  document.getElementById('ms-ts').textContent = raw.timestamp || '—';
-  document.getElementById('footerTs').textContent = new Date().toLocaleTimeString('en-US', {timeZone:'America/New_York'}) + ' ET';
+  document.getElementById('spotPrice').textContent = f2(spot);
+  document.getElementById('spotSub').textContent   = `ES ${f2(spotES)} · BASIS +${basis.toFixed(2)}`;
+  document.getElementById('ms-regime').textContent = aboveFlip?'DAMPENED':'AMPLIFIED';
+  document.getElementById('ms-regime').style.color = aboveFlip?'var(--green)':'var(--orange)';
+  document.getElementById('ms-flip').textContent   = f2(flip);
+  document.getElementById('ms-cw').textContent     = f2(cw);
+  document.getElementById('ms-pw').textContent     = f2(pw);
+  document.getElementById('ms-node').textContent   = f2(node);
+  document.getElementById('ms-dhpdir').textContent = dhpDir.replace('_',' ');
+  document.getElementById('ms-dhpdir').style.color = isBull?'var(--green)':isBear?'var(--red)':'var(--amber)';
+  document.getElementById('ms-dhpmom').textContent = fN(dhpMom);
+  document.getElementById('ms-hcall').textContent  = fM(hiroCall);
+  document.getElementById('ms-hput').textContent   = fM(hiroPut);
+  document.getElementById('ms-hnet').textContent   = fM(gfsNet);
+  document.getElementById('ms-hnet').style.color   = gfsNet>0?'var(--green)':gfsNet<0?'var(--red)':'var(--amber)';
+  document.getElementById('ms-tdhp').textContent   = fN(totalDhp);
+  document.getElementById('ms-pred').textContent   = predScore.toFixed(1);
+  document.getElementById('ms-ts').textContent     = raw.timestamp||'—';
+  document.getElementById('footerTs').textContent  = new Date().toLocaleTimeString('en-US',{timeZone:'America/New_York'})+' ET';
 }
 
-// ── MAIN LOOP ─────────────────────────────────────────────────────────────────
-async function update() {
+// ── LOOP ──────────────────────────────────────────────────────────────────────
+async function tick(){
   const raw = await fetchData();
   const dot = document.getElementById('liveDot');
   const lbl = document.getElementById('liveLabel');
-  if (!raw || !raw.strikes?.length) {
-    dot.style.background = 'var(--red)';
-    lbl.textContent = 'NO DATA';
-    lbl.style.color = 'var(--red)';
-    return;
+  if(!raw||!raw.strikes?.length){
+    dot.style.background='var(--red)'; lbl.textContent='NO DATA'; lbl.style.color='var(--red)'; return;
   }
-  dot.style.background = 'var(--green)';
-  lbl.textContent = 'LIVE';
-  lbl.style.color = 'var(--green)';
-  evaluate(raw);
+  dot.style.background='var(--green)'; lbl.textContent='LIVE'; lbl.style.color='var(--green)';
+  run(raw);
 }
-
-update();
-setInterval(update, 5000);
+tick();
+setInterval(tick, 5000);
 </script>
 </body>
 </html>
