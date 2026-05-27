@@ -1,0 +1,673 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GAIA Trade Checklist · PivotAlphaDesk</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Barlow+Condensed:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:     #070b14;
+  --bg2:    #0d1428;
+  --bg3:    #111c35;
+  --nbr:    #1c2840;
+  --text:   #b0c4de;
+  --dim:    #38507a;
+  --bright: #e8f0ff;
+  --green:  #00d4aa;
+  --red:    #ff5c5c;
+  --amber:  #f5a623;
+  --blue:   #4fc3f7;
+  --white:  #ffffff;
+  --gray:   #4a6080;
+  --gold:   #f0c040;
+}
+* { margin:0; padding:0; box-sizing:border-box; }
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Barlow Condensed', sans-serif;
+  min-height: 100vh;
+  padding: 16px;
+}
+
+/* ── WRAPPER ── */
+.gcc {
+  background: var(--bg);
+  border: 1px solid var(--nbr);
+  max-width: 960px;
+  margin: 0 auto;
+  overflow: hidden;
+}
+.gcc::before {
+  content: '';
+  display: block;
+  height: 2px;
+  background: linear-gradient(90deg, #4fc3f7, #00d4aa, #f5a623);
+}
+
+/* ── HEADER ── */
+.hdr {
+  background: var(--bg2);
+  border-bottom: 1px solid var(--nbr);
+  padding: 10px 16px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.hdr-title {
+  font-family: 'Space Mono', monospace;
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--white);
+  letter-spacing: .2em;
+}
+.hdr-right {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+.hdr-spot {
+  font-family: 'Space Mono', monospace;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--white);
+}
+.hdr-time {
+  font-family: 'Space Mono', monospace;
+  font-size: 9px;
+  color: var(--dim);
+  letter-spacing: .1em;
+}
+.live-dot {
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: var(--green);
+  display: inline-block;
+  margin-right: 4px;
+  animation: pulse 2s infinite;
+}
+@keyframes pulse {
+  0%,100% { opacity:1; }
+  50% { opacity:.3; }
+}
+
+/* ── SCORE BAR ── */
+.score-bar {
+  background: var(--bg2);
+  border-bottom: 1px solid var(--nbr);
+  padding: 12px 16px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+.score-number {
+  font-family: 'Space Mono', monospace;
+  font-size: 36px;
+  font-weight: 700;
+  line-height: 1;
+  min-width: 60px;
+}
+.score-max {
+  font-family: 'Space Mono', monospace;
+  font-size: 11px;
+  color: var(--dim);
+}
+.score-track {
+  flex: 1;
+  height: 6px;
+  background: var(--nbr);
+  border-radius: 3px;
+  overflow: hidden;
+  min-width: 100px;
+}
+.score-fill {
+  height: 100%;
+  border-radius: 3px;
+  transition: width .5s ease, background .3s;
+}
+.score-action {
+  font-family: 'Space Mono', monospace;
+  font-size: 10px;
+  letter-spacing: .15em;
+  padding: 4px 12px;
+  border: 1px solid;
+  white-space: nowrap;
+}
+.score-direction {
+  font-family: 'Space Mono', monospace;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: .1em;
+}
+
+/* ── CATEGORIES GRID ── */
+.cats {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  border-top: 1px solid var(--nbr);
+}
+@media(max-width:680px) { .cats { grid-template-columns: 1fr; } }
+
+.cat {
+  padding: 12px 14px;
+  border-right: 1px solid var(--nbr);
+  border-bottom: 1px solid var(--nbr);
+}
+.cat:nth-child(3n) { border-right: none; }
+.cat:nth-last-child(-n+3) { border-bottom: none; }
+
+.cat-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+  padding-bottom: 7px;
+  border-bottom: 1px solid var(--nbr);
+}
+.cat-title {
+  font-family: 'Space Mono', monospace;
+  font-size: 8px;
+  letter-spacing: .18em;
+  color: var(--dim);
+}
+.cat-score {
+  font-family: 'Space Mono', monospace;
+  font-size: 11px;
+  font-weight: 700;
+}
+
+/* ── SEMAPHORE ── */
+.semaphore {
+  display: flex;
+  gap: 6px;
+  margin-bottom: 10px;
+}
+.sem-btn {
+  flex: 1;
+  padding: 6px 4px;
+  border: 1px solid var(--nbr);
+  background: rgba(255,255,255,.02);
+  cursor: pointer;
+  font-family: 'Space Mono', monospace;
+  font-size: 9px;
+  letter-spacing: .05em;
+  text-align: center;
+  transition: all .15s;
+  color: var(--dim);
+}
+.sem-btn:hover { border-color: var(--text); color: var(--text); }
+.sem-btn.active-green {
+  background: rgba(0,212,170,.12);
+  border-color: var(--green);
+  color: var(--green);
+}
+.sem-btn.active-amber {
+  background: rgba(245,166,35,.12);
+  border-color: var(--amber);
+  color: var(--amber);
+}
+.sem-btn.active-red {
+  background: rgba(255,92,92,.12);
+  border-color: var(--red);
+  color: var(--red);
+}
+
+/* ── CRITERIA ── */
+.criteria {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+.criterion {
+  font-size: 10px;
+  color: var(--dim);
+  line-height: 1.4;
+  padding: 3px 6px;
+  background: rgba(255,255,255,.02);
+  border-left: 2px solid transparent;
+}
+.criterion.g { border-left-color: var(--green); color: var(--text); }
+.criterion.a { border-left-color: var(--amber); color: var(--text); }
+.criterion.r { border-left-color: var(--red);   color: var(--text); }
+
+/* ── LIVE VALUES ── */
+.live-vals {
+  margin-top: 8px;
+  padding-top: 6px;
+  border-top: 1px solid var(--nbr);
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.lv-item {
+  font-family: 'Space Mono', monospace;
+  font-size: 8px;
+}
+.lv-label { color: var(--dim); }
+.lv-val { font-weight: 700; }
+
+/* ── EDGE BOTTOM ── */
+.edge {
+  border-top: 1px solid var(--nbr);
+  padding: 10px 16px;
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+  background: rgba(13,20,40,.6);
+}
+.edge-lbl {
+  font-family: 'Space Mono', monospace;
+  font-size: 7px;
+  letter-spacing: .2em;
+  color: var(--amber);
+  white-space: nowrap;
+  padding-top: 2px;
+  flex-shrink: 0;
+}
+.edge-txt {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text);
+  line-height: 1.5;
+}
+
+/* ── REFRESH ── */
+.refresh-bar {
+  background: var(--bg2);
+  border-top: 1px solid var(--nbr);
+  padding: 6px 16px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.refresh-btn {
+  font-family: 'Space Mono', monospace;
+  font-size: 8px;
+  letter-spacing: .12em;
+  color: var(--blue);
+  background: none;
+  border: 1px solid rgba(79,195,247,.3);
+  padding: 3px 10px;
+  cursor: pointer;
+  transition: all .15s;
+}
+.refresh-btn:hover { border-color: var(--blue); background: rgba(79,195,247,.06); }
+.refresh-note {
+  font-family: 'Space Mono', monospace;
+  font-size: 8px;
+  color: var(--dim);
+}
+</style>
+</head>
+<body>
+
+<div class="gcc">
+
+  <div class="hdr">
+    <div>
+      <div class="hdr-title">⬡ GAIA TRADE CHECKLIST · SPX + ES</div>
+      <div class="hdr-time" id="hdTime">—</div>
+    </div>
+    <div class="hdr-right">
+      <span class="hdr-spot" id="hdSpot"><span class="live-dot"></span>···</span>
+      <span id="hdRegime" style="font-family:'Space Mono',monospace;font-size:9px;padding:3px 10px;border:1px solid var(--dim);color:var(--dim);">—</span>
+    </div>
+  </div>
+
+  <!-- SCORE BAR -->
+  <div class="score-bar">
+    <div>
+      <div class="score-number" id="scoreNum">0</div>
+      <div class="score-max">/ 12</div>
+    </div>
+    <div class="score-track">
+      <div class="score-fill" id="scoreFill" style="width:0%;background:var(--gray)"></div>
+    </div>
+    <div class="score-action" id="scoreAction" style="color:var(--gray);border-color:var(--gray)">—</div>
+    <div class="score-direction" id="scoreDir" style="color:var(--dim)">NO SIGNAL</div>
+  </div>
+
+  <!-- CATEGORIES -->
+  <div class="cats">
+
+    <!-- 1. DHP MOMENTUM -->
+    <div class="cat" id="cat-dhp">
+      <div class="cat-header">
+        <span class="cat-title">① DHP MOMENTUM</span>
+        <span class="cat-score" id="sc-dhp" style="color:var(--dim)">—</span>
+      </div>
+      <div class="semaphore">
+        <button class="sem-btn" onclick="setScore('dhp',2,this,'green')">🟢 +2</button>
+        <button class="sem-btn" onclick="setScore('dhp',1,this,'amber')">🟡 +1</button>
+        <button class="sem-btn" onclick="setScore('dhp',0,this,'red')">🔴 +0</button>
+      </div>
+      <div class="criteria">
+        <div class="criterion g">🟢 ACC.BULL (long) · ACC.BEAR (short)</div>
+        <div class="criterion a">🟡 BLD.BULL (long) · BLD.BEAR (short)</div>
+        <div class="criterion r">🔴 NEUTRAL — no trade</div>
+      </div>
+      <div class="live-vals">
+        <div class="lv-item"><span class="lv-label">DIR: </span><span class="lv-val" id="lv-dir">—</span></div>
+        <div class="lv-item"><span class="lv-label">DHP: </span><span class="lv-val" id="lv-dhp">—</span></div>
+        <div class="lv-item"><span class="lv-label">HIRO: </span><span class="lv-val" id="lv-hiro">—</span></div>
+      </div>
+    </div>
+
+    <!-- 2. GEX STRUCTURE -->
+    <div class="cat" id="cat-gex">
+      <div class="cat-header">
+        <span class="cat-title">② GEX STRUCTURE</span>
+        <span class="cat-score" id="sc-gex" style="color:var(--dim)">—</span>
+      </div>
+      <div class="semaphore">
+        <button class="sem-btn" onclick="setScore('gex',2,this,'green')">🟢 +2</button>
+        <button class="sem-btn" onclick="setScore('gex',1,this,'amber')">🟡 +1</button>
+        <button class="sem-btn" onclick="setScore('gex',0,this,'red')">🔴 +0</button>
+      </div>
+      <div class="criteria">
+        <div class="criterion g">🟢 GEX >100K + DEX >1.5K · spot sobre Flip</div>
+        <div class="criterion a">🟡 GEX 50K–100K · spot ±10pts del Flip</div>
+        <div class="criterion r">🔴 GEX &lt;50K · spot bajo Flip (AMPLIFIED)</div>
+      </div>
+      <div class="live-vals">
+        <div class="lv-item"><span class="lv-label">FLIP: </span><span class="lv-val" id="lv-flip">—</span></div>
+        <div class="lv-item"><span class="lv-label">NODE: </span><span class="lv-val" id="lv-node">—</span></div>
+        <div class="lv-item"><span class="lv-label">CW: </span><span class="lv-val" id="lv-cw">—</span></div>
+        <div class="lv-item"><span class="lv-label">PW: </span><span class="lv-val" id="lv-pw">—</span></div>
+      </div>
+    </div>
+
+    <!-- 3. DEX BEHAVIOR -->
+    <div class="cat" id="cat-dex">
+      <div class="cat-header">
+        <span class="cat-title">③ DEX BEHAVIOR</span>
+        <span class="cat-score" id="sc-dex" style="color:var(--dim)">—</span>
+      </div>
+      <div class="semaphore">
+        <button class="sem-btn" onclick="setScore('dex',2,this,'green')">🟢 +2</button>
+        <button class="sem-btn" onclick="setScore('dex',1,this,'amber')">🟡 +1</button>
+        <button class="sem-btn" onclick="setScore('dex',0,this,'red')">🔴 +0</button>
+      </div>
+      <div class="criteria">
+        <div class="criterion g">🟢 DEX >2K en nivel · BUY HEDGE activo</div>
+        <div class="criterion a">🟡 DEX 1K–2K · hedge moderado</div>
+        <div class="criterion r">🔴 DEX &lt;1K · sin obligación visible</div>
+      </div>
+      <div class="live-vals">
+        <div class="lv-item"><span class="lv-label">SPOT ES: </span><span class="lv-val" id="lv-es">—</span></div>
+        <div class="lv-item"><span class="lv-label">BASIS: </span><span class="lv-val" id="lv-basis">—</span></div>
+      </div>
+    </div>
+
+    <!-- 4. GFS LINES -->
+    <div class="cat" id="cat-gfs">
+      <div class="cat-header">
+        <span class="cat-title">④ GFS LINES</span>
+        <span class="cat-score" id="sc-gfs" style="color:var(--dim)">—</span>
+      </div>
+      <div class="semaphore">
+        <button class="sem-btn" onclick="setScore('gfs',2,this,'green')">🟢 +2</button>
+        <button class="sem-btn" onclick="setScore('gfs',1,this,'amber')">🟡 +1</button>
+        <button class="sem-btn" onclick="setScore('gfs',0,this,'red')">🔴 +0</button>
+      </div>
+      <div class="criteria">
+        <div class="criterion g">🟢 GFS Calls dom. · NET positivo subiendo</div>
+        <div class="criterion a">🟡 Calls > Puts pero margen pequeño · flat</div>
+        <div class="criterion r">🔴 GFS NET neutro · contradice dirección</div>
+      </div>
+      <div class="live-vals">
+        <div class="lv-item"><span class="lv-label">CALL: </span><span class="lv-val" id="lv-hcall">—</span></div>
+        <div class="lv-item"><span class="lv-label">PUT: </span><span class="lv-val" id="lv-hput">—</span></div>
+        <div class="lv-item"><span class="lv-label">NET: </span><span class="lv-val" id="lv-hnet">—</span></div>
+      </div>
+    </div>
+
+    <!-- 5. PRESSURE MAP -->
+    <div class="cat" id="cat-pm">
+      <div class="cat-header">
+        <span class="cat-title">⑤ PRESSURE MAP</span>
+        <span class="cat-score" id="sc-pm" style="color:var(--dim)">—</span>
+      </div>
+      <div class="semaphore">
+        <button class="sem-btn" onclick="setScore('pm',2,this,'green')">🟢 +2</button>
+        <button class="sem-btn" onclick="setScore('pm',1,this,'amber')">🟡 +1</button>
+        <button class="sem-btn" onclick="setScore('pm',0,this,'red')">🔴 +0</button>
+      </div>
+      <div class="criteria">
+        <div class="criterion g">🟢 ABSORPTION/COMPRESSION · GEX >100K debajo</div>
+        <div class="criterion a">🟡 BALANCED · soporte presente pero débil</div>
+        <div class="criterion r">🔴 GEX negativo en dirección · manip. zone</div>
+      </div>
+      <div class="live-vals">
+        <div class="lv-item"><span class="lv-label">CONFLUENCE: </span><span class="lv-val" id="lv-conf">—</span></div>
+      </div>
+    </div>
+
+    <!-- 6. CONFLUENCE -->
+    <div class="cat" id="cat-cf">
+      <div class="cat-header">
+        <span class="cat-title">⑥ CONFLUENCE</span>
+        <span class="cat-score" id="sc-cf" style="color:var(--dim)">—</span>
+      </div>
+      <div class="semaphore">
+        <button class="sem-btn" onclick="setScore('cf',2,this,'green')">🟢 +2</button>
+        <button class="sem-btn" onclick="setScore('cf',1,this,'amber')">🟡 +1</button>
+        <button class="sem-btn" onclick="setScore('cf',0,this,'red')">🔴 +0</button>
+      </div>
+      <div class="criteria">
+        <div class="criterion g">🟢 DHP + VWAP + SMH alineados · sin macro</div>
+        <div class="criterion a">🟡 2 de 3 presentes · precio AT VWAP</div>
+        <div class="criterion r">🔴 DHP contradice · macro inmediato · 10:45–11:45</div>
+      </div>
+      <div class="live-vals">
+        <div class="lv-item"><span class="lv-label">SPOT SPX: </span><span class="lv-val" id="lv-spx">—</span></div>
+        <div class="lv-item"><span class="lv-label">EXP: </span><span class="lv-val" id="lv-exp">—</span></div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- EDGE -->
+  <div class="edge">
+    <span class="edge-lbl">▶ REGLA</span>
+    <span class="edge-txt" id="edgeTxt">Seleccioná el semáforo de cada categoría para calcular el score.</span>
+  </div>
+
+  <!-- REFRESH -->
+  <div class="refresh-bar">
+    <button class="refresh-btn" onclick="loadData()">↻ REFRESH DATA</button>
+    <span class="refresh-note" id="refreshNote">Sin datos — conectá al servidor local</span>
+  </div>
+
+</div>
+
+<script>
+// ── STATE ─────────────────────────────────────────────────────
+const scores = { dhp:null, gex:null, dex:null, gfs:null, pm:null, cf:null };
+
+// ── SCORE LOGIC ───────────────────────────────────────────────
+function setScore(cat, val, btn, color) {
+  // Clear sibling buttons
+  btn.parentElement.querySelectorAll('.sem-btn').forEach(b => {
+    b.classList.remove('active-green','active-amber','active-red');
+  });
+  btn.classList.add('active-' + color);
+
+  scores[cat] = val;
+
+  // Update category score display
+  const sc = document.getElementById('sc-' + cat);
+  if (sc) {
+    sc.textContent = '+' + val;
+    sc.style.color = color === 'green' ? '#00d4aa' : color === 'amber' ? '#f5a623' : '#ff5c5c';
+  }
+
+  updateTotal();
+}
+
+function updateTotal() {
+  let total = 0;
+  let filled = 0;
+  for (const k in scores) {
+    if (scores[k] !== null) { total += scores[k]; filled++; }
+  }
+
+  // Only show total if at least one is filled
+  if (filled === 0) return;
+
+  document.getElementById('scoreNum').textContent = total;
+
+  // Fill bar
+  const pct = (total / 12) * 100;
+  const fill = document.getElementById('scoreFill');
+  fill.style.width = pct + '%';
+
+  // Color by score
+  let col, action, dir, dirCol;
+  if (total < 4) {
+    col = '#ff5c5c'; action = 'NO TRADE'; dir = '—'; dirCol = '#ff5c5c';
+  } else if (total <= 6) {
+    col = '#f5a623'; action = 'OBSERVAR'; dir = 'WAIT'; dirCol = '#f5a623';
+  } else if (total <= 8) {
+    col = '#f0c040'; action = 'SIZE REDUCIDO'; dir = '▲ LONG / ▼ SHORT'; dirCol = '#f0c040';
+  } else if (total <= 10) {
+    col = '#4fc3f7'; action = 'SIZE NORMAL'; dir = '▲ LONG / ▼ SHORT'; dirCol = '#4fc3f7';
+  } else {
+    col = '#00d4aa'; action = 'SIZE COMPLETO'; dir = '★ MAX CONVICTION'; dirCol = '#00d4aa';
+  }
+
+  fill.style.background = col;
+  document.getElementById('scoreNum').style.color = col;
+
+  const sa = document.getElementById('scoreAction');
+  sa.textContent = action;
+  sa.style.color = col;
+  sa.style.borderColor = col;
+
+  const sd = document.getElementById('scoreDir');
+  sd.textContent = dir;
+  sd.style.color = dirCol;
+
+  // Edge text
+  updateEdge(total);
+}
+
+function updateEdge(total) {
+  const txt = document.getElementById('edgeTxt');
+  if (total < 4) {
+    txt.innerHTML = '<span style="color:#ff5c5c">Score ' + total + '/12 — Estructura insuficiente. No operar.</span>';
+  } else if (total <= 6) {
+    txt.innerHTML = '<span style="color:#f5a623">Score ' + total + '/12 — Observar. Esperar confirmación DHP antes de entrar.</span>';
+  } else if (total <= 8) {
+    txt.innerHTML = '<span style="color:#f0c040">Score ' + total + '/12 — Setup moderado. Entry con size reducido. Stop ajustado.</span>';
+  } else if (total <= 10) {
+    txt.innerHTML = '<span style="color:#4fc3f7">Score ' + total + '/12 — Setup sólido. Size normal. Respetar niveles GEX.</span>';
+  } else {
+    txt.innerHTML = '<span style="color:#00d4aa">Score ' + total + '/12 — MAX CONVICTION. DHP + GEX + Confluence alineados. Size completo.</span>';
+  }
+}
+
+// ── LOAD DATA ─────────────────────────────────────────────────
+async function loadData() {
+  const endpoints = [
+    'http://localhost:5000/data',
+    'http://10.0.0.206:5000/data',
+    'https://app.pivotalphadesk.com/data'
+  ];
+
+  let data = null;
+  for (const url of endpoints) {
+    try {
+      const r = await fetch(url, { signal: AbortSignal.timeout(2000) });
+      if (r.ok) { data = await r.json(); break; }
+    } catch(e) {}
+  }
+
+  if (!data) {
+    document.getElementById('refreshNote').textContent = 'Sin conexión — modo manual activo';
+    return;
+  }
+
+  populateData(data);
+}
+
+function populateData(d) {
+  // Header
+  document.getElementById('hdSpot').innerHTML =
+    '<span class="live-dot"></span>' + (d.spot_spx || '—').toLocaleString('en-US', {minimumFractionDigits:2, maximumFractionDigits:2});
+  document.getElementById('hdTime').textContent = d.timestamp || '—';
+
+  // Regime
+  const reg = d.dhp_direction || '—';
+  const regEl = document.getElementById('hdRegime');
+  regEl.textContent = reg;
+  regEl.style.color = reg.includes('BULL') ? '#00d4aa' : reg.includes('BEAR') ? '#ff5c5c' : '#f5a623';
+  regEl.style.borderColor = regEl.style.color;
+
+  // DHP fields
+  document.getElementById('lv-dir').textContent = d.dhp_direction || '—';
+  document.getElementById('lv-dir').style.color = d.dhp_direction?.includes('BULL') ? '#00d4aa' :
+    d.dhp_direction?.includes('BEAR') ? '#ff5c5c' : '#f5a623';
+  document.getElementById('lv-dhp').textContent = d.total_dhp?.toFixed(1) || '—';
+  document.getElementById('lv-hiro').textContent = d.hiro_total !== undefined ?
+    (d.hiro_total >= 0 ? '+' : '') + d.hiro_total?.toFixed(2) : '—';
+
+  // Levels
+  const lv = d.levels || {};
+  document.getElementById('lv-flip').textContent = lv.gamma_flip || '—';
+  document.getElementById('lv-node').textContent = lv.gamma_node || '—';
+  document.getElementById('lv-cw').textContent   = lv.call_wall  || '—';
+  document.getElementById('lv-pw').textContent   = lv.put_wall   || '—';
+
+  // ES + basis
+  document.getElementById('lv-es').textContent    = d.spot_es?.toFixed(2) || '—';
+  document.getElementById('lv-basis').textContent = d.basis !== undefined ? '+' + d.basis?.toFixed(2) : '—';
+
+  // HIRO / GFS
+  document.getElementById('lv-hcall').textContent = d.hiro_call !== undefined ?
+    (d.hiro_call >= 0 ? '+' : '') + d.hiro_call?.toFixed(2) : '—';
+  document.getElementById('lv-hput').textContent  = d.hiro_put !== undefined ?
+    d.hiro_put?.toFixed(2) : '—';
+  document.getElementById('lv-hnet').textContent  = d.hiro_total !== undefined ?
+    (d.hiro_total >= 0 ? '+' : '') + d.hiro_total?.toFixed(2) : '—';
+
+  // Confluence
+  const conf = d.confluence || [];
+  const top = conf.sort((a,b) => b.strength - a.strength)[0];
+  document.getElementById('lv-conf').textContent = top ?
+    top.strike + ' · ' + top.strength + 'x layers' : '—';
+
+  // SPX + expiry
+  document.getElementById('lv-spx').textContent = d.spot_spx?.toFixed(2) || '—';
+  document.getElementById('lv-exp').textContent = d.expiration || '—';
+
+  document.getElementById('refreshNote').textContent =
+    'Datos: ' + (d.timestamp || '—') + ' · status: ' + (d.status || '—');
+}
+
+// ── CLOCK ─────────────────────────────────────────────────────
+function updateClock() {
+  const now = new Date();
+  const et = now.toLocaleString('en-US', {
+    timeZone: 'America/New_York',
+    hour: '2-digit', minute: '2-digit', second: '2-digit',
+    hour12: false
+  });
+  document.getElementById('hdTime').textContent = 'ET ' + et;
+}
+
+setInterval(updateClock, 1000);
+updateClock();
+
+// Auto-refresh every 30s
+setInterval(loadData, 30000);
+loadData();
+</script>
+
+</body>
+</html>
