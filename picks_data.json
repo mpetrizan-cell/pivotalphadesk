@@ -1,6 +1,6 @@
 {
-  "updated_at": "2026-05-27T18:57:26.833627-04:00",
-  "updated_at_display": "27-May-2026 18:57 ET",
+  "updated_at": "2026-05-28T18:53:57.060263-04:00",
+  "updated_at_display": "28-May-2026 18:53 ET",
   "picks": [
     {
       "week": 12,
@@ -19,12 +19,12 @@
       "benchmark": "SPY",
       "filename": "pad_pick_semana12_2026.html",
       "status": "open",
-      "current_price": 56.99,
-      "current_date": "2026-05-27",
-      "current_ret_pct": -1.45,
-      "bench_ret_pct": 12.48,
-      "vs_benchmark_pct": -13.93,
-      "days_active": 51,
+      "current_price": 56.95,
+      "current_date": "2026-05-28",
+      "current_ret_pct": -1.52,
+      "bench_ret_pct": 13.1,
+      "vs_benchmark_pct": -14.62,
+      "days_active": 52,
       "closed_date": null,
       "closed_price": null,
       "levels": {
@@ -35,17 +35,17 @@
         },
         "target1": {
           "hit": false,
-          "pct_away": 10.55,
+          "pct_away": 10.62,
           "label": "$63.0"
         },
         "target2": {
           "hit": false,
-          "pct_away": 22.83,
+          "pct_away": 22.91,
           "label": "$70.0"
         },
         "stop": {
           "hit": false,
-          "margin": 5.99,
+          "margin": 5.95,
           "label": "$51.0"
         },
         "gamma_flip": {
@@ -313,6 +313,11 @@
           "date": "2026-05-27",
           "close": 56.99,
           "ret_pct": -1.45
+        },
+        {
+          "date": "2026-05-28",
+          "close": 56.95,
+          "ret_pct": -1.52
         }
       ],
       "chart_benchmark": [
@@ -570,6 +575,11 @@
           "date": "2026-05-27",
           "close": 750.46,
           "ret_pct": 12.48
+        },
+        {
+          "date": "2026-05-28",
+          "close": 754.6,
+          "ret_pct": 13.1
         }
       ]
     }
