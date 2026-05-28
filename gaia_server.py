@@ -258,6 +258,9 @@ iframe{width:100%;height:100%;border:none;}
   <a href="/ndx_terminal" class="tab {% if active == 'ndx_terminal' %}active{% endif %}" style="{% if active == 'ndx_terminal' %}background:rgba(103,232,249,0.12);border-color:#67e8f9;color:#67e8f9;{% endif %}">
     NDX Terminal
   </a>
+  <a href="/checklist" class="tab {% if active == 'checklist' %}active{% endif %}" style="{% if active == 'checklist' %}background:rgba(232,121,249,0.12);border-color:#e879f9;color:#e879f9;{% endif %}">
+    Checklist
+  </a>
 </div>
 <div class="frame-wrap">
   <iframe src="/{{ page }}" id="gaia-frame"></iframe>
@@ -592,6 +595,35 @@ def serve_json():
     resp.headers['Cache-Control'] = 'no-cache, no-store, must-revalidate'
     return resp
 
+
+@app.route('/checklist_data')
+def checklist_data():
+    """Public endpoint for GAIA Trade Checklist — no auth required."""
+    if not _live_data:
+        return jsonify({'status': 'waiting', 'error': 'no data yet'}), 503
+    d = _live_data
+    payload = {
+        'timestamp':     d.get('timestamp'),
+        'expiration':    d.get('expiration'),
+        'status':        d.get('status', 'live'),
+        'spot_spx':      d.get('spot_spx'),
+        'spot_es':       d.get('spot_es'),
+        'basis':         d.get('basis'),
+        'total_dhp':     d.get('total_dhp'),
+        'dhp_momentum':  d.get('dhp_momentum'),
+        'dhp_direction': d.get('dhp_direction'),
+        'hiro_call':     d.get('hiro_call'),
+        'hiro_put':      d.get('hiro_put'),
+        'hiro_total':    d.get('hiro_total'),
+        'levels':        d.get('levels', {}),
+        'levels_es':     d.get('levels_es', {}),
+        'confluence':    d.get('confluence', []),
+    }
+    resp = jsonify(payload)
+    resp.headers['Cache-Control'] = 'no-cache, no-store, must-revalidate'
+    resp.headers['Access-Control-Allow-Origin'] = '*'
+    return resp
+
 @app.route('/health')
 def health():
     age     = time.time() - _last_push     if _last_push     else None
@@ -684,6 +716,19 @@ def ndx_terminal():
 @require_auth
 def serve_ndx_terminal():
     return send_from_directory(BASE_DIR, 'gaia_ndx_terminal_v10.html')
+
+# ── CHECKLIST ROUTE ───────────────────────────────────────────────────────────
+@app.route('/checklist')
+@require_auth
+def checklist():
+    return render_template_string(DASHBOARD_HTML,
+        active='checklist', page='gaia_checklist.html',
+        spot=get_spot(), trial_days=get_trial_days())
+
+@app.route('/gaia_checklist.html')
+@require_auth
+def serve_checklist():
+    return send_from_directory(BASE_DIR, 'gaia_checklist.html')
 
 # ── LW TERMINAL ROUTE ─────────────────────────────────────────────────────────
 @app.route('/terminal')
