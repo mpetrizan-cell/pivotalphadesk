@@ -439,11 +439,11 @@ function interpret(d) {
   // ── 3. DEX BEHAVIOR ──────────────────────────────────────────
   const gCallAbs = Math.abs(gCall);
   let dexScore=0, dexTitle='', dexSub='';
-  if (gCallAbs > 1000000) {
-    dexScore=2; dexTitle='GFS Calls '+(gCall/1e6).toFixed(1)+'M — BUY HEDGE active';
+  if (gCallAbs > 1000) {
+    dexScore=2; dexTitle='GFS Calls '+(gCall.toFixed(0))+'M — BUY HEDGE active';
     dexSub='Dealers executing active hedge. Strong obligation.';
-  } else if (gCallAbs > 200000) {
-    dexScore=1; dexTitle='GFS Calls '+(gCall/1e3).toFixed(0)+'K — moderate hedge';
+  } else if (gCallAbs > 200) {
+    dexScore=1; dexTitle='GFS Calls '+(gCall.toFixed(0))+'M — moderate hedge';
     dexSub='Hedge activity present. Not dominant.';
   } else {
     dexScore=0; dexTitle='GFS low — minimal dealer obligation';
