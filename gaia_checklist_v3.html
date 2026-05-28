@@ -1,0 +1,591 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GAIA Trade Checklist · PivotAlphaDesk</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Barlow+Condensed:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:#070b14;--bg2:#0d1428;--nbr:#1c2840;
+  --text:#b0c4de;--dim:#38507a;--bright:#e8f0ff;
+  --green:#00d4aa;--red:#ff5c5c;--amber:#f5a623;
+  --blue:#4fc3f7;--white:#ffffff;--gray:#4a6080;--gold:#f0c040;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{background:var(--bg);color:var(--text);font-family:'Barlow Condensed',sans-serif;padding:12px;}
+
+.gcc{background:var(--bg);border:1px solid var(--nbr);max-width:960px;margin:0 auto;overflow:hidden;}
+.gcc::before{content:'';display:block;height:2px;background:linear-gradient(90deg,#4fc3f7,#00d4aa,#f5a623);}
+
+/* HEADER */
+.hdr{background:var(--bg2);border-bottom:1px solid var(--nbr);padding:10px 16px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;}
+.hdr-title{font-family:'Space Mono',monospace;font-size:11px;font-weight:700;color:var(--white);letter-spacing:.2em;}
+.hdr-meta{display:flex;align-items:center;gap:12px;}
+.hdr-spot{font-family:'Space Mono',monospace;font-size:14px;font-weight:700;color:var(--white);}
+.hdr-time{font-family:'Space Mono',monospace;font-size:9px;color:var(--dim);}
+.live-dot{width:6px;height:6px;border-radius:50%;background:var(--green);display:inline-block;margin-right:5px;animation:pulse 2s infinite;}
+@keyframes pulse{0%,100%{opacity:1;}50%{opacity:.3;}}
+.regime-badge{font-family:'Space Mono',monospace;font-size:9px;padding:3px 10px;border:1px solid;letter-spacing:.1em;}
+
+/* SIGNAL HERO */
+.signal-hero{padding:14px 16px;background:var(--bg2);border-bottom:1px solid var(--nbr);display:flex;align-items:center;gap:16px;flex-wrap:wrap;}
+.signal-score{font-family:'Space Mono',monospace;font-size:42px;font-weight:700;line-height:1;min-width:55px;}
+.signal-max{font-family:'Space Mono',monospace;font-size:10px;color:var(--dim);margin-top:2px;}
+.signal-track{flex:1;height:8px;background:var(--nbr);border-radius:4px;overflow:hidden;min-width:80px;}
+.signal-fill{height:100%;border-radius:4px;transition:width .6s ease,background .4s;}
+.signal-info{display:flex;flex-direction:column;gap:4px;}
+.signal-action{font-family:'Space Mono',monospace;font-size:10px;letter-spacing:.15em;padding:4px 12px;border:1px solid;white-space:nowrap;font-weight:700;}
+.signal-dir{font-family:'Space Mono',monospace;font-size:13px;font-weight:700;letter-spacing:.1em;}
+
+/* CATS GRID */
+.cats{display:grid;grid-template-columns:1fr 1fr 1fr;border-top:1px solid var(--nbr);}
+@media(max-width:680px){.cats{grid-template-columns:1fr;}}
+
+.cat{padding:11px 13px;border-right:1px solid var(--nbr);border-bottom:1px solid var(--nbr);}
+.cat:nth-child(3n){border-right:none;}
+.cat:nth-last-child(-n+3){border-bottom:none;}
+
+.cat-hdr{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;padding-bottom:6px;border-bottom:1px solid var(--nbr);}
+.cat-title{font-family:'Space Mono',monospace;font-size:8px;letter-spacing:.16em;color:var(--dim);}
+.cat-badge{font-family:'Space Mono',monospace;font-size:10px;font-weight:700;padding:2px 8px;border:1px solid;}
+
+/* AUTO RESULT */
+.auto-result{padding:7px 8px;margin-bottom:7px;border-radius:2px;display:flex;align-items:flex-start;gap:8px;}
+.auto-icon{font-size:14px;flex-shrink:0;margin-top:1px;}
+.auto-text{font-size:11px;line-height:1.4;font-weight:600;}
+.auto-sub{font-size:10px;color:var(--dim);margin-top:2px;line-height:1.3;}
+
+.result-green{background:rgba(0,212,170,.08);border:1px solid rgba(0,212,170,.25);}
+.result-amber{background:rgba(245,166,35,.08);border:1px solid rgba(245,166,35,.25);}
+.result-red{background:rgba(255,92,92,.08);border:1px solid rgba(255,92,92,.25);}
+
+/* OVERRIDE */
+.override{display:flex;gap:5px;margin-bottom:7px;}
+.ov-btn{flex:1;padding:4px;border:1px solid var(--nbr);background:rgba(255,255,255,.02);cursor:pointer;font-family:'Space Mono',monospace;font-size:8px;text-align:center;transition:all .15s;color:var(--dim);}
+.ov-btn:hover{border-color:var(--text);color:var(--text);}
+.ov-btn.ov-green{background:rgba(0,212,170,.1);border-color:var(--green);color:var(--green);}
+.ov-btn.ov-amber{background:rgba(245,166,35,.1);border-color:var(--amber);color:var(--amber);}
+.ov-btn.ov-red{background:rgba(255,92,92,.1);border-color:var(--red);color:var(--red);}
+
+/* LIVE VALS */
+.live-vals{display:flex;flex-wrap:wrap;gap:5px;padding-top:6px;border-top:1px solid var(--nbr);}
+.lv{font-family:'Space Mono',monospace;font-size:8px;}
+.lv-l{color:var(--dim);}
+.lv-v{font-weight:700;}
+
+/* EDGE */
+.edge{border-top:1px solid var(--nbr);padding:10px 16px;display:flex;gap:10px;align-items:flex-start;background:rgba(13,20,40,.7);}
+.edge-lbl{font-family:'Space Mono',monospace;font-size:7px;letter-spacing:.2em;color:var(--amber);white-space:nowrap;padding-top:2px;flex-shrink:0;}
+.edge-txt{font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:600;color:var(--text);line-height:1.5;}
+
+/* FOOTER */
+.footer{background:var(--bg2);border-top:1px solid var(--nbr);padding:6px 16px;display:flex;justify-content:space-between;align-items:center;}
+.refresh-btn{font-family:'Space Mono',monospace;font-size:8px;letter-spacing:.1em;color:var(--blue);background:none;border:1px solid rgba(79,195,247,.3);padding:3px 10px;cursor:pointer;transition:all .15s;}
+.refresh-btn:hover{border-color:var(--blue);background:rgba(79,195,247,.06);}
+.footer-note{font-family:'Space Mono',monospace;font-size:8px;color:var(--dim);}
+</style>
+</head>
+<body>
+<div class="gcc">
+  <div class="gcc"><!-- top accent already via ::before --></div>
+
+  <!-- HEADER -->
+  <div class="hdr">
+    <div>
+      <div class="hdr-title">⬡ GAIA TRADE CHECKLIST · SPX + ES</div>
+      <div class="hdr-time" id="hdTime">—</div>
+    </div>
+    <div class="hdr-meta">
+      <span class="hdr-spot"><span class="live-dot"></span><span id="hdSpot">···</span></span>
+      <span class="regime-badge" id="hdRegime" style="color:var(--dim);border-color:var(--dim)">—</span>
+    </div>
+  </div>
+
+  <!-- SIGNAL HERO -->
+  <div class="signal-hero">
+    <div>
+      <div class="signal-score" id="scoreNum" style="color:var(--gray)">0</div>
+      <div class="signal-max">/ 12</div>
+    </div>
+    <div class="signal-track">
+      <div class="signal-fill" id="scoreFill" style="width:0%;background:var(--gray)"></div>
+    </div>
+    <div class="signal-info">
+      <div class="signal-action" id="scoreAction" style="color:var(--gray);border-color:var(--gray)">CARGANDO</div>
+      <div class="signal-dir" id="scoreDir" style="color:var(--dim)">—</div>
+    </div>
+  </div>
+
+  <!-- CATEGORIES -->
+  <div class="cats">
+
+    <!-- 1. DHP MOMENTUM -->
+    <div class="cat">
+      <div class="cat-hdr">
+        <span class="cat-title">① DHP MOMENTUM</span>
+        <span class="cat-badge" id="b-dhp" style="color:var(--dim);border-color:var(--dim)">—</span>
+      </div>
+      <div id="ar-dhp" class="auto-result result-red">
+        <span class="auto-icon">⏳</span>
+        <div><div class="auto-text">Cargando...</div><div class="auto-sub">—</div></div>
+      </div>
+      <div class="override">
+        <button class="ov-btn" onclick="override('dhp',2,this,'green')">🟢 +2</button>
+        <button class="ov-btn" onclick="override('dhp',1,this,'amber')">🟡 +1</button>
+        <button class="ov-btn" onclick="override('dhp',0,this,'red')">🔴 +0</button>
+      </div>
+      <div class="live-vals">
+        <div class="lv"><span class="lv-l">DIR: </span><span class="lv-v" id="lv-dir">—</span></div>
+        <div class="lv"><span class="lv-l">DHP: </span><span class="lv-v" id="lv-dhp">—</span></div>
+        <div class="lv"><span class="lv-l">HIRO NET: </span><span class="lv-v" id="lv-hnet">—</span></div>
+      </div>
+    </div>
+
+    <!-- 2. GEX STRUCTURE -->
+    <div class="cat">
+      <div class="cat-hdr">
+        <span class="cat-title">② GEX STRUCTURE</span>
+        <span class="cat-badge" id="b-gex" style="color:var(--dim);border-color:var(--dim)">—</span>
+      </div>
+      <div id="ar-gex" class="auto-result result-red">
+        <span class="auto-icon">⏳</span>
+        <div><div class="auto-text">Cargando...</div><div class="auto-sub">—</div></div>
+      </div>
+      <div class="override">
+        <button class="ov-btn" onclick="override('gex',2,this,'green')">🟢 +2</button>
+        <button class="ov-btn" onclick="override('gex',1,this,'amber')">🟡 +1</button>
+        <button class="ov-btn" onclick="override('gex',0,this,'red')">🔴 +0</button>
+      </div>
+      <div class="live-vals">
+        <div class="lv"><span class="lv-l">FLIP: </span><span class="lv-v" id="lv-flip">—</span></div>
+        <div class="lv"><span class="lv-l">NODE: </span><span class="lv-v" id="lv-node">—</span></div>
+        <div class="lv"><span class="lv-l">CW: </span><span class="lv-v" id="lv-cw">—</span></div>
+        <div class="lv"><span class="lv-l">PW: </span><span class="lv-v" id="lv-pw">—</span></div>
+      </div>
+    </div>
+
+    <!-- 3. DEX BEHAVIOR -->
+    <div class="cat">
+      <div class="cat-hdr">
+        <span class="cat-title">③ DEX BEHAVIOR</span>
+        <span class="cat-badge" id="b-dex" style="color:var(--dim);border-color:var(--dim)">—</span>
+      </div>
+      <div id="ar-dex" class="auto-result result-red">
+        <span class="auto-icon">⏳</span>
+        <div><div class="auto-text">Cargando...</div><div class="auto-sub">—</div></div>
+      </div>
+      <div class="override">
+        <button class="ov-btn" onclick="override('dex',2,this,'green')">🟢 +2</button>
+        <button class="ov-btn" onclick="override('dex',1,this,'amber')">🟡 +1</button>
+        <button class="ov-btn" onclick="override('dex',0,this,'red')">🔴 +0</button>
+      </div>
+      <div class="live-vals">
+        <div class="lv"><span class="lv-l">ES: </span><span class="lv-v" id="lv-es">—</span></div>
+        <div class="lv"><span class="lv-l">BASIS: </span><span class="lv-v" id="lv-basis">—</span></div>
+        <div class="lv"><span class="lv-l">HIRO C: </span><span class="lv-v" id="lv-hcall">—</span></div>
+        <div class="lv"><span class="lv-l">HIRO P: </span><span class="lv-v" id="lv-hput">—</span></div>
+      </div>
+    </div>
+
+    <!-- 4. GFS LINES -->
+    <div class="cat">
+      <div class="cat-hdr">
+        <span class="cat-title">④ GFS LINES</span>
+        <span class="cat-badge" id="b-gfs" style="color:var(--dim);border-color:var(--dim)">—</span>
+      </div>
+      <div id="ar-gfs" class="auto-result result-red">
+        <span class="auto-icon">⏳</span>
+        <div><div class="auto-text">Cargando...</div><div class="auto-sub">—</div></div>
+      </div>
+      <div class="override">
+        <button class="ov-btn" onclick="override('gfs',2,this,'green')">🟢 +2</button>
+        <button class="ov-btn" onclick="override('gfs',1,this,'amber')">🟡 +1</button>
+        <button class="ov-btn" onclick="override('gfs',0,this,'red')">🔴 +0</button>
+      </div>
+      <div class="live-vals">
+        <div class="lv"><span class="lv-l">CALLS: </span><span class="lv-v" id="lv-calls">—</span></div>
+        <div class="lv"><span class="lv-l">PUTS: </span><span class="lv-v" id="lv-puts">—</span></div>
+        <div class="lv"><span class="lv-l">NET: </span><span class="lv-v" id="lv-net">—</span></div>
+      </div>
+    </div>
+
+    <!-- 5. PRESSURE MAP -->
+    <div class="cat">
+      <div class="cat-hdr">
+        <span class="cat-title">⑤ PRESSURE MAP</span>
+        <span class="cat-badge" id="b-pm" style="color:var(--dim);border-color:var(--dim)">—</span>
+      </div>
+      <div id="ar-pm" class="auto-result result-red">
+        <span class="auto-icon">⏳</span>
+        <div><div class="auto-text">Cargando...</div><div class="auto-sub">—</div></div>
+      </div>
+      <div class="override">
+        <button class="ov-btn" onclick="override('pm',2,this,'green')">🟢 +2</button>
+        <button class="ov-btn" onclick="override('pm',1,this,'amber')">🟡 +1</button>
+        <button class="ov-btn" onclick="override('pm',0,this,'red')">🔴 +0</button>
+      </div>
+      <div class="live-vals">
+        <div class="lv"><span class="lv-l">NODE vs SPOT: </span><span class="lv-v" id="lv-node-dist">—</span></div>
+        <div class="lv"><span class="lv-l">CONF: </span><span class="lv-v" id="lv-conf">—</span></div>
+      </div>
+    </div>
+
+    <!-- 6. CONFLUENCE -->
+    <div class="cat">
+      <div class="cat-hdr">
+        <span class="cat-title">⑥ CONFLUENCE</span>
+        <span class="cat-badge" id="b-cf" style="color:var(--dim);border-color:var(--dim)">—</span>
+      </div>
+      <div id="ar-cf" class="auto-result result-red">
+        <span class="auto-icon">⏳</span>
+        <div><div class="auto-text">Cargando...</div><div class="auto-sub">—</div></div>
+      </div>
+      <div class="override">
+        <button class="ov-btn" onclick="override('cf',2,this,'green')">🟢 +2</button>
+        <button class="ov-btn" onclick="override('cf',1,this,'amber')">🟡 +1</button>
+        <button class="ov-btn" onclick="override('cf',0,this,'red')">🔴 +0</button>
+      </div>
+      <div class="live-vals">
+        <div class="lv"><span class="lv-l">SPX: </span><span class="lv-v" id="lv-spx">—</span></div>
+        <div class="lv"><span class="lv-l">EXP: </span><span class="lv-v" id="lv-exp">—</span></div>
+        <div class="lv"><span class="lv-l">TOP CONF: </span><span class="lv-v" id="lv-topconf">—</span></div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- EDGE -->
+  <div class="edge">
+    <span class="edge-lbl">▶ SIGNAL</span>
+    <span class="edge-txt" id="edgeTxt">Conectando al servidor...</span>
+  </div>
+
+  <!-- FOOTER -->
+  <div class="footer">
+    <button class="refresh-btn" onclick="loadData()">↻ REFRESH</button>
+    <span class="footer-note" id="footNote">—</span>
+  </div>
+
+</div>
+
+<script>
+// ── STATE ──────────────────────────────────────────────────────
+const autoScores   = {dhp:0,gex:0,dex:0,gfs:0,pm:0,cf:0};
+const manualScores = {dhp:null,gex:null,dex:null,gfs:null,pm:null,cf:null};
+
+// ── COLORS ─────────────────────────────────────────────────────
+const C = { green:'#00d4aa', amber:'#f5a623', red:'#ff5c5c', dim:'#38507a' };
+
+function semColor(v) { return v===2?C.green:v===1?C.amber:C.red; }
+function semClass(v) { return v===2?'result-green':v===1?'result-amber':'result-red'; }
+function semIcon(v)  { return v===2?'🟢':v===1?'🟡':'🔴'; }
+
+// ── SET CATEGORY RESULT ────────────────────────────────────────
+function setCat(id, score, title, sub) {
+  autoScores[id] = score;
+
+  // Auto result box
+  const ar = document.getElementById('ar-' + id);
+  ar.className = 'auto-result ' + semClass(score);
+  ar.innerHTML = `<span class="auto-icon">${semIcon(score)}</span>
+    <div><div class="auto-text" style="color:${semColor(score)}">${title}</div>
+    <div class="auto-sub">${sub}</div></div>`;
+
+  // Badge
+  const badge = document.getElementById('b-' + id);
+  badge.textContent = '+' + score;
+  badge.style.color = semColor(score);
+  badge.style.borderColor = semColor(score);
+
+  updateTotal();
+}
+
+// ── MANUAL OVERRIDE ────────────────────────────────────────────
+function override(cat, val, btn, color) {
+  btn.parentElement.querySelectorAll('.ov-btn').forEach(b =>
+    b.classList.remove('ov-green','ov-amber','ov-red'));
+  btn.classList.add('ov-' + color);
+  manualScores[cat] = val;
+
+  // Update badge with override indicator
+  const badge = document.getElementById('b-' + cat);
+  badge.textContent = '+' + val + '⚡';
+  badge.style.color = semColor(val);
+  badge.style.borderColor = semColor(val);
+
+  updateTotal();
+}
+
+// ── TOTAL SCORE ────────────────────────────────────────────────
+function updateTotal() {
+  let total = 0;
+  let direction = 'NEUTRAL';
+
+  for (const k in autoScores) {
+    const v = manualScores[k] !== null ? manualScores[k] : autoScores[k];
+    total += v;
+  }
+
+  const pct = (total / 12) * 100;
+  document.getElementById('scoreFill').style.width = pct + '%';
+  document.getElementById('scoreNum').textContent = total;
+
+  let col, action, dir, edge;
+
+  if (total < 4) {
+    col='#ff5c5c'; action='NO TRADE'; dir='—';
+    edge='<span style="color:#ff5c5c">Score '+total+'/12 — Estructura insuficiente. No operar.</span>';
+  } else if (total <= 6) {
+    col='#f5a623'; action='OBSERVAR'; dir='WAIT';
+    edge='<span style="color:#f5a623">Score '+total+'/12 — Setup débil. Observar. Esperar ACC antes de entrar.</span>';
+  } else if (total <= 8) {
+    col='#f0c040'; action='SIZE REDUCIDO'; dir='▲/▼ ENTRY';
+    edge='<span style="color:#f0c040">Score '+total+'/12 — Setup moderado. Entry con size reducido. Stop ajustado.</span>';
+  } else if (total <= 10) {
+    col='#4fc3f7'; action='SIZE NORMAL'; dir='▲/▼ ENTRY';
+    edge='<span style="color:#4fc3f7">Score '+total+'/12 — Setup sólido. Size normal. Respetar niveles GEX.</span>';
+  } else {
+    col='#00d4aa'; action='SIZE COMPLETO'; dir='★ MAX CONVICTION';
+    edge='<span style="color:#00d4aa">Score '+total+'/12 — MAX CONVICTION. Todos los factores alineados. Size completo.</span>';
+  }
+
+  document.getElementById('scoreFill').style.background = col;
+  document.getElementById('scoreNum').style.color = col;
+  const sa = document.getElementById('scoreAction');
+  sa.textContent = action; sa.style.color = col; sa.style.borderColor = col;
+  const sd = document.getElementById('scoreDir');
+  sd.textContent = dir; sd.style.color = col;
+  document.getElementById('edgeTxt').innerHTML = edge;
+}
+
+// ── INTERPRET DATA ─────────────────────────────────────────────
+function interpret(d) {
+
+  const spot   = d.spot_spx  || 0;
+  const flip   = d.levels?.gamma_flip || 0;
+  const node   = d.levels?.gamma_node || 0;
+  const cw     = d.levels?.call_wall  || 0;
+  const pw     = d.levels?.put_wall   || 0;
+  const dir    = d.dhp_direction || 'NEUTRAL';
+  const dhp    = d.total_dhp || 0;
+  const hCall  = d.hiro_call || 0;
+  const hPut   = d.hiro_put  || 0;
+  const hNet   = d.hiro_total|| 0;
+  const conf   = d.confluence || [];
+  const spotDist = flip > 0 ? spot - flip : 0;
+
+  // ── 1. DHP MOMENTUM ──────────────────────────────────────────
+  let dhpScore = 0, dhpTitle = '', dhpSub = '';
+  if (dir === 'ACC.BULL' || dir === 'ACC.BEAR') {
+    dhpScore = 2;
+    dhpTitle = dir + ' — señal confirmada';
+    dhpSub   = dir.includes('BULL') ? 'Setup LONG activo' : 'Setup SHORT activo';
+  } else if (dir === 'BLD.BULL' || dir === 'BLD.BEAR') {
+    dhpScore = 1;
+    dhpTitle = dir + ' — prepararse';
+    dhpSub   = 'Esperar ACC para confirmar entrada';
+  } else {
+    dhpScore = 0;
+    dhpTitle = 'NEUTRAL — sin dirección';
+    dhpSub   = 'No operar. Esperar señal DHP.';
+  }
+  setCat('dhp', dhpScore, dhpTitle, dhpSub);
+
+  // Update live vals DHP
+  document.getElementById('lv-dir').textContent  = dir;
+  document.getElementById('lv-dir').style.color  = dir.includes('BULL')?C.green:dir.includes('BEAR')?C.red:C.amber;
+  document.getElementById('lv-dhp').textContent  = dhp.toFixed(1);
+  document.getElementById('lv-hnet').textContent = (hNet>=0?'+':'')+hNet.toFixed(2);
+  document.getElementById('lv-hnet').style.color = hNet>=0?C.green:C.red;
+
+  // ── 2. GEX STRUCTURE ─────────────────────────────────────────
+  let gexScore = 0, gexTitle = '', gexSub = '';
+  if (flip > 0 && spotDist > 20) {
+    gexScore = 2;
+    gexTitle = 'Spot +' + spotDist.toFixed(0) + 'pts sobre Flip — DAMPENED';
+    gexSub   = 'Dealers long gamma. Estructura alcista confirmada.';
+  } else if (flip > 0 && spotDist >= -20) {
+    gexScore = 1;
+    gexTitle = 'Spot ±' + Math.abs(spotDist).toFixed(0) + 'pts del Flip — zona crítica';
+    gexSub   = 'Cerca del flip. Estructura frágil. Cuidado.';
+  } else {
+    gexScore = 0;
+    gexTitle = 'Spot bajo Flip — AMPLIFIED';
+    gexSub   = 'Dealers short gamma. Sin amortiguador. No long.';
+  }
+  setCat('gex', gexScore, gexTitle, gexSub);
+
+  document.getElementById('lv-flip').textContent = flip || '—';
+  document.getElementById('lv-node').textContent = node || '—';
+  document.getElementById('lv-cw').textContent   = cw   || '—';
+  document.getElementById('lv-pw').textContent   = pw   || '—';
+
+  // ── 3. DEX BEHAVIOR ──────────────────────────────────────────
+  // Use hiro_call magnitude as proxy for DEX activity
+  const hiroAbs = Math.abs(hCall);
+  let dexScore = 0, dexTitle = '', dexSub = '';
+  if (hiroAbs > 1000000) {
+    dexScore = 2;
+    dexTitle = 'HIRO Calls ' + (hCall/1e6).toFixed(1) + 'M — BUY HEDGE activo';
+    dexSub   = 'Dealers ejecutando cobertura activa.';
+  } else if (hiroAbs > 200000) {
+    dexScore = 1;
+    dexTitle = 'HIRO Calls ' + (hCall/1e6).toFixed(2) + 'M — hedge moderado';
+    dexSub   = 'Actividad presente, no dominante.';
+  } else {
+    dexScore = 0;
+    dexTitle = 'HIRO bajo — sin obligación visible';
+    dexSub   = 'Dealers sin actividad significativa.';
+  }
+  setCat('dex', dexScore, dexTitle, dexSub);
+
+  document.getElementById('lv-es').textContent    = d.spot_es?.toFixed(2) || '—';
+  document.getElementById('lv-basis').textContent = d.basis !== undefined ? '+'+d.basis.toFixed(2) : '—';
+  document.getElementById('lv-hcall').textContent = hCall >= 0 ? '+'+hCall.toFixed(0) : hCall.toFixed(0);
+  document.getElementById('lv-hcall').style.color = hCall >= 0 ? C.green : C.red;
+  document.getElementById('lv-hput').textContent  = hPut.toFixed(0);
+  document.getElementById('lv-hput').style.color  = C.red;
+
+  // ── 4. GFS LINES ─────────────────────────────────────────────
+  let gfsScore = 0, gfsTitle = '', gfsSub = '';
+  const callDom = hCall > Math.abs(hPut) * 1.5;
+  const putDom  = Math.abs(hPut) > hCall * 1.5;
+  const margin  = hCall > 0 ? (hCall / (hCall + Math.abs(hPut))) : 0;
+
+  if (hNet > 0 && margin > 0.65) {
+    gfsScore = 2;
+    gfsTitle = 'GFS Calls dominan — NET positivo fuerte';
+    gfsSub   = 'Flujo acumulado confirma LONG. Margin: ' + (margin*100).toFixed(0) + '%';
+  } else if (hNet > 0 && margin > 0.45) {
+    gfsScore = 1;
+    gfsTitle = 'GFS Calls > Puts — margen moderado';
+    gfsSub   = 'Flujo positivo pero sin convicción fuerte.';
+  } else if (hNet < 0) {
+    // For short setups this could be +2
+    if (dir.includes('BEAR')) {
+      gfsScore = 2;
+      gfsTitle = 'GFS Puts dominan — NET negativo · confirma SHORT';
+      gfsSub   = 'Flujo acumulado alineado con DHP BEAR.';
+    } else {
+      gfsScore = 0;
+      gfsTitle = 'GFS Puts dominan — presión bajista';
+      gfsSub   = 'Flujo en contra si buscás LONG.';
+    }
+  } else {
+    gfsScore = 0;
+    gfsTitle = 'GFS NET neutro — sin dirección';
+    gfsSub   = 'Flujo sin convicción.';
+  }
+  setCat('gfs', gfsScore, gfsTitle, gfsSub);
+
+  document.getElementById('lv-calls').textContent = hCall >= 0 ? '+'+hCall.toFixed(0) : hCall.toFixed(0);
+  document.getElementById('lv-calls').style.color = hCall >= 0 ? C.green : C.red;
+  document.getElementById('lv-puts').textContent  = hPut.toFixed(0);
+  document.getElementById('lv-puts').style.color  = C.red;
+  document.getElementById('lv-net').textContent   = hNet >= 0 ? '+'+hNet.toFixed(2) : hNet.toFixed(2);
+  document.getElementById('lv-net').style.color   = hNet >= 0 ? C.green : C.red;
+
+  // ── 5. PRESSURE MAP ──────────────────────────────────────────
+  const nodeDist = node > 0 ? (spot - node).toFixed(0) : null;
+  const topConf  = conf.sort((a,b) => b.strength - a.strength)[0];
+  let pmScore = 0, pmTitle = '', pmSub = '';
+
+  if (topConf && topConf.strength >= 4) {
+    pmScore = 2;
+    pmTitle = 'Confluence ' + topConf.strike + ' · ' + topConf.strength + 'x layers';
+    pmSub   = 'Zona de alta confluencia activa. Soporte/resistencia fuerte.';
+  } else if (topConf && topConf.strength >= 2) {
+    pmScore = 1;
+    pmTitle = 'Confluence ' + topConf.strike + ' · ' + topConf.strength + 'x layers';
+    pmSub   = 'Confluencia moderada. Soporte presente.';
+  } else {
+    pmScore = 0;
+    pmTitle = 'Sin confluencia significativa';
+    pmSub   = 'Estructura débil. Precio en zona libre.';
+  }
+  setCat('pm', pmScore, pmTitle, pmSub);
+
+  document.getElementById('lv-node-dist').textContent = nodeDist !== null ?
+    (nodeDist >= 0 ? '+' : '') + nodeDist + ' pts' : '—';
+  document.getElementById('lv-node-dist').style.color = nodeDist >= 0 ? C.green : C.red;
+  document.getElementById('lv-conf').textContent = topConf ?
+    topConf.strike + ' · ' + topConf.strength + 'x' : '—';
+
+  // ── 6. CONFLUENCE FINAL ───────────────────────────────────────
+  // Counts how many categories are green
+  const greenCount = [dhpScore, gexScore, dexScore, gfsScore, pmScore].filter(s => s===2).length;
+  let cfScore = 0, cfTitle = '', cfSub = '';
+
+  if (greenCount >= 4) {
+    cfScore = 2;
+    cfTitle = greenCount + '/5 categorías alineadas — alta convicción';
+    cfSub   = 'Todos los factores apuntan en la misma dirección.';
+  } else if (greenCount >= 2) {
+    cfScore = 1;
+    cfTitle = greenCount + '/5 categorías verdes — convicción moderada';
+    cfSub   = 'Mayoría alineada. Considerar size reducido.';
+  } else {
+    cfScore = 0;
+    cfTitle = 'Baja confluencia — ' + greenCount + '/5 verdes';
+    cfSub   = 'Señales mixtas. No operar.';
+  }
+  setCat('cf', cfScore, cfTitle, cfSub);
+
+  document.getElementById('lv-spx').textContent     = spot.toFixed(2);
+  document.getElementById('lv-exp').textContent     = d.expiration || '—';
+  document.getElementById('lv-topconf').textContent = topConf ?
+    topConf.strike + ' · ' + topConf.types?.join('/') : '—';
+}
+
+// ── LOAD DATA ──────────────────────────────────────────────────
+async function loadData() {
+  const endpoints = [
+    'http://localhost:5000/checklist_data',
+    'http://10.0.0.206:5000/checklist_data',
+    'https://app.pivotalphadesk.com/checklist_data'
+  ];
+
+  let data = null;
+  for (const url of endpoints) {
+    try {
+      const r = await fetch(url, { signal: AbortSignal.timeout(2500) });
+      if (r.ok) { data = await r.json(); break; }
+    } catch(e) {}
+  }
+
+  if (!data || data.error) {
+    document.getElementById('footNote').textContent = 'Sin conexión — datos del servidor no disponibles';
+    document.getElementById('edgeTxt').innerHTML = '<span style="color:#f5a623">Sin datos live. Verificá que el Flask server esté corriendo.</span>';
+    return;
+  }
+
+  // Populate header
+  document.getElementById('hdSpot').textContent = data.spot_spx?.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2}) || '—';
+
+  const dir = data.dhp_direction || '—';
+  const regEl = document.getElementById('hdRegime');
+  regEl.textContent    = dir;
+  regEl.style.color    = dir.includes('BULL')?C.green:dir.includes('BEAR')?C.red:C.amber;
+  regEl.style.borderColor = regEl.style.color;
+
+  document.getElementById('footNote').textContent = 'Datos: ' + (data.timestamp||'—') + ' · ' + (data.status||'—');
+
+  // Run interpretation
+  interpret(data);
+}
+
+// ── CLOCK ──────────────────────────────────────────────────────
+function tick() {
+  const et = new Date().toLocaleString('en-US',{
+    timeZone:'America/New_York',
+    hour:'2-digit',minute:'2-digit',second:'2-digit',hour12:false
+  });
+  document.getElementById('hdTime').textContent = 'ET ' + et;
+}
+setInterval(tick, 1000); tick();
+setInterval(loadData, 15000);
+loadData();
+</script>
+</body>
+</html>
