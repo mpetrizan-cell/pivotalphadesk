@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GAIA → TV Inputs · PivotAlphaDesk</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Barlow+Condensed:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:     #070a0e;
+  --bg2:    #0c1118;
+  --bg3:    #111820;
+  --border: #1a2535;
+  --border2:#1e2d40;
+  --text:   #c0d0dc;
+  --dim:    #4a6070;
+  --bright: #e8f4f8;
+  --green:  #3ecf6a;
+  --red:    #e84040;
+  --amber:  #f0c040;
+  --blue:   #3a8ef0;
+  --teal:   #2ec4b6;
+  --fuchsia:#e040fb;
+  --orange: #f0853a;
+  --gray:   #5a7080;
+}
+* { margin:0; padding:0; box-sizing:border-box; }
+body { background:var(--bg); color:var(--text); font-family:'Barlow Condensed',sans-serif; min-height:100vh; display:flex; align-items:flex-start; justify-content:center; padding:20px; }
+.panel { width:520px; }
+
+.header { display:flex; align-items:center; justify-content:space-between; margin-bottom:16px; padding-bottom:12px; border-bottom:1px solid var(--border); }
+.logo { font-family:'Space Mono',monospace; font-size:11px; color:var(--dim); letter-spacing:.12em; }
+.logo span { color:var(--teal); }
+.status-row { display:flex; align-items:center; gap:6px; font-family:'Space Mono',monospace; font-size:10px; color:var(--dim); }
+.dot { width:7px; height:7px; border-radius:50%; background:var(--gray); }
+.dot.live { background:var(--green); animation:pulse 2s infinite; }
+@keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.3} }
+
+.fetch-row { display:flex; gap:8px; margin-bottom:16px; }
+.url-input {
+  flex:1; background:var(--bg2); border:1px solid var(--border2);
+  color:var(--text); font-family:'Space Mono',monospace; font-size:10px;
+  padding:8px 12px; outline:none;
+}
+.url-input:focus { border-color:var(--teal); }
+.btn-fetch {
+  background:var(--teal); color:#070a0e; border:none;
+  font-family:'Space Mono',monospace; font-size:10px; font-weight:700;
+  letter-spacing:.1em; padding:8px 16px; cursor:pointer; white-space:nowrap;
+  transition:opacity .15s;
+}
+.btn-fetch:hover { opacity:.85; }
+.btn-fetch:disabled { opacity:.4; cursor:default; }
+.btn-auto {
+  background:transparent; color:var(--dim); border:1px solid var(--border2);
+  font-family:'Space Mono',monospace; font-size:10px;
+  padding:8px 12px; cursor:pointer; white-space:nowrap;
+  transition:all .15s;
+}
+.btn-auto:hover { border-color:var(--teal); color:var(--teal); }
+.btn-auto.active { border-color:var(--green); color:var(--green); }
+
+.snapshot { display:grid; grid-template-columns:repeat(4,1fr); gap:8px; margin-bottom:16px; }
+.snap-card { background:var(--bg2); border:1px solid var(--border); padding:10px 12px; }
+.snap-lbl { font-family:'Space Mono',monospace; font-size:8px; color:var(--dim); letter-spacing:.1em; margin-bottom:4px; }
+.snap-val { font-family:'Space Mono',monospace; font-size:14px; font-weight:700; }
+
+.section-lbl { font-family:'Space Mono',monospace; font-size:8px; color:var(--dim); letter-spacing:.12em; margin-bottom:8px; }
+
+.verdict { padding:12px 16px; margin-bottom:16px; display:flex; align-items:center; justify-content:space-between; border-left:3px solid var(--gray); background:var(--bg2); }
+.verdict-lbl { font-family:'Space Mono',monospace; font-size:9px; color:var(--dim); letter-spacing:.1em; }
+.verdict-val { font-family:'Space Mono',monospace; font-size:14px; font-weight:700; }
+
+.fields-grid { display:grid; grid-template-columns:repeat(2,1fr); gap:8px; margin-bottom:16px; }
+.field {
+  background:var(--bg2); border:1px solid var(--border2);
+  padding:12px 14px; cursor:pointer; transition:border-color .15s; position:relative;
+}
+.field:hover { border-color:var(--teal); }
+.field.copied { border-color:var(--green); }
+.f-lbl { font-family:'Space Mono',monospace; font-size:8px; color:var(--dim); letter-spacing:.1em; margin-bottom:6px; }
+.f-tv  { font-family:'Space Mono',monospace; font-size:8px; color:var(--border2); letter-spacing:.08em; margin-bottom:4px; }
+.f-val { font-family:'Space Mono',monospace; font-size:16px; font-weight:700; }
+.f-copy-hint { font-family:'Space Mono',monospace; font-size:8px; position:absolute; bottom:8px; right:10px; opacity:0; transition:opacity .2s; }
+.field:hover .f-copy-hint { opacity:.4; }
+.field.copied .f-copy-hint { opacity:1; color:var(--green); }
+
+.sep { height:1px; background:var(--border); margin:14px 0; }
+
+.pressure-map { background:var(--bg2); border:1px solid var(--border); padding:12px 14px; margin-bottom:16px; }
+.pm-row { display:flex; align-items:center; justify-content:space-between; margin-bottom:6px; }
+.pm-bar-track { height:4px; background:var(--border); border-radius:2px; overflow:hidden; margin-top:6px; }
+.pm-bar-fill { height:100%; border-radius:2px; transition:width .5s; }
+
+.footer { font-family:'Space Mono',monospace; font-size:9px; color:var(--dim); text-align:center; padding-top:10px; border-top:1px solid var(--border); }
+
+.error-msg { background:rgba(232,64,64,.1); border:1px solid rgba(232,64,64,.3); color:var(--red); font-family:'Space Mono',monospace; font-size:10px; padding:10px 14px; margin-bottom:14px; display:none; }
+</style>
+</head>
+<body>
+<div class="panel">
+
+  <div class="header">
+    <div class="logo">PIVOT<span>ALPHA</span>DESK · GAIA → TV</div>
+    <div class="status-row">
+      <div class="dot" id="status-dot"></div>
+      <span id="status-txt">offline</span>
+    </div>
+  </div>
+
+  <div class="fetch-row">
+    <input class="url-input" id="url-input" value="http://localhost:8080/gaia_live.json" placeholder="http://localhost:8080/gaia_live.json" />
+    <button class="btn-fetch" id="btn-fetch" onclick="fetchOnce()">FETCH</button>
+    <button class="btn-auto" id="btn-auto" onclick="toggleAuto()">AUTO 5s</button>
+  </div>
+
+  <div class="error-msg" id="error-msg"></div>
+
+  <div class="snapshot">
+    <div class="snap-card"><div class="snap-lbl">SPX SPOT</div><div class="snap-val" id="s-spx" style="color:var(--bright)">—</div></div>
+    <div class="snap-card"><div class="snap-lbl">ES SPOT</div><div class="snap-val" id="s-es" style="color:var(--amber)">—</div></div>
+    <div class="snap-card"><div class="snap-lbl">BASIS</div><div class="snap-val" id="s-basis" style="color:var(--dim)">—</div></div>
+    <div class="snap-card"><div class="snap-lbl">TOTAL DHP</div><div class="snap-val" id="s-dhp" style="color:var(--teal)">—</div></div>
+  </div>
+
+  <div class="section-lbl">SIGNAL · GAIA ENGINE</div>
+  <div class="verdict" id="verdict">
+    <span class="verdict-lbl">AWAITING DATA</span>
+    <span class="verdict-val" id="verdict-val" style="color:var(--dim)">—</span>
+  </div>
+
+  <div class="section-lbl">TV INPUTS · CLICK TO COPY</div>
+  <div class="fields-grid" id="fields-grid">
+    <div class="field"><div class="f-lbl">DHP MOMENTUM</div><div class="f-tv">DHP Momentum</div><div class="f-val" id="f-dhp" style="color:var(--dim)">—</div><div class="f-copy-hint">COPIAR ↗</div></div>
+    <div class="field"><div class="f-lbl">PRESSURE MAP STATE</div><div class="f-tv">Pressure Map State</div><div class="f-val" id="f-pm" style="color:var(--dim)">—</div><div class="f-copy-hint">COPIAR ↗</div></div>
+    <div class="field"><div class="f-lbl">ACTIVE PAD LEVEL (ES)</div><div class="f-tv">Active PAD Level</div><div class="f-val" id="f-pad" style="color:var(--dim)">—</div><div class="f-copy-hint">COPIAR ↗</div></div>
+    <div class="field"><div class="f-lbl">LEVEL TYPE</div><div class="f-tv">Level Type</div><div class="f-val" id="f-type" style="color:var(--dim)">—</div><div class="f-copy-hint">COPIAR ↗</div></div>
+    <div class="field"><div class="f-lbl">SETUP DIRECTION</div><div class="f-tv">Setup Direction</div><div class="f-val" id="f-dir" style="color:var(--dim)">—</div><div class="f-copy-hint">COPIAR ↗</div></div>
+    <div class="field"><div class="f-lbl">REGIME</div><div class="f-tv">Context only</div><div class="f-val" id="f-reg" style="color:var(--dim)">—</div><div class="f-copy-hint">COPIAR ↗</div></div>
+  </div>
+
+  <div class="section-lbl">PRESSURE MAP DETAIL</div>
+  <div class="pressure-map">
+    <div class="pm-row">
+      <span style="font-family:'Space Mono',monospace;font-size:9px;color:var(--dim)">CALLS DHP</span>
+      <span style="font-family:'Space Mono',monospace;font-size:12px;font-weight:700;color:var(--red)" id="pm-calls">—</span>
+    </div>
+    <div class="pm-row">
+      <span style="font-family:'Space Mono',monospace;font-size:9px;color:var(--dim)">PUTS DHP</span>
+      <span style="font-family:'Space Mono',monospace;font-size:12px;font-weight:700;color:var(--blue)" id="pm-puts">—</span>
+    </div>
+    <div class="pm-row" style="margin-bottom:0">
+      <span style="font-family:'Space Mono',monospace;font-size:9px;color:var(--dim)">NET DHP</span>
+      <span style="font-family:'Space Mono',monospace;font-size:14px;font-weight:700" id="pm-net">—</span>
+    </div>
+    <div class="pm-bar-track"><div class="pm-bar-fill" id="pm-bar" style="width:50%;background:var(--gray)"></div></div>
+  </div>
+
+  <div class="footer" id="footer-ts">pivotalphadesk.com · gaia_live.json</div>
+</div>
+
+<script>
+const JSON_FIELDS = [
+  {id:'f-dhp',  key:'dhp',   tvLabel:'DHP Momentum'},
+  {id:'f-pm',   key:'pm',    tvLabel:'Pressure Map State'},
+  {id:'f-pad',  key:'pad',   tvLabel:'Active PAD Level'},
+  {id:'f-type', key:'type',  tvLabel:'Level Type'},
+  {id:'f-dir',  key:'dir',   tvLabel:'Setup Direction'},
+  {id:'f-reg',  key:'reg',   tvLabel:'Context only'},
+];
+
+let autoTimer = null;
+let lastData  = {};
+
+function deriveDHPMomentum(d) {
+  const dir = (d.dhp_direction || '').toUpperCase();
+  const mom = d.dhp_momentum || 0;
+  if (dir === 'NEUTRAL') return 'NEUTRAL';
+  if (dir === 'BULL') return Math.abs(mom) > 0.5 ? 'ACC.BULL' : 'BLD.BULL';
+  if (dir === 'BEAR') return Math.abs(mom) > 0.5 ? 'ACC.BEAR' : 'BLD.BEAR';
+  if (dir.includes('ACC') && dir.includes('BULL')) return 'ACC.BULL';
+  if (dir.includes('BLD') && dir.includes('BULL')) return 'BLD.BULL';
+  if (dir.includes('ACC') && dir.includes('BEAR')) return 'ACC.BEAR';
+  if (dir.includes('BLD') && dir.includes('BEAR')) return 'BLD.BEAR';
+  return dir || 'NEUTRAL';
+}
+
+function derivePressureMap(d) {
+  const spot   = d.spot_spx || 0;
+  const levels = d.levels || {};
+  const gNode  = levels.gamma_node || 0;
+  const gFlip  = levels.gamma_flip || 0;
+  const totalDhp = d.total_dhp || 0;
+  const proximity = gNode > 0 ? Math.abs(spot - gNode) : 999;
+
+  if (proximity < 15) return 'COMPRESSION';
+  if (spot > gFlip && totalDhp > 50) return 'ABSORPTION';
+  return 'BALANCED';
+}
+
+function deriveNearestLevel(d) {
+  const spot   = d.spot_es || d.spot_spx || 0;
+  const levES  = d.levels_es || {};
+  const candidates = [
+    { key:'gamma_node',  type:'GAMMA NODE',   price: levES.gamma_node  || 0 },
+    { key:'call_wall',   type:'CALL WALL',     price: levES.call_wall   || 0 },
+    { key:'put_wall',    type:'PUT WALL',      price: levES.put_wall    || 0 },
+    { key:'gamma_flip',  type:'GAMMA FLIP',    price: levES.gamma_flip  || 0 },
+    { key:'gravity_pin', type:'TACT. ANCHOR',  price: levES.gravity_pin || 0 },
+  ].filter(c => c.price > 0);
+  if (!candidates.length) return { type:'GAMMA NODE', price:0 };
+  candidates.sort((a,b) => Math.abs(spot-a.price) - Math.abs(spot-b.price));
+  return candidates[0];
+}
+
+function deriveDirection(d) {
+  const dir = (d.dhp_direction || '').toUpperCase();
+  if (dir.includes('BULL')) return 'LONG';
+  if (dir.includes('BEAR')) return 'SHORT';
+  return 'AUTO';
+}
+
+function deriveRegime(d) {
+  const spot  = d.spot_spx || 0;
+  const flip  = (d.levels || {}).gamma_flip || 0;
+  return spot > flip ? 'DAMPENED' : 'AMPLIFIED';
+}
+
+function dhpColor(v) {
+  if (v === 'ACC.BULL' || v === 'BLD.BULL') return 'var(--green)';
+  if (v === 'ACC.BEAR' || v === 'BLD.BEAR') return 'var(--red)';
+  return 'var(--dim)';
+}
+
+function pmColor(v) {
+  if (v === 'ABSORPTION')  return 'var(--teal)';
+  if (v === 'COMPRESSION') return 'var(--amber)';
+  return 'var(--gray)';
+}
+
+function signalVerdict(dhp, pm, dir) {
+  if (pm === 'COMPRESSION') return { text:'COMPRESSION — wait', color:'var(--amber)', border:'var(--amber)' };
+  const bullDhp = dhp === 'ACC.BULL' || dhp === 'BLD.BULL';
+  const bearDhp = dhp === 'ACC.BEAR' || dhp === 'BLD.BEAR';
+  if (dir === 'LONG'  && bullDhp) return { text:'LONG  ✓ DHP confirmed',   color:'var(--green)',   border:'var(--green)'   };
+  if (dir === 'SHORT' && bearDhp) return { text:'SHORT  ✓ DHP confirmed',  color:'var(--red)',     border:'var(--red)'     };
+  if (dir === 'LONG'  && !bullDhp) return { text:'LONG — await DHP',       color:'var(--orange)',  border:'var(--orange)'  };
+  if (dir === 'SHORT' && !bearDhp) return { text:'SHORT — await DHP',      color:'var(--orange)',  border:'var(--orange)'  };
+  if (dhp === 'NEUTRAL') return { text:'NEUTRAL — no setup',               color:'var(--dim)',     border:'var(--border2)' };
+  return { text:'AUTO — monitoring',                                        color:'var(--blue)',    border:'var(--blue)'    };
+}
+
+function updateUI(d) {
+  lastData = d;
+
+  const dhp  = deriveDHPMomentum(d);
+  const pm   = derivePressureMap(d);
+  const near = deriveNearestLevel(d);
+  const dir  = deriveDirection(d);
+  const reg  = deriveRegime(d);
+
+  el('s-spx').textContent   = (d.spot_spx || 0).toFixed(2);
+  el('s-es').textContent    = (d.spot_es  || 0).toFixed(2);
+  el('s-basis').textContent = '+' + (d.basis || 0).toFixed(2);
+  el('s-dhp').textContent   = (d.total_dhp || 0).toFixed(1);
+
+  const v = signalVerdict(dhp, pm, dir);
+  const verd = document.getElementById('verdict');
+  verd.style.borderLeftColor = v.border;
+  el('verdict-val').textContent  = v.text;
+  el('verdict-val').style.color  = v.color;
+
+  const fieldMap = { dhp, pm, pad: near.price.toFixed(2), type: near.type, dir, reg };
+  const colorMap = {
+    dhp:  dhpColor(dhp),
+    pm:   pmColor(pm),
+    pad:  'var(--bright)',
+    type: 'var(--bright)',
+    dir:  dir === 'LONG' ? 'var(--green)' : dir === 'SHORT' ? 'var(--red)' : 'var(--dim)',
+    reg:  reg === 'DAMPENED' ? 'var(--green)' : 'var(--orange)',
+  };
+  JSON_FIELDS.forEach(f => {
+    const el2 = el(f.id);
+    if (el2) { el2.textContent = fieldMap[f.key]; el2.style.color = colorMap[f.key]; }
+  });
+
+  const hiroCalls = d.hiro_call || 0;
+  const hiroPuts  = d.hiro_put  || 0;
+  const hiroNet   = d.hiro_total || 0;
+  el('pm-calls').textContent = hiroCalls.toFixed(2);
+  el('pm-puts').textContent  = hiroPuts.toFixed(2);
+  el('pm-net').textContent   = (hiroNet >= 0 ? '+' : '') + hiroNet.toFixed(2);
+  el('pm-net').style.color   = hiroNet > 0 ? 'var(--green)' : hiroNet < 0 ? 'var(--red)' : 'var(--dim)';
+
+  const barPct = Math.min(100, Math.max(0, 50 + (d.total_dhp || 0) * 0.3));
+  el('pm-bar').style.width = barPct.toFixed(0) + '%';
+  el('pm-bar').style.background = d.total_dhp > 0 ? 'var(--green)' : d.total_dhp < 0 ? 'var(--red)' : 'var(--gray)';
+
+  el('footer-ts').textContent = 'pivotalphadesk.com · ' + (d.timestamp || '—');
+  el('status-dot').className = 'dot live';
+  el('status-txt').textContent = 'live · ' + new Date().toLocaleTimeString('en-US',{hour:'2-digit',minute:'2-digit',second:'2-digit'});
+  el('error-msg').style.display = 'none';
+
+  wireClicks(fieldMap);
+}
+
+function wireClicks(fieldMap) {
+  JSON_FIELDS.forEach(f => {
+    const parent = document.getElementById(f.id)?.closest('.field');
+    if (!parent) return;
+    parent.onclick = () => {
+      navigator.clipboard.writeText(String(fieldMap[f.key])).catch(()=>{});
+      parent.classList.add('copied');
+      parent.querySelector('.f-copy-hint').textContent = 'COPIADO ✓';
+      setTimeout(() => { parent.classList.remove('copied'); parent.querySelector('.f-copy-hint').textContent = 'COPIAR ↗'; }, 1800);
+    };
+  });
+}
+
+function showError(msg) {
+  const e = el('error-msg');
+  e.textContent = msg;
+  e.style.display = 'block';
+  el('status-dot').className = 'dot';
+  el('status-txt').textContent = 'error';
+}
+
+async function fetchOnce() {
+  const url = el('url-input').value.trim();
+  if (!url) return;
+  el('btn-fetch').disabled = true;
+  el('btn-fetch').textContent = '...';
+  try {
+    const r = await fetch(url);
+    if (!r.ok) throw new Error('HTTP ' + r.status);
+    const d = await r.json();
+    updateUI(d);
+  } catch(e) {
+    showError('Error: ' + e.message + ' — verifica que http-server esté corriendo en puerto 8080');
+  }
+  el('btn-fetch').disabled = false;
+  el('btn-fetch').textContent = 'FETCH';
+}
+
+function toggleAuto() {
+  const btn = el('btn-auto');
+  if (autoTimer) {
+    clearInterval(autoTimer);
+    autoTimer = null;
+    btn.classList.remove('active');
+    btn.textContent = 'AUTO 5s';
+  } else {
+    fetchOnce();
+    autoTimer = setInterval(fetchOnce, 5000);
+    btn.classList.add('active');
+    btn.textContent = 'AUTO ON ✓';
+  }
+}
+
+function el(id) { return document.getElementById(id); }
+</script>
+</body>
+</html>
