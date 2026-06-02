@@ -650,38 +650,20 @@ function build(){
     Math.abs(v)>=1e9?(v/1e9).toFixed(1)+'B':Math.abs(v)>=1e6?(v/1e6).toFixed(1)+'M':
     Math.abs(v)>=1e3?(v/1e3).toFixed(0)+'K':v.toFixed(0)};
 
-  // GFS autoscale provider — symmetric axis, recalculates on each update
-  function makeGfsScaleProvider(){
-    return ()=>{
-      const allVals=[
-        ...(gfsCallSeries?._data||[]).map(d=>d.value),
-        ...(gfsPutSeries?._data||[]).map(d=>d.value),
-        ...(gfsNetSeries?._data||[]).map(d=>d.value),
-      ].filter(v=>v!=null&&isFinite(v));
-      if(!allVals.length) return {priceRange:{minValue:-200,maxValue:200},margins:{above:.15,below:.15}};
-      const absMax=Math.max(...allVals.map(Math.abs),100);
-      const pad=absMax*0.2;
-      return {priceRange:{minValue:-(absMax+pad),maxValue:absMax+pad},margins:{above:.1,below:.1}};
-    };
-  }
-
   gfsCallSeries = priceChart.addLineSeries({
     color:'#f59e0b', lineWidth:1.5,
     lastValueVisible:true, priceLineVisible:false,
-    priceScaleId:'left', title:'CALLS', priceFormat:gfsFmt,
-    autoscaleInfoProvider: makeGfsScaleProvider()
+    priceScaleId:'left', title:'CALLS', priceFormat:gfsFmt
   });
   gfsPutSeries = priceChart.addLineSeries({
     color:'#3b82f6', lineWidth:1.5,
     lastValueVisible:true, priceLineVisible:false,
-    priceScaleId:'left', title:'PUTS', priceFormat:gfsFmt,
-    autoscaleInfoProvider: makeGfsScaleProvider()
+    priceScaleId:'left', title:'PUTS', priceFormat:gfsFmt
   });
   gfsNetSeries = priceChart.addLineSeries({
     color:'#a3e635', lineWidth:2, lineStyle:2,
     lastValueVisible:true, priceLineVisible:false,
-    priceScaleId:'left', title:'NET', priceFormat:gfsFmt,
-    autoscaleInfoProvider: makeGfsScaleProvider()
+    priceScaleId:'left', title:'NET', priceFormat:gfsFmt
   });
 
   // DHP subchart — Opción B: single line total_dhp over time
