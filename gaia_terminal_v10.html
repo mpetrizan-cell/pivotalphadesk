@@ -340,6 +340,14 @@ function updateGfsData(){
     gfsCallSeries.setData(layers.calls ? callData : []);
     gfsPutSeries .setData(layers.puts  ? putData  : []);
     gfsNetSeries .setData(layers.net   ? netData  : []);
+    const allVals=[...callData,...putData,...netData].map(d=>d.value);
+    if(allVals.length){
+      const absMax=Math.max(...allVals.map(Math.abs),200)*1.25;
+      const sc={autoscaleInfoProvider:()=>({priceRange:{minValue:-absMax,maxValue:absMax}})};
+      gfsCallSeries.applyOptions(sc);
+      gfsPutSeries .applyOptions(sc);
+      gfsNetSeries .applyOptions(sc);
+    }
   }catch(e){}
 }
 
