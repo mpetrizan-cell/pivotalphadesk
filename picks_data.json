@@ -1,6 +1,6 @@
 {
-  "updated_at": "2026-06-17T19:00:56.140475-04:00",
-  "updated_at_display": "17-Jun-2026 19:00 ET",
+  "updated_at": "2026-06-18T19:19:12.682292-04:00",
+  "updated_at_display": "18-Jun-2026 19:19 ET",
   "picks": [
     {
       "week": 12,
@@ -19,38 +19,38 @@
       "benchmark": "SPY",
       "filename": "pad_pick_semana12_2026.html",
       "status": "open",
-      "current_price": 54.67,
-      "current_date": "2026-06-17",
-      "current_ret_pct": -5.46,
-      "bench_ret_pct": 11.05,
-      "vs_benchmark_pct": -16.51,
-      "days_active": 66,
+      "current_price": 53.77,
+      "current_date": "2026-06-18",
+      "current_ret_pct": -7.02,
+      "bench_ret_pct": 11.92,
+      "vs_benchmark_pct": -18.94,
+      "days_active": 67,
       "closed_date": null,
       "closed_price": null,
       "levels": {
         "entry": {
-          "hit": true,
+          "hit": false,
           "above": false,
           "label": "$54.0\u2013$56.0"
         },
         "target1": {
           "hit": false,
-          "pct_away": 15.24,
+          "pct_away": 17.17,
           "label": "$63.0"
         },
         "target2": {
           "hit": false,
-          "pct_away": 28.04,
+          "pct_away": 30.18,
           "label": "$70.0"
         },
         "stop": {
           "hit": false,
-          "margin": 3.67,
+          "margin": 2.77,
           "label": "$51.0"
         },
         "gamma_flip": {
-          "above": true,
-          "regime": "DAMPENED",
+          "above": false,
+          "regime": "AMPLIFIED",
           "label": "$54.5"
         },
         "put_wall": {
@@ -388,6 +388,11 @@
           "date": "2026-06-17",
           "close": 54.67,
           "ret_pct": -5.46
+        },
+        {
+          "date": "2026-06-18",
+          "close": 53.77,
+          "ret_pct": -7.02
         }
       ],
       "chart_benchmark": [
@@ -720,6 +725,11 @@
           "date": "2026-06-17",
           "close": 740.96,
           "ret_pct": 11.05
+        },
+        {
+          "date": "2026-06-18",
+          "close": 746.74,
+          "ret_pct": 11.92
         }
       ]
     }
