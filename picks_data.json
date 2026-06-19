@@ -1,6 +1,6 @@
 {
-  "updated_at": "2026-06-18T19:19:12.682292-04:00",
-  "updated_at_display": "18-Jun-2026 19:19 ET",
+  "updated_at": "2026-06-19T18:31:21.568598-04:00",
+  "updated_at_display": "19-Jun-2026 18:31 ET",
   "picks": [
     {
       "week": 12,
@@ -22,8 +22,8 @@
       "current_price": 53.77,
       "current_date": "2026-06-18",
       "current_ret_pct": -7.02,
-      "bench_ret_pct": 11.92,
-      "vs_benchmark_pct": -18.94,
+      "bench_ret_pct": 12.21,
+      "vs_benchmark_pct": -19.23,
       "days_active": 67,
       "closed_date": null,
       "closed_price": null,
@@ -398,338 +398,338 @@
       "chart_benchmark": [
         {
           "date": "2026-03-16",
-          "close": 667.21,
+          "close": 665.49,
           "ret_pct": 0.0
         },
         {
           "date": "2026-03-17",
-          "close": 668.96,
+          "close": 667.24,
           "ret_pct": 0.26
         },
         {
           "date": "2026-03-18",
-          "close": 659.63,
+          "close": 657.93,
           "ret_pct": -1.14
         },
         {
           "date": "2026-03-19",
-          "close": 658.0,
+          "close": 656.31,
           "ret_pct": -1.38
         },
         {
           "date": "2026-03-20",
-          "close": 648.57,
+          "close": 646.9,
           "ret_pct": -2.79
         },
         {
           "date": "2026-03-23",
-          "close": 655.38,
+          "close": 653.7,
           "ret_pct": -1.77
         },
         {
           "date": "2026-03-24",
-          "close": 653.18,
+          "close": 651.5,
           "ret_pct": -2.1
         },
         {
           "date": "2026-03-25",
-          "close": 656.82,
+          "close": 655.13,
           "ret_pct": -1.56
         },
         {
           "date": "2026-03-26",
-          "close": 645.09,
-          "ret_pct": -3.32
+          "close": 643.43,
+          "ret_pct": -3.31
         },
         {
           "date": "2026-03-27",
-          "close": 634.09,
+          "close": 632.46,
           "ret_pct": -4.96
         },
         {
           "date": "2026-03-30",
-          "close": 631.97,
+          "close": 630.35,
           "ret_pct": -5.28
         },
         {
           "date": "2026-03-31",
-          "close": 650.34,
+          "close": 648.67,
           "ret_pct": -2.53
         },
         {
           "date": "2026-04-01",
-          "close": 655.24,
+          "close": 653.56,
           "ret_pct": -1.79
         },
         {
           "date": "2026-04-02",
-          "close": 655.83,
+          "close": 654.14,
           "ret_pct": -1.71
         },
         {
           "date": "2026-04-06",
-          "close": 658.93,
+          "close": 657.24,
           "ret_pct": -1.24
         },
         {
           "date": "2026-04-07",
-          "close": 659.22,
+          "close": 657.53,
           "ret_pct": -1.2
         },
         {
           "date": "2026-04-08",
-          "close": 676.01,
+          "close": 674.27,
           "ret_pct": 1.32
         },
         {
           "date": "2026-04-09",
-          "close": 679.91,
+          "close": 678.16,
           "ret_pct": 1.9
         },
         {
           "date": "2026-04-10",
-          "close": 679.46,
+          "close": 677.71,
           "ret_pct": 1.84
         },
         {
           "date": "2026-04-13",
-          "close": 686.1,
+          "close": 684.34,
           "ret_pct": 2.83
         },
         {
           "date": "2026-04-14",
-          "close": 694.46,
-          "ret_pct": 4.08
+          "close": 692.68,
+          "ret_pct": 4.09
         },
         {
           "date": "2026-04-15",
-          "close": 699.94,
+          "close": 698.14,
           "ret_pct": 4.91
         },
         {
           "date": "2026-04-16",
-          "close": 701.66,
+          "close": 699.86,
           "ret_pct": 5.16
         },
         {
           "date": "2026-04-17",
-          "close": 710.14,
-          "ret_pct": 6.43
+          "close": 708.32,
+          "ret_pct": 6.44
         },
         {
           "date": "2026-04-20",
-          "close": 708.72,
+          "close": 706.9,
           "ret_pct": 6.22
         },
         {
           "date": "2026-04-21",
-          "close": 704.08,
+          "close": 702.27,
           "ret_pct": 5.53
         },
         {
           "date": "2026-04-22",
-          "close": 711.21,
-          "ret_pct": 6.59
+          "close": 709.38,
+          "ret_pct": 6.6
         },
         {
           "date": "2026-04-23",
-          "close": 708.45,
+          "close": 706.63,
           "ret_pct": 6.18
         },
         {
           "date": "2026-04-24",
-          "close": 713.94,
-          "ret_pct": 7.0
+          "close": 712.11,
+          "ret_pct": 7.01
         },
         {
           "date": "2026-04-27",
-          "close": 715.17,
+          "close": 713.33,
           "ret_pct": 7.19
         },
         {
           "date": "2026-04-28",
-          "close": 711.69,
+          "close": 709.86,
           "ret_pct": 6.67
         },
         {
           "date": "2026-04-29",
-          "close": 711.58,
+          "close": 709.75,
           "ret_pct": 6.65
         },
         {
           "date": "2026-04-30",
-          "close": 718.66,
+          "close": 716.81,
           "ret_pct": 7.71
         },
         {
           "date": "2026-05-01",
-          "close": 720.65,
+          "close": 718.8,
           "ret_pct": 8.01
         },
         {
           "date": "2026-05-04",
-          "close": 718.01,
+          "close": 716.16,
           "ret_pct": 7.61
         },
         {
           "date": "2026-05-05",
-          "close": 723.77,
+          "close": 721.91,
           "ret_pct": 8.48
         },
         {
           "date": "2026-05-06",
-          "close": 733.83,
-          "ret_pct": 9.98
+          "close": 731.94,
+          "ret_pct": 9.99
         },
         {
           "date": "2026-05-07",
-          "close": 731.58,
+          "close": 729.7,
           "ret_pct": 9.65
         },
         {
           "date": "2026-05-08",
-          "close": 737.62,
+          "close": 735.72,
           "ret_pct": 10.55
         },
         {
           "date": "2026-05-11",
-          "close": 739.3,
-          "ret_pct": 10.8
+          "close": 737.4,
+          "ret_pct": 10.81
         },
         {
           "date": "2026-05-12",
-          "close": 738.18,
+          "close": 736.28,
           "ret_pct": 10.64
         },
         {
           "date": "2026-05-13",
-          "close": 742.31,
+          "close": 740.4,
           "ret_pct": 11.26
         },
         {
           "date": "2026-05-14",
-          "close": 748.17,
-          "ret_pct": 12.13
+          "close": 746.25,
+          "ret_pct": 12.14
         },
         {
           "date": "2026-05-15",
-          "close": 739.17,
+          "close": 737.27,
           "ret_pct": 10.79
         },
         {
           "date": "2026-05-18",
-          "close": 738.65,
+          "close": 736.75,
           "ret_pct": 10.71
         },
         {
           "date": "2026-05-19",
-          "close": 733.73,
+          "close": 731.84,
           "ret_pct": 9.97
         },
         {
           "date": "2026-05-20",
-          "close": 741.25,
+          "close": 739.35,
           "ret_pct": 11.1
         },
         {
           "date": "2026-05-21",
-          "close": 742.72,
+          "close": 740.81,
           "ret_pct": 11.32
         },
         {
           "date": "2026-05-22",
-          "close": 745.64,
-          "ret_pct": 11.75
+          "close": 743.72,
+          "ret_pct": 11.76
         },
         {
           "date": "2026-05-26",
-          "close": 750.59,
+          "close": 748.66,
           "ret_pct": 12.5
         },
         {
           "date": "2026-05-27",
-          "close": 750.46,
+          "close": 748.53,
           "ret_pct": 12.48
         },
         {
           "date": "2026-05-28",
-          "close": 754.6,
+          "close": 752.66,
           "ret_pct": 13.1
         },
         {
           "date": "2026-05-29",
-          "close": 756.48,
+          "close": 754.54,
           "ret_pct": 13.38
         },
         {
           "date": "2026-06-01",
-          "close": 758.54,
+          "close": 756.59,
           "ret_pct": 13.69
         },
         {
           "date": "2026-06-02",
-          "close": 759.57,
+          "close": 757.62,
           "ret_pct": 13.84
         },
         {
           "date": "2026-06-03",
-          "close": 754.24,
+          "close": 752.3,
           "ret_pct": 13.04
         },
         {
           "date": "2026-06-04",
-          "close": 757.09,
+          "close": 755.14,
           "ret_pct": 13.47
         },
         {
           "date": "2026-06-05",
-          "close": 737.55,
+          "close": 735.65,
           "ret_pct": 10.54
         },
         {
           "date": "2026-06-08",
-          "close": 739.22,
+          "close": 737.32,
           "ret_pct": 10.79
         },
         {
           "date": "2026-06-09",
-          "close": 737.05,
+          "close": 735.16,
           "ret_pct": 10.47
         },
         {
           "date": "2026-06-10",
-          "close": 725.43,
+          "close": 723.57,
           "ret_pct": 8.73
         },
         {
           "date": "2026-06-11",
-          "close": 737.76,
+          "close": 735.86,
           "ret_pct": 10.57
         },
         {
           "date": "2026-06-12",
-          "close": 741.75,
+          "close": 739.84,
           "ret_pct": 11.17
         },
         {
           "date": "2026-06-15",
-          "close": 754.83,
+          "close": 752.89,
           "ret_pct": 13.13
         },
         {
           "date": "2026-06-16",
-          "close": 750.33,
+          "close": 748.4,
           "ret_pct": 12.46
         },
         {
           "date": "2026-06-17",
-          "close": 740.96,
-          "ret_pct": 11.05
+          "close": 739.06,
+          "ret_pct": 11.06
         },
         {
           "date": "2026-06-18",
           "close": 746.74,
-          "ret_pct": 11.92
+          "ret_pct": 12.21
         }
       ]
     }
