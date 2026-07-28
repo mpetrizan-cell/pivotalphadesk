@@ -1,6 +1,6 @@
 {
-  "updated_at": "2026-07-27T18:34:33.429724-04:00",
-  "updated_at_display": "27-Jul-2026 18:34 ET",
+  "updated_at": "2026-07-28T18:34:27.612998-04:00",
+  "updated_at_display": "28-Jul-2026 18:34 ET",
   "picks": [
     {
       "week": 12,
@@ -19,12 +19,12 @@
       "benchmark": "SPY",
       "filename": "pad_pick_semana12_2026.html",
       "status": "open",
-      "current_price": 58.36,
-      "current_date": "2026-07-27",
-      "current_ret_pct": 0.92,
-      "bench_ret_pct": 11.06,
-      "vs_benchmark_pct": -10.14,
-      "days_active": 91,
+      "current_price": 57.57,
+      "current_date": "2026-07-28",
+      "current_ret_pct": -0.45,
+      "bench_ret_pct": 11.33,
+      "vs_benchmark_pct": -11.78,
+      "days_active": 93,
       "closed_date": null,
       "closed_price": null,
       "levels": {
@@ -35,17 +35,17 @@
         },
         "target1": {
           "hit": false,
-          "pct_away": 7.95,
+          "pct_away": 9.43,
           "label": "$63.0"
         },
         "target2": {
           "hit": false,
-          "pct_away": 19.95,
+          "pct_away": 21.59,
           "label": "$70.0"
         },
         "stop": {
           "hit": false,
-          "margin": 7.36,
+          "margin": 6.57,
           "label": "$51.0"
         },
         "gamma_flip": {
@@ -510,9 +510,19 @@
           "ret_pct": 2.68
         },
         {
+          "date": "2026-07-24",
+          "close": 59.62,
+          "ret_pct": 3.1
+        },
+        {
           "date": "2026-07-27",
           "close": 58.36,
           "ret_pct": 0.92
+        },
+        {
+          "date": "2026-07-28",
+          "close": 57.57,
+          "ret_pct": -0.45
         }
       ],
       "chart_benchmark": [
@@ -967,9 +977,19 @@
           "ret_pct": 10.92
         },
         {
+          "date": "2026-07-24",
+          "close": 738.93,
+          "ret_pct": 11.04
+        },
+        {
           "date": "2026-07-27",
           "close": 739.09,
           "ret_pct": 11.06
+        },
+        {
+          "date": "2026-07-28",
+          "close": 740.86,
+          "ret_pct": 11.33
         }
       ]
     }
