@@ -596,6 +596,200 @@ def serve_json():
     return resp
 
 
+# ── PRESSURE MAP ENGINE — portado de gaia_pressure_map.html (misma fórmula exacta) ──
+def _pm_clamp(v, mn=0.0, mx=1.0):
+    return max(mn, min(mx, v))
+
+def _pm_norm_abs(v, mx):
+    return _pm_clamp(abs(v) / mx) if mx else 0.0
+
+def _pm_get_conf(raw, strike):
+    for c in (raw.get('confluence') or []):
+        try:
+            if float(c.get('strike', -1e9)) == float(strike):
+                return c.get('strength', 1)
+        except (TypeError, ValueError):
+            continue
+    return 1
+
+def _pm_calc_cvx(row, max_g):
+    g = abs(row.get('call_gamma') or 0) + abs(row.get('put_gamma') or 0)
+    gi = _pm_norm_abs(g, max_g)
+    pi = _pm_clamp((row.get('prediction_score') or 0) / 100)
+    ivs = _pm_clamp(abs((row.get('put_iv') or 0) - (row.get('call_iv') or 0)) / 5)
+    return round(_pm_clamp(gi * .45 + pi * .4 + ivs * .15) * 100)
+
+def _pm_calc_dex(row):
+    return (row.get('call_delta_oi') or 0) + (row.get('put_delta_oi') or 0)
+
+def _pm_eq(a, b):
+    try:
+        return float(a) == float(b)
+    except (TypeError, ValueError):
+        return False
+
+def _pm_classify_zone(strike, spot, net_gex, net_dhp, dex, cvx, conf, levels, trig_active):
+    near = abs(strike - spot) <= 10
+    levels = levels or {}
+    is_cw   = _pm_eq(strike, levels.get('call_wall'))
+    is_pw   = _pm_eq(strike, levels.get('put_wall'))
+    is_node = _pm_eq(strike, levels.get('gamma_node'))
+    is_flip = _pm_eq(strike, levels.get('gamma_flip'))
+    is_pin  = _pm_eq(strike, levels.get('gravity_pin'))
+    if trig_active and net_gex < 0 and near and cvx >= 65: return 'EXPANSION'
+    if (is_cw or is_node or is_pin) and net_gex > 0 and conf >= 2 and dex >= 0: return 'ABSORPTION'
+    if is_pw and net_gex < 0: return 'FRAGILE'
+    if net_gex < 0 and near: return 'FRAGILE'
+    if net_gex < 0 and dex < 0 and cvx >= 55: return 'CHASE'
+    if (is_flip or net_gex > 0) and cvx >= 50: return 'REACTIVE'
+    if net_gex > 0 and abs(net_dhp) < 2: return 'COMPRESSION'
+    return 'BALANCED'
+
+def _pm_build_visual(net_gex, net_dhp, cvx, conf, max_g, max_d):
+    gi = _pm_norm_abs(net_gex, max_g)
+    di = _pm_norm_abs(net_dhp, max_d)
+    cfi = _pm_clamp(conf / 7)
+    return {
+        'glow':  _pm_clamp(.15 + gi * .45 + cfi * .35),
+        'thick': _pm_clamp(.2 + cfi * .55 + gi * .25),
+        'turb':  _pm_clamp(_pm_clamp(cvx / 100) * .65 + di * .35),
+        'fw':    _pm_clamp(.25 + gi * .65 + di * .1),
+    }
+
+def _pm_detect_drift(zones, spot):
+    ap = sum(z['net_gex'] * (z['visual']['fw'] or 0) for z in zones if z['strike'] > spot)
+    bp = sum(z['net_gex'] * (z['visual']['fw'] or 0) for z in zones if z['strike'] < spot)
+    net = bp - ap
+    if net < -25000: return 'UPWARD_STABILIZATION'
+    if net > 25000: return 'DOWNWARD_FRAGILITY'
+    return 'NEUTRAL_FLOW'
+
+def _pm_calc_dsi(zones):
+    if not zones: return 50
+    abs_str = sum(z['visual']['glow'] + z['visual']['thick'] for z in zones if z['state'] in ('ABSORPTION', 'COMPRESSION'))
+    frag_str = sum(z['visual']['glow'] + z['visual']['turb'] for z in zones if z['state'] in ('FRAGILE', 'CHASE', 'EXPANSION'))
+    avg_turb = sum(z['visual']['turb'] for z in zones) / len(zones)
+    frag_pct = (frag_str / ((abs_str + frag_str) or 1)) * 100
+    return round(max(0, min(100, 70 + (100 - frag_pct) * .25 - frag_pct * .35 - avg_turb * 25)))
+
+def _pm_calc_vts(zones, spot):
+    if not zones: return 50
+    frag_z = [z for z in zones if z['state'] in ('FRAGILE', 'CHASE', 'EXPANSION')]
+    near_f = sorted(frag_z, key=lambda z: abs(z['dist']))[0] if frag_z else None
+    trig_prox = max(0, 100 - abs(near_f['strike'] - spot) * 4) if near_f else 0
+    avg_turb = sum(z['visual']['turb'] for z in zones) / len(zones)
+    frag_pct = (len(frag_z) / len(zones) * 100)
+    return round(max(0, min(100, 20 + frag_pct * .45 + trig_prox * .25 + avg_turb * 35)))
+
+def _pm_calc_mcs(zones, dsi, vts, drift):
+    if not zones: return 50
+    has_abs = any(z['state'] == 'ABSORPTION' for z in zones)
+    has_frag = any(z['state'] == 'FRAGILE' for z in zones)
+    balanced = sum(1 for z in zones if z['state'] == 'BALANCED')
+    extreme_agree = (dsi >= 75 and vts <= 30) or (dsi <= 35 and vts >= 75)
+    mixed = dsi >= 50 and vts >= 50
+    contradiction = has_abs and has_frag and abs(dsi - 50) < 15
+    clear_drift = drift != 'NEUTRAL_FLOW'
+    mcs = 50
+    if extreme_agree: mcs += 25
+    if has_abs or has_frag: mcs += 10
+    if clear_drift: mcs += 10
+    if contradiction: mcs -= 20
+    if mixed: mcs -= 15
+    mcs -= (balanced / len(zones)) * 20
+    return round(max(0, min(100, mcs)))
+
+def _pm_trig_status(vts):
+    if vts >= 90: return 'EXTREME'
+    if vts >= 75: return 'ACTIVE'
+    if vts >= 56: return 'ARMING'
+    if vts >= 31: return 'WATCH'
+    return 'LOW'
+
+def _pm_classify_market(dsi, vts):
+    if dsi < 35 and vts >= 75: return 'EXPANSIVE'
+    if dsi >= 75 and vts <= 35: return 'STABLE'
+    if dsi < 65 or vts >= 50: return 'FRAGILE'
+    return 'BALANCED'
+
+def _pm_trade_perm(ms, dsi, vts):
+    if dsi < 35 and vts >= 75: return 'DEFENSIVE'
+    if ms == 'EXPANSIVE': return 'EXPANSIVE'
+    if ms == 'FRAGILE': return 'FRAGILE'
+    if ms == 'STABLE': return 'FAVORABLE'
+    return 'BALANCED'
+
+# market_state (STABLE/FRAGILE/EXPANSIVE/BALANCED) -> vocabulario de GAIA Execution regime input
+_MARKET_TO_REGIME = {'STABLE': 'DAMPENED', 'FRAGILE': 'FRAGILE', 'EXPANSIVE': 'AMPLIFIED', 'BALANCED': 'BALANCED'}
+# zone state (7 posibles) -> vocabulario de 3 opciones del pm_state input de Execution
+_ZONE_TO_PM = {'ABSORPTION': 'ABSORPTION', 'COMPRESSION': 'COMPRESSION'}  # el resto cae en BALANCED por default
+
+def compute_pressure_schema(raw):
+    """Reimplementación exacta de adaptRaw() de gaia_pressure_map.html — misma fórmula, mismo resultado."""
+    strikes = raw.get('strikes') or []
+    spot = raw.get('spot_spx')
+    if not strikes or spot is None:
+        return None
+    levels = raw.get('levels') or {}
+    sorted_strikes = sorted(strikes, key=lambda s: s['strike'])
+    PROXIMITY = 10
+    spot_idx = min(range(len(sorted_strikes)), key=lambda i: abs(sorted_strikes[i]['strike'] - spot))
+    start = max(0, spot_idx - PROXIMITY)
+    end = min(len(sorted_strikes) - 1, spot_idx + PROXIMITY)
+    filtered = sorted_strikes[start:end + 1]
+    max_g = max([abs(s.get('net_gex') or 0) for s in filtered] + [1])
+    max_d = max([abs(s.get('net_dhp') or 0) for s in filtered] + [1])
+    max_gamma = max([abs(s.get('call_gamma') or 0) + abs(s.get('put_gamma') or 0) for s in filtered] + [1])
+
+    def build_zones(trig_active):
+        zones = []
+        for row in filtered:
+            strike = row['strike']
+            conf = _pm_get_conf(raw, strike)
+            cvx = _pm_calc_cvx(row, max_gamma)
+            dex = _pm_calc_dex(row)
+            net_gex = row.get('net_gex') or 0
+            net_dhp = row.get('net_dhp') or 0
+            state = _pm_classify_zone(strike, spot, net_gex, net_dhp, dex, cvx, conf, levels, trig_active)
+            visual = _pm_build_visual(net_gex, net_dhp, cvx, conf, max_g, max_d)
+            zones.append({'strike': strike, 'net_gex': net_gex, 'net_dhp': net_dhp,
+                          'state': state, 'visual': visual, 'dist': strike - spot})
+        return zones
+
+    zones1 = build_zones(False)
+    drift = _pm_detect_drift(zones1, spot)
+    vts1 = _pm_calc_vts(zones1, spot)
+    zones = build_zones(vts1 >= 75)
+    dsi = _pm_calc_dsi(zones)
+    vts = _pm_calc_vts(zones, spot)
+    mcs = _pm_calc_mcs(zones, dsi, vts, drift)
+    ms = _pm_classify_market(dsi, vts)
+    perm = _pm_trade_perm(ms, dsi, vts)
+    trig = _pm_trig_status(vts)
+    dom = max(zones, key=lambda z: z['visual']['glow'] + z['visual']['thick']) if zones else None
+    frag_c = [z for z in zones if z['state'] in ('FRAGILE', 'CHASE', 'EXPANSION')]
+    frag_z = min(frag_c, key=lambda z: abs(z['dist'])) if frag_c else None
+
+    zone_states = {}
+    for lvl_key in ('call_wall', 'put_wall', 'gamma_node', 'gamma_flip', 'gravity_pin'):
+        target = levels.get(lvl_key)
+        if target is not None:
+            match = next((z for z in zones if _pm_eq(z['strike'], target)), None)
+            zone_states[lvl_key] = match['state'] if match else None
+
+    return {
+        'market_state': ms,
+        'regime': _MARKET_TO_REGIME.get(ms, 'BALANCED'),
+        'trade_permission': perm,
+        'dsi': dsi, 'vts': vts, 'mcs': mcs,
+        'trigger_status': trig,
+        'dominant_node': dom['strike'] if dom else None,
+        'fragile_zone': frag_z['strike'] if frag_z else None,
+        'pressure_drift': drift,
+        'zone_states': zone_states,
+        'pressure_state_by_level': {k: _ZONE_TO_PM.get(v, 'BALANCED') for k, v in zone_states.items()},
+    }
+
 @app.route('/checklist_data')
 def checklist_data():
     """Public endpoint for GAIA Trade Checklist — no auth required."""
@@ -619,6 +813,25 @@ def checklist_data():
         'levels_es':     d.get('levels_es', {}),
         'confluence':    d.get('confluence', []),
     }
+    # Market State / DSI / VTS / MCS / Regime / Pressure state por nivel —
+    # calculado con la misma fórmula exacta que usa gaia_pressure_map.html (adaptRaw),
+    # portada a Python. Si falta 'strikes' en el push, se omite sin romper el endpoint.
+    try:
+        pm = compute_pressure_schema(d)
+        if pm:
+            payload['market_state']            = pm['market_state']
+            payload['regime']                  = pm['regime']
+            payload['trade_permission']        = pm['trade_permission']
+            payload['dsi']                     = pm['dsi']
+            payload['vts']                     = pm['vts']
+            payload['mcs']                     = pm['mcs']
+            payload['trigger_status']          = pm['trigger_status']
+            payload['dominant_node']           = pm['dominant_node']
+            payload['fragile_zone']            = pm['fragile_zone']
+            payload['pressure_drift']          = pm['pressure_drift']
+            payload['pressure_state_by_level'] = pm['pressure_state_by_level']
+    except Exception as e:
+        log.warning(f'compute_pressure_schema failed: {e}')
     resp = jsonify(payload)
     resp.headers['Cache-Control'] = 'no-cache, no-store, must-revalidate'
     resp.headers['Access-Control-Allow-Origin'] = '*'
