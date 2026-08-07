@@ -790,6 +790,30 @@ def compute_pressure_schema(raw):
         'pressure_state_by_level': {k: _ZONE_TO_PM.get(v, 'BALANCED') for k, v in zone_states.items()},
     }
 
+def compute_terminal_v10_state(raw):
+    """Reimplementación exacta de computeState() de gaia_structure_terminal_v10.html.
+    Fórmula deliberadamente distinta a compute_pressure_schema() — son dos motores
+    reales y separados, no una versión vieja/nueva del mismo cálculo."""
+    strikes = raw.get('strikes') or []
+    if not strikes:
+        return None
+    dex = sum((s.get('call_delta_oi') or 0) - (s.get('put_delta_oi') or 0) for s in strikes)
+    total_net_dhp = sum(s.get('net_dhp') or 0 for s in strikes)
+    avg_net_dhp = total_net_dhp / max(1, len(strikes))
+    dhp_pressure = min(60, abs(avg_net_dhp) * 4)
+    dhp_momentum = raw.get('dhp_momentum') or 0
+    vts = round(32 + dhp_pressure + (18 if dhp_momentum < 0 else 0) + (8 if abs(dex) > 2500 else 0))
+    dsi = max(0, min(100, 76 - vts / 3))
+    mcs = max(0, min(100, 55 + (8 if dex > 0 else (-8 if dex < 0 else 0))))
+    regime = 'FRAGILE' if vts > 65 else ('STABLE' if dsi > 72 else 'BALANCED')
+    permission = 'DEFENSIVE' if regime == 'FRAGILE' else ('FAVORABLE' if mcs > 70 else 'WATCH')
+    dex_bias = 'BUY HEDGE' if dex > 1500 else ('SELL HEDGE' if dex < -1500 else 'MIXED')
+    return {
+        'dsi': round(dsi), 'vts': vts, 'mcs': round(mcs),
+        'regime': regime, 'trade_permission': permission,
+        'dex_bias': dex_bias, 'dex': round(dex, 2),
+    }
+
 @app.route('/checklist_data')
 def checklist_data():
     """Public endpoint for GAIA Trade Checklist — no auth required."""
@@ -813,25 +837,35 @@ def checklist_data():
         'levels_es':     d.get('levels_es', {}),
         'confluence':    d.get('confluence', []),
     }
-    # Market State / DSI / VTS / MCS / Regime / Pressure state por nivel —
-    # calculado con la misma fórmula exacta que usa gaia_pressure_map.html (adaptRaw),
-    # portada a Python. Si falta 'strikes' en el push, se omite sin romper el endpoint.
+    # ── Motor 1: Pressure Map (clasificación por zona, ±10 strikes) ──
     try:
         pm = compute_pressure_schema(d)
         if pm:
-            payload['market_state']            = pm['market_state']
-            payload['regime']                  = pm['regime']
-            payload['trade_permission']        = pm['trade_permission']
-            payload['dsi']                     = pm['dsi']
-            payload['vts']                     = pm['vts']
-            payload['mcs']                     = pm['mcs']
-            payload['trigger_status']          = pm['trigger_status']
-            payload['dominant_node']           = pm['dominant_node']
-            payload['fragile_zone']            = pm['fragile_zone']
-            payload['pressure_drift']          = pm['pressure_drift']
-            payload['pressure_state_by_level'] = pm['pressure_state_by_level']
+            payload['pressure_map'] = {
+                'market_state':            pm['market_state'],
+                'regime':                  pm['regime'],
+                'trade_permission':        pm['trade_permission'],
+                'dsi': pm['dsi'], 'vts': pm['vts'], 'mcs': pm['mcs'],
+                'trigger_status':          pm['trigger_status'],
+                'dominant_node':           pm['dominant_node'],
+                'fragile_zone':            pm['fragile_zone'],
+                'pressure_drift':          pm['pressure_drift'],
+                'pressure_state_by_level': pm['pressure_state_by_level'],
+            }
     except Exception as e:
         log.warning(f'compute_pressure_schema failed: {e}')
+
+    # ── Motor 2: Terminal V10 (heurístico agregado sobre DEX/DHP total) ──
+    try:
+        t10 = compute_terminal_v10_state(d)
+        if t10:
+            payload['terminal_v10'] = t10
+    except Exception as e:
+        log.warning(f'compute_terminal_v10_state failed: {e}')
+
+    # Nota: pressure_map y terminal_v10 son dos motores reales y distintos —
+    # pueden divergir legítimamente. No se combinan en un solo valor "regime"
+    # a propósito, para no ocultar la discrepancia cuando exista.
     resp = jsonify(payload)
     resp.headers['Cache-Control'] = 'no-cache, no-store, must-revalidate'
     resp.headers['Access-Control-Allow-Origin'] = '*'
