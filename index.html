@@ -179,12 +179,21 @@ section{position:relative;z-index:1;}
 .price-divider{height:1px;background:var(--border);margin-bottom:24px;}
 .price-features{list-style:none;margin-bottom:32px;}
 .price-features li{display:flex;align-items:flex-start;gap:10px;font-size:14px;color:var(--text2);margin-bottom:10px;line-height:1.5;}
-.price-features li::before{content:'&#8594;';color:var(--accent);font-family:'Space Mono',monospace;font-size:12px;flex-shrink:0;margin-top:1px;}
+.price-features li::before{content:'→';color:var(--accent);font-family:'Space Mono',monospace;font-size:12px;flex-shrink:0;margin-top:1px;}
 .price-btn{display:block;text-align:center;padding:12px;font-family:'Space Mono',monospace;font-size:11px;letter-spacing:.1em;text-transform:uppercase;text-decoration:none;border-radius:2px;transition:all .2s;}
 .price-btn.outline{border:1px solid var(--border);color:var(--text2);}
 .price-btn.outline:hover{border-color:var(--accent);color:var(--accent);}
 .price-btn.solid{background:var(--accent);color:var(--bg);font-weight:700;}
 .price-btn.solid:hover{background:var(--white);transform:translateY(-1px);}
+.access-section{padding:120px 0;}
+.access-box{max-width:640px;margin:0 auto;background:var(--bg2);border:1px solid rgba(0,212,255,0.25);border-radius:6px;padding:56px 48px;text-align:center;position:relative;}
+.access-box::before{content:'INVITE ONLY';position:absolute;top:-13px;left:50%;transform:translateX(-50%);background:var(--accent);color:var(--bg);font-family:'Space Mono',monospace;font-size:10px;font-weight:700;letter-spacing:.18em;padding:4px 16px;border-radius:100px;}
+.access-box h3{font-family:'Syne',sans-serif;font-weight:800;font-size:28px;color:var(--white);margin-bottom:16px;}
+.access-box p{font-size:15px;color:var(--text2);line-height:1.7;max-width:460px;margin:0 auto 32px;}
+.access-list{list-style:none;text-align:left;max-width:340px;margin:0 auto 36px;}
+.access-list li{display:flex;align-items:flex-start;gap:10px;font-size:14px;color:var(--text2);margin-bottom:12px;line-height:1.5;}
+.access-list li::before{content:'→';color:var(--accent);font-family:'Space Mono',monospace;font-size:12px;flex-shrink:0;margin-top:1px;}
+.access-note{font-family:'Space Mono',monospace;font-size:10px;color:var(--text3);letter-spacing:.06em;margin-top:20px;}
 .cta-section{padding:120px 0;background:var(--bg2);border-top:1px solid var(--border);text-align:center;}
 .cta-inner{position:relative;max-width:640px;margin:0 auto;}
 .cta-inner::before{content:'';position:absolute;top:-60px;left:50%;transform:translateX(-50%);width:600px;height:300px;background:radial-gradient(ellipse,rgba(240,180,41,0.05) 0%,transparent 70%);pointer-events:none;}
@@ -200,66 +209,6 @@ footer{position:relative;z-index:1;background:var(--bg);border-top:1px solid var
 @keyframes fade-up{from{opacity:0;transform:translateY(24px);}to{opacity:1;transform:translateY(0);}}
 .reveal{opacity:0;transform:translateY(32px);transition:opacity .7s ease,transform .7s ease;}
 .reveal.visible{opacity:1;transform:translateY(0);}
-.pad-pick{padding:100px 0;background:var(--bg);border-top:1px solid var(--border);border-bottom:1px solid var(--border);}
-.pad-pick-inner{max-width:1100px;margin:0 auto;padding:0 48px;}
-.pad-pick-header{display:flex;align-items:flex-end;justify-content:space-between;margin-bottom:48px;flex-wrap:wrap;gap:20px;}
-.pad-pick-eyebrow{font-family:'Space Mono',monospace;font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:#f59e0b;margin-bottom:10px;}
-.pad-pick-title{font-family:'Syne',sans-serif;font-weight:800;font-size:clamp(28px,3.5vw,44px);line-height:1.1;letter-spacing:-.02em;color:var(--white);margin-bottom:10px;}
-.pad-pick-desc{font-size:15px;color:var(--text2);max-width:480px;line-height:1.65;}
-.pad-pick-all-link{font-family:'Space Mono',monospace;font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:#f59e0b;text-decoration:none;border:1px solid rgba(245,158,11,0.3);padding:10px 20px;border-radius:2px;transition:all .2s;white-space:nowrap;}
-.pad-pick-all-link:hover{background:rgba(245,158,11,0.08);border-color:#f59e0b;}
-.pad-pick-featured{display:grid;grid-template-columns:1fr 340px;gap:0;background:var(--bg2);border:1px solid rgba(245,158,11,0.25);border-radius:6px;overflow:hidden;margin-bottom:24px;transition:border-color .3s,transform .3s;}
-.pad-pick-featured:hover{border-color:#f59e0b;transform:translateY(-3px);box-shadow:0 16px 48px rgba(0,0,0,0.4);}
-.ppf-left{padding:36px 40px;border-right:1px solid var(--border);}
-.ppf-meta{display:flex;align-items:center;gap:10px;margin-bottom:20px;flex-wrap:wrap;}
-.ppf-badge{font-family:'Space Mono',monospace;font-size:9px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;padding:3px 10px;border-radius:2px;}
-.ppf-badge.latest{background:#f59e0b;color:#06080b;}
-.ppf-badge.type{background:rgba(245,158,11,0.1);color:#f59e0b;border:1px solid rgba(245,158,11,0.3);}
-.ppf-badge.horiz{background:rgba(0,212,255,0.08);color:var(--accent);border:1px solid rgba(0,212,255,0.2);}
-.ppf-ticker{font-family:'Syne',sans-serif;font-weight:800;font-size:64px;line-height:.9;color:#f59e0b;letter-spacing:.02em;margin-bottom:8px;}
-.ppf-name{font-size:13px;color:var(--text2);margin-bottom:20px;font-style:italic;}
-.ppf-headline{font-family:'Syne',sans-serif;font-weight:700;font-size:18px;color:var(--white);line-height:1.35;margin-bottom:14px;}
-.ppf-thesis{font-size:13px;color:var(--text2);line-height:1.7;margin-bottom:24px;}
-.ppf-link{display:inline-flex;align-items:center;gap:8px;font-family:'Space Mono',monospace;font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:#f59e0b;text-decoration:none;border:1px solid rgba(245,158,11,0.4);padding:10px 20px;border-radius:2px;transition:all .2s;}
-.ppf-link:hover{background:#f59e0b;color:#06080b;}
-.ppf-right{padding:36px 28px;display:flex;flex-direction:column;justify-content:space-between;}
-.ppf-setup-title{font-family:'Space Mono',monospace;font-size:9px;color:var(--text3);text-transform:uppercase;letter-spacing:.12em;margin-bottom:16px;}
-.ppf-levels{display:flex;flex-direction:column;gap:1px;}
-.ppf-level{display:flex;justify-content:space-between;align-items:center;padding:8px 12px;background:var(--bg3);}
-.ppf-level:first-child{border-radius:3px 3px 0 0;}
-.ppf-level:last-child{border-radius:0 0 3px 3px;}
-.ppl-lbl{font-family:'Space Mono',monospace;font-size:9px;color:var(--text2);}
-.ppl-val{font-family:'Space Mono',monospace;font-size:12px;font-weight:700;}
-.ppl-val.buy{color:#00e676;}
-.ppl-val.stop{color:#ff4444;}
-.ppl-val.t1{color:#f59e0b;}
-.ppl-val.t2{color:#f0b429;}
-.ppl-val.rr{color:var(--accent);}
-.ppf-verdict{margin-top:20px;padding:14px;background:rgba(245,158,11,0.06);border:1px solid rgba(245,158,11,0.15);border-radius:3px;}
-.ppf-verdict-top{display:flex;align-items:center;gap:10px;margin-bottom:6px;}
-.ppf-verdict-rating{font-family:'Syne',sans-serif;font-weight:800;font-size:28px;color:#f59e0b;line-height:1;}
-.ppf-verdict-meta{font-family:'Space Mono',monospace;font-size:9px;color:var(--text2);text-transform:uppercase;letter-spacing:.08em;}
-.ppf-verdict p{font-size:11px;color:var(--text2);line-height:1.6;}
-.ppf-week{margin-top:16px;font-family:'Space Mono',monospace;font-size:9px;color:var(--text3);text-align:right;letter-spacing:.06em;}
-.pad-pick-soon{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
-.pps-card{background:var(--bg2);border:1px solid var(--border);border-radius:6px;padding:28px;display:flex;align-items:center;gap:20px;opacity:.55;}
-.pps-num{font-family:'Syne',sans-serif;font-weight:800;font-size:40px;color:var(--text3);line-height:1;flex-shrink:0;}
-.pps-label{font-family:'Space Mono',monospace;font-size:9px;color:var(--text3);text-transform:uppercase;letter-spacing:.1em;margin-bottom:5px;}
-.pps-title{font-family:'Syne',sans-serif;font-weight:700;font-size:15px;color:var(--text2);margin-bottom:4px;}
-.pps-desc{font-size:12px;color:var(--text3);line-height:1.5;}
-@media(max-width:900px){.pad-pick-featured{grid-template-columns:1fr;}.ppf-right{border-top:1px solid var(--border);}.pad-pick-soon{grid-template-columns:1fr;}.pad-pick-inner{padding:0 24px;}}
-.live-chart{padding:80px 0;background:var(--bg);border-top:1px solid var(--border);}
-.live-chart-inner{max-width:1100px;margin:0 auto;padding:0 48px;}
-.live-chart-header{display:flex;align-items:flex-end;justify-content:space-between;margin-bottom:32px;flex-wrap:wrap;gap:16px;}
-.live-chart-eyebrow{font-family:'Space Mono',monospace;font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:var(--red);margin-bottom:8px;}
-.live-chart-title{font-family:'Syne',sans-serif;font-weight:800;font-size:clamp(24px,3vw,38px);line-height:1.1;letter-spacing:-.02em;color:var(--white);}
-.live-chart-desc{font-size:14px;color:var(--text2);margin-top:8px;max-width:480px;line-height:1.6;}
-.live-chart-link{font-family:'Space Mono',monospace;font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--red);text-decoration:none;border:1px solid rgba(239,68,68,0.3);padding:10px 20px;border-radius:2px;transition:all .2s;white-space:nowrap;}
-.live-chart-link:hover{background:rgba(239,68,68,0.08);border-color:var(--red);}
-.chart-iframe-wrap{border:1px solid var(--border);border-radius:4px;overflow:hidden;position:relative;}
-.chart-iframe-wrap::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--red),#e040fb,var(--accent));z-index:1;}
-.chart-iframe-wrap iframe{display:block;width:100%;border:none;}
-@media(max-width:900px){.live-chart-inner{padding:0 24px;}}
 </style>
 </head>
 <body>
@@ -273,7 +222,7 @@ footer{position:relative;z-index:1;background:var(--bg);border-top:1px solid var
     <li><a href="#how">How It Works</a></li>
     <li><a href="#gaia">GAIA Engine</a></li>
     <li><a href="#features">Features</a></li>
-    <li><a href="#pricing">Pricing</a></li>
+    <li><a href="#access">Request Access</a></li>
     <li><a href="contact.html">Contact</a></li>
   </ul>
   <div class="nav-right">
@@ -286,13 +235,13 @@ footer{position:relative;z-index:1;background:var(--bg);border-top:1px solid var
   <div class="hero-glow-gold"></div>
   <div class="hero-badge">
     <div class="badge-dot"></div>
-    LIVE · DAMPENED · ES NODE 7,400 · GAIA DHP ACTIVE · DEALER FLOW MONITORING
+    GAIA DHP ACTIVE · DEALER FLOW MONITORING · INVITE ONLY
   </div>
   <h1><span class="accent">Pivot</span><span class="gold">Alpha</span><br>Desk</h1>
   <div class="hero-sub">Daily Market Intelligence</div>
   <p class="hero-desc">Institutional-grade gamma levels for independent traders. Know where dealers are positioned before the market opens.</p>
   <div class="hero-actions">
-    <a href="briefing_19may2026.html" class="btn-primary" style="background:linear-gradient(135deg,#00c06a,#007a40);color:#fff;">★ Latest Briefing</a>
+    <a href="#access" class="btn-primary" style="background:linear-gradient(135deg,#00c06a,#007a40);color:#fff;">→ Request Access</a>
     <a href="login.html" class="btn-primary" style="background:rgba(0,212,255,0.12);border:1px solid rgba(0,212,255,0.3);color:var(--accent);box-shadow:none">→ Member Login</a>
     <a href="#how" class="btn-secondary">See How It Works</a>
   </div>
@@ -300,15 +249,15 @@ footer{position:relative;z-index:1;background:var(--bg);border-top:1px solid var
 
 <div class="ticker-wrap">
   <div class="ticker">
-    <div class="ticker-item"><span class="sym">ESM26</span> <span class="text3">|</span> <span>NODE</span> <span class="neu">7,400</span> <span class="text3">|</span> <span>Call Wall</span> <span class="neu">7,450</span> <span class="text3">|</span> <span>Gamma Flip</span> <span class="neu">7,380</span> <span class="text3">|</span> <span>Regime</span> <span class="up">DAMPENED</span></div>
-    <div class="ticker-item"><span class="sym">NQM26</span> <span class="text3">|</span> <span>NODE/FLIP</span> <span class="or">29,000</span> <span class="text3">|</span> <span>Put Wall</span> <span class="dn">28,750</span> <span class="text3">|</span> <span>EMA200</span> <span class="or">29,181</span> <span class="text3">|</span> <span>Regime</span> <span class="or">TRANSITION</span></div>
-    <div class="ticker-item"><span class="sym">CLN26</span> <span class="text3">|</span> <span>Call Wall</span> <span class="up">$105</span> <span class="text3">|</span> <span>NODE</span> <span class="up">$103</span> <span class="text3">|</span> <span>Put Wall</span> <span class="dn">$100</span> <span class="text3">|</span> <span class="up">DAMPENED · RF +7</span></div>
-    <div class="ticker-item"><span class="sym">SPX</span> <span class="text3">|</span> <span>NODE/FLIP</span> <span class="or">7,400</span> <span class="text3">|</span> <span>Call Wall</span> <span class="neu">7,650</span> <span class="text3">|</span> <span>Put Wall</span> <span class="dn">7,200</span> <span class="text3">|</span> <span class="up">DAMPENED · ADP 08:15</span></div>
+    <div class="ticker-item"><span class="sym">ES</span> <span class="text3">|</span> <span>Live gamma structure</span> <span class="text3">|</span> <span class="up">app.pivotalphadesk.com</span></div>
+    <div class="ticker-item"><span class="sym">NQ</span> <span class="text3">|</span> <span>Live gamma structure</span> <span class="text3">|</span> <span class="up">app.pivotalphadesk.com</span></div>
+    <div class="ticker-item"><span class="sym">CL</span> <span class="text3">|</span> <span>Live gamma structure</span> <span class="text3">|</span> <span class="up">app.pivotalphadesk.com</span></div>
+    <div class="ticker-item"><span class="sym">SPX</span> <span class="text3">|</span> <span>Live gamma structure</span> <span class="text3">|</span> <span class="up">app.pivotalphadesk.com</span></div>
     <div class="ticker-item"><span class="sym">GAIA DHP</span> <span class="up">LIVE</span> <span class="text3">|</span> <span>Dealer flow monitoring active</span> <span class="text3">|</span> <span class="up">app.pivotalphadesk.com</span></div>
-    <div class="ticker-item"><span class="sym">ESM26</span> <span class="text3">|</span> <span>NODE</span> <span class="neu">7,400</span> <span class="text3">|</span> <span>Call Wall</span> <span class="neu">7,450</span> <span class="text3">|</span> <span>Gamma Flip</span> <span class="neu">7,380</span> <span class="text3">|</span> <span>Regime</span> <span class="up">DAMPENED</span></div>
-    <div class="ticker-item"><span class="sym">NQM26</span> <span class="text3">|</span> <span>NODE/FLIP</span> <span class="or">29,000</span> <span class="text3">|</span> <span>Put Wall</span> <span class="dn">28,750</span> <span class="text3">|</span> <span>EMA200</span> <span class="or">29,181</span> <span class="text3">|</span> <span>Regime</span> <span class="or">TRANSITION</span></div>
-    <div class="ticker-item"><span class="sym">CLN26</span> <span class="text3">|</span> <span>Call Wall</span> <span class="up">$105</span> <span class="text3">|</span> <span>NODE</span> <span class="up">$103</span> <span class="text3">|</span> <span>Put Wall</span> <span class="dn">$100</span> <span class="text3">|</span> <span class="up">DAMPENED · RF +7</span></div>
-    <div class="ticker-item"><span class="sym">SPX</span> <span class="text3">|</span> <span>NODE/FLIP</span> <span class="or">7,400</span> <span class="text3">|</span> <span>Call Wall</span> <span class="neu">7,650</span> <span class="text3">|</span> <span>Put Wall</span> <span class="dn">7,200</span> <span class="text3">|</span> <span class="up">DAMPENED · ADP 08:15</span></div>
+    <div class="ticker-item"><span class="sym">ES</span> <span class="text3">|</span> <span>Live gamma structure</span> <span class="text3">|</span> <span class="up">app.pivotalphadesk.com</span></div>
+    <div class="ticker-item"><span class="sym">NQ</span> <span class="text3">|</span> <span>Live gamma structure</span> <span class="text3">|</span> <span class="up">app.pivotalphadesk.com</span></div>
+    <div class="ticker-item"><span class="sym">CL</span> <span class="text3">|</span> <span>Live gamma structure</span> <span class="text3">|</span> <span class="up">app.pivotalphadesk.com</span></div>
+    <div class="ticker-item"><span class="sym">SPX</span> <span class="text3">|</span> <span>Live gamma structure</span> <span class="text3">|</span> <span class="up">app.pivotalphadesk.com</span></div>
     <div class="ticker-item"><span class="sym">GAIA DHP</span> <span class="up">LIVE</span> <span class="text3">|</span> <span>Dealer flow monitoring active</span> <span class="text3">|</span> <span class="up">app.pivotalphadesk.com</span></div>
   </div>
 </div>
@@ -327,7 +276,7 @@ footer{position:relative;z-index:1;background:var(--bg);border-top:1px solid var
       <div class="mock-briefing reveal">
         <div class="mock-header">
           <div class="mock-dots"><div class="mock-dot r"></div><div class="mock-dot y"></div><div class="mock-dot g"></div></div>
-          <span class="mock-title">PIVOT ALPHA DESK &mdash; 08 ABR 2026 &middot; TREGUA EE.UU.–IRÁN &middot; GAP +179 ES &middot; FOMC 2PM</span>
+          <span class="mock-title">PIVOT ALPHA DESK &mdash; SAMPLE BRIEFING FORMAT</span>
         </div>
         <div class="mock-tabs">
           <div class="mock-tab active">ES /S&amp;P 500</div>
@@ -336,17 +285,17 @@ footer{position:relative;z-index:1;background:var(--bg);border-top:1px solid var
           <div class="mock-tab">SPX</div>
         </div>
         <div class="mock-body">
-          <div class="mock-row"><span class="mock-label">FUTURE</span><span class="mock-val up">ESM6 &middot; DAMPENED &middot; GEX +19,697</span></div>
-          <div class="mock-row"><span class="mock-label">PRECIO</span><span class="mock-val up">6,836 pre-mkt &middot; +179.5 pts &middot; VWAP 6,796</span></div>
-          <div class="mock-row"><span class="mock-label">P/C RATIO</span><span class="mock-val dn">2.47 &mdash; Put Dominance ALTA</span></div>
-          <div class="mock-row"><span class="mock-label">RANGO</span><span class="mock-val gold">Put Wall 6,500 &mdash; Call Wall 6,900</span></div>
+          <div class="mock-row"><span class="mock-label">FUTURE</span><span class="mock-val up">ES &middot; Regime &amp; GEX updated daily</span></div>
+          <div class="mock-row"><span class="mock-label">PRECIO</span><span class="mock-val up">Pre-market levels vs. VWAP</span></div>
+          <div class="mock-row"><span class="mock-label">P/C RATIO</span><span class="mock-val dn">Call/Put dominance daily read</span></div>
+          <div class="mock-row"><span class="mock-label">RANGO</span><span class="mock-val gold">Put Wall &mdash; Call Wall range</span></div>
           <div class="mock-divider"></div>
-          <div class="mock-level" style="background:rgba(192,57,43,0.08)"><div class="mock-level-bar" style="background:#C0392B"></div><span class="mock-level-label">Call Wall</span><span class="mock-level-price" style="color:#E74C3C">6,900</span></div>
-          <div class="mock-level" style="background:rgba(192,57,43,0.05)"><div class="mock-level-bar" style="background:#E74C3C"></div><span class="mock-level-label">Gamma Ceiling</span><span class="mock-level-price" style="color:#E74C3C">6,850</span></div>
-          <div class="mock-level" style="background:rgba(183,149,11,0.12)"><div class="mock-level-bar" style="background:#B7950B"></div><span class="mock-level-label">&#9670; Gamma Flip &mdash; CLAVE</span><span class="mock-level-price" style="color:#F0C040">6,725</span></div>
-          <div class="mock-level" style="background:rgba(14,102,85,0.08)"><div class="mock-level-bar" style="background:#0E6655"></div><span class="mock-level-label">Emergency Anchor</span><span class="mock-level-price" style="color:#1ABC9C">6,450</span></div>
+          <div class="mock-level" style="background:rgba(192,57,43,0.08)"><div class="mock-level-bar" style="background:#C0392B"></div><span class="mock-level-label">Call Wall</span><span class="mock-level-price" style="color:#E74C3C">—</span></div>
+          <div class="mock-level" style="background:rgba(192,57,43,0.05)"><div class="mock-level-bar" style="background:#E74C3C"></div><span class="mock-level-label">Gamma Ceiling</span><span class="mock-level-price" style="color:#E74C3C">—</span></div>
+          <div class="mock-level" style="background:rgba(183,149,11,0.12)"><div class="mock-level-bar" style="background:#B7950B"></div><span class="mock-level-label">&#9670; Gamma Flip &mdash; CLAVE</span><span class="mock-level-price" style="color:#F0C040">—</span></div>
+          <div class="mock-level" style="background:rgba(14,102,85,0.08)"><div class="mock-level-bar" style="background:#0E6655"></div><span class="mock-level-label">Emergency Anchor</span><span class="mock-level-price" style="color:#1ABC9C">—</span></div>
           <div class="mock-divider"></div>
-          <div class="mock-row"><span class="mock-label">&#9650; DRIVER</span><span class="mock-val up">TREGUA IRÁN &middot; FOMC 2PM &middot; Sizing &minus;25%</span></div>
+          <div class="mock-row"><span class="mock-label">&#9650; DRIVER</span><span class="mock-val up">Macro context &amp; sizing guidance</span></div>
         </div>
       </div>
     </div>
@@ -463,10 +412,10 @@ footer{position:relative;z-index:1;background:var(--bg);border-top:1px solid var
       <g class="gmm" transform="translate(136,152)">
         <rect x="0" y="0" width="128" height="50" rx="2" fill="rgba(0,0,0,0.5)" stroke="rgba(0,212,255,0.08)" stroke-width="0.5"/>
         <text x="6" y="13" font-family="Space Mono,monospace" font-size="7" fill="#2a4055" letter-spacing="1">CALL DHP</text>
-        <text x="6" y="26" font-family="Space Mono,monospace" font-size="10" font-weight="700" fill="#00c06a">+717.66M</text>
+        <text x="6" y="26" font-family="Space Mono,monospace" font-size="10" font-weight="700" fill="#00c06a">LIVE</text>
         <text x="6" y="39" font-family="Space Mono,monospace" font-size="7" fill="#2a4055" letter-spacing="1">PUT DHP</text>
-        <text x="70" y="39" font-family="Space Mono,monospace" font-size="10" font-weight="700" fill="#E74C3C">-483M</text>
-        <text x="6" y="48" font-family="Space Mono,monospace" font-size="6" fill="#1a3040" letter-spacing="1">5s · ACC.BULL</text>
+        <text x="70" y="39" font-family="Space Mono,monospace" font-size="10" font-weight="700" fill="#E74C3C">LIVE</text>
+        <text x="6" y="48" font-family="Space Mono,monospace" font-size="6" fill="#1a3040" letter-spacing="1">5s refresh</text>
       </g>
       <circle cx="200" cy="101" r="3.5" fill="#E74C3C" opacity="0.85"/>
       <circle cx="200" cy="299" r="3.5" fill="#2980B9" opacity="0.85"/>
@@ -479,57 +428,6 @@ footer{position:relative;z-index:1;background:var(--bg);border-top:1px solid var
   </div>
 
 </div>
-</section>
-
-<!-- ── BRIEFING SAMPLE ── -->
-<section style="padding:80px 48px;background:#0d1319;border-bottom:1px solid #1e2d3d;">
-  <div style="max-width:1200px;margin:0 auto;">
-    <div style="font-family:'Space Mono',monospace;font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:#00d4ff;margin-bottom:12px;">Daily Intelligence</div>
-    <div style="font-family:'Syne',sans-serif;font-weight:800;font-size:clamp(28px,3.5vw,44px);color:#fff;margin-bottom:40px;">Pre-Market Briefing</div>
-    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:20px;">
-
-      <div style="background:#080c10;border:1px solid rgba(0,192,106,0.3);border-radius:4px;padding:24px;position:relative;">
-        <div style="position:absolute;top:-11px;left:16px;background:#00c06a;color:#060a0e;font-family:'Space Mono',monospace;font-size:9px;font-weight:700;letter-spacing:.1em;padding:2px 10px;">&#128274; PRO — MAY 19 · LATEST</div>
-        <div style="font-family:'Space Mono',monospace;font-size:9px;text-transform:uppercase;letter-spacing:.1em;color:#E74C3C;margin-bottom:10px;">Pre-Open Briefing · ADP + Waller Day</div>
-        <h3 style="font-family:'Syne',sans-serif;font-weight:700;font-size:16px;color:#fff;margin-bottom:10px;line-height:1.3;">May 19 · DAMPENED · NODE/FLIP 7,400 · Chip Selloff · ADP 8:15 ET</h3>
-        <p style="font-size:13px;color:#6a8499;line-height:1.6;margin-bottom:10px;">DAMPENED regime after yesterday's −1.24% AMPLIFIED selloff. SPX spot at NODE/FLIP 7,400. NQ chip selloff continues. CL Iran postponed. ADP + Waller pre-open catalysts. Full PAD map ES, NQ, CL, SPX.</p>
-        <div style="font-family:'Space Mono',monospace;font-size:9px;color:#3a5068;margin-bottom:14px;padding:6px 8px;background:rgba(0,192,106,.04);border-left:2px solid rgba(0,192,106,.2);">Previous: May 18 · AMPLIFIED · DHP −4,020M · SPX 7,409 → 7,353</div>
-        <a href="briefing_19may2026.html" style="font-family:'Space Mono',monospace;font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:#00c06a;text-decoration:none;border:1px solid #00c06a;padding:8px 16px;display:inline-block;">VIEW BRIEFING →</a>
-      </div>
-
-      <div style="background:#080c10;border:1px solid rgba(0,212,255,0.15);border-radius:4px;padding:24px;position:relative;">
-        <div style="position:absolute;top:-11px;left:16px;background:#1e2d3d;color:#00d4ff;font-family:'Space Mono',monospace;font-size:9px;font-weight:700;letter-spacing:.1em;padding:2px 10px;">SPX PAD CHART</div>
-        <div style="font-family:'Space Mono',monospace;font-size:9px;text-transform:uppercase;letter-spacing:.1em;color:#00d4ff;margin-bottom:10px;">Live Gamma Zones · SPX</div>
-        <h3 style="font-family:'Syne',sans-serif;font-weight:700;font-size:16px;color:#fff;margin-bottom:10px;line-height:1.3;">SPX Gamma Structure · Daily Zones</h3>
-        <p style="font-size:13px;color:#6a8499;line-height:1.6;margin-bottom:20px;">Call Walls, Put Wall, Gamma Flip and 1σ range updated every pre-market via GAIA String. Delayed price via Yahoo Finance.</p>
-        <a href="spx_pad_chart_v1.html" style="font-family:'Space Mono',monospace;font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:#00d4ff;text-decoration:none;border:1px solid rgba(0,212,255,0.4);padding:8px 16px;display:inline-block;">OPEN CHART →</a>
-      </div>
-
-      <div style="background:#080c10;border:1px solid rgba(57,197,207,0.3);border-radius:4px;padding:24px;position:relative;overflow:hidden;">
-        <div style="position:absolute;top:-11px;left:16px;background:#39c5cf;color:#060a0e;font-family:'Space Mono',monospace;font-size:9px;font-weight:700;letter-spacing:.1em;padding:2px 10px;">&#128274; GAIA STRINGS</div>
-        <div style="font-family:'Space Mono',monospace;font-size:9px;text-transform:uppercase;letter-spacing:.1em;color:#39c5cf;margin-bottom:10px;">Zone Strings · Copy &amp; Paste</div>
-        <h3 style="font-family:'Syne',sans-serif;font-weight:700;font-size:16px;color:#fff;margin-bottom:10px;line-height:1.3;">Daily GAIA Zone Strings</h3>
-        <p style="font-size:13px;color:#6a8499;line-height:1.6;margin-bottom:12px;">Copy the daily string → paste into your SPX PAD Chart → zones load instantly. Updated every pre-market.</p>
-        <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:16px;">
-          <span style="font-family:'Space Mono',monospace;font-size:9px;padding:2px 8px;background:rgba(57,197,207,.12);border:1px solid rgba(57,197,207,.3);color:#39c5cf;border-radius:2px;">SPX ✓</span>
-          <span style="font-family:'Space Mono',monospace;font-size:9px;padding:2px 8px;background:rgba(58,80,104,.15);border:1px solid #1e2d3d;color:#3a5068;border-radius:2px;">INDEX</span>
-          <span style="font-family:'Space Mono',monospace;font-size:9px;padding:2px 8px;background:rgba(58,80,104,.15);border:1px solid #1e2d3d;color:#3a5068;border-radius:2px;">STOCK</span>
-          <span style="font-family:'Space Mono',monospace;font-size:9px;padding:2px 8px;background:rgba(58,80,104,.15);border:1px solid #1e2d3d;color:#3a5068;border-radius:2px;">ETF</span>
-          <span style="font-family:'Space Mono',monospace;font-size:9px;padding:2px 8px;background:rgba(58,80,104,.15);border:1px solid #1e2d3d;color:#3a5068;border-radius:2px;">VIX</span>
-        </div>
-        <a href="login.html" style="font-family:'Space Mono',monospace;font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:#39c5cf;text-decoration:none;border:1px solid rgba(57,197,207,.4);padding:8px 16px;display:inline-block;">ACCESS STRINGS →</a>
-      </div>
-
-      <div style="background:#080c10;border:1px solid rgba(0,212,255,0.3);border-radius:4px;padding:24px;position:relative;">
-        <div style="position:absolute;top:-11px;left:16px;background:#00d4ff;color:#060a0e;font-family:'Space Mono',monospace;font-size:9px;font-weight:700;letter-spacing:.1em;padding:2px 10px;">FREE SAMPLE</div>
-        <div style="font-family:'Space Mono',monospace;font-size:9px;text-transform:uppercase;letter-spacing:.1em;color:#00d4ff;margin-bottom:10px;">Pre-Open Briefing — May 1, 2026</div>
-        <h3 style="font-family:'Syne',sans-serif;font-weight:700;font-size:16px;color:#fff;margin-bottom:10px;line-height:1.3;">GAIA Framework Sample — Free Access</h3>
-        <p style="font-size:13px;color:#6a8499;line-height:1.6;margin-bottom:20px;">See exactly what Pro members receive every morning. Full ES, NQ, CL and SPX gamma levels. No access code needed.</p>
-        <a href="briefing_01may2026.html" style="font-family:'Space Mono',monospace;font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:#00d4ff;text-decoration:none;border:1px solid rgba(0,212,255,0.4);padding:8px 16px;display:inline-block;">VIEW FREE SAMPLE →</a>
-      </div>
-
-    </div>
-  </div>
 </section>
 
 <section class="features" id="features">
@@ -560,27 +458,18 @@ footer{position:relative;z-index:1;background:var(--bg);border-top:1px solid var
   </div>
 </section>
 
-<section class="pricing" id="pricing">
+<section class="access-section" id="access">
   <div class="container">
-    <div class="section-label">Access</div>
-    <div class="section-title">Simple, transparent pricing.</div>
-    <div style="display:flex;justify-content:center;margin-top:64px;">
-      <div class="price-card featured reveal" style="max-width:420px;width:100%;">
-        <div class="price-tier">Pro Access</div>
-        <div class="price-amount">$49<span>/mo</span></div>
-        <div class="price-period">7-day free trial · cancel anytime</div>
-        <div class="price-divider"></div>
-        <ul class="price-features">
-          <li>Daily pre-market briefings — ES, NQ, CL &amp; SPX</li>
-          <li>GAIA gamma levels — full PAD map every morning</li>
-          <li>SPX PAD Chart with daily zones</li>
-          <li>3 daily scenarios with targets</li>
-          <li>Options Calculator</li>
-          <li>Education library — full GAIA methodology</li>
-        </ul>
-        <a href="pricing.html" class="price-btn solid">Start 7-Day Free Trial →</a>
-        <div style="font-family:'Space Mono',monospace;font-size:9px;color:var(--text3);text-align:center;margin-top:12px;letter-spacing:.08em;">No charge today · Card required · Cancel before day 7</div>
-      </div>
+    <div class="access-box reveal">
+      <h3>Request Access</h3>
+      <p>PivotAlphaDesk is invite-only. We work directly with brokerage houses, producers and independent traders across Argentina and LatAm — write to us and we'll evaluate access personally.</p>
+      <ul class="access-list">
+        <li>Casas de bolsa &amp; brokers</li>
+        <li>Producers with an existing client book</li>
+        <li>Independent traders serious about market structure</li>
+      </ul>
+      <a href="mailto:contact@pivotalphadesk.com?subject=Solicitud%20de%20acceso%20-%20PivotAlphaDesk" class="btn-primary" style="background:linear-gradient(135deg,#00c06a,#007a40);color:#fff;">✉ contact@pivotalphadesk.com</a>
+      <div class="access-note">No cost. No card required. We reply personally to every request.</div>
     </div>
   </div>
 </section>
@@ -590,10 +479,9 @@ footer{position:relative;z-index:1;background:var(--bg);border-top:1px solid var
     <div class="cta-inner">
       <div class="section-label">Ready?</div>
       <div class="section-title">Trade with the dealers.<br>Not against them.</div>
-      <p class="section-desc">Join traders who start every session knowing exactly where the institutional money is positioned.</p>
+      <p class="section-desc">Join the traders and desks who start every session knowing exactly where the institutional money is positioned.</p>
       <div class="hero-actions">
-        <a href="login.html" class="btn-primary" style="background:linear-gradient(135deg,#00c06a,#007a40);color:#fff;">★ Latest Briefing</a>
-        <a href="pricing.html" class="btn-primary" style="background:rgba(0,212,255,0.12);border:1px solid rgba(0,212,255,0.3);color:var(--accent);box-shadow:none">→ Start Free Trial</a>
+        <a href="#access" class="btn-primary" style="background:linear-gradient(135deg,#00c06a,#007a40);color:#fff;">→ Request Access</a>
         <a href="login.html" class="btn-secondary">Member Login</a>
       </div>
     </div>
@@ -604,9 +492,7 @@ footer{position:relative;z-index:1;background:var(--bg);border-top:1px solid var
   <div class="footer-inner">
     <div class="footer-left"><strong>Pivot Alpha Desk</strong><br>Daily market intelligence for independent traders.</div>
     <div style="display:flex;gap:20px;align-items:center;flex-wrap:wrap;">
-      <a href="login.html" style="font-family:'Space Mono',monospace;font-size:10px;color:#00c06a;text-decoration:none;letter-spacing:.08em;">★ Latest Briefing</a>
-      <a href="briefing_01may2026.html" style="font-family:'Space Mono',monospace;font-size:10px;color:var(--text2);text-decoration:none;letter-spacing:.08em;">&#128203; Free Sample</a>
-      <a href="pricing.html" style="font-family:'Space Mono',monospace;font-size:10px;color:var(--accent);text-decoration:none;letter-spacing:.08em;">Pro Access</a>
+      <a href="#access" style="font-family:'Space Mono',monospace;font-size:10px;color:#00c06a;text-decoration:none;letter-spacing:.08em;">→ Request Access</a>
       <a href="login.html" style="font-family:'Space Mono',monospace;font-size:10px;color:var(--accent);text-decoration:none;letter-spacing:.08em;">→ Login</a>
       <a href="contact.html" style="font-family:'Space Mono',monospace;font-size:10px;color:var(--text2);text-decoration:none;letter-spacing:.08em;">Contact</a>
     </div>
