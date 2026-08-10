@@ -23,8 +23,18 @@ app.secret_key = os.environ.get('SECRET_KEY', 'pad_gaia_2026_secret_key_change_i
 # ── CONFIGURACIÓN ──────────────────────────────────────────────────────────────
 PUSH_TOKEN   = os.environ.get('PUSH_TOKEN', 'gaia_push_secret_2026')  # set en Railway env vars
 ACCESS_CODES = {
-    'PAD2026PRO': {'type': 'pro',   'days': None},
-    'PADTRIAL':   {'type': 'trial', 'days': 7},
+    # Códigos generales (se mantienen por compatibilidad — considerar retirar
+    # una vez que todos los accesos activos sean individuales)
+    'PAD2026PRO': {'type': 'pro',   'days': None, 'name': 'General Pro',   'email': None, 'active': True},
+    'PADTRIAL':   {'type': 'trial', 'days': 7,    'name': 'General Trial', 'email': None, 'active': True},
+
+    # ── Códigos individuales ──────────────────────────────────────────────
+    # Agregar una línea por persona al aprobar una solicitud del formulario.
+    # Para revocar acceso: cambiar 'active' a False (no borrar la línea —
+    # así queda el historial de quién tuvo acceso y cuándo se le sacó).
+    # Formato del código sugerido: PAD-<APELLIDO o INICIALES>
+    #
+    # 'PAD-JPEREZ': {'type': 'pro', 'days': None, 'name': 'Juan Pérez', 'email': 'juan@example.com', 'active': True},
 }
 SESSION_HOURS = 12
 
@@ -275,7 +285,9 @@ def is_authenticated():
     expiry = session.get('expiry', 0)
     if time.time() > expiry: return False
     code = session.get('code', '').upper()
-    if code in ACCESS_CODES and ACCESS_CODES[code]['days'] is not None:
+    cfg = ACCESS_CODES.get(code)
+    if not cfg or not cfg.get('active', True): return False
+    if cfg['days'] is not None:
         trial_expiry = session.get('trial_expiry', 0)
         if time.time() > trial_expiry: return False
     return True
@@ -416,18 +428,22 @@ def login():
     error = ''
     if request.method == 'POST':
         code = request.form.get('code', '').upper().strip()
-        if code in ACCESS_CODES:
+        cfg = ACCESS_CODES.get(code)
+        if cfg and cfg.get('active', True):
             session['code']   = code
             session['expiry'] = time.time() + SESSION_HOURS * 3600
-            cfg = ACCESS_CODES[code]
             if cfg['days'] is not None:
                 trial_key = f'trial_start_{code}'
                 if trial_key not in session:
                     session[trial_key] = time.time()
                 session['trial_expiry'] = session[trial_key] + cfg['days'] * 86400
-            log.info(f"Login: {code} from {request.remote_addr}")
+            log.info(f"Login OK: {code} ({cfg.get('name','—')}) from {request.remote_addr}")
             return redirect('/chart')
+        elif cfg and not cfg.get('active', True):
+            log.warning(f"Login DENEGADO (código revocado): {code} ({cfg.get('name','—')}) from {request.remote_addr}")
+            error = 'Invalid code. Try again.'
         else:
+            log.warning(f"Login DENEGADO (código inexistente): {code} from {request.remote_addr}")
             error = 'Invalid code. Try again.'
     return render_template_string(LOGIN_HTML, error=error)
 
