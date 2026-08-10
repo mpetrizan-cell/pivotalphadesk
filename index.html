@@ -234,6 +234,10 @@ footer{position:relative;z-index:1;background:var(--bg);border-top:1px solid var
 @keyframes fade-up{from{opacity:0;transform:translateY(24px);}to{opacity:1;transform:translateY(0);}}
 .reveal{opacity:0;transform:translateY(32px);transition:opacity .7s ease,transform .7s ease;}
 .reveal.visible{opacity:1;transform:translateY(0);}
+.lang-toggle{display:flex;align-items:center;border:1px solid var(--border);border-radius:2px;overflow:hidden;}
+.lang-btn{font-family:'Space Mono',monospace;font-size:10px;letter-spacing:.1em;text-transform:uppercase;padding:6px 12px;background:transparent;color:var(--text3);text-decoration:none;transition:all .2s;cursor:pointer;border:none;}
+.lang-btn:hover{color:var(--text2);}
+.lang-btn.active{background:rgba(0,212,255,0.12);color:var(--accent);}
 </style>
 </head>
 <body>
@@ -244,14 +248,18 @@ footer{position:relative;z-index:1;background:var(--bg);border-top:1px solid var
     <div class="logo-text">Pivot<span>Alpha</span>Desk</div>
   </div>
   <ul class="nav-links">
-    <li><a href="#how">How It Works</a></li>
-    <li><a href="#gaia">GAIA Engine</a></li>
-    <li><a href="#features">Features</a></li>
-    <li><a href="#access">Request Access</a></li>
-    <li><a href="contact.html">Contact</a></li>
+    <li><a href="#how" data-i18n="nav_how">How It Works</a></li>
+    <li><a href="#gaia" data-i18n="nav_gaia">GAIA Engine</a></li>
+    <li><a href="#features" data-i18n="nav_features">Features</a></li>
+    <li><a href="#access" data-i18n="nav_access">Request Access</a></li>
+    <li><a href="contact.html" data-i18n="nav_contact">Contact</a></li>
   </ul>
   <div class="nav-right">
-    <a href="login.html" class="nav-login">LOGIN →</a>
+    <div class="lang-toggle">
+      <button class="lang-btn active" id="lang-en" onclick="setLang('en')">EN</button>
+      <button class="lang-btn" id="lang-es" onclick="setLang('es')">ES</button>
+    </div>
+    <a href="login.html" class="nav-login" data-i18n="nav_login">LOGIN →</a>
   </div>
 </nav>
 
@@ -260,48 +268,48 @@ footer{position:relative;z-index:1;background:var(--bg);border-top:1px solid var
   <div class="hero-glow-gold"></div>
   <div class="hero-badge">
     <div class="badge-dot"></div>
-    GAIA DHP ACTIVE · DEALER FLOW MONITORING · INVITE ONLY
+    <span data-i18n="hero_badge">GAIA DHP ACTIVE · DEALER FLOW MONITORING · INVITE ONLY</span>
   </div>
   <h1><span class="accent">Pivot</span><span class="gold">Alpha</span><br>Desk</h1>
-  <div class="hero-sub">Daily Market Intelligence</div>
-  <p class="hero-desc">Institutional-grade gamma levels for independent traders. Know where dealers are positioned before the market opens.</p>
+  <div class="hero-sub" data-i18n="hero_sub">Daily Market Intelligence</div>
+  <p class="hero-desc" data-i18n="hero_desc">Institutional-grade gamma levels for independent traders. Know where dealers are positioned before the market opens.</p>
   <div class="hero-actions">
-    <a href="#access" class="btn-primary" style="background:linear-gradient(135deg,#00c06a,#007a40);color:#fff;">→ Request Access</a>
-    <a href="login.html" class="btn-primary" style="background:rgba(0,212,255,0.12);border:1px solid rgba(0,212,255,0.3);color:var(--accent);box-shadow:none">→ Member Login</a>
-    <a href="#how" class="btn-secondary">See How It Works</a>
+    <a href="#access" class="btn-primary" style="background:linear-gradient(135deg,#00c06a,#007a40);color:#fff;" data-i18n="hero_cta_access">→ Request Access</a>
+    <a href="login.html" class="btn-primary" style="background:rgba(0,212,255,0.12);border:1px solid rgba(0,212,255,0.3);color:var(--accent);box-shadow:none" data-i18n="hero_cta_login">→ Member Login</a>
+    <a href="#how" class="btn-secondary" data-i18n="hero_cta_how">See How It Works</a>
   </div>
 </section>
 
 <div class="ticker-wrap">
   <div class="ticker">
-    <div class="ticker-item"><span class="sym">ES</span> <span class="text3">|</span> <span>Live gamma structure</span> <span class="text3">|</span> <span class="up">app.pivotalphadesk.com</span></div>
-    <div class="ticker-item"><span class="sym">NQ</span> <span class="text3">|</span> <span>Live gamma structure</span> <span class="text3">|</span> <span class="up">app.pivotalphadesk.com</span></div>
-    <div class="ticker-item"><span class="sym">CL</span> <span class="text3">|</span> <span>Live gamma structure</span> <span class="text3">|</span> <span class="up">app.pivotalphadesk.com</span></div>
-    <div class="ticker-item"><span class="sym">SPX</span> <span class="text3">|</span> <span>Live gamma structure</span> <span class="text3">|</span> <span class="up">app.pivotalphadesk.com</span></div>
-    <div class="ticker-item"><span class="sym">GAIA DHP</span> <span class="up">LIVE</span> <span class="text3">|</span> <span>Dealer flow monitoring active</span> <span class="text3">|</span> <span class="up">app.pivotalphadesk.com</span></div>
-    <div class="ticker-item"><span class="sym">ES</span> <span class="text3">|</span> <span>Live gamma structure</span> <span class="text3">|</span> <span class="up">app.pivotalphadesk.com</span></div>
-    <div class="ticker-item"><span class="sym">NQ</span> <span class="text3">|</span> <span>Live gamma structure</span> <span class="text3">|</span> <span class="up">app.pivotalphadesk.com</span></div>
-    <div class="ticker-item"><span class="sym">CL</span> <span class="text3">|</span> <span>Live gamma structure</span> <span class="text3">|</span> <span class="up">app.pivotalphadesk.com</span></div>
-    <div class="ticker-item"><span class="sym">SPX</span> <span class="text3">|</span> <span>Live gamma structure</span> <span class="text3">|</span> <span class="up">app.pivotalphadesk.com</span></div>
-    <div class="ticker-item"><span class="sym">GAIA DHP</span> <span class="up">LIVE</span> <span class="text3">|</span> <span>Dealer flow monitoring active</span> <span class="text3">|</span> <span class="up">app.pivotalphadesk.com</span></div>
+    <div class="ticker-item"><span class="sym">ES</span> <span class="text3">|</span> <span data-i18n="ticker_live">Live gamma structure</span> <span class="text3">|</span> <span class="up">app.pivotalphadesk.com</span></div>
+    <div class="ticker-item"><span class="sym">NQ</span> <span class="text3">|</span> <span data-i18n="ticker_live">Live gamma structure</span> <span class="text3">|</span> <span class="up">app.pivotalphadesk.com</span></div>
+    <div class="ticker-item"><span class="sym">CL</span> <span class="text3">|</span> <span data-i18n="ticker_live">Live gamma structure</span> <span class="text3">|</span> <span class="up">app.pivotalphadesk.com</span></div>
+    <div class="ticker-item"><span class="sym">SPX</span> <span class="text3">|</span> <span data-i18n="ticker_live">Live gamma structure</span> <span class="text3">|</span> <span class="up">app.pivotalphadesk.com</span></div>
+    <div class="ticker-item"><span class="sym">GAIA DHP</span> <span class="up">LIVE</span> <span class="text3">|</span> <span data-i18n="ticker_dhp">Dealer flow monitoring active</span> <span class="text3">|</span> <span class="up">app.pivotalphadesk.com</span></div>
+    <div class="ticker-item"><span class="sym">ES</span> <span class="text3">|</span> <span data-i18n="ticker_live">Live gamma structure</span> <span class="text3">|</span> <span class="up">app.pivotalphadesk.com</span></div>
+    <div class="ticker-item"><span class="sym">NQ</span> <span class="text3">|</span> <span data-i18n="ticker_live">Live gamma structure</span> <span class="text3">|</span> <span class="up">app.pivotalphadesk.com</span></div>
+    <div class="ticker-item"><span class="sym">CL</span> <span class="text3">|</span> <span data-i18n="ticker_live">Live gamma structure</span> <span class="text3">|</span> <span class="up">app.pivotalphadesk.com</span></div>
+    <div class="ticker-item"><span class="sym">SPX</span> <span class="text3">|</span> <span data-i18n="ticker_live">Live gamma structure</span> <span class="text3">|</span> <span class="up">app.pivotalphadesk.com</span></div>
+    <div class="ticker-item"><span class="sym">GAIA DHP</span> <span class="up">LIVE</span> <span class="text3">|</span> <span data-i18n="ticker_dhp">Dealer flow monitoring active</span> <span class="text3">|</span> <span class="up">app.pivotalphadesk.com</span></div>
   </div>
 </div>
 
 <section class="how" id="how">
   <div class="container">
-    <div class="section-label">The Process</div>
-    <div class="section-title">Built on real CME data.<br>Every morning.</div>
+    <div class="section-label" data-i18n="how_label">The Process</div>
+    <div class="section-title" data-i18n="how_title">Built on real CME data.<br>Every morning.</div>
     <div class="how-grid">
       <div class="how-steps">
-        <div class="how-step reveal"><div class="step-num">01</div><div class="step-content"><h4>CME QuikStrike EOD Data</h4><p>We extract Open Interest, Gamma and Delta by strike from official CME Group data every evening after the close.</p></div></div>
-        <div class="how-step reveal"><div class="step-num">02</div><div class="step-content"><h4>Gamma Level Calculation</h4><p>We identify where dealers are positioned &mdash; Gamma Pin, Flip Zone, Call/Put Walls and key support/resistance levels.</p></div></div>
-        <div class="how-step reveal"><div class="step-num">03</div><div class="step-content"><h4>Daily Briefing Published</h4><p>Before 9:00 AM ET, your briefing is live &mdash; ES, NQ and CL levels with scenarios, macro context and volatility regime.</p></div></div>
-        <div class="how-step reveal"><div class="step-num">04</div><div class="step-content"><h4>Trade Your Session</h4><p>Use the gamma levels directly in your chart. Know the key price zones before the first candle opens.</p></div></div>
+        <div class="how-step reveal"><div class="step-num">01</div><div class="step-content"><h4 data-i18n="how_1_title">CME QuikStrike EOD Data</h4><p data-i18n="how_1_desc">We extract Open Interest, Gamma and Delta by strike from official CME Group data every evening after the close.</p></div></div>
+        <div class="how-step reveal"><div class="step-num">02</div><div class="step-content"><h4 data-i18n="how_2_title">Gamma Level Calculation</h4><p data-i18n="how_2_desc">We identify where dealers are positioned &mdash; Gamma Pin, Flip Zone, Call/Put Walls and key support/resistance levels.</p></div></div>
+        <div class="how-step reveal"><div class="step-num">03</div><div class="step-content"><h4 data-i18n="how_3_title">Daily Briefing Published</h4><p data-i18n="how_3_desc">Before 9:00 AM ET, your briefing is live &mdash; ES, NQ and CL levels with scenarios, macro context and volatility regime.</p></div></div>
+        <div class="how-step reveal"><div class="step-num">04</div><div class="step-content"><h4 data-i18n="how_4_title">Trade Your Session</h4><p data-i18n="how_4_desc">Use the gamma levels directly in your chart. Know the key price zones before the first candle opens.</p></div></div>
       </div>
       <div class="mock-briefing reveal">
         <div class="mock-header">
           <div class="mock-dots"><div class="mock-dot r"></div><div class="mock-dot y"></div><div class="mock-dot g"></div></div>
-          <span class="mock-title">PIVOT ALPHA DESK &mdash; SAMPLE BRIEFING FORMAT</span>
+          <span class="mock-title" data-i18n="mock_title">PIVOT ALPHA DESK &mdash; SAMPLE BRIEFING FORMAT</span>
         </div>
         <div class="mock-tabs">
           <div class="mock-tab active">ES /S&amp;P 500</div>
@@ -336,36 +344,36 @@ footer{position:relative;z-index:1;background:var(--bg);border-top:1px solid var
   <div>
     <div style="font-family:'Space Mono',monospace;font-size:10px;letter-spacing:3px;text-transform:uppercase;color:#00d4ff;margin-bottom:16px;display:flex;align-items:center;gap:8px;">
       <div style="width:6px;height:6px;border-radius:50%;background:#00d4ff;animation:blink 2s ease-in-out infinite;"></div>
-      Powered by GAIA
+      <span data-i18n="gaia_powered">Powered by GAIA</span>
     </div>
     <div style="font-family:'Syne',sans-serif;font-weight:800;font-size:54px;line-height:0.92;letter-spacing:-0.03em;color:#fff;margin-bottom:10px;"><span style="color:#00d4ff;">G</span><span style="color:#f0b429;">A</span>IA<br>Engine</div>
-    <div style="font-family:'Syne',sans-serif;font-weight:700;font-size:11px;letter-spacing:3px;text-transform:uppercase;color:#2a3d50;margin-bottom:28px;">Gamma Automated Intelligence Architecture</div>
+    <div style="font-family:'Syne',sans-serif;font-weight:700;font-size:11px;letter-spacing:3px;text-transform:uppercase;color:#2a3d50;margin-bottom:28px;" data-i18n="gaia_tagline">Gamma Automated Intelligence Architecture</div>
 
     <div style="display:inline-flex;align-items:center;gap:10px;background:rgba(0,212,255,0.05);border:1px solid rgba(0,212,255,0.2);padding:8px 16px;margin-bottom:24px;">
       <div style="font-family:'Syne',sans-serif;font-weight:800;font-size:22px;color:#00d4ff;">5s</div>
-      <div style="font-family:'Space Mono',monospace;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:#4a6070;line-height:1.6;"><strong style="color:#8ba4b8;display:block;">Refresh Rate</strong>Institutional feeds: 60s &mdash; GAIA: 12&times; faster</div>
+      <div style="font-family:'Space Mono',monospace;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:#4a6070;line-height:1.6;"><strong style="color:#8ba4b8;display:block;" data-i18n="gaia_refresh_label">Refresh Rate</strong><span data-i18n="gaia_refresh_desc">Institutional feeds: 60s &mdash; GAIA: 12&times; faster</span></div>
     </div>
 
-    <p style="font-family:'DM Sans',sans-serif;font-size:14px;color:#8ba4b8;line-height:1.85;margin-bottom:20px;"><strong style="color:#e8f4f8;">GAIA</strong> maps real-time dealer gamma exposure across every strike — identifying the invisible mechanical forces that contain, accelerate, and reverse price before they appear on any chart.</p>
+    <p style="font-family:'DM Sans',sans-serif;font-size:14px;color:#8ba4b8;line-height:1.85;margin-bottom:20px;"><strong style="color:#e8f4f8;">GAIA</strong> <span data-i18n="gaia_maps_desc">maps real-time dealer gamma exposure across every strike — identifying the invisible mechanical forces that contain, accelerate, and reverse price before they appear on any chart.</span></p>
 
-    <div style="border-left:2px solid rgba(0,212,255,0.25);padding:10px 16px;margin:20px 0;font-family:'DM Sans',sans-serif;font-size:13px;color:#3a5068;line-height:1.7;font-style:italic;">In Greek mythology, Gaia is the primordial force that sustains everything above it. In markets, gamma exposure is exactly that — the terrain dealers build beneath the price. <span style="color:#4a6070;font-style:normal;">Traders who can't see it navigate blind. Those who can, trade with the map.</span></div>
+    <div style="border-left:2px solid rgba(0,212,255,0.25);padding:10px 16px;margin:20px 0;font-family:'DM Sans',sans-serif;font-size:13px;color:#3a5068;line-height:1.7;font-style:italic;"><span data-i18n="gaia_myth_1">In Greek mythology, Gaia is the primordial force that sustains everything above it. In markets, gamma exposure is exactly that — the terrain dealers build beneath the price.</span> <span style="color:#4a6070;font-style:normal;" data-i18n="gaia_myth_2">Traders who can't see it navigate blind. Those who can, trade with the map.</span></div>
 
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:20px;">
       <div style="background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.05);padding:10px 12px;">
         <div style="font-family:'Space Mono',monospace;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:#00d4ff;margin-bottom:4px;">GEX Structure</div>
-        <div style="font-family:'DM Sans',sans-serif;font-size:11px;color:#6a8499;line-height:1.5;">Call/Put Walls, Gamma Node, Flip Zone — the full dealer map</div>
+        <div style="font-family:'DM Sans',sans-serif;font-size:11px;color:#6a8499;line-height:1.5;" data-i18n="gaia_card1_desc">Call/Put Walls, Gamma Node, Flip Zone — the full dealer map</div>
       </div>
       <div style="background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.05);padding:10px 12px;">
         <div style="font-family:'Space Mono',monospace;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:#00d4ff;margin-bottom:4px;">DHP — Live Pressure</div>
-        <div style="font-family:'DM Sans',sans-serif;font-size:11px;color:#6a8499;line-height:1.5;">What dealers are mechanically forced to do — cause, not effect</div>
+        <div style="font-family:'DM Sans',sans-serif;font-size:11px;color:#6a8499;line-height:1.5;" data-i18n="gaia_card2_desc">What dealers are mechanically forced to do — cause, not effect</div>
       </div>
       <div style="background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.05);padding:10px 12px;">
-        <div style="font-family:'Space Mono',monospace;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:#00d4ff;margin-bottom:4px;">5 Momentum States</div>
-        <div style="font-family:'DM Sans',sans-serif;font-size:11px;color:#6a8499;line-height:1.5;">NEUTRAL → BLD.BULL → ACC.BULL — confirmation, not noise</div>
+        <div style="font-family:'Space Mono',monospace;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:#00d4ff;margin-bottom:4px;" data-i18n="gaia_card3_title">5 Momentum States</div>
+        <div style="font-family:'DM Sans',sans-serif;font-size:11px;color:#6a8499;line-height:1.5;" data-i18n="gaia_card3_desc">NEUTRAL → BLD.BULL → ACC.BULL — confirmation, not noise</div>
       </div>
       <div style="background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.05);padding:10px 12px;">
-        <div style="font-family:'Space Mono',monospace;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:#00d4ff;margin-bottom:4px;">Smart Alerts</div>
-        <div style="font-family:'DM Sans',sans-serif;font-size:11px;color:#6a8499;line-height:1.5;">CVD cross, momentum shift, Call Wall test — instant notification</div>
+        <div style="font-family:'Space Mono',monospace;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:#00d4ff;margin-bottom:4px;" data-i18n="gaia_card4_title">Smart Alerts</div>
+        <div style="font-family:'DM Sans',sans-serif;font-size:11px;color:#6a8499;line-height:1.5;" data-i18n="gaia_card4_desc">CVD cross, momentum shift, Call Wall test — instant notification</div>
       </div>
     </div>
 
@@ -457,28 +465,28 @@ footer{position:relative;z-index:1;background:var(--bg);border-top:1px solid var
 
 <section class="features" id="features">
   <div class="container">
-    <div class="section-label">What You Get</div>
-    <div class="section-title">Every level. Every morning.</div>
+    <div class="section-label" data-i18n="feat_label">What You Get</div>
+    <div class="section-title" data-i18n="feat_title">Every level. Every morning.</div>
     <div class="features-grid">
-      <div class="feature-card reveal"><div class="feature-icon">&#127919;</div><h3>Gamma Pin &amp; Flip Zone</h3><p>The two most important levels of the day &mdash; where price gravitates and where the market regime changes from stable to volatile.</p></div>
-      <div class="feature-card reveal"><div class="feature-icon">&#128202;</div><h3>Full Level Map</h3><p>Call Walls, Put Walls, Key Support, Alarm Zones and Emergency Floors &mdash; the complete picture of dealer positioning.</p></div>
-      <div class="feature-card reveal"><div class="feature-icon">&#9889;</div><h3>3 Daily Scenarios</h3><p>Bullish, Lateral and Bearish playbooks with targets and invalidation levels. Know what to do before price moves.</p></div>
-      <div class="feature-card reveal"><div class="feature-icon">&#127758;</div><h3>Macro Context</h3><p>Economic calendar, geopolitical events and their impact on the levels. Never trade a gamma level without knowing the macro backdrop.</p></div>
-      <div class="feature-card reveal"><div class="feature-icon">&#128200;</div><h3>Volatility Regime</h3><p>VVIX/VIX ratio tells you position sizing and stop-loss width. STRESS ALTO means -50% sizing minimum &mdash; we tell you every day.</p></div>
-      <div class="feature-card reveal"><div class="feature-icon">&#128276;</div><h3>Level Alerts</h3><p>Get notified when price approaches key gamma levels. React in real-time with context &mdash; not just a price notification.</p></div>
+      <div class="feature-card reveal"><div class="feature-icon">&#127919;</div><h3 data-i18n="feat_1_title">Gamma Pin &amp; Flip Zone</h3><p data-i18n="feat_1_desc">The two most important levels of the day &mdash; where price gravitates and where the market regime changes from stable to volatile.</p></div>
+      <div class="feature-card reveal"><div class="feature-icon">&#128202;</div><h3 data-i18n="feat_2_title">Full Level Map</h3><p data-i18n="feat_2_desc">Call Walls, Put Walls, Key Support, Alarm Zones and Emergency Floors &mdash; the complete picture of dealer positioning.</p></div>
+      <div class="feature-card reveal"><div class="feature-icon">&#9889;</div><h3 data-i18n="feat_3_title">3 Daily Scenarios</h3><p data-i18n="feat_3_desc">Bullish, Lateral and Bearish playbooks with targets and invalidation levels. Know what to do before price moves.</p></div>
+      <div class="feature-card reveal"><div class="feature-icon">&#127758;</div><h3 data-i18n="feat_4_title">Macro Context</h3><p data-i18n="feat_4_desc">Economic calendar, geopolitical events and their impact on the levels. Never trade a gamma level without knowing the macro backdrop.</p></div>
+      <div class="feature-card reveal"><div class="feature-icon">&#128200;</div><h3 data-i18n="feat_5_title">Volatility Regime</h3><p data-i18n="feat_5_desc">VVIX/VIX ratio tells you position sizing and stop-loss width. STRESS ALTO means -50% sizing minimum &mdash; we tell you every day.</p></div>
+      <div class="feature-card reveal"><div class="feature-icon">&#128276;</div><h3 data-i18n="feat_6_title">Level Alerts</h3><p data-i18n="feat_6_desc">Get notified when price approaches key gamma levels. React in real-time with context &mdash; not just a price notification.</p></div>
     </div>
   </div>
 </section>
 
 <section class="instruments">
   <div class="container">
-    <div class="section-label">Coverage</div>
-    <div class="section-title">Four instruments.<br>Complete picture.</div>
+    <div class="section-label" data-i18n="instr_label">Coverage</div>
+    <div class="section-title" data-i18n="instr_title">Four instruments.<br>Complete picture.</div>
     <div class="instr-grid" style="grid-template-columns:repeat(4,1fr);">
-      <div class="instr-card reveal"><div class="instr-ticker es">ES</div><div class="instr-name">E-mini S&amp;P 500 Futures</div><div class="instr-tag">CME &middot; Equities</div></div>
-      <div class="instr-card reveal"><div class="instr-ticker nq">NQ</div><div class="instr-name">E-mini Nasdaq 100 Futures</div><div class="instr-tag">CME &middot; Technology</div></div>
-      <div class="instr-card reveal"><div class="instr-ticker cl">CL</div><div class="instr-name">WTI Crude Oil Futures</div><div class="instr-tag">NYMEX &middot; Energy</div></div>
-      <div class="instr-card reveal"><div class="instr-ticker" style="color:#e040fb;">SPX</div><div class="instr-name">S&amp;P 500 Cash Index</div><div class="instr-tag">CBOE &middot; Options</div></div>
+      <div class="instr-card reveal"><div class="instr-ticker es">ES</div><div class="instr-name" data-i18n="instr_es_name">E-mini S&amp;P 500 Futures</div><div class="instr-tag" data-i18n="instr_es_tag">CME &middot; Equities</div></div>
+      <div class="instr-card reveal"><div class="instr-ticker nq">NQ</div><div class="instr-name" data-i18n="instr_nq_name">E-mini Nasdaq 100 Futures</div><div class="instr-tag" data-i18n="instr_nq_tag">CME &middot; Technology</div></div>
+      <div class="instr-card reveal"><div class="instr-ticker cl">CL</div><div class="instr-name" data-i18n="instr_cl_name">WTI Crude Oil Futures</div><div class="instr-tag" data-i18n="instr_cl_tag">NYMEX &middot; Energy</div></div>
+      <div class="instr-card reveal"><div class="instr-ticker" style="color:#e040fb;">SPX</div><div class="instr-name" data-i18n="instr_spx_name">S&amp;P 500 Cash Index</div><div class="instr-tag" data-i18n="instr_spx_tag">CBOE &middot; Options</div></div>
     </div>
   </div>
 </section>
@@ -486,9 +494,9 @@ footer{position:relative;z-index:1;background:var(--bg);border-top:1px solid var
 <section class="access-section" id="access">
   <div class="container">
     <div class="access-box reveal">
-      <h3>Request Access</h3>
-      <p>PivotAlphaDesk es de acceso restringido. Trabajamos directamente con casas de bolsa, productores y traders independientes en Argentina y LatAm — cada solicitud es evaluada y respondida personalmente.</p>
-      <p class="access-complement">GAIA no reemplaza el análisis técnico tradicional — es el complemento que agrega la estructura de posicionamiento de dealers que la mayoría no ve.</p>
+      <h3 data-i18n="access_h3">Request Access</h3>
+      <p data-i18n="access_p">PivotAlphaDesk es de acceso restringido. Trabajamos directamente con casas de bolsa, productores y traders independientes en Argentina y LatAm — cada solicitud es evaluada y respondida personalmente.</p>
+      <p class="access-complement" data-i18n="access_complement">GAIA no reemplaza el análisis técnico tradicional — es el complemento que agrega la estructura de posicionamiento de dealers que la mayoría no ve.</p>
 
       <form class="access-form" action="https://formspree.io/f/mqeyywdk" method="POST">
 
@@ -572,12 +580,12 @@ footer{position:relative;z-index:1;background:var(--bg);border-top:1px solid var
 <section class="cta-section">
   <div class="container">
     <div class="cta-inner">
-      <div class="section-label">Ready?</div>
-      <div class="section-title">Trade with the dealers.<br>Not against them.</div>
-      <p class="section-desc">Join the traders and desks who start every session knowing exactly where the institutional money is positioned.</p>
+      <div class="section-label" data-i18n="cta_label">Ready?</div>
+      <div class="section-title" data-i18n="cta_title">Trade with the dealers.<br>Not against them.</div>
+      <p class="section-desc" data-i18n="cta_desc">Join the traders and desks who start every session knowing exactly where the institutional money is positioned.</p>
       <div class="hero-actions">
-        <a href="#access" class="btn-primary" style="background:linear-gradient(135deg,#00c06a,#007a40);color:#fff;">→ Request Access</a>
-        <a href="login.html" class="btn-secondary">Member Login</a>
+        <a href="#access" class="btn-primary" style="background:linear-gradient(135deg,#00c06a,#007a40);color:#fff;" data-i18n="cta_btn_access">→ Request Access</a>
+        <a href="login.html" class="btn-secondary" data-i18n="cta_btn_login">Member Login</a>
       </div>
     </div>
   </div>
@@ -585,18 +593,127 @@ footer{position:relative;z-index:1;background:var(--bg);border-top:1px solid var
 
 <footer>
   <div class="footer-inner">
-    <div class="footer-left"><strong>Pivot Alpha Desk</strong><br>Daily market intelligence for independent traders.</div>
+    <div class="footer-left"><strong>Pivot Alpha Desk</strong><br><span data-i18n="footer_tagline">Daily market intelligence for independent traders.</span></div>
     <div style="display:flex;gap:20px;align-items:center;flex-wrap:wrap;">
-      <a href="#access" style="font-family:'Space Mono',monospace;font-size:10px;color:#00c06a;text-decoration:none;letter-spacing:.08em;">→ Request Access</a>
-      <a href="login.html" style="font-family:'Space Mono',monospace;font-size:10px;color:var(--accent);text-decoration:none;letter-spacing:.08em;">→ Login</a>
-      <a href="contact.html" style="font-family:'Space Mono',monospace;font-size:10px;color:var(--text2);text-decoration:none;letter-spacing:.08em;">Contact</a>
+      <a href="#access" style="font-family:'Space Mono',monospace;font-size:10px;color:#00c06a;text-decoration:none;letter-spacing:.08em;" data-i18n="footer_access">→ Request Access</a>
+      <a href="login.html" style="font-family:'Space Mono',monospace;font-size:10px;color:var(--accent);text-decoration:none;letter-spacing:.08em;" data-i18n="footer_login">→ Login</a>
+      <a href="contact.html" style="font-family:'Space Mono',monospace;font-size:10px;color:var(--text2);text-decoration:none;letter-spacing:.08em;" data-i18n="footer_contact">Contact</a>
     </div>
     <div class="footer-right">pivotalphadesk.com &middot; 2026</div>
   </div>
-  <div class="footer-disclaimer">&#9888; DISCLAIMER: Pivot Alpha Desk provides market analysis for educational purposes only. This is not financial advice. Trading futures involves substantial risk of loss. Past performance is not indicative of future results. Always trade with risk management and consult a licensed financial advisor.</div>
+  <div class="footer-disclaimer">&#9888; <span data-i18n="footer_disclaimer">DISCLAIMER: Pivot Alpha Desk provides market analysis for educational purposes only. This is not financial advice. Trading futures involves substantial risk of loss. Past performance is not indicative of future results. Always trade with risk management and consult a licensed financial advisor.</span></div>
 </footer>
 
 <script>
+const translations = {
+  en: {
+    nav_how: "How It Works", nav_gaia: "GAIA Engine", nav_features: "Features", nav_access: "Request Access", nav_contact: "Contact", nav_login: "LOGIN →",
+    hero_badge: "GAIA DHP ACTIVE · DEALER FLOW MONITORING · INVITE ONLY",
+    hero_sub: "Daily Market Intelligence",
+    hero_desc: "Institutional-grade gamma levels for independent traders. Know where dealers are positioned before the market opens.",
+    hero_cta_access: "→ Request Access", hero_cta_login: "→ Member Login", hero_cta_how: "See How It Works",
+    ticker_live: "Live gamma structure", ticker_dhp: "Dealer flow monitoring active",
+    how_label: "The Process", how_title: "Built on real CME data.<br>Every morning.",
+    how_1_title: "CME QuikStrike EOD Data", how_1_desc: "We extract Open Interest, Gamma and Delta by strike from official CME Group data every evening after the close.",
+    how_2_title: "Gamma Level Calculation", how_2_desc: "We identify where dealers are positioned — Gamma Pin, Flip Zone, Call/Put Walls and key support/resistance levels.",
+    how_3_title: "Daily Briefing Published", how_3_desc: "Before 9:00 AM ET, your briefing is live — ES, NQ and CL levels with scenarios, macro context and volatility regime.",
+    how_4_title: "Trade Your Session", how_4_desc: "Use the gamma levels directly in your chart. Know the key price zones before the first candle opens.",
+    mock_title: "PIVOT ALPHA DESK — SAMPLE BRIEFING FORMAT",
+    gaia_powered: "Powered by GAIA", gaia_tagline: "Gamma Automated Intelligence Architecture",
+    gaia_refresh_label: "Refresh Rate", gaia_refresh_desc: "Institutional feeds: 60s — GAIA: 12× faster",
+    gaia_maps_desc: "maps real-time dealer gamma exposure across every strike — identifying the invisible mechanical forces that contain, accelerate, and reverse price before they appear on any chart.",
+    gaia_myth_1: "In Greek mythology, Gaia is the primordial force that sustains everything above it. In markets, gamma exposure is exactly that — the terrain dealers build beneath the price.",
+    gaia_myth_2: "Traders who can't see it navigate blind. Those who can, trade with the map.",
+    gaia_card1_desc: "Call/Put Walls, Gamma Node, Flip Zone — the full dealer map",
+    gaia_card2_desc: "What dealers are mechanically forced to do — cause, not effect",
+    gaia_card3_title: "5 Momentum States", gaia_card3_desc: "NEUTRAL → BLD.BULL → ACC.BULL — confirmation, not noise",
+    gaia_card4_title: "Smart Alerts", gaia_card4_desc: "CVD cross, momentum shift, Call Wall test — instant notification",
+    feat_label: "What You Get", feat_title: "Every level. Every morning.",
+    feat_1_title: "Gamma Pin & Flip Zone", feat_1_desc: "The two most important levels of the day — where price gravitates and where the market regime changes from stable to volatile.",
+    feat_2_title: "Full Level Map", feat_2_desc: "Call Walls, Put Walls, Key Support, Alarm Zones and Emergency Floors — the complete picture of dealer positioning.",
+    feat_3_title: "3 Daily Scenarios", feat_3_desc: "Bullish, Lateral and Bearish playbooks with targets and invalidation levels. Know what to do before price moves.",
+    feat_4_title: "Macro Context", feat_4_desc: "Economic calendar, geopolitical events and their impact on the levels. Never trade a gamma level without knowing the macro backdrop.",
+    feat_5_title: "Volatility Regime", feat_5_desc: "VVIX/VIX ratio tells you position sizing and stop-loss width. STRESS ALTO means -50% sizing minimum — we tell you every day.",
+    feat_6_title: "Level Alerts", feat_6_desc: "Get notified when price approaches key gamma levels. React in real-time with context — not just a price notification.",
+    instr_label: "Coverage", instr_title: "Four instruments.<br>Complete picture.",
+    instr_es_name: "E-mini S&P 500 Futures", instr_es_tag: "CME · Equities",
+    instr_nq_name: "E-mini Nasdaq 100 Futures", instr_nq_tag: "CME · Technology",
+    instr_cl_name: "WTI Crude Oil Futures", instr_cl_tag: "NYMEX · Energy",
+    instr_spx_name: "S&P 500 Cash Index", instr_spx_tag: "CBOE · Options",
+    access_h3: "Request Access",
+    access_p: "PivotAlphaDesk is invite-only. We work directly with brokerage houses, producers and independent traders across Argentina and LatAm — every request is evaluated and answered personally.",
+    access_complement: "GAIA doesn't replace traditional technical analysis — it's the complement that adds the dealer positioning structure most traders never see.",
+    cta_label: "Ready?", cta_title: "Trade with the dealers.<br>Not against them.",
+    cta_desc: "Join the traders and desks who start every session knowing exactly where the institutional money is positioned.",
+    cta_btn_access: "→ Request Access", cta_btn_login: "Member Login",
+    footer_tagline: "Daily market intelligence for independent traders.",
+    footer_access: "→ Request Access", footer_login: "→ Login", footer_contact: "Contact",
+    footer_disclaimer: "DISCLAIMER: Pivot Alpha Desk provides market analysis for educational purposes only. This is not financial advice. Trading futures involves substantial risk of loss. Past performance is not indicative of future results. Always trade with risk management and consult a licensed financial advisor.",
+  },
+  es: {
+    nav_how: "Cómo Funciona", nav_gaia: "Motor GAIA", nav_features: "Funciones", nav_access: "Solicitar Acceso", nav_contact: "Contacto", nav_login: "INGRESAR →",
+    hero_badge: "GAIA DHP ACTIVO · MONITOREO DE FLUJO DE DEALERS · SOLO POR INVITACIÓN",
+    hero_sub: "Inteligencia de Mercado Diaria",
+    hero_desc: "Niveles de gamma de nivel institucional para traders independientes. Sepa dónde están posicionados los dealers antes de que abra el mercado.",
+    hero_cta_access: "→ Solicitar Acceso", hero_cta_login: "→ Ingreso de Miembros", hero_cta_how: "Ver Cómo Funciona",
+    ticker_live: "Estructura de gamma en vivo", ticker_dhp: "Monitoreo de flujo de dealers activo",
+    how_label: "El Proceso", how_title: "Construido sobre datos reales de CME.<br>Todas las mañanas.",
+    how_1_title: "Datos EOD de CME QuikStrike", how_1_desc: "Extraemos Open Interest, Gamma y Delta por strike de datos oficiales de CME Group todas las noches tras el cierre.",
+    how_2_title: "Cálculo de Niveles de Gamma", how_2_desc: "Identificamos dónde están posicionados los dealers — Gamma Pin, Flip Zone, Call/Put Walls y niveles clave de soporte/resistencia.",
+    how_3_title: "Briefing Diario Publicado", how_3_desc: "Antes de las 9:00 AM ET, su briefing está listo — niveles de ES, NQ y CL con escenarios, contexto macro y régimen de volatilidad.",
+    how_4_title: "Opere Su Sesión", how_4_desc: "Use los niveles de gamma directo en su gráfico. Conozca las zonas de precio clave antes de que abra la primera vela.",
+    mock_title: "PIVOT ALPHA DESK — FORMATO DE BRIEFING DE EJEMPLO",
+    gaia_powered: "Impulsado por GAIA", gaia_tagline: "Gamma Automated Intelligence Architecture",
+    gaia_refresh_label: "Frecuencia de Actualización", gaia_refresh_desc: "Feeds institucionales: 60s — GAIA: 12× más rápido",
+    gaia_maps_desc: "mapea la exposición gamma de los dealers en tiempo real, strike por strike — identificando las fuerzas mecánicas invisibles que contienen, aceleran y revierten el precio antes de que aparezcan en cualquier gráfico.",
+    gaia_myth_1: "En la mitología griega, Gaia es la fuerza primordial que sostiene todo lo que hay encima. En los mercados, la exposición gamma es exactamente eso — el terreno que construyen los dealers debajo del precio.",
+    gaia_myth_2: "Los traders que no pueden verlo navegan a ciegas. Los que sí, operan con el mapa.",
+    gaia_card1_desc: "Call/Put Walls, Gamma Node, Flip Zone — el mapa completo del dealer",
+    gaia_card2_desc: "Lo que los dealers están mecánicamente obligados a hacer — causa, no efecto",
+    gaia_card3_title: "5 Estados de Momentum", gaia_card3_desc: "NEUTRAL → BLD.BULL → ACC.BULL — confirmación, no ruido",
+    gaia_card4_title: "Alertas Inteligentes", gaia_card4_desc: "Cruce de CVD, cambio de momentum, test de Call Wall — notificación instantánea",
+    feat_label: "Qué Incluye", feat_title: "Cada nivel. Cada mañana.",
+    feat_1_title: "Gamma Pin y Flip Zone", feat_1_desc: "Los dos niveles más importantes del día — dónde gravita el precio y dónde el régimen de mercado cambia de estable a volátil.",
+    feat_2_title: "Mapa Completo de Niveles", feat_2_desc: "Call Walls, Put Walls, soportes clave, zonas de alarma y pisos de emergencia — el panorama completo del posicionamiento de dealers.",
+    feat_3_title: "3 Escenarios Diarios", feat_3_desc: "Guiones alcista, lateral y bajista con objetivos y niveles de invalidación. Sepa qué hacer antes de que se mueva el precio.",
+    feat_4_title: "Contexto Macro", feat_4_desc: "Calendario económico, eventos geopolíticos y su impacto en los niveles. Nunca opere un nivel de gamma sin conocer el contexto macro.",
+    feat_5_title: "Régimen de Volatilidad", feat_5_desc: "El ratio VVIX/VIX le indica el tamaño de posición y el ancho del stop-loss. STRESS ALTO significa -50% de tamaño mínimo — se lo indicamos todos los días.",
+    feat_6_title: "Alertas de Nivel", feat_6_desc: "Reciba una notificación cuando el precio se acerque a niveles clave de gamma. Reaccione en tiempo real con contexto — no solo una alerta de precio.",
+    instr_label: "Cobertura", instr_title: "Cuatro instrumentos.<br>Panorama completo.",
+    instr_es_name: "Futuros E-mini S&P 500", instr_es_tag: "CME · Acciones",
+    instr_nq_name: "Futuros E-mini Nasdaq 100", instr_nq_tag: "CME · Tecnología",
+    instr_cl_name: "Futuros de Petróleo WTI", instr_cl_tag: "NYMEX · Energía",
+    instr_spx_name: "Índice de Contado S&P 500", instr_spx_tag: "CBOE · Opciones",
+    access_h3: "Solicitud de Acceso",
+    access_p: "PivotAlphaDesk es de acceso restringido. Trabajamos directamente con casas de bolsa, productores y traders independientes en Argentina y LatAm — cada solicitud es evaluada y respondida personalmente.",
+    access_complement: "GAIA no reemplaza el análisis técnico tradicional — es el complemento que agrega la estructura de posicionamiento de dealers que la mayoría no ve.",
+    cta_label: "¿Listo?", cta_title: "Opere con los dealers.<br>No en su contra.",
+    cta_desc: "Súmese a los traders y mesas que arrancan cada sesión sabiendo exactamente dónde está posicionado el capital institucional.",
+    cta_btn_access: "→ Solicitar Acceso", cta_btn_login: "Ingreso de Miembros",
+    footer_tagline: "Inteligencia de mercado diaria para traders independientes.",
+    footer_access: "→ Solicitar Acceso", footer_login: "→ Ingresar", footer_contact: "Contacto",
+    footer_disclaimer: "AVISO: Pivot Alpha Desk provee análisis de mercado solo con fines educativos. Esto no constituye asesoramiento financiero. Operar futuros implica riesgo sustancial de pérdida. Los resultados pasados no garantizan resultados futuros. Opere siempre con gestión de riesgo y consulte a un asesor financiero matriculado.",
+  }
+};
+
+function setLang(lang){
+  document.querySelectorAll('[data-i18n]').forEach(function(el){
+    var key = el.getAttribute('data-i18n');
+    var txt = translations[lang][key];
+    if(txt !== undefined) el.innerHTML = txt;
+  });
+  document.getElementById('lang-en').classList.toggle('active', lang === 'en');
+  document.getElementById('lang-es').classList.toggle('active', lang === 'es');
+  document.documentElement.lang = lang;
+  try { localStorage.setItem('pad_lang', lang); } catch(e){}
+}
+
+(function(){
+  var saved = 'en';
+  try { saved = localStorage.getItem('pad_lang') || 'en'; } catch(e){}
+  if(saved === 'es') setLang('es');
+})();
+
 const observer = new IntersectionObserver((entries) => {
   entries.forEach((entry, i) => {
     if (entry.isIntersecting) {
