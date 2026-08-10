@@ -190,6 +190,31 @@ section{position:relative;z-index:1;}
 .access-box::before{content:'INVITE ONLY';position:absolute;top:-13px;left:50%;transform:translateX(-50%);background:var(--accent);color:var(--bg);font-family:'Space Mono',monospace;font-size:10px;font-weight:700;letter-spacing:.18em;padding:4px 16px;border-radius:100px;}
 .access-box h3{font-family:'Syne',sans-serif;font-weight:800;font-size:28px;color:var(--white);margin-bottom:16px;}
 .access-box p{font-size:15px;color:var(--text2);line-height:1.7;max-width:460px;margin:0 auto 32px;}
+.access-complement{font-size:13px;color:var(--gold);font-style:italic;max-width:460px;margin:-16px auto 32px;line-height:1.6;}
+.access-form{text-align:left;max-width:440px;margin:0 auto;}
+.access-form .field{margin-bottom:18px;}
+.access-form label{display:block;font-family:'Space Mono',monospace;font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--text2);margin-bottom:7px;}
+.access-form input[type=text],.access-form input[type=email],.access-form select,.access-form textarea{
+  width:100%;background:var(--bg);border:1px solid var(--border);border-radius:3px;
+  color:var(--text);font-family:'DM Sans',sans-serif;font-size:14px;padding:10px 12px;
+  transition:border-color .2s;
+}
+.access-form input:focus,.access-form select:focus,.access-form textarea:focus{outline:none;border-color:var(--accent);}
+.access-form textarea{resize:vertical;}
+.access-radio-group{display:flex;flex-direction:column;gap:8px;}
+.access-radio-opt{display:flex;align-items:center;gap:9px;font-size:14px;color:var(--text);cursor:pointer;font-family:'DM Sans',sans-serif;}
+.access-radio-opt input{accent-color:var(--accent);}
+.access-divider{height:1px;background:var(--border);margin:26px 0;}
+.form-section-label{font-family:'Space Mono',monospace;font-size:10px;letter-spacing:.15em;text-transform:uppercase;color:var(--gold);margin-bottom:16px;}
+.gex-field label{color:var(--accent);}
+#company-field{display:none;}
+.access-form button{
+  width:100%;background:var(--accent);color:var(--bg);border:none;padding:14px;
+  font-family:'Space Mono',monospace;font-size:12px;letter-spacing:.1em;text-transform:uppercase;
+  font-weight:700;border-radius:3px;cursor:pointer;margin-top:8px;transition:all .2s;
+}
+.access-form button:hover{background:#fff;}
+.access-form-note{font-family:'Space Mono',monospace;font-size:10px;color:var(--text3);text-align:center;margin-top:14px;letter-spacing:.05em;}
 .access-list{list-style:none;text-align:left;max-width:340px;margin:0 auto 36px;}
 .access-list li{display:flex;align-items:flex-start;gap:10px;font-size:14px;color:var(--text2);margin-bottom:12px;line-height:1.5;}
 .access-list li::before{content:'→';color:var(--accent);font-family:'Space Mono',monospace;font-size:12px;flex-shrink:0;margin-top:1px;}
@@ -462,14 +487,84 @@ footer{position:relative;z-index:1;background:var(--bg);border-top:1px solid var
   <div class="container">
     <div class="access-box reveal">
       <h3>Request Access</h3>
-      <p>PivotAlphaDesk is invite-only. We work directly with brokerage houses, producers and independent traders across Argentina and LatAm — write to us and we'll evaluate access personally.</p>
-      <ul class="access-list">
-        <li>Casas de bolsa &amp; brokers</li>
-        <li>Producers with an existing client book</li>
-        <li>Independent traders serious about market structure</li>
-      </ul>
-      <a href="mailto:contact@pivotalphadesk.com?subject=Solicitud%20de%20acceso%20-%20PivotAlphaDesk" class="btn-primary" style="background:linear-gradient(135deg,#00c06a,#007a40);color:#fff;">✉ contact@pivotalphadesk.com</a>
-      <div class="access-note">No cost. No card required. We reply personally to every request.</div>
+      <p>PivotAlphaDesk es de acceso restringido. Trabajamos directamente con casas de bolsa, productores y traders independientes en Argentina y LatAm — cada solicitud es evaluada y respondida personalmente.</p>
+      <p class="access-complement">GAIA no reemplaza el análisis técnico tradicional — es el complemento que agrega la estructura de posicionamiento de dealers que la mayoría no ve.</p>
+
+      <form class="access-form" action="https://formspree.io/f/mqeyywdk" method="POST">
+
+        <div class="field">
+          <label for="name">Nombre y apellido</label>
+          <input type="text" id="name" name="name" placeholder="Juan Pérez" required />
+        </div>
+
+        <div class="field">
+          <label for="email">Correo electrónico</label>
+          <input type="email" id="email" name="email" placeholder="juan.perez@empresa.com" required />
+        </div>
+
+        <div class="field">
+          <label>Perfil profesional</label>
+          <div class="access-radio-group" id="profile-group">
+            <label class="access-radio-opt"><input type="radio" name="profile" value="Trader independiente" checked /> Trader independiente</label>
+            <label class="access-radio-opt"><input type="radio" name="profile" value="Productor con cartera propia" /> Productor con cartera de clientes propia</label>
+            <label class="access-radio-opt"><input type="radio" name="profile" value="Casa de bolsa / broker" /> Casa de bolsa / broker</label>
+            <label class="access-radio-opt"><input type="radio" name="profile" value="Otro" /> Otro</label>
+          </div>
+        </div>
+
+        <div class="field" id="company-field">
+          <label for="company">Empresa y cargo</label>
+          <input type="text" id="company" name="company" placeholder="Balanz Capital · Trader de mesa" />
+        </div>
+
+        <div class="access-divider"></div>
+        <div class="form-section-label">Experiencia en mercados</div>
+
+        <div class="field">
+          <label for="futures">¿Opera actualmente futuros de índices de EE. UU. (ES, NQ, RTY, entre otros)?</label>
+          <select id="futures" name="futures_experience">
+            <option>Sí, de forma activa</option>
+            <option>Sí, ocasionalmente</option>
+            <option>No, pero es de mi interés</option>
+            <option>No opero futuros</option>
+          </select>
+        </div>
+
+        <div class="field gex-field">
+          <label for="gex">¿Está familiarizado con el concepto de Gamma Exposure (GEX) y el posicionamiento de dealers?</label>
+          <select id="gex" name="gex_familiarity">
+            <option>Sí, lo utilizo en mi análisis</option>
+            <option>Tengo conocimiento básico</option>
+            <option>No, pero me interesa aprender</option>
+          </select>
+        </div>
+
+        <div class="field">
+          <label for="source">¿Cómo conoció PivotAlphaDesk?</label>
+          <select id="source" name="source">
+            <option>X (Twitter)</option>
+            <option>Recomendación de un contacto</option>
+            <option>TradingView</option>
+            <option>Búsqueda en internet</option>
+            <option>Otro</option>
+          </select>
+        </div>
+
+        <div class="access-divider"></div>
+
+        <div class="field">
+          <label for="bio">Cuéntenos brevemente sobre su perfil y qué espera de PivotAlphaDesk</label>
+          <textarea id="bio" name="message" rows="3" placeholder="Una breve reseña es suficiente"></textarea>
+        </div>
+
+        <div class="field">
+          <label for="social">Usuario de X o LinkedIn (opcional)</label>
+          <input type="text" id="social" name="social" placeholder="@usuario" />
+        </div>
+
+        <button type="submit">Enviar solicitud</button>
+        <div class="access-form-note">Sin costo · Respuesta personal a cada solicitud</div>
+      </form>
     </div>
   </div>
 </section>
@@ -515,6 +610,12 @@ document.querySelectorAll('.mock-tab').forEach(tab => {
   tab.addEventListener('click', () => {
     document.querySelectorAll('.mock-tab').forEach(t => t.classList.remove('active'));
     tab.classList.add('active');
+  });
+});
+document.querySelectorAll('#profile-group input').forEach(function(r){
+  r.addEventListener('change', function(){
+    var show = (this.value.indexOf('Productor') === 0 || this.value.indexOf('Casa de bolsa') === 0);
+    document.getElementById('company-field').style.display = show ? 'block' : 'none';
   });
 });
 </script>
