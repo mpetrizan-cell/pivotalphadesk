@@ -14,7 +14,7 @@ Pipeline:
 """
 
 import json, os, time, urllib.parse, urllib.request
-import http.client, ssl, logging
+import http.client, ssl, logging, certifi
 from datetime import datetime, timedelta
 from collections import deque
 
@@ -48,6 +48,12 @@ QQQ_MULTIPLIER   = 58.0   # QQQ × ~58 ≈ NDX (aproximado — verificar en vivo
 # ── RAILWAY ───────────────────────────────────────────────────────────────────
 RAILWAY_URL   = "https://web-production-49e7.up.railway.app"
 RAILWAY_TOKEN = "gaia_push_secret_2026"
+
+# ── SSL ───────────────────────────────────────────────────────────────────────
+# Se fuerza el uso del bundle de certifi en vez del almacén de certificados de
+# Windows — evita el error "certificate has expired" cuando el almacén local
+# de Windows queda desactualizado (problema conocido, no del certificado real).
+SSL_CONTEXT = ssl.create_default_context(cafile=certifi.where())
 
 # ── LOGGING ───────────────────────────────────────────────────────────────────
 logging.basicConfig(
@@ -95,7 +101,7 @@ def refresh_token(refresh_tok):
     }).encode()
     req = urllib.request.Request(TOKEN_URL, data=data, method="POST")
     req.add_header("Content-Type", "application/x-www-form-urlencoded")
-    with urllib.request.urlopen(req, timeout=15) as resp:
+    with urllib.request.urlopen(req, timeout=15, context=SSL_CONTEXT) as resp:
         return json.loads(resp.read())
 
 def get_valid_token():
@@ -127,7 +133,7 @@ def api_get(endpoint, token, timeout=10):
     req = urllib.request.Request(url)
     req.add_header("Authorization", "Bearer " + token)
     req.add_header("Accept", "application/json")
-    with urllib.request.urlopen(req, timeout=timeout) as resp:
+    with urllib.request.urlopen(req, timeout=timeout, context=SSL_CONTEXT) as resp:
         return json.loads(resp.read())
 
 # ── PRECIOS ───────────────────────────────────────────────────────────────────
@@ -201,7 +207,7 @@ def read_stream(symbol, expiration, spot, token):
     try:
         conn = http.client.HTTPSConnection(
             "api.tradestation.com",
-            context=ssl.create_default_context(),
+            context=SSL_CONTEXT,
             timeout=20
         )
         conn.request("GET", url, headers={
@@ -456,7 +462,7 @@ def push_to_railway(data: dict):
         )
         req.add_header("Content-Type", "application/json")
         req.add_header("X-Push-Token", RAILWAY_TOKEN)
-        with urllib.request.urlopen(req, timeout=3) as resp:
+        with urllib.request.urlopen(req, timeout=3, context=SSL_CONTEXT) as resp:
             if resp.status != 200:
                 log.warning(f"Railway ETF push status: {resp.status}")
     except Exception as e:
