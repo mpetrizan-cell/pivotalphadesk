@@ -215,6 +215,14 @@ section{position:relative;z-index:1;}
 }
 .access-form button:hover{background:#fff;}
 .access-form-note{font-family:'Space Mono',monospace;font-size:10px;color:var(--text3);text-align:center;margin-top:14px;letter-spacing:.05em;}
+.why-pad{padding:100px 0;background:var(--bg2);border-top:1px solid var(--border);border-bottom:1px solid var(--border);}
+.why-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:20px;margin-top:56px;}
+.why-card{background:var(--bg);border:1px solid var(--border);border-radius:4px;padding:26px;transition:all .3s;}
+.why-card:hover{border-color:var(--accent2);transform:translateY(-2px);}
+.why-num{font-family:'Space Mono',monospace;font-size:10px;color:var(--gold);letter-spacing:.1em;margin-bottom:10px;}
+.why-card h3{font-family:'Syne',sans-serif;font-weight:700;font-size:16px;color:var(--white);margin-bottom:8px;line-height:1.3;}
+.why-card p{font-size:13.5px;color:var(--text2);line-height:1.6;}
+@media(max-width:900px){.why-grid{grid-template-columns:1fr;}}
 .access-list{list-style:none;text-align:left;max-width:340px;margin:0 auto 36px;}
 .access-list li{display:flex;align-items:flex-start;gap:10px;font-size:14px;color:var(--text2);margin-bottom:12px;line-height:1.5;}
 .access-list li::before{content:'→';color:var(--accent);font-family:'Space Mono',monospace;font-size:12px;flex-shrink:0;margin-top:1px;}
@@ -251,6 +259,7 @@ footer{position:relative;z-index:1;background:var(--bg);border-top:1px solid var
     <li><a href="#how" data-i18n="nav_how">How It Works</a></li>
     <li><a href="#gaia" data-i18n="nav_gaia">GAIA Engine</a></li>
     <li><a href="#features" data-i18n="nav_features">Features</a></li>
+    <li><a href="#why" data-i18n="nav_why">Why PAD</a></li>
     <li><a href="#access" data-i18n="nav_access">Request Access</a></li>
     <li><a href="contact.html" data-i18n="nav_contact">Contact</a></li>
   </ul>
@@ -491,6 +500,45 @@ footer{position:relative;z-index:1;background:var(--bg);border-top:1px solid var
   </div>
 </section>
 
+<section class="why-pad" id="why">
+  <div class="container">
+    <div class="section-label" data-i18n="why_label">Why PAD</div>
+    <div class="section-title" data-i18n="why_title">Not another chart with lines on it.</div>
+    <div class="why-grid">
+      <div class="why-card reveal">
+        <div class="why-num">01</div>
+        <h3 data-i18n="why_1_title">First in the Spanish-speaking market</h3>
+        <p data-i18n="why_1_desc">We checked. Local research desks publish macro calendars and third-party price targets — none of them show dealer gamma structure. This space is empty, not crowded.</p>
+      </div>
+      <div class="why-card reveal">
+        <div class="why-num">02</div>
+        <h3 data-i18n="why_2_title">Two layers, not one</h3>
+        <p data-i18n="why_2_desc">Static zones tell you where the walls are. Live DHP tells you what dealers are doing right now. Most tools only show the first layer.</p>
+      </div>
+      <div class="why-card reveal">
+        <div class="why-num">03</div>
+        <h3 data-i18n="why_3_title">Cross-product reads, already done</h3>
+        <p data-i18n="why_3_desc">When SPY and QQQ diverge at the same level at the same time, GAIA flags it automatically — that's signal, not just four separate charts.</p>
+      </div>
+      <div class="why-card reveal">
+        <div class="why-num">04</div>
+        <h3 data-i18n="why_4_title">A person, not a bot</h3>
+        <p data-i18n="why_4_desc">35 years in markets. Every access request is evaluated and answered personally — not routed to a support queue.</p>
+      </div>
+      <div class="why-card reveal">
+        <div class="why-num">05</div>
+        <h3 data-i18n="why_5_title">We show the misses too</h3>
+        <p data-i18n="why_5_desc">Our internal log records setups we chose not to trade, not just the wins. That honesty is rare in this space — and it's the point.</p>
+      </div>
+      <div class="why-card reveal">
+        <div class="why-num">06</div>
+        <h3 data-i18n="why_6_title">A complement, not a replacement</h3>
+        <p data-i18n="why_6_desc">Keep your VWAP, your EMAs, your own process. GAIA adds the options-structure layer your technical analysis can't see on its own.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
 <section class="access-section" id="access">
   <div class="container">
     <div class="access-box reveal">
@@ -607,7 +655,7 @@ footer{position:relative;z-index:1;background:var(--bg);border-top:1px solid var
 <script>
 const translations = {
   en: {
-    nav_how: "How It Works", nav_gaia: "GAIA Engine", nav_features: "Features", nav_access: "Request Access", nav_contact: "Contact", nav_login: "LOGIN →",
+    nav_how: "How It Works", nav_gaia: "GAIA Engine", nav_features: "Features", nav_why: "Why PAD", nav_access: "Request Access", nav_contact: "Contact", nav_login: "LOGIN →",
     hero_badge: "GAIA DHP ACTIVE · DEALER FLOW MONITORING · INVITE ONLY",
     hero_sub: "Daily Market Intelligence",
     hero_desc: "Institutional-grade gamma levels for independent traders. Know where dealers are positioned before the market opens.",
@@ -640,6 +688,19 @@ const translations = {
     instr_nq_name: "E-mini Nasdaq 100 Futures", instr_nq_tag: "CME · Technology",
     instr_cl_name: "WTI Crude Oil Futures", instr_cl_tag: "NYMEX · Energy",
     instr_spx_name: "S&P 500 Cash Index", instr_spx_tag: "CBOE · Options",
+    why_label: "Why PAD", why_title: "Not another chart with lines on it.",
+    why_1_title: "First in the Spanish-speaking market",
+    why_1_desc: "We checked. Local research desks publish macro calendars and third-party price targets — none of them show dealer gamma structure. This space is empty, not crowded.",
+    why_2_title: "Two layers, not one",
+    why_2_desc: "Static zones tell you where the walls are. Live DHP tells you what dealers are doing right now. Most tools only show the first layer.",
+    why_3_title: "Cross-product reads, already done",
+    why_3_desc: "When SPY and QQQ diverge at the same level at the same time, GAIA flags it automatically — that's signal, not just four separate charts.",
+    why_4_title: "A person, not a bot",
+    why_4_desc: "35 years in markets. Every access request is evaluated and answered personally — not routed to a support queue.",
+    why_5_title: "We show the misses too",
+    why_5_desc: "Our internal log records setups we chose not to trade, not just the wins. That honesty is rare in this space — and it's the point.",
+    why_6_title: "A complement, not a replacement",
+    why_6_desc: "Keep your VWAP, your EMAs, your own process. GAIA adds the options-structure layer your technical analysis can't see on its own.",
     access_h3: "Request Access",
     access_p: "PivotAlphaDesk is invite-only. We work directly with brokerage houses, producers and independent traders across Argentina and LatAm — every request is evaluated and answered personally.",
     access_complement: "GAIA doesn't replace traditional technical analysis — it's the complement that adds the dealer positioning structure most traders never see.",
@@ -651,7 +712,7 @@ const translations = {
     footer_disclaimer: "DISCLAIMER: Pivot Alpha Desk provides market analysis for educational purposes only. This is not financial advice. Trading futures involves substantial risk of loss. Past performance is not indicative of future results. Always trade with risk management and consult a licensed financial advisor.",
   },
   es: {
-    nav_how: "Cómo Funciona", nav_gaia: "Motor GAIA", nav_features: "Funciones", nav_access: "Solicitar Acceso", nav_contact: "Contacto", nav_login: "INGRESAR →",
+    nav_how: "Cómo Funciona", nav_gaia: "Motor GAIA", nav_features: "Funciones", nav_why: "Por Qué PAD", nav_access: "Solicitar Acceso", nav_contact: "Contacto", nav_login: "INGRESAR →",
     hero_badge: "GAIA DHP ACTIVO · MONITOREO DE FLUJO DE DEALERS · SOLO POR INVITACIÓN",
     hero_sub: "Inteligencia de Mercado Diaria",
     hero_desc: "Niveles de gamma de nivel institucional para traders independientes. Sepa dónde están posicionados los dealers antes de que abra el mercado.",
@@ -684,6 +745,19 @@ const translations = {
     instr_nq_name: "Futuros E-mini Nasdaq 100", instr_nq_tag: "CME · Tecnología",
     instr_cl_name: "Futuros de Petróleo WTI", instr_cl_tag: "NYMEX · Energía",
     instr_spx_name: "Índice de Contado S&P 500", instr_spx_tag: "CBOE · Opciones",
+    why_label: "Por Qué PAD", why_title: "No es otro gráfico más con líneas.",
+    why_1_title: "Los primeros en el mercado de habla hispana",
+    why_1_desc: "Lo verificamos. Las mesas de research locales publican calendario macro y targets de precio de terceros — ninguna muestra estructura de gamma de dealers. Este espacio está vacío, no saturado.",
+    why_2_title: "Dos capas, no una",
+    why_2_desc: "Las zonas estáticas muestran dónde están las paredes. El DHP en vivo muestra qué están haciendo los dealers ahora mismo. La mayoría de las herramientas solo muestra la primera capa.",
+    why_3_title: "Lecturas cruzadas entre productos, ya hechas",
+    why_3_desc: "Cuando SPY y QQQ divergen en el mismo nivel al mismo tiempo, GAIA lo marca automáticamente — eso es señal, no solo cuatro gráficos separados.",
+    why_4_title: "Una persona, no un bot",
+    why_4_desc: "35 años en los mercados. Cada solicitud de acceso es evaluada y respondida personalmente — no va a una cola de soporte.",
+    why_5_title: "Mostramos los errores también",
+    why_5_desc: "Nuestro registro interno guarda los setups que decidimos no operar, no solo los aciertos. Esa honestidad es rara en este rubro — y es justamente el punto.",
+    why_6_title: "Un complemento, no un reemplazo",
+    why_6_desc: "Mantené tu VWAP, tus EMAs, tu propio proceso. GAIA suma la capa de estructura de opciones que tu análisis técnico no puede ver solo.",
     access_h3: "Solicitud de Acceso",
     access_p: "PivotAlphaDesk es de acceso restringido. Trabajamos directamente con casas de bolsa, productores y traders independientes en Argentina y LatAm — cada solicitud es evaluada y respondida personalmente.",
     access_complement: "GAIA no reemplaza el análisis técnico tradicional — es el complemento que agrega la estructura de posicionamiento de dealers que la mayoría no ve.",
