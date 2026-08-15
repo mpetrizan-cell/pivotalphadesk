@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Briefing Archive — PivotAlphaDesk</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Space+Mono:wght@400;700&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#080c10;--bg2:#0d1319;--border:#1e2d3d;--accent:#00d4ff;--gold:#f0b429;--text:#e8f4f8;--text2:#8ba4b8;--text3:#4a6070;}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;font-size:14px;line-height:1.6;}
+.wrap{max-width:720px;margin:0 auto;padding:32px 20px 60px;}
+.top{display:flex;align-items:center;justify-content:space-between;margin-bottom:24px;}
+.brand{font-family:'Syne',sans-serif;font-weight:800;font-size:18px;color:#fff;text-decoration:none;}
+.brand span{color:var(--accent);}
+.back{font-family:'Space Mono',monospace;font-size:11px;color:var(--text3);text-decoration:none;}
+.back:hover{color:var(--accent);}
+h1{font-family:'Syne',sans-serif;font-weight:800;font-size:30px;color:#fff;margin-bottom:8px;}
+.sub{font-size:13px;color:var(--text2);margin-bottom:32px;}
+.day-group{margin-bottom:28px;}
+.day-label{font-family:'Space Mono',monospace;font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--gold);margin-bottom:10px;padding-bottom:6px;border-bottom:1px solid var(--border);}
+.entry-row{display:flex;align-items:center;gap:14px;padding:12px 14px;background:var(--bg2);border:1px solid var(--border);border-radius:4px;margin-bottom:6px;text-decoration:none;transition:border-color .2s;}
+.entry-row:hover{border-color:var(--accent2, #0088aa);}
+.entry-ticker{font-family:'Syne',sans-serif;font-weight:800;font-size:15px;width:56px;flex-shrink:0;}
+.entry-ticker.spx{color:#e040fb;}
+.entry-ticker.ndx{color:#a78bfa;}
+.entry-label{font-size:12.5px;color:var(--text2);flex:1;}
+.entry-arrow{font-family:'Space Mono',monospace;font-size:10px;color:var(--text3);}
+.entry-row:hover .entry-arrow{color:var(--accent);}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="top">
+    <a href="index.html" class="brand">Pivot<span>Alpha</span>Desk</a>
+    <a href="index.html" class="back">← Back</a>
+  </div>
+
+  <h1>Briefing Archive</h1>
+  <div class="sub">Every daily briefing, kept. Today's is always at "Today's Read" on the homepage — this is the full history.</div>
+
+  <!--
+    DAILY UPDATE INSTRUCTIONS (para Miguel / Nexa, sin tocar el resto del archivo):
+    1. Copiar el bloque <div class="day-group">...</div> completo de más abajo (el más reciente).
+    2. Pegarlo arriba de todos los demás day-group (orden: más nuevo primero).
+    3. Cambiar la fecha del day-label.
+    4. Cambiar los dos href a los archivos con fecha de ese día
+       (ej. briefing_spx_2026-08-16.html, briefing_ndx_2026-08-16.html).
+    No tocar nada de <head> ni del CSS.
+  -->
+
+  <div class="day-group">
+    <div class="day-label">August 15, 2026</div>
+    <a class="entry-row" href="briefing_spx_2026-08-15.html">
+      <div class="entry-ticker spx">SPX</div>
+      <div class="entry-label">Daily Briefing · GAIA Edge · Regime & scenarios</div>
+      <div class="entry-arrow">→</div>
+    </a>
+    <a class="entry-row" href="briefing_ndx_2026-08-15.html">
+      <div class="entry-ticker ndx">NDX</div>
+      <div class="entry-label">Daily Briefing · GAIA Edge · Regime & scenarios</div>
+      <div class="entry-arrow">→</div>
+    </a>
+  </div>
+
+</div>
+</body>
+</html>
