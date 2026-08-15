@@ -18,6 +18,11 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;fon
 .lang-toggle{display:flex;border:1px solid var(--border);border-radius:2px;overflow:hidden;}
 .lang-btn{font-family:'Space Mono',monospace;font-size:10px;letter-spacing:.08em;padding:5px 10px;background:transparent;color:var(--text3);border:none;cursor:pointer;}
 .lang-btn.active{background:rgba(0,212,255,.12);color:var(--accent);}
+.mini-nav{display:flex;align-items:center;gap:16px;font-family:'Space Mono',monospace;font-size:10.5px;letter-spacing:.04em;}
+.mini-nav a{color:var(--text3);text-decoration:none;transition:color .2s;}
+.mini-nav a:hover{color:var(--accent);}
+.mini-nav a.current{color:var(--text2);pointer-events:none;}
+.mini-nav .sep{color:var(--border);}
 
 .basis-bar{background:var(--bg2);border:1px solid var(--border);border-radius:4px;padding:10px 16px;display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;font-family:'Space Mono',monospace;font-size:11.5px;flex-wrap:wrap;gap:8px;}
 .basis-bar b{color:var(--gold);}
@@ -93,6 +98,17 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;fon
 
   <div class="top">
     <div class="brand">Pivot<span>Alpha</span>Desk</div>
+    <div class="mini-nav">
+      <a href="index.html">Home</a>
+      <span class="sep">/</span>
+      <a href="members.html">Member Area</a>
+      <span class="sep">/</span>
+      <a href="briefing_spx_latest.html" class="current">SPX</a>
+      <span class="sep">·</span>
+      <a href="briefing_ndx_latest.html">NDX</a>
+      <span class="sep">/</span>
+      <a href="briefing_archive.html">Archive</a>
+    </div>
     <div class="lang-toggle">
       <button class="lang-btn active" id="lang-en" onclick="setLang('en')">EN</button>
       <button class="lang-btn" id="lang-es" onclick="setLang('es')">ES</button>
