@@ -272,6 +272,7 @@ footer{position:relative;z-index:1;background:var(--bg);border-top:1px solid var
     <li><a href="#features" data-i18n="nav_features">Features</a></li>
     <li><a href="#briefings" data-i18n="nav_briefings">Today's Read</a></li>
     <li><a href="#why" data-i18n="nav_why">Why PAD</a></li>
+    <li><a href="#resources" data-i18n="nav_resources">Resources</a></li>
     <li><a href="#access" data-i18n="nav_access">Request Access</a></li>
     <li><a href="contact.html" data-i18n="nav_contact">Contact</a></li>
   </ul>
@@ -280,7 +281,7 @@ footer{position:relative;z-index:1;background:var(--bg);border-top:1px solid var
       <button class="lang-btn active" id="lang-en" onclick="setLang('en')">EN</button>
       <button class="lang-btn" id="lang-es" onclick="setLang('es')">ES</button>
     </div>
-    <a href="https://app.pivotalphadesk.com/login" class="nav-login" data-i18n="nav_login">LOGIN →</a>
+    <a href="members.html" class="nav-login" data-i18n="nav_login">LOGIN →</a>
   </div>
 </nav>
 
@@ -296,7 +297,7 @@ footer{position:relative;z-index:1;background:var(--bg);border-top:1px solid var
   <p class="hero-desc" data-i18n="hero_desc">Institutional-grade gamma levels for independent traders. Know where dealers are positioned before the market opens.</p>
   <div class="hero-actions">
     <a href="#access" class="btn-primary" style="background:linear-gradient(135deg,#00c06a,#007a40);color:#fff;" data-i18n="hero_cta_access">→ Request Access</a>
-    <a href="https://app.pivotalphadesk.com/login" class="btn-primary" style="background:rgba(0,212,255,0.12);border:1px solid rgba(0,212,255,0.3);color:var(--accent);box-shadow:none" data-i18n="hero_cta_login">→ Member Login</a>
+    <a href="members.html" class="btn-primary" style="background:rgba(0,212,255,0.12);border:1px solid rgba(0,212,255,0.3);color:var(--accent);box-shadow:none" data-i18n="hero_cta_login">→ Member Login</a>
     <a href="#how" class="btn-secondary" data-i18n="hero_cta_how">See How It Works</a>
   </div>
 </section>
@@ -518,20 +519,23 @@ footer{position:relative;z-index:1;background:var(--bg);border-top:1px solid var
     <div class="section-title" data-i18n="briefings_title">See it live. Right now.</div>
     <div class="section-desc" data-i18n="briefings_desc">Full daily briefings, not a static screenshot — structure, technical read, and a live delayed chart, updated as the session moves.</div>
     <div class="briefing-grid">
-      <a href="briefing_definitivo.html" class="briefing-card reveal">
+      <a href="briefing_spx_latest.html" class="briefing-card reveal">
         <div class="briefing-live-badge"><span class="dot"></span>LIVE</div>
         <div class="briefing-ticker">SPX</div>
         <div class="briefing-sub" data-i18n="briefings_spx_sub">DAILY BRIEFING · GAIA EDGE</div>
         <div class="briefing-desc" data-i18n="briefings_spx_desc">Regime, structure, technical read (VWAP/TPO/EMA200), and today's GAIA Edge synthesis with base/bull/bear scenarios.</div>
         <div class="briefing-link" data-i18n="briefings_open">→ Open Briefing</div>
       </a>
-      <a href="briefing_ndx.html" class="briefing-card reveal">
+      <a href="briefing_ndx_latest.html" class="briefing-card reveal">
         <div class="briefing-live-badge"><span class="dot"></span>LIVE</div>
         <div class="briefing-ticker">NDX</div>
         <div class="briefing-sub" data-i18n="briefings_ndx_sub">DAILY BRIEFING · GAIA EDGE</div>
         <div class="briefing-desc" data-i18n="briefings_ndx_desc">Regime, structure, technical read (VWAP/TPO/EMA200), and today's GAIA Edge synthesis with base/bull/bear scenarios.</div>
         <div class="briefing-link" data-i18n="briefings_open">→ Open Briefing</div>
       </a>
+    </div>
+    <div style="text-align:center;margin-top:24px;">
+      <a href="briefing_archive.html" style="font-family:'Space Mono',monospace;font-size:10.5px;letter-spacing:.06em;color:var(--text3);text-decoration:none;" data-i18n="briefings_archive_link">→ View full briefing archive</a>
     </div>
   </div>
 </section>
@@ -570,6 +574,30 @@ footer{position:relative;z-index:1;background:var(--bg);border-top:1px solid var
         <div class="why-num">06</div>
         <h3 data-i18n="why_6_title">A complement, not a replacement</h3>
         <p data-i18n="why_6_desc">Keep your VWAP, your EMAs, your own process. GAIA adds the options-structure layer your technical analysis can't see on its own.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="why-pad" id="resources" style="border-top:1px solid var(--border);">
+  <div class="container">
+    <div class="section-label" data-i18n="resources_label">Resources</div>
+    <div class="section-title" data-i18n="resources_title">Learn the framework.</div>
+    <div class="why-grid">
+      <div class="why-card reveal" style="opacity:.55;">
+        <div class="why-num">01</div>
+        <h3 data-i18n="res_1_title">Glossary</h3>
+        <p data-i18n="res_1_desc">Every GAIA term explained — Call Wall, Gamma Flip, DHP, and the rest of the framework. Coming soon.</p>
+      </div>
+      <div class="why-card reveal" style="opacity:.55;">
+        <div class="why-num">02</div>
+        <h3 data-i18n="res_2_title">Notes &amp; Case Studies</h3>
+        <p data-i18n="res_2_desc">Deep dives on structure, single-stock futures, E-nano contracts, and real session breakdowns. Coming soon.</p>
+      </div>
+      <div class="why-card reveal" style="opacity:.55;">
+        <div class="why-num">03</div>
+        <h3 data-i18n="res_3_title">Weekly Briefing</h3>
+        <p data-i18n="res_3_desc">A longer-form read published every weekend, stepping back from the daily zones. Coming soon.</p>
       </div>
     </div>
   </div>
@@ -669,7 +697,7 @@ footer{position:relative;z-index:1;background:var(--bg);border-top:1px solid var
       <p class="section-desc" data-i18n="cta_desc">Join the traders and desks who start every session knowing exactly where the institutional money is positioned.</p>
       <div class="hero-actions">
         <a href="#access" class="btn-primary" style="background:linear-gradient(135deg,#00c06a,#007a40);color:#fff;" data-i18n="cta_btn_access">→ Request Access</a>
-        <a href="https://app.pivotalphadesk.com/login" class="btn-secondary" data-i18n="cta_btn_login">Member Login</a>
+        <a href="members.html" class="btn-secondary" data-i18n="cta_btn_login">Member Login</a>
       </div>
     </div>
   </div>
@@ -680,7 +708,7 @@ footer{position:relative;z-index:1;background:var(--bg);border-top:1px solid var
     <div class="footer-left"><strong>Pivot Alpha Desk</strong><br><span data-i18n="footer_tagline">Daily market intelligence for independent traders.</span></div>
     <div style="display:flex;gap:20px;align-items:center;flex-wrap:wrap;">
       <a href="#access" style="font-family:'Space Mono',monospace;font-size:10px;color:#00c06a;text-decoration:none;letter-spacing:.08em;" data-i18n="footer_access">→ Request Access</a>
-      <a href="https://app.pivotalphadesk.com/login" style="font-family:'Space Mono',monospace;font-size:10px;color:var(--accent);text-decoration:none;letter-spacing:.08em;" data-i18n="footer_login">→ Login</a>
+      <a href="members.html" style="font-family:'Space Mono',monospace;font-size:10px;color:var(--accent);text-decoration:none;letter-spacing:.08em;" data-i18n="footer_login">→ Login</a>
       <a href="contact.html" style="font-family:'Space Mono',monospace;font-size:10px;color:var(--text2);text-decoration:none;letter-spacing:.08em;" data-i18n="footer_contact">Contact</a>
     </div>
     <div class="footer-right">pivotalphadesk.com &middot; 2026</div>
@@ -691,7 +719,7 @@ footer{position:relative;z-index:1;background:var(--bg);border-top:1px solid var
 <script>
 const translations = {
   en: {
-    nav_how: "How It Works", nav_gaia: "GAIA Engine", nav_features: "Features", nav_briefings: "Today's Read", nav_why: "Why PAD", nav_access: "Request Access", nav_contact: "Contact", nav_login: "LOGIN →",
+    nav_how: "How It Works", nav_gaia: "GAIA Engine", nav_features: "Features", nav_briefings: "Today's Read", nav_why: "Why PAD", nav_resources: "Resources", nav_access: "Request Access", nav_contact: "Contact", nav_login: "LOGIN →",
     hero_badge: "GAIA DHP ACTIVE · DEALER FLOW MONITORING · INVITE ONLY",
     hero_sub: "Daily Market Intelligence",
     hero_desc: "Institutional-grade gamma levels for independent traders. Know where dealers are positioned before the market opens.",
@@ -730,6 +758,7 @@ const translations = {
     briefings_spx_desc: "Regime, structure, technical read (VWAP/TPO/EMA200), and today's GAIA Edge synthesis with base/bull/bear scenarios.",
     briefings_ndx_desc: "Regime, structure, technical read (VWAP/TPO/EMA200), and today's GAIA Edge synthesis with base/bull/bear scenarios.",
     briefings_open: "→ Open Briefing",
+    briefings_archive_link: "→ View full briefing archive",
     why_label: "Why PAD", why_title: "Not another chart with lines on it.",
     why_1_title: "First in the Spanish-speaking market",
     why_1_desc: "We checked. Local research desks publish macro calendars and third-party price targets — none of them show dealer gamma structure. This space is empty, not crowded.",
@@ -746,6 +775,10 @@ const translations = {
     access_h3: "Request Access",
     access_p: "PivotAlphaDesk is invite-only. We work directly with brokerage houses, producers and independent traders across Argentina and LatAm — every request is evaluated and answered personally.",
     access_complement: "GAIA doesn't replace traditional technical analysis — it's the complement that adds the dealer positioning structure most traders never see.",
+    resources_label: "Resources", resources_title: "Learn the framework.",
+    res_1_title: "Glossary", res_1_desc: "Every GAIA term explained — Call Wall, Gamma Flip, DHP, and the rest of the framework. Coming soon.",
+    res_2_title: "Notes & Case Studies", res_2_desc: "Deep dives on structure, single-stock futures, E-nano contracts, and real session breakdowns. Coming soon.",
+    res_3_title: "Weekly Briefing", res_3_desc: "A longer-form read published every weekend, stepping back from the daily zones. Coming soon.",
     cta_label: "Ready?", cta_title: "Trade with the dealers.<br>Not against them.",
     cta_desc: "Join the traders and desks who start every session knowing exactly where the institutional money is positioned.",
     cta_btn_access: "→ Request Access", cta_btn_login: "Member Login",
@@ -754,7 +787,7 @@ const translations = {
     footer_disclaimer: "DISCLAIMER: Pivot Alpha Desk provides market analysis for educational purposes only. This is not financial advice. Trading futures involves substantial risk of loss. Past performance is not indicative of future results. Always trade with risk management and consult a licensed financial advisor.",
   },
   es: {
-    nav_how: "Cómo Funciona", nav_gaia: "Motor GAIA", nav_features: "Funciones", nav_briefings: "Lectura de Hoy", nav_why: "Por Qué PAD", nav_access: "Solicitar Acceso", nav_contact: "Contacto", nav_login: "INGRESAR →",
+    nav_how: "Cómo Funciona", nav_gaia: "Motor GAIA", nav_features: "Funciones", nav_briefings: "Lectura de Hoy", nav_why: "Por Qué PAD", nav_resources: "Recursos", nav_access: "Solicitar Acceso", nav_contact: "Contacto", nav_login: "INGRESAR →",
     hero_badge: "GAIA DHP ACTIVO · MONITOREO DE FLUJO DE DEALERS · SOLO POR INVITACIÓN",
     hero_sub: "Inteligencia de Mercado Diaria",
     hero_desc: "Niveles de gamma de nivel institucional para traders independientes. Sepa dónde están posicionados los dealers antes de que abra el mercado.",
@@ -793,6 +826,7 @@ const translations = {
     briefings_spx_desc: "Régimen, estructura, lectura técnica (VWAP/TPO/EMA200), y la síntesis GAIA Edge de hoy con escenarios base/alcista/bajista.",
     briefings_ndx_desc: "Régimen, estructura, lectura técnica (VWAP/TPO/EMA200), y la síntesis GAIA Edge de hoy con escenarios base/alcista/bajista.",
     briefings_open: "→ Abrir Briefing",
+    briefings_archive_link: "→ Ver archivo completo de briefings",
     why_label: "Por Qué PAD", why_title: "No es otro gráfico más con líneas.",
     why_1_title: "Los primeros en el mercado de habla hispana",
     why_1_desc: "Lo verificamos. Las mesas de research locales publican calendario macro y targets de precio de terceros — ninguna muestra estructura de gamma de dealers. Este espacio está vacío, no saturado.",
@@ -809,6 +843,10 @@ const translations = {
     access_h3: "Solicitud de Acceso",
     access_p: "PivotAlphaDesk es de acceso restringido. Trabajamos directamente con casas de bolsa, productores y traders independientes en Argentina y LatAm — cada solicitud es evaluada y respondida personalmente.",
     access_complement: "GAIA no reemplaza el análisis técnico tradicional — es el complemento que agrega la estructura de posicionamiento de dealers que la mayoría no ve.",
+    resources_label: "Recursos", resources_title: "Aprendé el framework.",
+    res_1_title: "Glosario", res_1_desc: "Cada término de GAIA explicado — Call Wall, Gamma Flip, DHP, y el resto del framework. Próximamente.",
+    res_2_title: "Notas y Casos de Estudio", res_2_desc: "Análisis en profundidad de estructura, futuros de acciones individuales, contratos E-nano, y desgloses de sesiones reales. Próximamente.",
+    res_3_title: "Briefing Semanal", res_3_desc: "Una lectura más extensa publicada cada fin de semana, con perspectiva más allá de las zonas diarias. Próximamente.",
     cta_label: "¿Listo?", cta_title: "Opere con los dealers.<br>No en su contra.",
     cta_desc: "Súmese a los traders y mesas que arrancan cada sesión sabiendo exactamente dónde está posicionado el capital institucional.",
     cta_btn_access: "→ Solicitar Acceso", cta_btn_login: "Ingreso de Miembros",
