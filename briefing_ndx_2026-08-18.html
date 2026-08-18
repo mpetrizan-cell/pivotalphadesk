@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Daily Briefing · NDX/NQ — PivotAlphaDesk</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Space+Mono:wght@400;700&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<style>
+:root{--bg:#080c10;--bg2:#0d1319;--bg3:#111820;--border:#1e2d3d;--accent:#00d4ff;--gold:#f0b429;--green:#00e676;--red:#ff4444;--fuchsia:#e040fb;--blue:#3a8ef0;--purple:#bc8cff;--teal:#2ec4b6;--text:#e8f4f8;--text2:#8ba4b8;--text3:#4a6070;}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;font-size:14px;line-height:1.6;}
+.wrap{max-width:960px;margin:0 auto;padding:24px 20px 60px;}
+.top{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;flex-wrap:wrap;gap:10px;}
+.brand{font-family:'Syne',sans-serif;font-weight:800;font-size:18px;color:#fff;}
+.brand span{color:var(--accent);}
+.lang-toggle{display:flex;border:1px solid var(--border);border-radius:2px;overflow:hidden;}
+.lang-btn{font-family:'Space Mono',monospace;font-size:10px;letter-spacing:.08em;padding:5px 10px;background:transparent;color:var(--text3);border:none;cursor:pointer;}
+.lang-btn.active{background:rgba(0,212,255,.12);color:var(--accent);}
+.mini-nav{display:flex;align-items:center;gap:16px;font-family:'Space Mono',monospace;font-size:10.5px;letter-spacing:.04em;}
+.mini-nav a{color:var(--text3);text-decoration:none;transition:color .2s;}
+.mini-nav a:hover{color:var(--accent);}
+.mini-nav a.current{color:var(--text2);pointer-events:none;}
+.mini-nav .sep{color:var(--border);}
+
+.basis-bar{background:var(--bg2);border:1px solid var(--border);border-radius:4px;padding:10px 16px;display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;font-family:'Space Mono',monospace;font-size:11.5px;flex-wrap:wrap;gap:8px;}
+.basis-bar b{color:var(--gold);}
+
+.regime-card{background:var(--bg2);border:1px solid var(--border);border-radius:6px;padding:18px 20px;margin-bottom:16px;}
+.regime-row{display:flex;align-items:baseline;justify-content:space-between;flex-wrap:wrap;gap:10px;}
+.regime-word{font-family:'Syne',sans-serif;font-weight:800;font-size:28px;letter-spacing:-.01em;}
+.regime-word.balanced{color:var(--green);} .regime-word.fragile{color:var(--red);} .regime-word.neutral{color:var(--gold);}
+.stat-row{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:12px;}
+.stat{background:var(--bg);border:1px solid var(--border);border-radius:3px;padding:6px 10px;text-align:center;}
+.stat-num{font-family:'Space Mono',monospace;font-size:15px;font-weight:700;}
+.stat-lbl{font-family:'Space Mono',monospace;font-size:9px;color:var(--text3);}
+
+/* EDGE section */
+.edge-card{background:var(--bg2);border:1px solid var(--fuchsia);border-radius:6px;padding:18px 20px;margin-bottom:16px;}
+.edge-head{display:flex;align-items:center;gap:8px;margin-bottom:12px;}
+.edge-head .icon{color:var(--fuchsia);}
+.edge-title{font-family:'Space Mono',monospace;font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--fuchsia);font-weight:700;}
+.edge-tag{font-family:'Space Mono',monospace;font-size:9px;background:rgba(224,64,251,.12);color:var(--fuchsia);border:1px solid rgba(224,64,251,.3);padding:2px 8px;border-radius:100px;margin-left:auto;}
+.edge-list{list-style:none;}
+.edge-list li{font-size:12.5px;color:var(--text2);margin-bottom:8px;padding-left:16px;position:relative;line-height:1.6;}
+.edge-list li::before{content:'◆';position:absolute;left:0;color:var(--fuchsia);font-size:10px;top:3px;}
+.edge-list li b{color:var(--text);}
+.scenario-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-top:14px;}
+.scenario{border-radius:4px;padding:12px 14px;border-top:2px solid;}
+.scenario.base{background:rgba(0,212,255,.05);border-color:var(--accent);}
+.scenario.bull{background:rgba(0,230,118,.05);border-color:var(--green);}
+.scenario.bear{background:rgba(255,68,68,.05);border-color:var(--red);}
+.scenario-h{font-family:'Space Mono',monospace;font-size:10px;font-weight:700;letter-spacing:.04em;margin-bottom:6px;}
+.scenario.base .scenario-h{color:var(--accent);} .scenario.bull .scenario-h{color:var(--green);} .scenario.bear .scenario-h{color:var(--red);}
+.scenario p{font-size:11px;color:var(--text2);line-height:1.55;}
+@media(max-width:720px){.scenario-grid{grid-template-columns:1fr;}}
+
+/* chart + table layout */
+.chart-section{background:var(--bg2);border:1px solid var(--border);border-radius:6px;overflow:hidden;margin-bottom:16px;}
+.chart-head{padding:12px 16px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:6px;}
+.chart-head .t{font-family:'Space Mono',monospace;font-size:11px;letter-spacing:.06em;color:var(--text2);}
+.delay-note{font-family:'Space Mono',monospace;font-size:9.5px;color:var(--gold);display:flex;align-items:center;gap:5px;}
+.status-dot{width:6px;height:6px;border-radius:50%;background:var(--gold);animation:blink 1.4s ease-in-out infinite;}
+@keyframes blink{0%,100%{opacity:1;}50%{opacity:.3;}}
+.chart-body-layout{display:grid;grid-template-columns:1fr 280px;}
+.chart-canvas-wrap{padding:14px;height:360px;}
+.conv-table{border-left:1px solid var(--border);max-height:360px;overflow-y:auto;}
+.conv-row{display:grid;grid-template-columns:1fr 1fr;padding:9px 12px;border-bottom:1px solid var(--border);font-family:'Space Mono',monospace;font-size:10px;}
+.conv-row.head{background:var(--bg);color:var(--text3);font-size:9px;letter-spacing:.06em;position:sticky;top:0;}
+.conv-row .zn{color:var(--text2);}
+.conv-row .es{color:var(--text);font-weight:700;text-align:right;}
+.string-input-row{padding:10px 14px;border-top:1px solid var(--border);}
+.string-input{width:100%;background:var(--bg);border:1px solid var(--border);border-radius:3px;color:var(--text2);font-family:'Space Mono',monospace;font-size:10px;padding:8px;resize:vertical;min-height:44px;}
+.apply-btn{font-family:'Space Mono',monospace;font-size:10px;text-transform:uppercase;background:var(--accent);color:var(--bg);border:none;padding:6px 14px;border-radius:3px;cursor:pointer;font-weight:700;margin-top:6px;}
+
+.analysis-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:16px;}
+.a-card{background:var(--bg2);border:1px solid var(--border);border-radius:6px;padding:16px 18px;}
+.a-card h4{font-family:'Syne',sans-serif;font-size:13px;color:#fff;margin-bottom:10px;}
+.a-card ul{list-style:none;}
+.a-card li{font-size:12px;color:var(--text2);margin-bottom:7px;padding-left:14px;position:relative;line-height:1.55;}
+.a-card li::before{content:'—';position:absolute;left:0;color:var(--text3);}
+.a-card li.up::before{content:'▲';color:var(--green);}
+.a-card li.dn::before{content:'▼';color:var(--red);}
+@media(max-width:720px){.analysis-grid{grid-template-columns:1fr;}}
+
+.string-box{background:var(--bg2);border:1px solid var(--border);border-radius:6px;padding:16px 18px;margin-bottom:16px;}
+.section-label{font-family:'Space Mono',monospace;font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--accent);margin-bottom:8px;}
+.string-text{font-family:'Space Mono',monospace;font-size:10px;color:var(--text2);word-break:break-all;background:var(--bg);border:1px solid var(--border);border-radius:3px;padding:10px;margin:8px 0;}
+.copy-btn{font-family:'Space Mono',monospace;font-size:10.5px;text-transform:uppercase;background:var(--accent);color:var(--bg);border:none;padding:7px 14px;border-radius:3px;cursor:pointer;font-weight:700;}
+.copy-btn.copied{background:var(--green);}
+
+.disclaimer{font-family:'Space Mono',monospace;font-size:9.5px;color:var(--text3);text-align:center;margin-top:20px;line-height:1.6;}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="top">
+    <div class="brand">Pivot<span>Alpha</span>Desk</div>
+    <div class="mini-nav">
+      <a href="index.html">Home</a>
+      <span class="sep">/</span>
+      <a href="members.html">Member Area</a>
+      <span class="sep">/</span>
+      <a href="briefing_spx_latest.html">SPX</a>
+      <span class="sep">·</span>
+      <a href="briefing_ndx_latest.html" class="current">NDX</a>
+      <span class="sep">/</span>
+      <a href="briefing_archive.html">Archive</a>
+    </div>
+    <div class="lang-toggle">
+      <button class="lang-btn active" id="lang-en" onclick="setLang('en')">EN</button>
+      <button class="lang-btn" id="lang-es" onclick="setLang('es')">ES</button>
+    </div>
+  </div>
+
+  <div class="basis-bar">
+    <span data-i18n="header_line">NDX/NQ · Daily Briefing · Aug 18, 2026 · 9:07 AM ET</span>
+    <span><span data-i18n="basis_label">Basis today:</span> <b>-288.38</b> · NQ = NDX + basis</span>
+  </div>
+
+  <div class="regime-card">
+    <div class="regime-row">
+      <div>
+        <div class="section-label" style="margin-bottom:4px;" data-i18n="regime_now">Regime Right Now</div>
+        <div class="regime-word neutral">NEUTRAL</div>
+      </div>
+      <div style="text-align:right;">
+        <div style="font-family:'Space Mono',monospace;font-size:18px;font-weight:700;">29,995.38</div>
+        <div style="font-family:'Space Mono',monospace;font-size:10px;color:var(--text3);">NDX</div>
+      </div>
+    </div>
+    <div class="stat-row">
+      <div class="stat"><div class="stat-num">4x</div><div class="stat-lbl">CONFLUENCE</div></div>
+      <div class="stat"><div class="stat-num">0.0M</div><div class="stat-lbl">DHP</div></div>
+      <div class="stat"><div class="stat-num">BULL</div><div class="stat-lbl">ABOVE FLIP</div></div>
+    </div>
+  </div>
+
+  <!-- ═══ GAIA EDGE ═══ -->
+  <div class="edge-card">
+    <div class="edge-head">
+      <span class="icon">◆</span>
+      <span class="edge-title" data-i18n="edge_title">GAIA Edge — Daily Synthesis</span>
+      <span class="edge-tag">GAIA + PAD + FUNDAMENTALS</span>
+    </div>
+    <ul class="edge-list" id="edge-list">
+      <li data-i18n="edge_1"><b>Triple confluence at 29,900</b> — Put Wall, Gamma Node and Gravity Pin all sitting at the same strike today, with 4x multi-layer agreement — the strongest zone of the session.</li>
+      <li data-i18n="edge_2"><b>Unusual: negative basis</b> (-288.38) — NQ trading well below NDX cash, same atypical pattern seen in SPX/ES this morning. Worth watching if it normalizes.</li>
+      <li data-i18n="edge_3">NQ lost VWAP (29,870.57) overnight, London pushed -175pts lower (29,850→29,675) — a sharper overnight move than SPX/ES saw.</li>
+    </ul>
+    <div class="scenario-grid">
+      <div class="scenario base">
+        <div class="scenario-h" data-i18n="sc_base_h">■ BASE (55%)</div>
+        <p data-i18n="sc_base_p">Consolidation around the 29,900 triple-confluence zone, between there and Call Wall (30,050). Regime stays neutral without a clean breakout either way.</p>
+      </div>
+      <div class="scenario bull">
+        <div class="scenario-h" data-i18n="sc_bull_h">▲ BULLISH (30%)</div>
+        <p data-i18n="sc_bull_p">Hold above Gamma Flip (29,870) and reclaim the overnight VWAP loss → move toward Call Wall (30,050) and beyond.</p>
+      </div>
+      <div class="scenario bear">
+        <div class="scenario-h" data-i18n="sc_bear_h">▼ BEARISH (15%)</div>
+        <p data-i18n="sc_bear_p">Loss of the 29,900 confluence zone → opens the path toward 29,875 and 29,850.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="chart-section">
+    <div class="chart-head">
+      <span class="t">NDX · GAIA ZONES</span>
+      <span class="delay-note"><span class="status-dot"></span><span data-i18n="delay_note">Yahoo Finance · ~15 min delay · updates every 60s</span></span>
+    </div>
+    <div class="chart-body-layout">
+      <div class="chart-canvas-wrap"><canvas id="ndxCanvas"></canvas></div>
+      <div class="conv-table" id="convTable">
+        <div class="conv-row head"><span data-i18n="zone_spx">ZONE · NDX</span><span style="text-align:right;">NQ</span></div>
+      </div>
+    </div>
+    <div class="string-input-row">
+      <div class="section-label" style="margin-bottom:4px;" data-i18n="paste_string">Paste today's GAIA String to update</div>
+      <textarea class="string-input" id="gaiaInput" placeholder="DATE:...|REGIME:...|SPOT:...|GC1:...|..."></textarea>
+      <button class="apply-btn" onclick="applyString()" data-i18n="apply_btn">Apply</button>
+    </div>
+  </div>
+
+  <div class="analysis-grid">
+    <div class="a-card">
+      <h4 data-i18n="tech_title">Technical Read — VWAP / EMA200 / TPO</h4>
+      <ul>
+        <li data-i18n="tech_1">VAH 30,120.00 · POC 30,020.00 · VAL 30,000.00 · EMA200 29,500.44</li>
+        <li class="dn" data-i18n="tech_2">NQ lost VWAP (29,870.57), CVD -6.74K, London -175pts.</li>
+        <li data-i18n="tech_3">HVN 30,200-30,230 · LVN 29,925-30,050 (wide thin zone).</li>
+      </ul>
+    </div>
+    <div class="a-card">
+      <h4 data-i18n="struct_title">Structure Read — GAIA</h4>
+      <ul>
+        <li class="up" data-i18n="struct_1">Put Wall = Gamma Node = Gravity Pin (29,900) — triple confluence, 4x multi-layer agreement.</li>
+        <li class="dn" data-i18n="struct_2">Gamma Flip (29,870) is the regime line — above it, bias reads bullish while it holds.</li>
+        <li data-i18n="struct_3">DHP 0.00M, Regime NEUTRAL — pre-market snapshot, hasn't built up yet.</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="string-box">
+    <div class="section-label" data-i18n="string_label">GAIA String — TradingView</div>
+    <div class="string-text" id="gaia-string">DATE:18 Aug 2026 ET|REGIME:NEUTRAL|SPOT:29995.38|GC1:30050|GC2:30030|GC3:30110|GP:29870|PIN:29900|NODE:29900|GF1:29900|GF2:29875|GF3:29850|TA:29875|EA:29800|SIGMA_HI:30286|SIGMA_LO:29704</div>
+    <button class="copy-btn" onclick="copyString()" id="copy-btn" data-i18n="copy_btn">Copy String</button>
+  </div>
+
+  <div class="disclaimer" data-i18n="disclaimer">Educational market structure analysis only. Not financial advice. Trading involves substantial risk of loss.</div>
+
+</div>
+
+<script>
+// ═══ i18n ═══
+const translations = {
+  en: {
+    header_line: "NDX/NQ · Daily Briefing · Aug 18, 2026 · 9:07 AM ET",
+    basis_label: "Basis today:",
+    regime_now: "Regime Right Now",
+    edge_title: "GAIA Edge — Daily Synthesis",
+    edge_1: "Triple confluence at 29,900 — Put Wall, Gamma Node and Gravity Pin all sitting at the same strike today, with 4x multi-layer agreement — the strongest zone of the session.",
+    edge_2: "Unusual: negative basis (-288.38) — NQ trading well below NDX cash, same atypical pattern seen in SPX/ES this morning. Worth watching if it normalizes.",
+    edge_3: "NQ lost VWAP (29,870.57) overnight, London pushed -175pts lower (29,850→29,675) — a sharper overnight move than SPX/ES saw.",
+    sc_base_h: "■ BASE (55%)", sc_base_p: "Consolidation around the 29,900 triple-confluence zone, between there and Call Wall (30,050). Regime stays neutral without a clean breakout either way.",
+    sc_bull_h: "▲ BULLISH (30%)", sc_bull_p: "Hold above Gamma Flip (29,870) and reclaim the overnight VWAP loss → move toward Call Wall (30,050) and beyond.",
+    sc_bear_h: "▼ BEARISH (15%)", sc_bear_p: "Loss of the 29,900 confluence zone → opens the path toward 29,875 and 29,850.",
+    delay_note: "Yahoo Finance · ~15 min delay · updates every 60s",
+    zone_spx: "ZONE · NDX",
+    paste_string: "Paste today's GAIA String to update", apply_btn: "Apply",
+    tech_title: "Technical Read — VWAP / EMA200 / TPO",
+    tech_1: "VAH 30,120.00 · POC 30,020.00 · VAL 30,000.00 · EMA200 29,500.44",
+    tech_2: "NQ lost VWAP (29,870.57), CVD -6.74K, London -175pts.",
+    tech_3: "HVN 30,200-30,230 · LVN 29,925-30,050 (wide thin zone).",
+    struct_title: "Structure Read — GAIA",
+    struct_1: "Put Wall = Gamma Node = Gravity Pin (29,900) — triple confluence, 4x multi-layer agreement.",
+    struct_2: "Gamma Flip (29,870) is the regime line — above it, bias reads bullish while it holds.",
+    struct_3: "DHP 0.00M, Regime NEUTRAL — pre-market snapshot, hasn't built up yet.",
+    string_label: "GAIA String — TradingView", copy_btn: "Copy String",
+    disclaimer: "Educational market structure analysis only. Not financial advice. Trading involves substantial risk of loss.",
+  },
+  es: {
+    header_line: "NDX/NQ · Briefing Diario · 18 Ago 2026 · 9:07 AM ET",
+    basis_label: "Basis de hoy:",
+    regime_now: "Régimen Actual",
+    edge_title: "GAIA Edge — Síntesis del Día",
+    edge_1: "Confluencia triple en 29.900 — Put Wall, Gamma Node y Gravity Pin coinciden hoy en el mismo strike, con acuerdo de 4 capas — la zona más fuerte de la sesión.",
+    edge_2: "Dato raro: basis negativo (-288,38) — NQ cotizando bien por debajo del NDX de contado, mismo patrón atípico que vimos en SPX/ES esta mañana. Vale la pena ver si se normaliza.",
+    edge_3: "NQ perdió el VWAP (29.870,57) durante la noche, Londres empujó -175pts hacia abajo (29.850→29.675) — un movimiento nocturno más fuerte que el de SPX/ES.",
+    sc_base_h: "■ BASE (55%)", sc_base_p: "Consolidación alrededor de la zona de confluencia triple en 29.900, entre ahí y el Call Wall (30.050). El régimen sigue neutral sin ruptura clara para ningún lado.",
+    sc_bull_h: "▲ ALCISTA (30%)", sc_bull_p: "Sostenerse sobre el Gamma Flip (29.870) y reconquistar el VWAP perdido de noche → movimiento hacia el Call Wall (30.050) y más allá.",
+    sc_bear_h: "▼ BAJISTA (15%)", sc_bear_p: "Pérdida de la zona de confluencia en 29.900 → abre el camino hacia 29.875 y 29.850.",
+    delay_note: "Yahoo Finance · delay ~15 min · se actualiza cada 60s",
+    zone_spx: "ZONA · NDX",
+    paste_string: "Pegá el GAIA String de hoy para actualizar", apply_btn: "Aplicar",
+    tech_title: "Lectura Técnica — VWAP / EMA200 / TPO",
+    tech_1: "VAH 30.120,00 · POC 30.020,00 · VAL 30.000,00 · EMA200 29.500,44",
+    tech_2: "NQ perdió el VWAP (29.870,57), CVD -6,74K, Londres -175pts.",
+    tech_3: "HVN 30.200-30.230 · LVN 29.925-30.050 (zona delgada amplia).",
+    struct_title: "Lectura de Estructura — GAIA",
+    struct_1: "Put Wall = Gamma Node = Gravity Pin (29.900) — confluencia triple, acuerdo de 4 capas.",
+    struct_2: "Gamma Flip (29.870) es la línea de régimen — arriba, el sesgo lee alcista mientras se sostenga.",
+    struct_3: "DHP 0,00M, Régimen NEUTRAL — foto de pre-market, todavía no se acumuló.",
+    string_label: "GAIA String — TradingView", copy_btn: "Copiar String",
+    disclaimer: "Análisis educativo de estructura de mercado. No es asesoramiento financiero. Operar implica riesgo sustancial de pérdida.",
+  }
+};
+
+function setLang(lang){
+  document.querySelectorAll('[data-i18n]').forEach(function(el){
+    var key = el.getAttribute('data-i18n');
+    var txt = translations[lang][key];
+    if(txt !== undefined) el.textContent = txt;
+  });
+  document.getElementById('lang-en').classList.toggle('active', lang === 'en');
+  document.getElementById('lang-es').classList.toggle('active', lang === 'es');
+  try { localStorage.setItem('pad_lang', lang); } catch(e){}
+}
+
+function copyString(){
+  var txt = document.getElementById('gaia-string').textContent;
+  navigator.clipboard.writeText(txt).then(function(){
+    var btn = document.getElementById('copy-btn');
+    var original = btn.textContent;
+    btn.textContent = '✓'; btn.classList.add('copied');
+    setTimeout(function(){ btn.textContent = original; btn.classList.remove('copied'); }, 1500);
+  }).catch(function(){});
+}
+
+// ═══ GAIA chart engine (reused from spx_pad_chart_v1.html) ═══
+const PAD_CONFIG = {
+  fecha: "18 Aug 2026 ET", regimen: "NEUTRAL",
+  niveles: [
+    { id:"gc1", precio:30050, label:"Call Wall", color:"#e84040", dash:false, width:2.5 },
+    { id:"flip",precio:29870, label:"Gamma Flip", color:"#e040fb", dash:false, width:2.0 },
+    { id:"gf1", precio:29900, label:"Put Wall = Node = Pin", color:"#3a8ef0", dash:false, width:2.0 },
+    { id:"ta2", precio:29800, label:"Emergency Anchor", color:"#2ec4b6", dash:false, width:1.8 }
+  ],
+  spot_cierre: 29995.38, sigma_hi: 30286, sigma_lo: 29704, basis: -288.38
+};
+
+function renderConvTable(){
+  const basis = PAD_CONFIG.basis || 0;
+  const rows = PAD_CONFIG.niveles.slice().sort((a,b)=>b.precio-a.precio).map(n=>{
+    const es = (n.precio + basis).toLocaleString('en-US',{maximumFractionDigits:2});
+    return `<div class="conv-row"><span class="zn" style="color:${n.color}">${n.label} — ${n.precio.toLocaleString('en-US')}</span><span class="es">${es}</span></div>`;
+  }).join('');
+  document.getElementById('convTable').innerHTML =
+    `<div class="conv-row head"><span data-i18n="zone_spx">ZONE · NDX</span><span style="text-align:right;">NQ</span></div>` + rows;
+}
+
+const PROXIES = [
+  v => `https://api.allorigins.win/raw?url=${encodeURIComponent(v)}`,
+  v => `https://corsproxy.io/?${encodeURIComponent(v)}`,
+  v => `https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(v)}`
+];
+async function fetchYahoo(url) {
+  for (const p of PROXIES) { try { const r = await fetch(p(url)); if (r.ok) return r; } catch(e) {} }
+  throw new Error('All proxies failed');
+}
+
+function parseString(raw) {
+  const get = k => { for (const p of raw.split('|')) { const [key,...rest]=p.split(':'); if(key.trim()===k) return rest.join(':').trim(); } return null; };
+  const num = k => { const v=get(k); return v ? parseFloat(v) : null; };
+  return { fecha:get('DATE'), regimen:get('REGIME'), spot:num('SPOT'),
+    gc1:num('GC1'), gc2:num('GC2'), gc3:num('GC3'), gp:num('GP'), pin:num('PIN'), node:num('NODE'),
+    gf1:num('GF1'), gf2:num('GF2'), gf3:num('GF3'), gf4:num('GF4'), ta:num('TA'), ea:num('EA'),
+    sigHi:num('SIGMA_HI'), sigLo:num('SIGMA_LO') };
+}
+
+function applyString() {
+  const raw = document.getElementById('gaiaInput').value.trim();
+  if (!raw || !raw.includes('|')) { alert('Paste the full GAIA String'); return; }
+  const p = parseString(raw);
+  const lv = [];
+  const add = (id,precio,label,color,dash,width) => { if(precio) lv.push({id,precio,label,color,dash,width}); };
+  add('gc1', p.gc1, 'Call Wall', '#e84040', false, 2.5);
+  add('gc2', p.gc2, 'Call Wall 2', '#e84040', true, 1.5);
+  add('gc3', p.gc3, 'Gamma Ceiling', '#e84040', true, 1.2);
+  add('flip',p.gp,  'Gamma Flip', '#e040fb', false, 2.0);
+  add('node',p.node,'Gamma Node', '#bc8cff', false, 2.0);
+  add('gf1', p.gf1, 'Put Wall', '#3a8ef0', false, 2.0);
+  add('gf2', p.gf2, 'Gamma Floor 2', '#3a8ef0', true, 1.5);
+  add('gf3', p.gf3, 'Gamma Floor 3', '#3a8ef0', true, 1.2);
+  add('ta1', p.ta,  'Tactical Anchor', '#2ec4b6', true, 1.5);
+  add('ta2', p.ea,  'Emergency Anchor', '#2ec4b6', false, 1.8);
+
+  PAD_CONFIG.fecha = p.fecha || PAD_CONFIG.fecha;
+  PAD_CONFIG.regimen = p.regimen || PAD_CONFIG.regimen;
+  PAD_CONFIG.niveles = lv;
+  if (p.spot) PAD_CONFIG.spot_cierre = p.spot;
+
+  const sigmaInvalid = !p.sigHi || !p.sigLo || p.sigHi === p.sigLo || p.sigHi === p.spot;
+  if (sigmaInvalid && p.spot) {
+    const dm = Math.round(p.spot * 0.0097);
+    p.sigHi = Math.round(p.spot + dm); p.sigLo = Math.round(p.spot - dm);
+  }
+  PAD_CONFIG.sigma_hi = p.sigHi || PAD_CONFIG.sigma_hi;
+  PAD_CONFIG.sigma_lo = p.sigLo || PAD_CONFIG.sigma_lo;
+
+  document.getElementById('gaia-string').textContent = raw;
+  renderConvTable();
+  buildChart(lastCloses, lastTimes, lastPrice);
+}
+
+let lastCloses=[], lastTimes=[], lastPrice=null;
+
+async function fetchPrice() {
+  try {
+    const res = await fetchYahoo(`https://query1.finance.yahoo.com/v8/finance/chart/%5ENDX?interval=5m&range=1d`);
+    const data = await res.json();
+    const result = data?.chart?.result?.[0];
+    if (!result) throw new Error("No data");
+    const closes = result.indicators?.quote?.[0]?.close?.filter(v => v != null) || [];
+    const times = result.timestamp || [];
+    lastCloses=closes; lastTimes=times; lastPrice=result.meta.regularMarketPrice;
+    buildChart(closes, times, lastPrice);
+  } catch(e) {
+    buildChart([], [], null);
+  }
+}
+
+let chart = null;
+function buildChart(closes, timestamps, currentPx) {
+  const ctx = document.getElementById("ndxCanvas").getContext("2d");
+  if (chart) chart.destroy();
+  let labels;
+  if (timestamps && timestamps.length > 0) {
+    labels = timestamps.map(t => new Date(t*1000).toLocaleTimeString("en-US",{hour:"2-digit",minute:"2-digit",hour12:false}));
+  } else {
+    labels = ["09:30","10:00","10:30","11:00","11:30","12:00","12:30","13:00","13:30","14:00","14:30","15:00","15:30","16:00"];
+    closes = labels.map(()=>null);
+  }
+  const allPrices = [...(closes||[]).filter(Boolean)];
+  PAD_CONFIG.niveles.forEach(n => allPrices.push(n.precio));
+  if (currentPx) allPrices.push(currentPx);
+  const yMin = Math.min(...allPrices, PAD_CONFIG.sigma_lo) - 15;
+  const yMax = Math.max(...allPrices, PAD_CONFIG.sigma_hi) + 15;
+
+  const levelDatasets = PAD_CONFIG.niveles.map(n => ({
+    label:n.label, data:labels.map(()=>n.precio), borderColor:n.color, borderWidth:n.width,
+    borderDash:n.dash?[5,3]:[], pointRadius:0, fill:false, tension:0, order:1
+  }));
+  const sigmaHiDS = {label:"1σ Hi",data:labels.map(()=>PAD_CONFIG.sigma_hi),borderColor:"rgba(90,112,128,0.3)",borderWidth:1,borderDash:[4,4],pointRadius:0,fill:false,tension:0,order:2};
+  const sigmaLoDS = {label:"1σ Lo",data:labels.map(()=>PAD_CONFIG.sigma_lo),borderColor:"rgba(90,112,128,0.3)",borderWidth:1,borderDash:[4,4],pointRadius:0,fill:false,tension:0,order:2};
+  const priceDataset = {label:"NDX",data:closes,borderColor:"#00d4ff",borderWidth:2,pointRadius:0,fill:false,tension:0.2,order:0};
+
+  chart = new Chart(ctx, {
+    type:"line", data:{labels, datasets:[sigmaHiDS,sigmaLoDS,...levelDatasets,priceDataset]},
+    options:{
+      responsive:true, maintainAspectRatio:false, interaction:{mode:"index",intersect:false},
+      plugins:{legend:{display:false},
+        tooltip:{enabled:true, backgroundColor:"#0c1118", borderColor:"#1e2d40", borderWidth:1,
+          titleFont:{family:"Space Mono",size:10}, bodyFont:{family:"Space Mono",size:11},
+          titleColor:"#5a7080", bodyColor:"#e8f4f8",
+          callbacks:{ label: item => ["1σ Hi","1σ Lo"].includes(item.dataset.label) ? null : ` ${item.dataset.label}: ${item.formattedValue}`,
+            filter: item => item.parsed.y !== null && !["1σ Hi","1σ Lo"].includes(item.dataset.label) }
+        }},
+      scales:{
+        x:{grid:{color:"rgba(255,255,255,0.03)"}, ticks:{color:"#4a6070", font:{family:"Space Mono",size:9}, maxTicksLimit:8, maxRotation:0}},
+        y:{position:"right", min:yMin, max:yMax, grid:{color:"rgba(255,255,255,0.03)"}, ticks:{color:"#4a6070", font:{family:"Space Mono",size:9}, maxTicksLimit:10}}
+      }
+    }
+  });
+}
+
+(function(){
+  let saved = 'en';
+  try { saved = localStorage.getItem('pad_lang') || 'en'; } catch(e){}
+  if(saved === 'es') setLang('es');
+  renderConvTable();
+  buildChart([], [], null);
+  fetchPrice();
+  setInterval(fetchPrice, 60000);
+})();
+</script>
+</body>
+</html>
