@@ -47,6 +47,8 @@ _live_data_etf = {}
 _last_push_etf = 0
 _live_data_nvda = {}
 _last_push_nvda = 0
+_live_data_vix = {}
+_last_push_vix = 0
 
 logging.basicConfig(level=logging.INFO,
     format='%(asctime)s [%(levelname)s] %(message)s')
@@ -392,6 +394,25 @@ def push_etf_data():
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
+# ── PUSH VIX (llamado desde ts_gaia_vix.py local) ─────────────────────────────
+# Fase 1 GAIA Vol Engine — solo recibe y almacena, no modifica GAIA SPX ni el
+# dashboard principal. Mismo patrón que /push_etf.
+@app.route('/push_vix', methods=['POST'])
+def push_vix_data():
+    global _live_data_vix, _last_push_vix
+    token = request.headers.get('X-Push-Token', '')
+    if token != PUSH_TOKEN:
+        return jsonify({'error': 'unauthorized'}), 401
+    try:
+        data = request.get_json(force=True)
+        if not data:
+            return jsonify({'error': 'no data'}), 400
+        _live_data_vix = data
+        _last_push_vix = time.time()
+        return jsonify({'status': 'ok', 'timestamp': _last_push_vix})
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
 # ── PUSH NVDA (llamado desde ts_gaia_nvda.py local) ───────────────────────────
 @app.route('/push_nvda', methods=['POST'])
 def push_nvda_data():
@@ -579,6 +600,15 @@ def serve_etf_json():
     if not _live_data_etf:
         return jsonify({'error': 'no ETF data yet', 'status': 'waiting'}), 503
     resp = jsonify(_live_data_etf)
+    resp.headers['Cache-Control'] = 'no-cache, no-store, must-revalidate'
+    return resp
+
+@app.route('/gaia_vix_live.json')
+@require_auth
+def serve_vix_json():
+    if not _live_data_vix:
+        return jsonify({'error': 'no VIX data yet', 'status': 'waiting'}), 503
+    resp = jsonify(_live_data_vix)
     resp.headers['Cache-Control'] = 'no-cache, no-store, must-revalidate'
     return resp
 
@@ -892,19 +922,23 @@ def health():
     age     = time.time() - _last_push     if _last_push     else None
     age_ndx = time.time() - _last_push_ndx if _last_push_ndx else None
     age_etf = time.time() - _last_push_etf if _last_push_etf else None
+    age_vix = time.time() - _last_push_vix if _last_push_vix else None
     return jsonify({
         'status':     'ok' if _live_data else 'waiting',
         'spot_es':    _live_data.get('spot_es')          if _live_data     else None,
         'spot_ndx':   _live_data_ndx.get('spot_ndx')     if _live_data_ndx else None,
         'spot_spy':   _live_data_etf.get('spy',{}).get('spot') if _live_data_etf else None,
         'spot_qqq':   _live_data_etf.get('qqq',{}).get('spot') if _live_data_etf else None,
+        'spot_vix':   _live_data_vix.get('vix',{}).get('spot')    if _live_data_vix else None,
         'spx_push_seconds_ago': round(age, 1)     if age     else None,
         'ndx_push_seconds_ago': round(age_ndx, 1) if age_ndx else None,
         'etf_push_seconds_ago': round(age_etf, 1) if age_etf else None,
+        'vix_push_seconds_ago': round(age_vix, 1) if age_vix else None,
         'dhp_spx':  _live_data.get('total_dhp')               if _live_data     else None,
         'dhp_ndx':  _live_data_ndx.get('total_dhp')           if _live_data_ndx else None,
         'dhp_spy':  _live_data_etf.get('spy',{}).get('total_dhp') if _live_data_etf else None,
         'dhp_qqq':  _live_data_etf.get('qqq',{}).get('total_dhp') if _live_data_etf else None,
+        'dhp_vix':  _live_data_vix.get('vix',{}).get('total_dhp')  if _live_data_vix else None,
     })
 
 # ── BARS ENDPOINT ─────────────────────────────────────────────────────────────
