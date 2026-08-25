@@ -575,6 +575,11 @@ def serve_etf_chart():
 def serve_spy_chart():
     return send_from_directory(BASE_DIR, 'gaia_spy_chart.html')
 
+@app.route('/GAIA_Daily_Zones_live.html')
+@require_auth
+def serve_daily_zones_page():
+    return send_from_directory(BASE_DIR, 'GAIA_Daily_Zones_live.html')
+
 @app.route('/gaia_qqq_chart.html')
 @require_auth
 def serve_qqq_chart():
