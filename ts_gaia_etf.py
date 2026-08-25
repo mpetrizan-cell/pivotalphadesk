@@ -32,8 +32,8 @@ SPY_SYMBOL       = "SPY"
 QQQ_SYMBOL       = "QQQ"
 ES_SYMBOL        = "ESM26"
 NQ_SYMBOL        = "NQM26"
-SPX_SYMBOL       = "%24SPX.X"    # SPX cash index — precio real CBOE
-NDX_SYMBOL_CASH  = "%24NDX.X"    # NDX cash index — precio real CBOE
+SPX_SYMBOL       = "$SPX.X"     # SPX cash index — precio real CBOE
+NDX_SYMBOL_CASH  = "$NDX.X"     # NDX cash index — precio real CBOE
 
 STRIKE_PROXIMITY = 10    # ETFs tienen strikes más juntos
 REFRESH_0DTE     = 5     # segundos por instrumento → ~10s ciclo total
