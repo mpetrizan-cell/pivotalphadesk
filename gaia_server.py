@@ -270,6 +270,9 @@ iframe{width:100%;height:100%;border:none;}
   <a href="/ndx_terminal" class="tab {% if active == 'ndx_terminal' %}active{% endif %}" style="{% if active == 'ndx_terminal' %}background:rgba(103,232,249,0.12);border-color:#67e8f9;color:#67e8f9;{% endif %}">
     NDX Terminal
   </a>
+  <a href="/daily_zones" class="tab {% if active == 'daily_zones' %}active{% endif %}" style="{% if active == 'daily_zones' %}background:rgba(0,212,255,0.12);border-color:#00d4ff;color:#00d4ff;{% endif %}">
+    Daily Zones
+  </a>
   <a href="/checklist" class="tab {% if active == 'checklist' %}active{% endif %}" style="{% if active == 'checklist' %}background:rgba(232,121,249,0.12);border-color:#e879f9;color:#e879f9;{% endif %}">
     Checklist
   </a>
@@ -519,6 +522,13 @@ def spy():
     return render_template_string(DASHBOARD_HTML,
         active='spy', page='gaia_spy_chart.html',
         spot=get_spot_spy(), trial_days=get_trial_days())
+
+@app.route('/daily_zones')
+@require_auth
+def daily_zones_page():
+    return render_template_string(DASHBOARD_HTML,
+        active='daily_zones', page='GAIA_Daily_Zones_live.html',
+        spot=get_spot(), trial_days=get_trial_days())
 
 @app.route('/qqq')
 @require_auth
