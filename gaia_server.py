@@ -770,10 +770,12 @@ _MARKET_TO_REGIME = {'STABLE': 'DAMPENED', 'FRAGILE': 'FRAGILE', 'EXPANSIVE': 'A
 # zone state (7 posibles) -> vocabulario de 3 opciones del pm_state input de Execution
 _ZONE_TO_PM = {'ABSORPTION': 'ABSORPTION', 'COMPRESSION': 'COMPRESSION'}  # el resto cae en BALANCED por default
 
-def compute_pressure_schema(raw):
-    """Reimplementación exacta de adaptRaw() de gaia_pressure_map.html — misma fórmula, mismo resultado."""
+def compute_pressure_schema(raw, spot_key='spot_spx'):
+    """Reimplementación exacta de adaptRaw() de gaia_pressure_map.html — misma fórmula, mismo resultado.
+    spot_key permite reusar esta misma función para NDX/SPY/QQQ, cuyo campo de
+    spot en el JSON crudo no se llama 'spot_spx' (ver /daily_zones.json)."""
     strikes = raw.get('strikes') or []
-    spot = raw.get('spot_spx')
+    spot = raw.get(spot_key)
     if not strikes or spot is None:
         return None
     levels = raw.get('levels') or {}
@@ -859,6 +861,110 @@ def compute_terminal_v10_state(raw):
         'regime': regime, 'trade_permission': permission,
         'dex_bias': dex_bias, 'dex': round(dex, 2),
     }
+
+def compute_secondary_levels(strikes, spot, levels):
+    """GC2/GC3 = strikes sobre spot ordenados por call_gex descendente (excluye
+    GC1/GP/NODE). GF2/GF3 = strikes bajo spot ordenados por put_gex más negativo
+    (excluye GF1). Mismo criterio que se usa a mano para armar el GAIA String."""
+    if spot is None or not strikes:
+        return {'gc2': None, 'gc3': None, 'gf2': None, 'gf3': None}
+
+    # Excluir TODOS los niveles primarios confirmados de ambos lados — no alcanza
+    # con excluir call_wall arriba y put_wall abajo, porque gamma_flip/gamma_node
+    # pueden caer de cualquier lado del spot según el día (confirmado con datos
+    # reales de QQQ: gamma_flip cayó del lado de abajo y GF3 lo duplicaba).
+    exclude_all = {v for v in (
+        levels.get('call_wall'), levels.get('put_wall'),
+        levels.get('gamma_flip'), levels.get('gamma_node'), levels.get('gravity_pin')
+    ) if v is not None}
+
+    above = sorted(
+        [s for s in strikes if (s.get('strike') or 0) > spot and s.get('strike') not in exclude_all],
+        key=lambda s: -(s.get('call_gex') or 0)
+    )
+    below = sorted(
+        [s for s in strikes if (s.get('strike') or 0) < spot and s.get('strike') not in exclude_all],
+        key=lambda s: (s.get('put_gex') or 0)
+    )
+
+    return {
+        'gc2': above[0]['strike'] if len(above) > 0 else None,
+        'gc3': above[1]['strike'] if len(above) > 1 else None,
+        'gf2': below[0]['strike'] if len(below) > 0 else None,
+        'gf3': below[1]['strike'] if len(below) > 1 else None,
+    }
+
+
+@app.route('/daily_zones.json')
+def daily_zones():
+    """Endpoint público consolidado para la pantalla Daily Zones — SPX + NDX +
+    SPY + QQQ en una sola respuesta, con los dos motores de régimen corriendo
+    sobre los 4 (antes solo corrían sobre SPX en /checklist_data)."""
+    now = time.time()
+
+    def _build_block(raw, spot_key, timestamp_override=None):
+        if not raw:
+            return None
+        spot = raw.get(spot_key)
+        levels = raw.get('levels') or {}
+        strikes = raw.get('strikes') or []
+
+        block = {
+            'spot': spot,
+            'timestamp': timestamp_override or raw.get('timestamp'),
+            'levels': {
+                'gc1':  levels.get('call_wall'),
+                'gf1':  levels.get('put_wall'),
+                'gp':   levels.get('gamma_flip'),
+                'node': levels.get('gamma_node'),
+                'pin':  levels.get('gravity_pin'),
+            },
+            'secondary_levels': compute_secondary_levels(strikes, spot, levels),
+            'net_dhp':          raw.get('total_dhp'),
+            'dhp_direction':    raw.get('dhp_direction'),
+            'dhp_momentum':     raw.get('dhp_momentum'),
+        }
+        try:
+            pm = compute_pressure_schema(raw, spot_key=spot_key)
+            if pm:
+                block['regime_pressure_map'] = pm['regime']
+        except Exception as e:
+            log.warning(f'daily_zones pressure_map failed ({spot_key}): {e}')
+        try:
+            t10 = compute_terminal_v10_state(raw)
+            if t10:
+                block['regime_terminal_v10'] = t10['regime']
+        except Exception as e:
+            log.warning(f'daily_zones terminal_v10 failed ({spot_key}): {e}')
+        return block
+
+    spx_block = _build_block(_live_data,     'spot_spx')
+    ndx_block = _build_block(_live_data_ndx, 'spot_ndx')
+
+    etf      = _live_data_etf or {}
+    spy_raw  = etf.get('spy') or {}
+    qqq_raw  = etf.get('qqq') or {}
+    spy_block = _build_block(spy_raw, 'spot', timestamp_override=etf.get('timestamp'))
+    qqq_block = _build_block(qqq_raw, 'spot', timestamp_override=etf.get('timestamp'))
+
+    if spy_block:
+        spy_block['equivalent_zone'] = {'symbol': 'SPX', 'value': spy_raw.get('spot_spx')}
+    if qqq_block:
+        qqq_block['equivalent_zone'] = {'symbol': 'NDX', 'value': qqq_raw.get('spot_ndx')}
+
+    payload = {
+        'SPX': spx_block, 'NDX': ndx_block, 'SPY': spy_block, 'QQQ': qqq_block,
+        'freshness_seconds': {
+            'spx': round(now - _last_push, 1)     if _last_push     else None,
+            'ndx': round(now - _last_push_ndx, 1) if _last_push_ndx else None,
+            'etf': round(now - _last_push_etf, 1) if _last_push_etf else None,
+        },
+    }
+    resp = jsonify(payload)
+    resp.headers['Cache-Control'] = 'no-cache, no-store, must-revalidate'
+    resp.headers['Access-Control-Allow-Origin'] = '*'
+    return resp
+
 
 @app.route('/checklist_data')
 def checklist_data():
