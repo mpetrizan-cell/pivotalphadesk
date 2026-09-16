@@ -36,7 +36,7 @@ HISTORY_FILE     = "gaia_history_intraday.json"
 LOG_FILE         = "gaia_live.log"
 
 SPX_SYMBOL       = "$SPXW.X"
-ES_SYMBOL        = "ESM26"
+ES_SYMBOL        = "ESZ26"
 STRIKE_PROXIMITY = 15
 
 # Refresh diferenciado por capa
@@ -339,6 +339,19 @@ def read_stream_spx(token, expiration, spot):
         max_contracts = STRIKE_PROXIMITY * 2 * 2 + 5
         heartbeats    = 0
         max_heartbeat = 8
+        empty_reads   = 0
+        MAX_EMPTY_READS = 50  # BUGFIX 29-ago: mismo bug encontrado y corregido en
+        # ts_gaia_vix.py (21-ago y 26-ago) y portado a ts_gaia_ndx_v2.py tras
+        # confirmar en vivo un cuelgue real de 3h34m en NDX el 28-ago (proceso
+        # vivo, mudo, sin excepción — tuvo que matarse a mano). Este archivo
+        # (SPX, producción) tenía la misma vulnerabilidad exacta sin parchear.
+        # Causa: si TradeStation cierra la conexión, readline() deja de
+        # bloquear y devuelve "" o basura no-JSON en loop infinito; sin
+        # contador, ni lines_read ni heartbeats avanzan nunca y el while gira
+        # a velocidad de CPU para siempre. Se cuenta como improductiva
+        # CUALQUIER lectura que no sea un heartbeat o un dato real de opción —
+        # vacía o basura no parseable, da igual — y se corta el ciclo tras 50
+        # seguidas.
 
         while lines_read < max_contracts and heartbeats < max_heartbeat:
             try:
@@ -346,12 +359,33 @@ def read_stream_spx(token, expiration, spot):
             except Exception as e:
                 log.warning(f"Stream readline error: {e}")
                 break
+
             if not raw:
+                empty_reads += 1
+                if empty_reads > MAX_EMPTY_READS:
+                    log.warning(
+                        f"Stream SPX sin datos tras {empty_reads} lecturas vacías "
+                        f"seguidas — conexión probablemente cerrada (¿mercado cerrado?). "
+                        f"Cortando este ciclo, se reintenta en el próximo."
+                    )
+                    break
                 continue
+
             try:
                 data = json.loads(raw)
             except Exception:
+                empty_reads += 1  # basura no vacía cuenta igual que vacío
+                if empty_reads > MAX_EMPTY_READS:
+                    log.warning(
+                        f"Stream SPX sin datos utilizables tras {empty_reads} lecturas "
+                        f"seguidas (basura no-JSON) — conexión probablemente cerrada. "
+                        f"Cortando este ciclo, se reintenta en el próximo."
+                    )
+                    break
                 continue
+
+            empty_reads = 0  # recién acá: un JSON válido de verdad resetea el contador
+
             if "Heartbeat" in data:
                 heartbeats += 1
                 continue
@@ -642,7 +676,10 @@ def push_to_railway(data: dict):
         req  = urllib.request.Request(RAILWAY_URL + "/push", data=body, method="POST")
         req.add_header("Content-Type", "application/json")
         req.add_header("X-Push-Token", RAILWAY_TOKEN)
-        with urllib.request.urlopen(req, timeout=3) as resp:
+        ctx = ssl.create_default_context()
+        ctx.check_hostname = False
+        ctx.verify_mode = ssl.CERT_NONE
+        with urllib.request.urlopen(req, timeout=3, context=ctx) as resp:
             if resp.status != 200:
                 log.warning(f"Railway push status: {resp.status}")
     except Exception as e:
