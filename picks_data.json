@@ -1,6 +1,6 @@
 {
-  "updated_at": "2026-10-01T21:02:11.012502-04:00",
-  "updated_at_display": "01-Oct-2026 21:02 ET",
+  "updated_at": "2026-10-02T20:39:35.348096-04:00",
+  "updated_at_display": "02-Oct-2026 20:39 ET",
   "picks": [
     {
       "week": 12,
@@ -20,11 +20,11 @@
       "filename": "pad_pick_semana12_2026.html",
       "status": "open",
       "current_price": NaN,
-      "current_date": "2026-10-01",
+      "current_date": "2026-10-02",
       "current_ret_pct": NaN,
       "bench_ret_pct": NaN,
       "vs_benchmark_pct": NaN,
-      "days_active": 139,
+      "days_active": 140,
       "closed_date": null,
       "closed_price": null,
       "levels": {
@@ -751,6 +751,11 @@
         },
         {
           "date": "2026-10-01",
+          "close": 62.7,
+          "ret_pct": 8.42
+        },
+        {
+          "date": "2026-10-02",
           "close": NaN,
           "ret_pct": NaN
         }
@@ -1448,6 +1453,11 @@
         },
         {
           "date": "2026-10-01",
+          "close": 763.99,
+          "ret_pct": 15.09
+        },
+        {
+          "date": "2026-10-02",
           "close": NaN,
           "ret_pct": NaN
         }
