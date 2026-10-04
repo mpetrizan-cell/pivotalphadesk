@@ -273,6 +273,9 @@ iframe{width:100%;height:100%;border:none;}
   <a href="/daily_zones" class="tab {% if active == 'daily_zones' %}active{% endif %}" style="{% if active == 'daily_zones' %}background:rgba(0,212,255,0.12);border-color:#00d4ff;color:#00d4ff;{% endif %}">
     Daily Zones
   </a>
+  <a href="/vol" class="tab {% if active == 'vol' %}active{% endif %}" style="{% if active == 'vol' %}background:rgba(0,212,255,0.12);border-color:#00d4ff;color:#00d4ff;{% endif %}">
+    VOL Engine
+  </a>
   <a href="/checklist" class="tab {% if active == 'checklist' %}active{% endif %}" style="{% if active == 'checklist' %}background:rgba(232,121,249,0.12);border-color:#e879f9;color:#e879f9;{% endif %}">
     Checklist
   </a>
@@ -1134,6 +1137,19 @@ def ndx_terminal():
 @require_auth
 def serve_ndx_terminal():
     return send_from_directory(BASE_DIR, 'gaia_ndx_terminal_v10.html')
+
+# ── GAIA VOL ENGINE ROUTE ────────────────────────────────────────────────────
+@app.route('/vol')
+@require_auth
+def vol_engine():
+    return render_template_string(DASHBOARD_HTML,
+        active='vol', page='gaia_vol_engine.html',
+        spot=get_spot(), trial_days=get_trial_days())
+
+@app.route('/gaia_vol_engine.html')
+@require_auth
+def serve_vol_engine():
+    return send_from_directory(BASE_DIR, 'gaia_vol_engine.html')
 
 # ── CHECKLIST ROUTE ───────────────────────────────────────────────────────────
 @app.route('/checklist')
