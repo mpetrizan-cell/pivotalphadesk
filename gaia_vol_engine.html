@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>GAIA Vol Engine | PivotAlphaDesk</title>
+<style>
+*{box-sizing:border-box}body{margin:0;background:#070a0e;color:#e8f4f8;font-family:Consolas,'Courier New',monospace;padding:22px}.wrap{max-width:1180px;margin:auto}.head{display:flex;justify-content:space-between;align-items:end;border-bottom:1px solid #1e2d3d;padding-bottom:14px;margin-bottom:18px}.brand{font:700 22px Arial}.brand b{color:#00d4ff}.sub,.muted{color:#60788b;font-size:11px;letter-spacing:.08em}.fresh{font-size:11px}.grid{display:grid;grid-template-columns:1.35fr 1fr 1fr;gap:14px}.card{background:#0d1319;border:1px solid #1e2d3d;padding:18px}.label{color:#60788b;font-size:10px;letter-spacing:.13em;text-transform:uppercase}.big{font-size:42px;font-weight:800;margin:8px 0}.state{font-size:34px;font-weight:800;margin:12px 0}.stable{color:#49d17d}.transition{color:#f0b429}.unstable{color:#ff5c6c}.building{color:#78909c}.vals{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:14px}.metric{background:#0a0f14;border:1px solid #17232e;padding:12px}.metric .v{font-size:20px;margin-top:5px}.wide{grid-column:1/-1}.levels{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin-top:12px}.note{font-size:11px;line-height:1.6;color:#8ca1b2;margin-top:14px}.err{color:#ff5c6c}@media(max-width:850px){.grid{grid-template-columns:1fr}.levels,.vals{grid-template-columns:1fr 1fr}}
+</style></head><body><div class="wrap">
+<div class="head"><div><div class="brand">Pivot<b>Alpha</b>Desk · GAIA VOL ENGINE</div><div class="sub">VOLATILITY STABILITY LAYER · NON-DIRECTIONAL</div></div><div id="fresh" class="fresh muted">WAITING FOR DATA</div></div>
+<div class="grid">
+ <div class="card"><div class="label">VOL STATE</div><div id="state" class="state building">BUILDING</div><div id="raw" class="muted">raw: —</div><div class="note">Measures volatility stability around GAIA structure. It does not predict SPX direction.</div></div>
+ <div class="card"><div class="label">VIX</div><div id="vix" class="big">—</div><div class="muted">Δ5m absolute</div><div id="vix5" class="big" style="font-size:24px">—</div></div>
+ <div class="card"><div class="label">VIX1D / VIX</div><div id="ratio" class="big">—</div><div class="muted">Ratio Δ5m absolute</div><div id="ratio5" class="big" style="font-size:24px">—</div></div>
+ <div class="card wide"><div class="label">VOL CONTEXT</div><div class="vals">
+   <div class="metric"><div class="label">VIX1D</div><div id="vix1d" class="v">—</div></div>
+   <div class="metric"><div class="label">VIX DHP</div><div id="dhp" class="v">—</div></div>
+   <div class="metric"><div class="label">DHP Direction</div><div id="dhpdir" class="v">—</div></div>
+ </div><div class="levels">
+   <div class="metric"><div class="label">Call Wall</div><div id="cw" class="v">—</div></div>
+   <div class="metric"><div class="label">Put Wall</div><div id="pw" class="v">—</div></div>
+   <div class="metric"><div class="label">Gamma Flip</div><div id="gf" class="v">—</div></div>
+   <div class="metric"><div class="label">Gamma Node</div><div id="gn" class="v">—</div></div>
+   <div class="metric"><div class="label">Structural OI</div><div id="oi" class="v">—</div></div>
+ </div></div>
+</div></div>
+<script>
+const $=id=>document.getElementById(id); const fmt=(x,d=2)=>x==null?'—':Number(x).toFixed(d);
+async function update(){try{const r=await fetch('/gaia_vix_live.json?ts='+Date.now(),{cache:'no-store'});if(!r.ok)throw new Error('HTTP '+r.status);const j=await r.json(),v=j.vix||{},e=v.vol_engine||{},l=v.levels||{},s=v.structure||{};
+$('vix').textContent=fmt(v.spot);$('vix1d').textContent=fmt(v.vix1d?.last);$('ratio').textContent=fmt(v.vix1d_vix_ratio,4);$('vix5').textContent=e.vix_5m_pct==null?'—':fmt(e.vix_5m_pct,3)+'%';$('ratio5').textContent=e.ratio_5m_pct==null?'—':fmt(e.ratio_5m_pct,3)+'%';$('dhp').textContent=fmt(v.total_dhp,1);$('dhpdir').textContent=v.dhp_direction||'—';$('cw').textContent=fmt(l.call_wall);$('pw').textContent=fmt(l.put_wall);$('gf').textContent=fmt(l.gamma_flip);$('gn').textContent=fmt(s.nearest_gamma_node);$('oi').textContent=fmt(s.nearest_structural_oi_strike);
+let st=e.state||'BUILDING';$('state').textContent=st;$('state').className='state '+st.toLowerCase();$('raw').textContent='raw: '+(e.raw_state||'—')+(e.ready?' · 5m window ready':' · building 5m history');$('fresh').textContent=(j.timestamp||'—')+' UTC · LIVE';$('fresh').className='fresh muted';}catch(err){$('fresh').textContent='DATA ERROR · '+err.message;$('fresh').className='fresh err';}}
+update();setInterval(update,5000);
+</script></body></html>
