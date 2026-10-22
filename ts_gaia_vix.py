@@ -166,6 +166,20 @@ def front_vx_symbol(today=None):
         y, m = (y + 1, 1) if m == 12 else (y, m + 1)
     return None
 
+def front_vx_expiration(today=None):
+    """Fecha de vencimiento del contrato que devuelve front_vx_symbol() (solo
+    para el log). None si se usa VX_SYMBOL_OVERRIDE."""
+    if VX_SYMBOL_OVERRIDE:
+        return None
+    today = today or now_et().date()
+    y, m = today.year, today.month
+    for _ in range(3):
+        exp = vx_expiration(y, m)
+        if exp >= today:
+            return exp
+        y, m = (y + 1, 1) if m == 12 else (y, m + 1)
+    return None
+
 # ── INSTANCIA ÚNICA (22-oct) ──────────────────────────────────────────────────
 _instance_lock = None
 
@@ -945,7 +959,7 @@ def main():
     log.info(f"VIX expirations: {exp_vix}")
     log.info(f"Hora ET: {'zona America/New_York' if _ET else 'hora local de la PC (sin zoneinfo)'}")
     vx_symbol = front_vx_symbol()
-    log.info(f"VX frente: {vx_symbol} (vence {'?' if VX_SYMBOL_OVERRIDE else vx_expiration(now_et().year, now_et().month)}) — confirmar en TradeStation")
+    log.info(f"VX frente: {vx_symbol} (vence {front_vx_expiration() or '?'}) — confirmar en TradeStation")
     spot_vx = 0.0
     last_vx_update = 0.0
 
