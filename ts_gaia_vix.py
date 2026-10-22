@@ -23,6 +23,28 @@ Pipeline:
   - JSON output: gaia_vix_live.json
   - Railway push: /push_vix  (endpoint agregado a gaia_server.py — 20-ago)
 
+Ajustes 22-oct-2026 (diagnóstico del log del 22-oct):
+  a) INSTANCIA ÚNICA: el log mostraba dos copias corriendo a la vez (dos
+     contadores de ciclo intercalados), cada una con su propia máquina de
+     estados VOL empujando al backend, duplicando consultas (6.542 errores
+     403 ese día) y pisándose al guardar el JSON. Ahora el script toma un
+     "candado" (puerto local 127.0.0.1:47231) al arrancar; si ya hay otra
+     copia, lo avisa en el log, espera 60s y sale sin hacer nada.
+  b) VX: VXU26 (septiembre) estaba vencido. Ahora el contrato frente se
+     calcula solo con la regla de vencimiento del VX (miércoles 30 días
+     antes del tercer viernes del mes siguiente) y se consulta cada 60s en
+     vez de cada 5s (sigue fuera de la ruta crítica). Para forzar un símbolo
+     a mano, completar VX_SYMBOL_OVERRIDE. CONFIRMAR en TradeStation que el
+     símbolo calculado (se loguea al arrancar) es el correcto.
+  c) HORARIO: VIX1D solo se calcula en horario regular. Antes de las 09:31
+     ET queda congelado y en la apertura salta (UNSTABLE falso); después de
+     las 16:15 ET se congela y el motor marca STABLE falso. Ahora el estado
+     VOL solo se evalúa de lunes a viernes entre 09:31 y 16:00 ET; fuera de
+     ese horario el estado publicado es "OFF_HOURS" y la historia de 5 min
+     se reinicia al empezar cada sesión. Se agregó "session_valid" al JSON.
+  No se cambiaron umbrales, ventana, confirmación ni ningún cálculo de
+  niveles/DHP/estructura.
+
 IMPORTANTE — VERIFICAR ANTES DE CORRER:
   - VX_SYMBOL: confirmado por Miguel (19-ago-2026) que el contrato frente
     real es VXU2026 (CBOE:VX1!, vencimiento septiembre). Se usa acá en
@@ -31,7 +53,7 @@ IMPORTANTE — VERIFICAR ANTES DE CORRER:
     con el formato de 4 dígitos ("VXU2026") en su lugar.
 """
 
-import json, os, time, urllib.parse, urllib.request
+import json, os, sys, time, socket, urllib.parse, urllib.request
 import http.client, ssl, logging, certifi
 from datetime import datetime, timedelta
 from collections import deque
@@ -60,7 +82,12 @@ VIX1D_SYMBOL     = "VIX1D.X"    # Formato asumido originalmente por el Plan de
                                  # más abajo, que prueba varios formatos al
                                  # arrancar y usa el que responda. Se deja esta
                                  # constante solo como referencia documental.
-VX_SYMBOL        = "VXU26"      # Confirmado por Miguel (19-ago): contrato frente
+VX_SYMBOL_OVERRIDE = None       # 22-oct: si se completa (ej. "VXX26"), se usa este
+                                 # símbolo fijo. Si queda en None, el contrato frente
+                                 # se calcula solo con front_vx_symbol() (ver abajo).
+VX_REFRESH_SECONDS = 60          # 22-oct: VX se consulta cada 60s, no cada 5s
+VX_SYMBOL        = "VXU26"      # HISTÓRICO — ya no se usa (venció en septiembre).
+                                 # Confirmado por Miguel (19-ago): contrato frente
                                  # real es VXU2026 (CBOE:VX1!, Sep 2026). Formato
                                  # acá en 2 dígitos de año, igual que ESU26/NQU26
                                  # que ya funcionan con la API de TradeStation —
@@ -79,6 +106,12 @@ VOL_VIX_STABLE_PCT = 0.20
 VOL_VIX_UNSTABLE_PCT = 0.39
 VOL_RATIO_STABLE_PCT = 0.33
 VOL_RATIO_UNSTABLE_PCT = 1.02
+# 22-oct: horario de validez del estado VOL (ET). VIX1D se congela fuera de RTH.
+VOL_SESSION_START = (9, 31)    # primer minuto con VIX1D ya recalculado tras la apertura
+VOL_SESSION_END   = (16, 0)
+
+# 22-oct: candado de instancia única (puerto local, se libera solo si el proceso muere)
+INSTANCE_LOCK_PORT = 47231
 
 # ── RAILWAY ───────────────────────────────────────────────────────────────────
 RAILWAY_URL   = "https://web-production-49e7.up.railway.app"
@@ -88,6 +121,68 @@ RAILWAY_TOKEN = "gaia_push_secret_2026"
 # Mismo fix aplicado en ts_gaia_etf.py y ts_gaia_ndx_v2.py — fuerza el bundle
 # de certifi en vez del almacén de certificados de Windows.
 SSL_CONTEXT = ssl.create_default_context(cafile=certifi.where())
+
+# ── HORA ET (22-oct) ──────────────────────────────────────────────────────────
+try:
+    from zoneinfo import ZoneInfo
+    _ET = ZoneInfo("America/New_York")
+except Exception:
+    _ET = None   # sin base de zonas horarias: se usa la hora local de la PC
+
+def now_et():
+    return datetime.now(_ET) if _ET else datetime.now()
+
+def in_vol_session(dt):
+    """True de lunes a viernes entre VOL_SESSION_START y VOL_SESSION_END (ET).
+    No contempla feriados de mercado."""
+    if dt.weekday() >= 5:
+        return False
+    hm = (dt.hour, dt.minute)
+    return VOL_SESSION_START <= hm < VOL_SESSION_END
+
+# ── VX FRENTE (22-oct) ────────────────────────────────────────────────────────
+_VX_MONTH_CODES = "FGHJKMNQUVXZ"
+
+def _third_friday(year, month):
+    d = datetime(year, month, 15)
+    return d + timedelta(days=(4 - d.weekday()) % 7)
+
+def vx_expiration(year, month):
+    """Vencimiento del VX del mes (year, month): miércoles 30 días antes del
+    tercer viernes del mes siguiente. No contempla el ajuste por feriados."""
+    ny, nm = (year + 1, 1) if month == 12 else (year, month + 1)
+    return (_third_friday(ny, nm) - timedelta(days=30)).date()
+
+def front_vx_symbol(today=None):
+    """Primer contrato VX que todavía no venció, en el mismo formato que ya
+    usaba el script (2 dígitos de año, ej. 'VXX26')."""
+    if VX_SYMBOL_OVERRIDE:
+        return VX_SYMBOL_OVERRIDE
+    today = today or now_et().date()
+    y, m = today.year, today.month
+    for _ in range(3):
+        if vx_expiration(y, m) >= today:
+            return f"VX{_VX_MONTH_CODES[m - 1]}{str(y)[-2:]}"
+        y, m = (y + 1, 1) if m == 12 else (y, m + 1)
+    return None
+
+# ── INSTANCIA ÚNICA (22-oct) ──────────────────────────────────────────────────
+_instance_lock = None
+
+def acquire_instance_lock():
+    """Toma el puerto local INSTANCE_LOCK_PORT como candado. Devuelve True si
+    esta es la única copia corriendo. El sistema operativo libera el puerto
+    cuando el proceso termina (aunque se cierre la ventana o se cuelgue)."""
+    global _instance_lock
+    s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    try:
+        s.bind(("127.0.0.1", INSTANCE_LOCK_PORT))
+        s.listen(1)
+        _instance_lock = s
+        return True
+    except OSError:
+        s.close()
+        return False
 
 # ── LOGGING ───────────────────────────────────────────────────────────────────
 logging.basicConfig(
@@ -679,11 +774,25 @@ def compute_vol_state(now_ts, spot_vix, ratio, vix_history, ratio_history, state
     UNSTABLE: ambos componentes sobre umbral inestable.
     TRANSITION: resto.
     El cambio confirmado requiere VOL_CONFIRM_SECONDS de persistencia.
+    22-oct: fuera de la sesión válida (ver in_vol_session) devuelve OFF_HOURS
+    y reinicia historia y confirmación, para que cada sesión arranque limpia.
     """
+    if not in_vol_session(now_et()):
+        vix_history.clear()
+        ratio_history.clear()
+        state_ctx.update({"confirmed": None, "candidate": None, "candidate_since": None})
+        return {
+            "state": "OFF_HOURS", "raw_state": "OFF_HOURS",
+            "vix_5m_pct": None, "ratio_5m_pct": None, "ready": False,
+            "session_valid": False,
+            "window_seconds": VOL_WINDOW_SECONDS, "confirm_seconds": VOL_CONFIRM_SECONDS
+        }
+
     if not (spot_vix and spot_vix > 0 and ratio and ratio > 0):
         return {
-            "state": state_ctx.get("confirmed", "BUILDING"), "raw_state": "BUILDING",
+            "state": state_ctx.get("confirmed") or "BUILDING", "raw_state": "BUILDING",
             "vix_5m_pct": None, "ratio_5m_pct": None, "ready": False,
+            "session_valid": True,
             "window_seconds": VOL_WINDOW_SECONDS, "confirm_seconds": VOL_CONFIRM_SECONDS
         }
 
@@ -699,8 +808,9 @@ def compute_vol_state(now_ts, spot_vix, ratio, vix_history, ratio_history, state
     old_ratio = _value_at_or_before(ratio_history, now_ts - VOL_WINDOW_SECONDS)
     if not old_vix or not old_ratio:
         return {
-            "state": state_ctx.get("confirmed", "BUILDING"), "raw_state": "BUILDING",
+            "state": state_ctx.get("confirmed") or "BUILDING", "raw_state": "BUILDING",
             "vix_5m_pct": None, "ratio_5m_pct": None, "ready": False,
+            "session_valid": True,
             "window_seconds": VOL_WINDOW_SECONDS, "confirm_seconds": VOL_CONFIRM_SECONDS
         }
 
@@ -733,7 +843,7 @@ def compute_vol_state(now_ts, spot_vix, ratio, vix_history, ratio_history, state
     return {
         "state": state_ctx.get("confirmed", raw), "raw_state": raw,
         "vix_5m_pct": round(vix_5m, 4), "ratio_5m_pct": round(ratio_5m, 4),
-        "ready": True, "window_seconds": VOL_WINDOW_SECONDS,
+        "ready": True, "session_valid": True, "window_seconds": VOL_WINDOW_SECONDS,
         "confirm_seconds": VOL_CONFIRM_SECONDS,
         "thresholds": {
             "vix_stable_pct": VOL_VIX_STABLE_PCT, "vix_unstable_pct": VOL_VIX_UNSTABLE_PCT,
@@ -792,6 +902,14 @@ def safe_sleep(seconds):
 
 # ── MAIN LOOP ─────────────────────────────────────────────────────────────────
 def main():
+    if not acquire_instance_lock():
+        log.warning(
+            f"Ya hay otra copia de ts_gaia_vix.py corriendo (puerto {INSTANCE_LOCK_PORT} "
+            "ocupado). Esta copia no hace nada: espera 60s y sale."
+        )
+        safe_sleep(60)
+        sys.exit(0)
+
     log.info("=" * 60)
     log.info("  PivotAlphaDesk — GAIA VIX Backend v1")
     log.info("  Fase 1 — solo pipeline propio, sin relacion con SPX todavia")
@@ -825,6 +943,11 @@ def main():
             safe_sleep(30)
 
     log.info(f"VIX expirations: {exp_vix}")
+    log.info(f"Hora ET: {'zona America/New_York' if _ET else 'hora local de la PC (sin zoneinfo)'}")
+    vx_symbol = front_vx_symbol()
+    log.info(f"VX frente: {vx_symbol} (vence {'?' if VX_SYMBOL_OVERRIDE else vx_expiration(now_et().year, now_et().month)}) — confirmar en TradeStation")
+    spot_vx = 0.0
+    last_vx_update = 0.0
 
     # ── Resolver símbolo VIX1D una sola vez (Fase 1A) ─────────────────────────
     vix1d_symbol = resolve_vix1d_symbol(token)
@@ -883,11 +1006,19 @@ def main():
                       "bid": None, "ask": None, "timestamp": None}
             )
             spot_vix    = quote_vix["last"]
-            spot_vx     = get_price(VX_SYMBOL, token)        # fuera de la ruta crítica (ver plan)
+            # VX: fuera de la ruta crítica; cada VX_REFRESH_SECONDS, contrato frente vigente
+            if now - last_vx_update > VX_REFRESH_SECONDS:
+                new_vx_symbol = front_vx_symbol()
+                if new_vx_symbol != vx_symbol:
+                    log.info(f"VX frente cambió: {vx_symbol} -> {new_vx_symbol}")
+                    vx_symbol = new_vx_symbol
+                spot_vx = get_price(vx_symbol, token) if vx_symbol else 0.0
+                last_vx_update = now
 
             # ── Procesar VIX (niveles/DHP siguen calculándose solo sobre $VIX.X)
             vix_data = process_vix(exp_vix, spot_vix, token, dhp_history_vix, cache_vix)
             vix_data["spot_vx"] = spot_vx
+            vix_data["vx_symbol"] = vx_symbol
             vix_data["basis_vx"] = round(spot_vx - spot_vix, 2) if spot_vx > 0 and spot_vix > 0 else 0.0
 
             # ── VIX1D (Fase 1A) — feed propio, sin relación calculada con SPX todavía
