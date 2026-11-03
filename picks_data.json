@@ -1,6 +1,6 @@
 {
-  "updated_at": "2026-10-30T20:58:08.663332-04:00",
-  "updated_at_display": "30-Oct-2026 20:58 ET",
+  "updated_at": "2026-11-02T22:01:14.614304-05:00",
+  "updated_at_display": "02-Nov-2026 22:01 ET",
   "picks": [
     {
       "week": 12,
@@ -18,43 +18,43 @@
       "rr": "1:2.5",
       "benchmark": "SPY",
       "filename": "pad_pick_semana12_2026.html",
-      "status": "open",
-      "current_price": NaN,
-      "current_date": "2026-10-30",
-      "current_ret_pct": NaN,
-      "bench_ret_pct": NaN,
-      "vs_benchmark_pct": NaN,
-      "days_active": 160,
+      "status": "closed_target1",
+      "current_price": 67.25,
+      "current_date": "2026-11-02",
+      "current_ret_pct": 16.29,
+      "bench_ret_pct": 13.3,
+      "vs_benchmark_pct": 2.99,
+      "days_active": 161,
       "closed_date": null,
       "closed_price": null,
       "levels": {
         "entry": {
           "hit": false,
-          "above": false,
+          "above": true,
           "label": "$54.0\u2013$56.0"
         },
         "target1": {
-          "hit": false,
-          "pct_away": NaN,
+          "hit": true,
+          "pct_away": -6.32,
           "label": "$63.0"
         },
         "target2": {
           "hit": false,
-          "pct_away": NaN,
+          "pct_away": 4.09,
           "label": "$70.0"
         },
         "stop": {
           "hit": false,
-          "margin": NaN,
+          "margin": 16.25,
           "label": "$51.0"
         },
         "gamma_flip": {
-          "above": false,
-          "regime": "AMPLIFIED",
+          "above": true,
+          "regime": "DAMPENED",
           "label": "$54.5"
         },
         "put_wall": {
-          "above": false,
+          "above": true,
           "label": "$55.0"
         }
       },
@@ -856,8 +856,13 @@
         },
         {
           "date": "2026-10-30",
-          "close": NaN,
-          "ret_pct": NaN
+          "close": 70.02,
+          "ret_pct": 21.08
+        },
+        {
+          "date": "2026-11-02",
+          "close": 67.25,
+          "ret_pct": 16.29
         }
       ],
       "chart_benchmark": [
@@ -1658,8 +1663,13 @@
         },
         {
           "date": "2026-10-30",
-          "close": NaN,
-          "ret_pct": NaN
+          "close": 755.72,
+          "ret_pct": 13.84
+        },
+        {
+          "date": "2026-11-02",
+          "close": 752.1,
+          "ret_pct": 13.3
         }
       ]
     }
