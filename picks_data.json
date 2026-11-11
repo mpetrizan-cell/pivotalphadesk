@@ -1,6 +1,6 @@
 {
-  "updated_at": "2026-11-09T22:44:14.190492-05:00",
-  "updated_at_display": "09-Nov-2026 22:44 ET",
+  "updated_at": "2026-11-10T20:24:29.539478-05:00",
+  "updated_at_display": "10-Nov-2026 20:24 ET",
   "picks": [
     {
       "week": 12,
@@ -19,42 +19,42 @@
       "benchmark": "SPY",
       "filename": "pad_pick_semana12_2026.html",
       "status": "open",
-      "current_price": 61.94,
-      "current_date": "2026-11-09",
-      "current_ret_pct": 7.11,
-      "bench_ret_pct": 13.38,
-      "vs_benchmark_pct": -6.27,
-      "days_active": 166,
+      "current_price": NaN,
+      "current_date": "2026-11-10",
+      "current_ret_pct": NaN,
+      "bench_ret_pct": NaN,
+      "vs_benchmark_pct": NaN,
+      "days_active": 167,
       "closed_date": null,
       "closed_price": null,
       "levels": {
         "entry": {
           "hit": false,
-          "above": true,
+          "above": false,
           "label": "$54.0\u2013$56.0"
         },
         "target1": {
           "hit": false,
-          "pct_away": 1.71,
+          "pct_away": NaN,
           "label": "$63.0"
         },
         "target2": {
           "hit": false,
-          "pct_away": 13.01,
+          "pct_away": NaN,
           "label": "$70.0"
         },
         "stop": {
           "hit": false,
-          "margin": 10.94,
+          "margin": NaN,
           "label": "$51.0"
         },
         "gamma_flip": {
-          "above": true,
-          "regime": "DAMPENED",
+          "above": false,
+          "regime": "AMPLIFIED",
           "label": "$54.5"
         },
         "put_wall": {
-          "above": true,
+          "above": false,
           "label": "$55.0"
         }
       },
@@ -888,6 +888,11 @@
           "date": "2026-11-09",
           "close": 61.94,
           "ret_pct": 7.11
+        },
+        {
+          "date": "2026-11-10",
+          "close": NaN,
+          "ret_pct": NaN
         }
       ],
       "chart_benchmark": [
@@ -1720,6 +1725,11 @@
           "date": "2026-11-09",
           "close": 752.69,
           "ret_pct": 13.38
+        },
+        {
+          "date": "2026-11-10",
+          "close": NaN,
+          "ret_pct": NaN
         }
       ]
     }
